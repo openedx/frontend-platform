@@ -1,0 +1,14 @@
+language: node_js
+node_js:
+- 8
+cache:
+  directories:
+    - "~/.npm"
+install: 
+  - npm install
+script:
+  - npm run lint
+  - npm run test
+  - npm run build
+after_success:
+  - npm run coveralls
