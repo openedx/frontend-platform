@@ -3,6 +3,9 @@
   "version": "1.0.0-semantically-released",
   "description": "Frontend auth client code for use with the edX auth service.",
   "main": "dist/main.js",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "NODE_ENV=production BABEL_ENV=production webpack --config webpack.config.js",
     "gc": "commit",
