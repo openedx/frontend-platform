@@ -14,7 +14,12 @@
   "generateNotes": "@semantic-release/release-notes-generator",
   "prepare": "@semantic-release/npm",
   "publish": [
-    "@semantic-release/npm",
+    {
+      "path": "@semantic-release/npm",
+      "publishConfig": {
+        "access": "public"
+      }
+    },
     {
       "path": "@semantic-release/github",
       "assets": {
