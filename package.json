@@ -5,8 +5,11 @@
   "main": "dist/main.js",
   "scripts": {
     "build": "NODE_ENV=production BABEL_ENV=production webpack --config webpack.config.js",
+    "coveralls": "cat ./coverage/lcov.info | coveralls",
     "lint": "eslint --ext .js --ext .jsx .",
-    "test": "jest --coverage"
+    "semantic-release": "semantic-release",
+    "test": "jest --coverage",
+    "travis-deploy-once": "travis-deploy-once"
   },
   "repository": {
     "type": "git",
@@ -34,7 +37,9 @@
     "jest": "23.4.0",
     "react-dom": "^16.2.0",
     "redux-mock-store": "^1.5.1",
+    "semantic-release": "^15.1.7",
     "source-map-loader": "^0.2.1",
+    "travis-deploy-once": "^5.0.0",
     "uglifyjs-webpack-plugin": "^1.1.8",
     "webpack": "^4.16.2",
     "webpack-cli": "^3.1.0"
