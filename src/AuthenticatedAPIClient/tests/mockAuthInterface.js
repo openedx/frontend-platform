@@ -12,6 +12,11 @@ export default function applyMockAuthInterface(
     }
   }));
 
+  const mockGetCsrfToken = jest.fn();
+  mockGetCsrfToken.mockReturnValue(new Promise((resolve) => {
+    resolve({ data: { csrfToken: 'test-csrf-token' } });
+  }));
+
   /* eslint-disable no-param-reassign */
   authenticatedAPIClient.getAuthenticationState = jest.fn();
   authenticatedAPIClient.isAuthenticated = jest.fn();
@@ -20,6 +25,8 @@ export default function applyMockAuthInterface(
   authenticatedAPIClient.logout = jest.fn();
   authenticatedAPIClient.refreshAccessToken = mockRefreshAccessToken;
   authenticatedAPIClient.isAuthUrl = jest.fn();
+  authenticatedAPIClient.getCsrfToken = mockGetCsrfToken;
+  authenticatedAPIClient.isCsrfExempt = jest.fn();
   authenticatedAPIClient.getDecodedAccessToken = jest.fn();
   /* eslint-enable no-param-reassign */
 }
