@@ -9,6 +9,7 @@ function applyAxiosDefaults(authenticatedAPIClient) {
   authenticatedAPIClient.defaults.withCredentials = true;
   authenticatedAPIClient.defaults.xsrfHeaderName = 'X-CSRFToken';
   authenticatedAPIClient.defaults.xsrfCookieName = authenticatedAPIClient.csrfCookieName;
+  authenticatedAPIClient.defaults.headers.common['USE-JWT-COOKIE'] = true;
   /* eslint-enable no-param-reassign */
 }
 

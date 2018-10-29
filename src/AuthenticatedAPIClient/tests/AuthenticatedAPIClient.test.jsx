@@ -176,6 +176,13 @@ describe('AuthenticatedAPIClient auth interface', () => {
   });
 });
 
+describe('AuthenticatedAPIClient request headers', () => {
+  it('should contain USE-JWT-COOKIE', () => {
+    const client = getAuthenticatedAPIClient(authConfig);
+    expect(client.defaults.headers.common['USE-JWT-COOKIE']).toBe(true);
+  });
+});
+
 describe('AuthenticatedAPIClient request interceptor', () => {
   [
     [true, true, false, false, expectRefreshAccessTokenToNotHaveBeenCalled],
