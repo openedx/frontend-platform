@@ -6,7 +6,7 @@ export default function applyAuthInterface(authenticatedAPIClient, authConfig) {
   /* eslint-disable no-param-reassign */
   authenticatedAPIClient.appBaseUrl = authConfig.appBaseUrl;
   authenticatedAPIClient.accessTokenCookieName = authConfig.accessTokenCookieName;
-  authenticatedAPIClient.csrfCookieName = authConfig.csrfCookieName;
+  authenticatedAPIClient.csrfTokenApiPath = authConfig.csrfTokenApiPath;
   authenticatedAPIClient.loginUrl = authConfig.loginUrl;
   authenticatedAPIClient.logoutUrl = authConfig.logoutUrl;
   authenticatedAPIClient.refreshAccessTokenEndpoint = authConfig.refreshAccessTokenEndpoint;
@@ -15,6 +15,13 @@ export default function applyAuthInterface(authenticatedAPIClient, authConfig) {
    * making requests to these auth-related URLs.
    */
   authenticatedAPIClient.authUrls = [
+    authenticatedAPIClient.refreshAccessTokenEndpoint,
+  ];
+  /**
+   * We will not try to retrieve a CSRF token before
+   * making requests to these CSRF-exempt URLS.
+   */
+  authenticatedAPIClient.csrfExemptUrls = [
     authenticatedAPIClient.refreshAccessTokenEndpoint,
   ];
 
@@ -68,5 +75,11 @@ export default function applyAuthInterface(authenticatedAPIClient, authConfig) {
     }
     return decodedToken;
   };
+
+  authenticatedAPIClient.getCsrfToken = (apiProtocol, apiHost) =>
+    authenticatedAPIClient.get(`${apiProtocol}//${apiHost}${authenticatedAPIClient.csrfTokenApiPath}`);
+
+  authenticatedAPIClient.isCsrfExempt = url =>
+    authenticatedAPIClient.csrfExemptUrls.includes(url);
   /* eslint-enable no-param-reassign */
 }

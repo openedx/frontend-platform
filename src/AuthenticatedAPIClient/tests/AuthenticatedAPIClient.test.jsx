@@ -50,10 +50,22 @@ function expectRefreshAccessTokenToNotHaveBeenCalled(client) {
   expect(client.refreshAccessToken).not.toHaveBeenCalled();
 }
 
-function testRequestInterceptorFulfillment(
+function expectGetCsrfTokenToHaveBeenCalled(client) {
+  expect(client.getCsrfToken).toHaveBeenCalled();
+}
+
+function expectGetCsrfTokenToNotHaveBeenCalled(client) {
+  expect(client.getCsrfToken).not.toHaveBeenCalled();
+}
+
+function expectCsrfHeaderSet(request) {
+  expect(request.headers['X-CSRFToken']).toBe('test-csrf-token');
+}
+
+function testJwtCookieInterceptorFulfillment(
   isAuthUrl,
   isAccessTokenExpired,
-  isRefreshingToken,
+  queueRequests,
   rejectRefreshAccessToken,
   expects,
 ) {
@@ -63,7 +75,7 @@ function testRequestInterceptorFulfillment(
     client.isAuthUrl.mockReturnValue(isAuthUrl);
     client.isAccessTokenExpired.mockReturnValue(isAccessTokenExpired);
     // eslint-disable-next-line no-underscore-dangle
-    axiosConfig.__Rewire__('isRefreshingToken', isRefreshingToken);
+    axiosConfig.__Rewire__('queueRequests', queueRequests);
     const fulfilledResult = client.interceptors.request.handlers[0].fulfilled({});
     expects(client);
 
@@ -71,6 +83,41 @@ function testRequestInterceptorFulfillment(
       fulfilledResult.catch(() => {
         expect(client.logout).toHaveBeenCalled();
       });
+    }
+  });
+}
+
+function testCsrfTokenInterceptorFulfillment(
+  isCsrfExempt,
+  method,
+  queueRequests,
+  csrfTokens,
+  expects,
+  expectHeaderSet,
+) {
+  it(`${expects.name} when isCsrfExempt=${isCsrfExempt} and method=${method} and queueRequests=${queueRequests} and csrfTokens=${JSON.stringify(csrfTokens)}`, () => {
+    const client = getAuthenticatedAPIClient(authConfig);
+    applyMockAuthInterface(client);
+    client.isCsrfExempt.mockReturnValue(isCsrfExempt);
+    /* eslint-disable no-underscore-dangle */
+    axiosConfig.__Rewire__('queueRequests', queueRequests);
+    axiosConfig.__Rewire__('csrfTokens', csrfTokens);
+    /* eslint-enable no-underscore-dangle */
+    const fulfilledResult = client.interceptors.request.handlers[1].fulfilled({
+      url: 'https://testserver.org',
+      method,
+      headers: {},
+    });
+    expects(client);
+
+    if (expectHeaderSet) {
+      if (client.getCsrfToken.mock.calls.length || queueRequests) {
+        fulfilledResult.then((request) => {
+          expectCsrfHeaderSet(request);
+        });
+      } else {
+        expectCsrfHeaderSet(fulfilledResult);
+      }
     }
   });
 }
@@ -174,6 +221,22 @@ describe('AuthenticatedAPIClient auth interface', () => {
     expect(client.isAuthUrl(authUrl)).toBe(true);
     expect(client.isAuthUrl(nonAuthUrl)).toBe(false);
   });
+
+  it('has method getCsrfToken', () => {
+    client.get = jest.fn();
+    const mockResponse = {};
+
+    client.get.mockReturnValueOnce(new Promise(resolve => resolve(mockResponse)));
+    client.getCsrfToken();
+    expect(client.get).toHaveBeenCalled();
+  });
+
+  it('has method isCsrfExempt', () => {
+    const csrfExemptUrl = process.env.REFRESH_ACCESS_TOKEN_ENDPOINT;
+    const nonCsrfExemptUrl = 'http://example.com';
+    expect(client.isCsrfExempt(csrfExemptUrl)).toBe(true);
+    expect(client.isCsrfExempt(nonCsrfExemptUrl)).toBe(false);
+  });
 });
 
 describe('AuthenticatedAPIClient request headers', () => {
@@ -183,8 +246,9 @@ describe('AuthenticatedAPIClient request headers', () => {
   });
 });
 
-describe('AuthenticatedAPIClient request interceptor', () => {
+describe('AuthenticatedAPIClient ensureValidJWTCookie request interceptor', () => {
   [
+    /* isAuthUrl, isAccessTokenExpired, queueRequests, rejectRefreshAccessToken, expects */
     [true, true, false, false, expectRefreshAccessTokenToNotHaveBeenCalled],
     [true, false, false, false, expectRefreshAccessTokenToNotHaveBeenCalled],
     [false, true, false, false, expectRefreshAccessTokenToHaveBeenCalled],
@@ -192,13 +256,36 @@ describe('AuthenticatedAPIClient request interceptor', () => {
     [false, true, true, false, expectRefreshAccessTokenToNotHaveBeenCalled],
     [false, false, false, false, expectRefreshAccessTokenToNotHaveBeenCalled],
   ].forEach((mockValues) => {
-    testRequestInterceptorFulfillment(...mockValues);
+    testJwtCookieInterceptorFulfillment(...mockValues);
   });
 
   it('returns error if it is rejected', () => {
     const client = getAuthenticatedAPIClient(authConfig);
     const error = new Error('It failed!');
     client.interceptors.request.handlers[0].rejected(error)
+      .catch((rejection) => {
+        expect(rejection).toBe(error);
+      });
+  });
+});
+
+describe('AuthenticatedAPIClient ensureCsrfToken request interceptor', () => {
+  [
+    /* isCsrfExempt, method, queueRequests, csrfTokens, expects, expectHeaderSet */
+    [false, 'POST', false, {}, expectGetCsrfTokenToHaveBeenCalled, true],
+    [false, 'POST', true, {}, expectGetCsrfTokenToNotHaveBeenCalled, true],
+    [false, 'POST', false, { 'testserver.org': 'test-csrf-token' }, expectGetCsrfTokenToNotHaveBeenCalled, true],
+    [true, 'POST', false, {}, expectGetCsrfTokenToNotHaveBeenCalled, false],
+    [false, 'GET', false, {}, expectGetCsrfTokenToNotHaveBeenCalled, false],
+    [true, 'GET', false, {}, expectGetCsrfTokenToNotHaveBeenCalled, false],
+  ].forEach((mockValues) => {
+    testCsrfTokenInterceptorFulfillment(...mockValues);
+  });
+
+  it('returns error if it is rejected', () => {
+    const client = getAuthenticatedAPIClient(authConfig);
+    const error = new Error('It failed!');
+    client.interceptors.request.handlers[1].rejected(error)
       .catch((rejection) => {
         expect(rejection).toBe(error);
       });
