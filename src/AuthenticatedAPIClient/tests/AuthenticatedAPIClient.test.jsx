@@ -7,7 +7,7 @@ import getAuthenticatedAPIClient from '../index';
 const authConfig = {
   appBaseUrl: process.env.BASE_URL,
   accessTokenCookieName: process.env.ACCESS_TOKEN_COOKIE_NAME,
-  csrfCookieName: process.env.CSRF_COOKIE_NAME,
+  userInfoCookieName: process.env.USER_INFO_COOKIE_NAME,
   loginUrl: process.env.LOGIN_URL,
   logoutUrl: process.env.LOGOUT_URL,
   refreshAccessTokenEndpoint: process.env.REFRESH_ACCESS_TOKEN_ENDPOINT,
@@ -26,6 +26,7 @@ const expiredJwt = Object.assign({ exp: yesterday.getTime() / 1000 }, jwt);
 const encodedExpiredJwt = `header.${btoa(JSON.stringify(expiredJwt))}`;
 const validJwt = Object.assign({ exp: tomorrow.getTime() / 1000 }, jwt);
 const encodedValidJwt = `header.${btoa(JSON.stringify(validJwt))}`;
+const userInfo = JSON.stringify({ username: 'test-user' });
 
 const mockCookies = {
   get: jest.fn(),
@@ -164,10 +165,28 @@ describe('AuthenticatedAPIClient auth interface', () => {
     expect(result.authentication).toBeUndefined();
   });
 
-  it('has method isAuthenticated', () => {
-    expect(client.isAuthenticated()).toBe(false);
+  it('ensurePublicOrAuthencationAndCookies redirects to login', () => {
+    window.location.assign = jest.fn();
+    const loginUrl = process.env.LOGIN_URL;
+    const expectedRedirectUrl = encodeURIComponent(process.env.BASE_URL);
+    const expectedLocation = `${loginUrl}?next=${expectedRedirectUrl}`;
+    expect(client.ensurePublicOrAuthencationAndCookies()).toBe(false);
+    expect(window.location.assign).toHaveBeenCalledWith(expectedLocation);
+  });
+
+  it('ensurePublicOrAuthencationAndCookies redirects to logout', () => {
+    window.location.assign = jest.fn();
+    const logoutUrl = process.env.LOGOUT_URL;
+    const expectedRedirectUrl = encodeURIComponent(process.env.BASE_URL);
+    const expectedLocation = `${logoutUrl}?redirect_url=${expectedRedirectUrl}`;
+    mockCookies.get.mockReturnValueOnce(null).mockReturnValueOnce(userInfo);
+    expect(client.ensurePublicOrAuthencationAndCookies()).toBe(false);
+    expect(window.location.assign).toHaveBeenCalledWith(expectedLocation);
+  });
+
+  it('ensurePublicOrAuthencationAndCookies returns true', () => {
     mockCookies.get.mockReturnValueOnce(encodedValidJwt);
-    expect(client.isAuthenticated()).toBe(true);
+    expect(client.ensurePublicOrAuthencationAndCookies()).toBe(true);
   });
 
   it('has method isAccessTokenExpired', () => {

@@ -8,4 +8,4 @@ process.env.LOGIN_URL = 'http://auth.example.com/login';
 process.env.LOGIN_URL = 'http://auth.example.com/logout';
 process.env.REFRESH_ACCESS_TOKEN_ENDPOINT = 'http://auth.example.com/api/refreshToken';
 process.env.ACCESS_TOKEN_COOKIE_NAME = 'access-token-cookie-name';
-process.env.CSRF_COOKIE_NAME = 'csrftoken';
+process.env.USER_INFO_COOKIE_NAME = 'user-info-cookie-name';
