@@ -49,6 +49,7 @@
     "jest": "23.6.0",
     "react-dom": "^16.2.0",
     "redux-mock-store": "^1.5.1",
+    "redux-thunk": "^2.2.0",
     "semantic-release": "^15.1.7",
     "source-map-loader": "^0.2.1",
     "travis-deploy-once": "^5.0.0",
