@@ -7,6 +7,7 @@ import { logError } from '../logging';
 export default function applyAuthInterface(httpClient, authConfig) {
   /* eslint-disable no-param-reassign */
   httpClient.appBaseUrl = authConfig.appBaseUrl;
+  httpClient.authBaseUrl = authConfig.authBaseUrl;
   httpClient.accessTokenCookieName = authConfig.accessTokenCookieName;
   httpClient.userInfoCookieName = authConfig.userInfoCookieName;
   httpClient.csrfTokenApiPath = authConfig.csrfTokenApiPath;
@@ -40,6 +41,16 @@ export default function applyAuthInterface(httpClient, authConfig) {
     }
 
     return state;
+  };
+
+  httpClient.getUserProfile = (username) => {
+    const userProfileEndpoint = `${httpClient.authBaseUrl}/api/user/v1/accounts/${username}`;
+    return new Promise((resolve) => {
+      httpClient.get(userProfileEndpoint)
+        .then((response) => {
+          resolve(response.data);
+        });
+    });
   };
 
   httpClient.ensurePublicOrAuthencationAndCookies = route =>

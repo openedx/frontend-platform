@@ -47,3 +47,5 @@ const apiClient = getAuthenticatedAPIClient({
   </Switch>
 </ConnectedRouter>
 ```
+
+`frontend-auth` also provides Redux actions and a reducer for injecting user profile data into your store.
