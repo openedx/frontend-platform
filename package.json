@@ -47,7 +47,12 @@
     "eslint-config-edx": "^4.0.4",
     "husky": "^0.14.3",
     "jest": "23.6.0",
+    "prop-types": "^15.5.10",
+    "react": "^16.4.2",
     "react-dom": "^16.2.0",
+    "react-redux": "^5.0.7",
+    "react-router-dom": "^4.3.1",
+    "redux": "^4.0.0",
     "redux-mock-store": "^1.5.1",
     "redux-thunk": "^2.2.0",
     "semantic-release": "^15.1.7",
@@ -57,15 +62,17 @@
     "webpack": "^4.16.2",
     "webpack-cli": "^3.1.0"
   },
-  "dependencies": {
-    "axios": "^0.18.0",
-    "jwt-decode": "^2.2.0",
+  "peerDependencies": {
     "prop-types": "^15.5.10",
-    "pubsub-js": "^1.7.0",
     "react": "^16.4.2",
     "react-redux": "^5.0.7",
     "react-router-dom": "^4.3.1",
-    "redux": "^4.0.0",
+    "redux": "^4.0.0"
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "jwt-decode": "^2.2.0",
+    "pubsub-js": "^1.7.0",
     "universal-cookie": "^3.0.4",
     "url-parse": "^1.4.3"
   },
