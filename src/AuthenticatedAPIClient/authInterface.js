@@ -43,15 +43,6 @@ export default function applyAuthInterface(httpClient, authConfig) {
     return state;
   };
 
-  httpClient.getUserProfile = (username) => {
-    const userProfileEndpoint = `${httpClient.authBaseUrl}/api/user/v1/accounts/${username}`;
-    return new Promise((resolve) => {
-      httpClient.get(userProfileEndpoint)
-        .then((response) => {
-          resolve(response.data);
-        });
-    });
-  };
 
   httpClient.ensurePublicOrAuthencationAndCookies = route =>
     httpClient.isRoutePublic(route) || httpClient.ensureAuthencationAndCookies(route);

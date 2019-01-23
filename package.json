@@ -33,6 +33,7 @@
     "@commitlint/config-angular": "^6.0.2",
     "@commitlint/prompt": "^6.0.2",
     "@commitlint/prompt-cli": "^6.0.2",
+    "axios-mock-adapter": "^1.15.0",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.5",
@@ -71,8 +72,10 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "camelcase-keys": "^5.0.0",
     "jwt-decode": "^2.2.0",
     "pubsub-js": "^1.7.0",
+    "snakecase-keys": "^2.1.0",
     "universal-cookie": "^3.0.4",
     "url-parse": "^1.4.3"
   },

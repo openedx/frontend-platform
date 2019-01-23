@@ -1,11 +1,14 @@
-import { fetchUserProfile } from './actions/userProfile';
+import { fetchUserAccount, saveUserAccount } from './actions/userAccount';
 import getAuthenticatedAPIClient from './AuthenticatedAPIClient';
 import PrivateRoute from './PrivateRoute';
-import userProfile from './reducers/userProfile';
+import userAccount from './reducers/userAccount';
+import UserAccountApiService from './services/UserAccountApiService';
 
 export {
-  fetchUserProfile,
+  fetchUserAccount,
   getAuthenticatedAPIClient,
   PrivateRoute,
-  userProfile,
+  saveUserAccount,
+  userAccount,
+  UserAccountApiService,
 };
