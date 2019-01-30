@@ -57,7 +57,24 @@ describe('PrivateRoute', () => {
     expect(wrapper.find('p').text()).toEqual('Authentication required!');
   });
 
-  it('renders LoginRedirect if not authenticated', () => {
+  it('renders LoginRedirect if not authenticated, empty auth state', () => {
+    const store = mockStore({
+      authentication: {},
+    });
+    const route = '/authenticated';
+    const redirect = 'https://example.com';
+
+    mount((
+      <PrivateRouteWrapper
+        store={store}
+        initialEntries={[route]}
+        redirect={redirect}
+      />
+    ));
+    expect(mockLogin).toHaveBeenCalledWith(redirect + route);
+  });
+
+  it('renders LoginRedirect if not authenticated, missing auth state', () => {
     const store = mockStore({});
     const route = '/authenticated';
     const redirect = 'https://example.com';
