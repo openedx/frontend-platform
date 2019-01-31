@@ -43,7 +43,7 @@ PrivateRoute.propTypes = {
 
 
 const mapStateToProps = state => ({
-  isAuthenticated: !!state.authentication,
+  isAuthenticated: !!state.authentication && !!state.authentication.username,
 });
 
 export default connect(mapStateToProps)(PrivateRoute);
