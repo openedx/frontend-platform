@@ -34,6 +34,7 @@ const PrivateRoute = ({
 
 PrivateRoute.propTypes = {
   isAuthenticated: PropTypes.bool.isRequired,
+  path: PropTypes.string.isRequired,
   component: PropTypes.func.isRequired,
   authenticatedAPIClient: PropTypes.shape({
     login: PropTypes.func.isRequired,

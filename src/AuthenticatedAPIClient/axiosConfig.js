@@ -6,7 +6,7 @@ import { logAPIErrorResponse, logInfo } from '../logging';
 const ACCESS_TOKEN_REFRESH = 'ACCESS_TOKEN_REFRESH';
 const CSRF_TOKEN_REFRESH = 'CSRF_TOKEN_REFRESH';
 const CSRF_HEADER_NAME = 'X-CSRFToken';
-const CSRF_PROTECTED_METHODS = ['POST', 'PUT', 'DELETE'];
+const CSRF_PROTECTED_METHODS = ['POST', 'PUT', 'PATCH', 'DELETE'];
 const csrfTokens = {};
 let queueRequests = false;
 

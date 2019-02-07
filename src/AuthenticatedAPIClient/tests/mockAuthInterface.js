@@ -17,19 +17,8 @@ export default function applyMockAuthInterface(
     resolve({ data: { csrfToken: 'test-csrf-token' } });
   }));
 
-  const mockGetUserProfile = jest.fn();
-  mockGetUserProfile.mockReturnValue(new Promise((resolve) => {
-    resolve({
-      username: 'test-user',
-      profile_image: {
-        image_url_medium: 'test-image-url',
-      },
-    });
-  }));
-
   /* eslint-disable no-param-reassign */
   authenticatedAPIClient.getAuthenticationState = jest.fn();
-  authenticatedAPIClient.getUserProfile = mockGetUserProfile;
   authenticatedAPIClient.isAuthenticated = jest.fn();
   authenticatedAPIClient.isAccessTokenExpired = jest.fn();
   authenticatedAPIClient.login = jest.fn();

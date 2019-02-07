@@ -165,29 +165,6 @@ describe('AuthenticatedAPIClient auth interface', () => {
     expect(result.authentication).toBeUndefined();
   });
 
-  it('has method getUserProfile', () => {
-    const userProfile = {
-      email: 'test',
-      username: 'test',
-      userProfileImageUrl: 'test',
-    };
-    client.get = jest.fn();
-
-    client.get.mockReturnValueOnce(Promise.resolve({ data: userProfile }));
-    client.getUserProfile()
-      .then((result) => {
-        expect(client.get).toHaveBeenCalled();
-        expect(result).toBe(userProfile);
-      });
-
-    const message = 'Failed to get user profile.';
-    client.get.mockReturnValueOnce(Promise.reject(new Error(message)));
-    client.getUserProfile()
-      .catch((error) => {
-        expect(error.message).toEqual(message);
-      });
-  });
-
   it('ensurePublicOrAuthencationAndCookies redirects to login', () => {
     window.location.assign = jest.fn();
     const loginUrl = process.env.LOGIN_URL;
