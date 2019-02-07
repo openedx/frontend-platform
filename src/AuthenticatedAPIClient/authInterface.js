@@ -35,7 +35,7 @@ export default function applyAuthInterface(httpClient, authConfig) {
     const token = httpClient.getDecodedAccessToken();
     if (token) {
       state.authentication = {
-        email: token.email,
+        userId: token.user_id,
         username: token.preferred_username,
       };
     }

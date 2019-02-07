@@ -19,7 +19,7 @@ const tomorrow = new Date();
 tomorrow.setDate(tomorrow.getDate() + 1);
 
 const jwt = {
-  email: 'test@example.com',
+  user_id: '12345',
   preferred_username: 'test',
 };
 const expiredJwt = Object.assign({ exp: yesterday.getTime() / 1000 }, jwt);
@@ -156,7 +156,9 @@ describe('AuthenticatedAPIClient auth interface', () => {
   it('has method getAuthenticationState that returns authentication state when valid JWT cookie exists', () => {
     mockCookies.get.mockReturnValueOnce(encodedValidJwt);
     const result = client.getAuthenticationState();
-    expect(result.authentication.email).toEqual(validJwt.email);
+    expect(result.authentication.userId).toBeDefined();
+    expect(result.authentication.userId).toEqual(validJwt.user_id);
+    expect(result.authentication.username).toBeDefined();
     expect(result.authentication.username).toEqual(validJwt.preferred_username);
   });
 
