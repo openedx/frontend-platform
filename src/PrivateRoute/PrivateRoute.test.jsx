@@ -42,7 +42,7 @@ describe('PrivateRoute', () => {
   it('renders private component if authenticated', () => {
     const store = mockStore({
       authentication: {
-        email: 'test@example.com',
+        userId: '12345',
         username: 'test',
       },
     });
