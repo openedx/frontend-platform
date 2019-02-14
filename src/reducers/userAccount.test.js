@@ -2,9 +2,6 @@ import {
   FETCH_USER_ACCOUNT_BEGIN,
   FETCH_USER_ACCOUNT_SUCCESS,
   FETCH_USER_ACCOUNT_FAILURE,
-  SAVE_USER_ACCOUNT_BEGIN,
-  SAVE_USER_ACCOUNT_SUCCESS,
-  SAVE_USER_ACCOUNT_FAILURE,
 } from '../actions/userAccount';
 import reducer from './userAccount';
 
@@ -54,40 +51,6 @@ describe('userAccount reducer', () => {
     const error = 'Test failure';
     expect(reducer({}, {
       type: FETCH_USER_ACCOUNT_FAILURE,
-      payload: { error },
-    })).toEqual({
-      loading: false,
-      error,
-    });
-  });
-
-  it('should handle SAVE_USER_ACCOUNT_BEGIN', () => {
-    expect(reducer({}, {
-      type: SAVE_USER_ACCOUNT_BEGIN,
-    })).toEqual({
-      loading: true,
-      error: null,
-    });
-  });
-
-  it('should handle SAVE_USER_ACCOUNT_SUCCESS', () => {
-    const userAccount = {
-      email: 'test',
-      username: 'test',
-    };
-    expect(reducer({}, {
-      type: SAVE_USER_ACCOUNT_SUCCESS,
-      payload: { userAccount },
-    })).toEqual({
-      loading: false,
-      ...userAccount,
-    });
-  });
-
-  it('should handle SAVE_USER_ACCOUNT_FAILURE', () => {
-    const error = 'Test failure';
-    expect(reducer({}, {
-      type: SAVE_USER_ACCOUNT_FAILURE,
       payload: { error },
     })).toEqual({
       loading: false,

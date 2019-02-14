@@ -2,9 +2,6 @@ import {
   FETCH_USER_ACCOUNT_BEGIN,
   FETCH_USER_ACCOUNT_SUCCESS,
   FETCH_USER_ACCOUNT_FAILURE,
-  SAVE_USER_ACCOUNT_BEGIN,
-  SAVE_USER_ACCOUNT_SUCCESS,
-  SAVE_USER_ACCOUNT_FAILURE,
 } from '../actions/userAccount';
 
 const initialState = {
@@ -38,24 +35,6 @@ const userAccount = (state = initialState, action) => {
         ...action.payload.userAccount,
       };
     case FETCH_USER_ACCOUNT_FAILURE:
-      return {
-        ...state,
-        loading: false,
-        error: action.payload.error,
-      };
-    case SAVE_USER_ACCOUNT_BEGIN:
-      return {
-        ...state,
-        loading: true,
-        error: null,
-      };
-    case SAVE_USER_ACCOUNT_SUCCESS:
-      return {
-        ...state,
-        loading: false,
-        ...action.payload.userAccount,
-      };
-    case SAVE_USER_ACCOUNT_FAILURE:
       return {
         ...state,
         loading: false,
