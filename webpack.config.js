@@ -23,7 +23,13 @@ module.exports = {
     rules: [
       {
         test: /\.(js|jsx)$/,
-        exclude: /(node_modules)/,
+        include: [
+          path.resolve(__dirname, 'src'),
+          path.resolve(__dirname, 'node_modules/camelcase-keys'),
+          path.resolve(__dirname, 'node_modules/camelcase'),
+          path.resolve(__dirname, 'node_modules/map-obj'),
+          path.resolve(__dirname, 'node_modules/quick-lru'),
+        ],
         use: [
           { loader: 'babel-loader' },
           { loader: 'source-map-loader' },
