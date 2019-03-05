@@ -21,7 +21,8 @@ describe('UserAccountApiService.getUserAccount', () => {
     axiosMock.onGet(`${process.env.BASE_URL}/api/user/v1/accounts/${username}`)
       .replyOnce(200, userAccount);
 
-    userAccountApiService.getUserAccount(username)
+    expect.assertions(1);
+    return userAccountApiService.getUserAccount(username)
       .then((result) => {
         expect(result).toEqual(camelcaseKeys(userAccount, { deep: true }));
       });
@@ -30,7 +31,8 @@ describe('UserAccountApiService.getUserAccount', () => {
   it('returns error when unsuccessful', () => {
     axiosMock.onGet(`${process.env.BASE_URL}/api/user/v1/accounts/${username}`).networkError();
 
-    userAccountApiService.getUserAccount(username)
+    expect.assertions(1);
+    return userAccountApiService.getUserAccount(username)
       .catch((error) => {
         expect(error).toEqual(new Error('Network Error'));
       });
@@ -42,7 +44,9 @@ describe('UserAccountApiService.saveUserAccount', () => {
     axiosMock.onPatch(`${process.env.BASE_URL}/api/user/v1/accounts/${username}`)
       .replyOnce(200, userAccount);
 
-    userAccountApiService.saveUserAccount(username, camelcaseKeys(userAccount, { deep: true }))
+    expect.assertions(1);
+    return userAccountApiService
+      .saveUserAccount(username, camelcaseKeys(userAccount, { deep: true }))
       .then((result) => {
         expect(result).toEqual(camelcaseKeys(userAccount, { deep: true }));
       });
@@ -51,7 +55,9 @@ describe('UserAccountApiService.saveUserAccount', () => {
   it('returns error when unsuccessful', () => {
     axiosMock.onPatch(`${process.env.BASE_URL}/api/user/v1/accounts/${username}`).networkError();
 
-    userAccountApiService.saveUserAccount(username, camelcaseKeys(userAccount, { deep: true }))
+    expect.assertions(1);
+    return userAccountApiService
+      .saveUserAccount(username, camelcaseKeys(userAccount, { deep: true }))
       .catch((error) => {
         expect(error).toEqual(new Error('Network Error'));
       });
@@ -63,7 +69,8 @@ describe('UserAccountApiService.saveUserProfilePhoto', () => {
     axiosMock.onPost(`${process.env.BASE_URL}/api/user/v1/accounts/${username}/image`)
       .replyOnce(204);
 
-    userAccountApiService.saveUserProfilePhoto(username)
+    expect.assertions(1);
+    return userAccountApiService.saveUserProfilePhoto(username)
       .then((response) => {
         expect(response.status).toEqual(204);
       });
@@ -75,7 +82,8 @@ describe('UserAccountApiService.deleteUserProfilePhoto', () => {
     axiosMock.onDelete(`${process.env.BASE_URL}/api/user/v1/accounts/${username}/image`)
       .replyOnce(204);
 
-    userAccountApiService.deleteUserProfilePhoto(username)
+    expect.assertions(1);
+    return userAccountApiService.deleteUserProfilePhoto(username)
       .then((response) => {
         expect(response.status).toEqual(204);
       });
