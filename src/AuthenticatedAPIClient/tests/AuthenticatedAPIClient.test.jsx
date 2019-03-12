@@ -23,7 +23,6 @@ const jwt = {
   preferred_username: 'test',
 };
 const expiredJwt = Object.assign({ exp: yesterday.getTime() / 1000 }, jwt);
-const encodedExpiredJwt = `header.${btoa(JSON.stringify(expiredJwt))}`;
 const validJwt = Object.assign({ exp: tomorrow.getTime() / 1000 }, jwt);
 const encodedValidJwt = `header.${btoa(JSON.stringify(validJwt))}`;
 const userInfo = JSON.stringify({ username: 'test-user' });
@@ -192,9 +191,8 @@ describe('AuthenticatedAPIClient auth interface', () => {
   });
 
   it('has method isAccessTokenExpired', () => {
-    mockCookies.get.mockReturnValueOnce(encodedValidJwt);
-    expect(client.isAccessTokenExpired()).toBe(false);
-    mockCookies.get.mockReturnValueOnce(encodedExpiredJwt);
+    expect(client.isAccessTokenExpired(validJwt)).toBe(false);
+    expect(client.isAccessTokenExpired(expiredJwt)).toBe(true);
     expect(client.isAccessTokenExpired()).toBe(true);
   });
 
