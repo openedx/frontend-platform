@@ -66,8 +66,9 @@ function applyAxiosInterceptors(authenticatedAPIClient) {
   function ensureValidJWTCookie(request) {
     const originalRequest = request;
     const isAuthUrl = authenticatedAPIClient.isAuthUrl(originalRequest.url);
-    const isAccessTokenExpired = authenticatedAPIClient.isAccessTokenExpired();
-    if (isAuthUrl || !isAccessTokenExpired) {
+    const accessToken = authenticatedAPIClient.getDecodedAccessToken();
+    const tokenExpired = authenticatedAPIClient.isAccessTokenExpired(accessToken);
+    if (isAuthUrl || !tokenExpired) {
       return request;
     }
 

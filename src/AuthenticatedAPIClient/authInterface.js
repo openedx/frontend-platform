@@ -47,12 +47,9 @@ export default function applyAuthInterface(httpClient, authConfig) {
   httpClient.ensurePublicOrAuthencationAndCookies = route =>
     httpClient.isRoutePublic(route) || httpClient.ensureAuthencationAndCookies(route);
 
-  httpClient.isAccessTokenExpired = () => {
-    const token = httpClient.getDecodedAccessToken();
-    // JWT expiration is serialized as seconds since the epoch,
-    // Date.now returns the number of milliseconds since the epoch.
-    return token && token.exp < Date.now() / 1000;
-  };
+  // JWT expiration is serialized as seconds since the epoch,
+  // Date.now returns the number of milliseconds since the epoch.
+  httpClient.isAccessTokenExpired = token => !token || token.exp < Date.now() / 1000;
 
   httpClient.login = (redirectUrl = authConfig.appBaseUrl) => {
     window.location.assign(`${httpClient.loginUrl}?next=${encodeURIComponent(redirectUrl)}`);
@@ -87,13 +84,14 @@ export default function applyAuthInterface(httpClient, authConfig) {
 
   httpClient.ensureAuthencationAndCookies = (route = '') => {
     // Validate auth-related cookies are in a consistent state.
-    const cookies = new Cookies();
-    const hasAccessToken = !!cookies.get(httpClient.accessTokenCookieName);
-    const hasUserInfo = !!cookies.get(httpClient.userInfoCookieName);
-    if (!hasAccessToken) {
+    const accessToken = httpClient.getDecodedAccessToken();
+    const tokenExpired = httpClient.isAccessTokenExpired(accessToken);
+    if (tokenExpired) {
+      const cookies = new Cookies();
+      const hasUserInfo = !!cookies.get(httpClient.userInfoCookieName);
       if (hasUserInfo) {
         // Cookies are out of sync. Log the user out to reset cookies and resync.
-        logError(new Error(`Invalid auth cookies: hasAccessToken=${hasAccessToken}, hasUserInfo=${hasUserInfo}`));
+        logError(new Error(`Invalid auth cookies: isAccessTokenExpired=${tokenExpired}, hasUserInfo=${hasUserInfo}`));
         httpClient.logout(httpClient.appBaseUrl + route);
       } else {
         httpClient.login(httpClient.appBaseUrl + route);
