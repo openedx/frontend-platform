@@ -64,15 +64,17 @@ function expectCsrfHeaderSet(request) {
 
 function testJwtCookieInterceptorFulfillment(
   isAuthUrl,
+  mockAccessToken,
   isAccessTokenExpired,
   queueRequests,
   rejectRefreshAccessToken,
   expects,
 ) {
-  it(`${expects.name} when isAuthUrl=${isAuthUrl} isAccessTokenExpired=${isAccessTokenExpired}`, () => {
+  it(`${expects.name} when isAuthUrl=${isAuthUrl} mockAccessToken=${mockAccessToken} isAccessTokenExpired=${isAccessTokenExpired}`, () => {
     const client = getAuthenticatedAPIClient(authConfig);
     applyMockAuthInterface(client, rejectRefreshAccessToken);
     client.isAuthUrl.mockReturnValue(isAuthUrl);
+    client.getDecodedAccessToken.mockReturnValue(mockAccessToken);
     client.isAccessTokenExpired.mockReturnValue(isAccessTokenExpired);
     // eslint-disable-next-line no-underscore-dangle
     axiosConfig.__Rewire__('queueRequests', queueRequests);
@@ -267,13 +269,20 @@ describe('AuthenticatedAPIClient request headers', () => {
 
 describe('AuthenticatedAPIClient ensureValidJWTCookie request interceptor', () => {
   [
-    /* isAuthUrl, isAccessTokenExpired, queueRequests, rejectRefreshAccessToken, expects */
-    [true, true, false, false, expectRefreshAccessTokenToNotHaveBeenCalled],
-    [true, false, false, false, expectRefreshAccessTokenToNotHaveBeenCalled],
-    [false, true, false, false, expectRefreshAccessTokenToHaveBeenCalled],
-    [false, true, false, true, expectRefreshAccessTokenToHaveBeenCalled],
-    [false, true, true, false, expectRefreshAccessTokenToNotHaveBeenCalled],
-    [false, false, false, false, expectRefreshAccessTokenToNotHaveBeenCalled],
+    /*
+    isAuthUrl, mockAccessToken, isAccessTokenExpired, queueRequests,
+    rejectRefreshAccessToken, expects
+    */
+    [true, null, true, false, false, expectRefreshAccessTokenToNotHaveBeenCalled],
+    [true, {}, true, false, false, expectRefreshAccessTokenToNotHaveBeenCalled],
+    [true, null, false, false, false, expectRefreshAccessTokenToNotHaveBeenCalled],
+    [true, {}, false, false, false, expectRefreshAccessTokenToNotHaveBeenCalled],
+    [false, null, true, false, false, expectRefreshAccessTokenToNotHaveBeenCalled],
+    [false, {}, true, false, false, expectRefreshAccessTokenToHaveBeenCalled],
+    [false, {}, true, false, true, expectRefreshAccessTokenToHaveBeenCalled],
+    [false, {}, true, true, false, expectRefreshAccessTokenToNotHaveBeenCalled],
+    [false, null, false, false, false, expectRefreshAccessTokenToNotHaveBeenCalled],
+    [false, {}, false, false, false, expectRefreshAccessTokenToNotHaveBeenCalled],
   ].forEach((mockValues) => {
     testJwtCookieInterceptorFulfillment(...mockValues);
   });
