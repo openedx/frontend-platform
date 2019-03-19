@@ -68,7 +68,7 @@ function applyAxiosInterceptors(authenticatedAPIClient) {
     const isAuthUrl = authenticatedAPIClient.isAuthUrl(originalRequest.url);
     const accessToken = authenticatedAPIClient.getDecodedAccessToken();
     const tokenExpired = authenticatedAPIClient.isAccessTokenExpired(accessToken);
-    if (isAuthUrl || !tokenExpired) {
+    if (isAuthUrl || !accessToken || !tokenExpired) {
       return request;
     }
 
