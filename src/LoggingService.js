@@ -18,12 +18,18 @@ function fixErrorLength(error) {
 
 class LoggingService {
   static logInfo(message) {
+    if (process.env.NODE_ENV === 'development') {
+      console.log(message); // eslint-disable-line
+    }
     if (typeof window.newrelic !== 'undefined') {
       window.newrelic.addPageAction('INFO', { message });
     }
   }
 
   static logError(error, customAttributes) {
+    if (process.env.NODE_ENV === 'development') {
+      console.error(error, customAttributes); // eslint-disable-line
+    }
     if (typeof window.newrelic !== 'undefined') {
       // Note: customProperties are not sent.  Presumably High-Security Mode is being used.
       window.newrelic.noticeError(fixErrorLength(error), customAttributes);
