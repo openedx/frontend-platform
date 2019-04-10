@@ -10,6 +10,7 @@ Usage
 -----
 
 To install frontend-analytics into your project::
+
     npm i --save @edx/frontend-analytics
 
 Add the following configuration code to your app::
