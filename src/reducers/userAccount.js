@@ -6,6 +6,7 @@ import {
 
 const initialState = {
   loading: false,
+  loaded: false,
   error: null,
   username: null,
   email: null,
@@ -26,18 +27,21 @@ const userAccount = (state = initialState, action) => {
       return {
         ...state,
         loading: true,
+        loaded: false,
         error: null,
       };
     case FETCH_USER_ACCOUNT_SUCCESS:
       return {
         ...state,
         loading: false,
+        loaded: true,
         ...action.payload.userAccount,
       };
     case FETCH_USER_ACCOUNT_FAILURE:
       return {
         ...state,
         loading: false,
+        loaded: false,
         error: action.payload.error,
       };
     default:
