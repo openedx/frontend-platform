@@ -7,7 +7,6 @@ import getAuthenticatedAPIClient from '../index';
 const authConfig = {
   appBaseUrl: process.env.BASE_URL,
   accessTokenCookieName: process.env.ACCESS_TOKEN_COOKIE_NAME,
-  userInfoCookieName: process.env.USER_INFO_COOKIE_NAME,
   loginUrl: process.env.LOGIN_URL,
   logoutUrl: process.env.LOGOUT_URL,
   refreshAccessTokenEndpoint: process.env.REFRESH_ACCESS_TOKEN_ENDPOINT,
@@ -25,7 +24,6 @@ const jwt = {
 const expiredJwt = Object.assign({ exp: yesterday.getTime() / 1000 }, jwt);
 const validJwt = Object.assign({ exp: tomorrow.getTime() / 1000 }, jwt);
 const encodedValidJwt = `header.${btoa(JSON.stringify(validJwt))}`;
-const userInfo = JSON.stringify({ username: 'test-user' });
 
 const mockCookies = {
   get: jest.fn(),
@@ -153,6 +151,7 @@ describe('logAPIErrorResponse', () => {
 
 describe('AuthenticatedAPIClient auth interface', () => {
   const client = getAuthenticatedAPIClient(authConfig);
+  window.location.assign = jest.fn();
 
   it('has method getAuthenticationState that returns authentication state when valid JWT cookie exists', () => {
     mockCookies.get.mockReturnValueOnce(encodedValidJwt);
@@ -168,30 +167,6 @@ describe('AuthenticatedAPIClient auth interface', () => {
     expect(result.authentication).toBeUndefined();
   });
 
-  it('ensurePublicOrAuthencationAndCookies redirects to login', () => {
-    window.location.assign = jest.fn();
-    const loginUrl = process.env.LOGIN_URL;
-    const expectedRedirectUrl = encodeURIComponent(process.env.BASE_URL);
-    const expectedLocation = `${loginUrl}?next=${expectedRedirectUrl}`;
-    expect(client.ensurePublicOrAuthencationAndCookies()).toBe(false);
-    expect(window.location.assign).toHaveBeenCalledWith(expectedLocation);
-  });
-
-  it('ensurePublicOrAuthencationAndCookies redirects to logout', () => {
-    window.location.assign = jest.fn();
-    const logoutUrl = process.env.LOGOUT_URL;
-    const expectedRedirectUrl = encodeURIComponent(process.env.BASE_URL);
-    const expectedLocation = `${logoutUrl}?redirect_url=${expectedRedirectUrl}`;
-    mockCookies.get.mockReturnValueOnce(null).mockReturnValueOnce(userInfo);
-    expect(client.ensurePublicOrAuthencationAndCookies()).toBe(false);
-    expect(window.location.assign).toHaveBeenCalledWith(expectedLocation);
-  });
-
-  it('ensurePublicOrAuthencationAndCookies returns true', () => {
-    mockCookies.get.mockReturnValueOnce(encodedValidJwt);
-    expect(client.ensurePublicOrAuthencationAndCookies()).toBe(true);
-  });
-
   it('has method isAccessTokenExpired', () => {
     expect(client.isAccessTokenExpired(validJwt)).toBe(false);
     expect(client.isAccessTokenExpired(expiredJwt)).toBe(true);
@@ -203,7 +178,6 @@ describe('AuthenticatedAPIClient auth interface', () => {
     const expectedRedirectUrl = encodeURIComponent(process.env.BASE_URL);
     const expectedLocation = `${loginUrl}?next=${expectedRedirectUrl}`;
     [process.env.BASE_URL, undefined].forEach((redirectUrl) => {
-      window.location.assign = jest.fn();
       client.login(redirectUrl);
       expect(window.location.assign).toHaveBeenCalledWith(expectedLocation);
     });
@@ -214,7 +188,6 @@ describe('AuthenticatedAPIClient auth interface', () => {
     const expectedRedirectUrl = encodeURIComponent(process.env.BASE_URL);
     const expectedLocation = `${logoutUrl}?redirect_url=${expectedRedirectUrl}`;
     [process.env.BASE_URL, undefined].forEach((redirectUrl) => {
-      window.location.assign = jest.fn();
       client.logout(redirectUrl);
       expect(window.location.assign).toHaveBeenCalledWith(expectedLocation);
     });
@@ -258,6 +231,54 @@ describe('AuthenticatedAPIClient auth interface', () => {
     expect(client.isCsrfExempt(csrfExemptUrl)).toBe(true);
     expect(client.isCsrfExempt(nonCsrfExemptUrl)).toBe(false);
   });
+
+  it('ensurePublicOrAuthenticationAndCookies fires callback when public route', () => {
+    const mockCallback = jest.fn();
+    client.refreshAccessToken = jest.fn();
+    client.ensurePublicOrAuthenticationAndCookies('/public/', mockCallback);
+    expect(client.refreshAccessToken).not.toHaveBeenCalled();
+    expect(mockCallback).toHaveBeenCalled();
+  });
+
+  it('ensurePublicOrAuthenticationAndCookies redirects to login when no valid JWT', () => {
+    const mockCallback = jest.fn();
+    const loginUrl = process.env.LOGIN_URL;
+    const expectedRedirectUrl = encodeURIComponent(process.env.BASE_URL);
+    const expectedLocation = `${loginUrl}?next=${expectedRedirectUrl}`;
+    client.isAccessTokenExpired = jest.fn();
+    client.isAccessTokenExpired.mockReturnValueOnce(true);
+    client.refreshAccessToken = jest.fn();
+    client.refreshAccessToken.mockReturnValueOnce(new Promise((resolve, reject) => {
+      reject({ message: 'Failed!' }); // eslint-disable-line prefer-promise-reject-errors
+    }));
+    client.ensurePublicOrAuthenticationAndCookies('', mockCallback);
+    expect(mockCallback).not.toHaveBeenCalled();
+    expect(window.location.assign).toHaveBeenCalledWith(expectedLocation);
+  });
+
+  it('ensurePublicOrAuthenticationAndCookies fires callback after JWT refreshed', () => {
+    const mockCallback = jest.fn();
+    client.isAccessTokenExpired = jest.fn();
+    client.isAccessTokenExpired.mockReturnValueOnce(true);
+    client.refreshAccessToken = jest.fn();
+    client.refreshAccessToken.mockReturnValueOnce(new Promise((resolve) => {
+      resolve();
+    }));
+    client.ensurePublicOrAuthenticationAndCookies('', mockCallback)
+      .then(() => {
+        expect(mockCallback).toHaveBeenCalled();
+      });
+  });
+
+  it('ensurePublicOrAuthenticationAndCookies fires callback when valid JWT', () => {
+    const mockCallback = jest.fn();
+    client.isAccessTokenExpired = jest.fn();
+    client.isAccessTokenExpired.mockReturnValueOnce(false);
+    client.refreshAccessToken = jest.fn();
+    client.ensurePublicOrAuthenticationAndCookies('', mockCallback);
+    expect(client.refreshAccessToken).not.toHaveBeenCalled();
+    expect(mockCallback).toHaveBeenCalled();
+  });
 });
 
 describe('AuthenticatedAPIClient request headers', () => {
@@ -277,7 +298,7 @@ describe('AuthenticatedAPIClient ensureValidJWTCookie request interceptor', () =
     [true, {}, true, false, false, expectRefreshAccessTokenToNotHaveBeenCalled],
     [true, null, false, false, false, expectRefreshAccessTokenToNotHaveBeenCalled],
     [true, {}, false, false, false, expectRefreshAccessTokenToNotHaveBeenCalled],
-    [false, null, true, false, false, expectRefreshAccessTokenToNotHaveBeenCalled],
+    [false, null, true, false, false, expectRefreshAccessTokenToHaveBeenCalled],
     [false, {}, true, false, false, expectRefreshAccessTokenToHaveBeenCalled],
     [false, {}, true, false, true, expectRefreshAccessTokenToHaveBeenCalled],
     [false, {}, true, true, false, expectRefreshAccessTokenToNotHaveBeenCalled],
