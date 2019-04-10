@@ -9,6 +9,7 @@ describe('userAccount reducer', () => {
   it('should return the initial state', () => {
     expect(reducer(undefined, {})).toEqual({
       loading: false,
+      loaded: false,
       error: null,
       username: null,
       email: null,
@@ -29,6 +30,7 @@ describe('userAccount reducer', () => {
       type: FETCH_USER_ACCOUNT_BEGIN,
     })).toEqual({
       loading: true,
+      loaded: false,
       error: null,
     });
   });
@@ -43,6 +45,7 @@ describe('userAccount reducer', () => {
       payload: { userAccount },
     })).toEqual({
       loading: false,
+      loaded: true,
       ...userAccount,
     });
   });
@@ -54,6 +57,7 @@ describe('userAccount reducer', () => {
       payload: { error },
     })).toEqual({
       loading: false,
+      loaded: false,
       error,
     });
   });
