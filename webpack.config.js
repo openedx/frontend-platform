@@ -5,9 +5,11 @@ const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
   devtool: 'source-map',
-  target: 'node',
   optimization: {
     nodeEnv: false,
+  },
+  node: {
+    process: false,
   },
   entry: './src/index.js',
   output: {
