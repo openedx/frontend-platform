@@ -1,8 +1,6 @@
 import Cookies from 'universal-cookie';
 import jwtDecode from 'jwt-decode';
 
-import { logError } from '../logging';
-
 // Apply the auth-related properties and functions to the Axios API client.
 export default function applyAuthInterface(httpClient, authConfig) {
   /* eslint-disable no-param-reassign */
@@ -44,8 +42,12 @@ export default function applyAuthInterface(httpClient, authConfig) {
   };
 
 
-  httpClient.ensurePublicOrAuthencationAndCookies = route =>
-    httpClient.isRoutePublic(route) || httpClient.ensureAuthencationAndCookies(route);
+  httpClient.ensurePublicOrAuthenticationAndCookies = (route, callback) => {
+    if (httpClient.isRoutePublic(route)) {
+      return callback();
+    }
+    return httpClient.ensureAuthenticationAndCookies(route, callback);
+  };
 
   // JWT expiration is serialized as seconds since the epoch,
   // Date.now returns the number of milliseconds since the epoch.
@@ -82,23 +84,22 @@ export default function applyAuthInterface(httpClient, authConfig) {
   httpClient.isCsrfExempt = url =>
     httpClient.csrfExemptUrls.includes(url);
 
-  httpClient.ensureAuthencationAndCookies = (route = '') => {
+  httpClient.ensureAuthenticationAndCookies = (route, callback) => {
     // Validate auth-related cookies are in a consistent state.
     const accessToken = httpClient.getDecodedAccessToken();
     const tokenExpired = httpClient.isAccessTokenExpired(accessToken);
     if (tokenExpired) {
-      const cookies = new Cookies();
-      const hasUserInfo = !!cookies.get(httpClient.userInfoCookieName);
-      if (hasUserInfo) {
-        // Cookies are out of sync. Log the user out to reset cookies and resync.
-        logError(new Error(`Invalid auth cookies: isAccessTokenExpired=${tokenExpired}, hasUserInfo=${hasUserInfo}`));
-        httpClient.logout(httpClient.appBaseUrl + route);
-      } else {
-        httpClient.login(httpClient.appBaseUrl + route);
-      }
-      return false;
+      // Attempt to refresh the JWT cookies.
+      return httpClient.refreshAccessToken()
+        // Successfully refreshed the JWT cookies, fire the callback function.
+        .then(callback)
+        .catch(() => {
+          // The user is not authenticated, send them to the login page.
+          httpClient.login(httpClient.appBaseUrl + route);
+        });
     }
-    return true;
+    // We already have valid JWT cookies, fire the callback function.
+    return callback();
   };
 
   httpClient.isRoutePublic = route => /^\/public.*$/.test(route);
