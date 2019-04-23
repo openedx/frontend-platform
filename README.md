@@ -1,3 +1,3 @@
 # frontend-utils
 
-It's a secret to everybody.
+![It's a secret to everybody.](secret.png)
