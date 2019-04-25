@@ -1,7 +1,6 @@
 import PubSub from 'pubsub-js';
 import Url from 'url-parse';
-
-import { logAPIErrorResponse, logInfo } from '../logging';
+import { logAPIErrorResponse, logInfo } from '@edx/frontend-logging';
 
 const ACCESS_TOKEN_REFRESH = 'ACCESS_TOKEN_REFRESH';
 const CSRF_TOKEN_REFRESH = 'CSRF_TOKEN_REFRESH';
@@ -80,7 +79,7 @@ function applyAxiosInterceptors(authenticatedAPIClient) {
           PubSub.publishSync(ACCESS_TOKEN_REFRESH);
         })
         .catch((error) => {
-          logAPIErrorResponse(error);
+          logAPIErrorResponse(error, { errorFunctionName: 'ensureValidJWTCookie' });
           authenticatedAPIClient.logout();
         });
     }
@@ -98,7 +97,7 @@ function applyAxiosInterceptors(authenticatedAPIClient) {
   function handleUnauthorizedAPIResponse(error) {
     const errorStatus = error && error.response && error.response.status;
     if (errorStatus === 401 || errorStatus === 403) {
-      logAPIErrorResponse(error);
+      logAPIErrorResponse(error, { errorFunctionName: 'handleUnauthorizedAPIResponse' });
       authenticatedAPIClient.logout(authenticatedAPIClient.appBaseUrl);
     }
     return Promise.reject(error);
