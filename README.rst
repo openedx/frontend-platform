@@ -12,18 +12,30 @@ To install frontend-logging into your project::
 
     npm i --save @edx/frontend-logging
 
-To use the logging service, use::
+To configure the logging service::
 
-    import LoggingService from '@edx/frontend-logging';
+    import { configureLoggingService, NewRelicLoggingService } from '@edx/frontend-logging';
 
-    LoggingService.logAPIErrorResponse(e);
+    // configure with any concrete implementation that implements the expected interface
+    configureLoggingService(NewRelicLoggingService);
 
-New Relic Browser and Insights
-------------------------------
+To use the configured logging service::
+
+    import { logAPIErrorResponse, logInfo, logError } from '@edx/frontend-logging';
+};
+
+    logInfo(message);
+    logAPIErrorResponse(e);  // handles errors or axios error responses
+    logError(e);
+
+NewRelicLoggingService
+----------------------
+
+The NewRelicLoggingService is a concrete implementation of the logging service interface that sends messages to NewRelic that can be seen in NewRelic Browser and NewRelic Insights. When in development mode, all messages will instead be sent to the console.
 
 When you use ``logError`` or ``logAPIErrorResponse``, your errors will appear under "JS errors" for your Browser application.
 
-Additionally, when you use `logAPIErrorResponse`, you get some additional custom metrics available you can use in a New Relic Insights query like the following::
+Additionally, when you use `logAPIErrorResponse`, you get some additional custom metrics for Axios error responses. To see those details, you can use a New Relic Insights query like the following::
 
     SELECT * from JavaScriptError WHERE errorStatus is not null SINCE 10 days ago
 
@@ -31,7 +43,7 @@ When using ``logInfo``, these only appear in New Relic Insights when querying fo
 
     SELECT * from PageAction WHERE actionName = 'INFO' SINCE 1 hour ago
 
-You can also add your own custom metrics, or see the code to find other standard custom attributes.
+You can also add your own custom metrics as an additional argument, or see the code to find other standard custom attributes.
 
 
 .. |Build Status| image:: https://api.travis-ci.org/edx/frontend-logging.svg?branch=master

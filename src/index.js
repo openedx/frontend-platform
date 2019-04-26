@@ -1,3 +1,15 @@
-import LoggingService from './LoggingService';
+import NewRelicLoggingService from './NewRelicLoggingService';
+import {
+  configureLoggingService,
+  logAPIErrorResponse,
+  logInfo,
+  logError,
+} from './logging';
 
-export default LoggingService;
+export {
+  configureLoggingService,
+  logAPIErrorResponse,
+  logInfo,
+  logError,
+  NewRelicLoggingService,
+};
