@@ -1,5 +1,5 @@
 import MAX_ERROR_LENGTH from './constants';
-import LoggingService from './LoggingService';
+import NewRelicLoggingService from './NewRelicLoggingService';
 
 global.newrelic = {
   addPageAction: jest.fn(),
@@ -13,7 +13,7 @@ describe('logInfo', () => {
 
   it('calls New Relic client to log message if the client is available', () => {
     const message = 'Test log';
-    LoggingService.logInfo(message);
+    NewRelicLoggingService.logInfo(message);
     expect(global.newrelic.addPageAction).toHaveBeenCalledWith('INFO', { message });
   });
 });
@@ -25,20 +25,20 @@ describe('logError', () => {
 
   it('calls New Relic client to log error if the client is available', () => {
     const error = new Error('Failed!');
-    LoggingService.logError(error);
+    NewRelicLoggingService.logError(error);
     expect(global.newrelic.noticeError).toHaveBeenCalledWith(error, undefined);
   });
 
   it('calls New Relic client to log error if the client is available', () => {
     const error = new Error('Failed!');
-    LoggingService.logError(error);
+    NewRelicLoggingService.logError(error);
     expect(global.newrelic.noticeError).toHaveBeenCalledWith(error, undefined);
   });
 
   it('calls New Relic client with truncated error string', () => {
     const error = new Array(MAX_ERROR_LENGTH + 500 + 1).join('0');
     const expectedError = new Array(MAX_ERROR_LENGTH + 1).join('0');
-    LoggingService.logError(error);
+    NewRelicLoggingService.logError(error);
     expect(global.newrelic.noticeError).toHaveBeenCalledWith(expectedError, undefined);
   });
 
@@ -49,7 +49,7 @@ describe('logError', () => {
     const expectedError = {
       message: new Array(MAX_ERROR_LENGTH + 1).join('0'),
     };
-    LoggingService.logError(error);
+    NewRelicLoggingService.logError(error);
     expect(global.newrelic.noticeError).toHaveBeenCalledWith(expectedError, undefined);
   });
 });
@@ -79,7 +79,7 @@ describe('logAPIErrorResponse', () => {
       errorUrl: error.request.responseURL,
       errorData: error.request.responseText,
     };
-    LoggingService.logAPIErrorResponse(error);
+    NewRelicLoggingService.logAPIErrorResponse(error);
     expect(global.newrelic.noticeError).toHaveBeenCalledWith(expectedError, expectedAttributes);
   });
 
@@ -104,7 +104,7 @@ describe('logAPIErrorResponse', () => {
       errorData: JSON.stringify(error.response.data),
       test: 'custom',
     };
-    LoggingService.logAPIErrorResponse(error, { test: 'custom' });
+    NewRelicLoggingService.logAPIErrorResponse(error, { test: 'custom' });
     expect(global.newrelic.noticeError).toHaveBeenCalledWith(expectedError, expectedAttributes);
   });
 
@@ -123,7 +123,7 @@ describe('logAPIErrorResponse', () => {
       errorUrl: '',
       errorData: '',
     };
-    LoggingService.logAPIErrorResponse(error);
+    NewRelicLoggingService.logAPIErrorResponse(error);
     expect(global.newrelic.noticeError).toHaveBeenCalledWith(expectedError, expectedAttributes);
   });
 });

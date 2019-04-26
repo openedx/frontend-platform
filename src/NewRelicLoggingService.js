@@ -16,7 +16,7 @@ function fixErrorLength(error) {
   return error;
 }
 
-class LoggingService {
+class NewRelicLoggingService {
   static logInfo(message) {
     if (process.env.NODE_ENV === 'development') {
       console.log(message); // eslint-disable-line
@@ -74,4 +74,4 @@ class LoggingService {
   }
 }
 
-export default LoggingService;
+export default NewRelicLoggingService;
