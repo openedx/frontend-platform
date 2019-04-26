@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { configureLoggingService } from '@edx/frontend-logging';
 
 import { applyAxiosDefaults, applyAxiosInterceptors } from './axiosConfig';
 import applyAuthInterface from './authInterface';
@@ -11,6 +12,7 @@ function getAuthenticatedAPIClient(authConfig) {
     applyAuthInterface(authenticatedAPIClient, authConfig);
     applyAxiosDefaults(authenticatedAPIClient);
     applyAxiosInterceptors(authenticatedAPIClient);
+    configureLoggingService(authConfig.loggingService);
   }
 
   return authenticatedAPIClient;

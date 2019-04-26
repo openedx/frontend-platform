@@ -1,4 +1,5 @@
 import Cookies from 'universal-cookie';
+import { NewRelicLoggingService } from '@edx/frontend-logging';
 
 import applyMockAuthInterface from './mockAuthInterface';
 import axiosConfig from '../axiosConfig';
@@ -10,6 +11,7 @@ const authConfig = {
   loginUrl: process.env.LOGIN_URL,
   logoutUrl: process.env.LOGOUT_URL,
   refreshAccessTokenEndpoint: process.env.REFRESH_ACCESS_TOKEN_ENDPOINT,
+  loggingService: NewRelicLoggingService, // any concrete logging service will do
 };
 
 const yesterday = new Date();
@@ -135,14 +137,6 @@ function testResponseInterceptorRejection(error, expects) {
 
 describe('getAuthenticatedAPIClient', () => {
   it('returns a singleton', () => {
-    const client1 = getAuthenticatedAPIClient(authConfig);
-    const client2 = getAuthenticatedAPIClient(authConfig);
-    expect(client2).toBe(client1);
-  });
-});
-
-describe('logAPIErrorResponse', () => {
-  it('logs API request that caused error', () => {
     const client1 = getAuthenticatedAPIClient(authConfig);
     const client2 = getAuthenticatedAPIClient(authConfig);
     expect(client2).toBe(client1);
