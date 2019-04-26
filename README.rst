@@ -22,7 +22,6 @@ To configure the logging service::
 To use the configured logging service::
 
     import { logAPIErrorResponse, logInfo, logError } from '@edx/frontend-logging';
-};
 
     logInfo(message);
     logAPIErrorResponse(e);  // handles errors or axios error responses
