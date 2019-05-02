@@ -53,12 +53,13 @@ export default function applyAuthInterface(httpClient, authConfig) {
   // Date.now returns the number of milliseconds since the epoch.
   httpClient.isAccessTokenExpired = token => !token || token.exp < Date.now() / 1000;
 
+
   httpClient.login = (redirectUrl = authConfig.appBaseUrl) => {
-    window.location.assign(`${httpClient.loginUrl}?next=${encodeURIComponent(redirectUrl)}`);
+    global.location.assign(`${httpClient.loginUrl}?next=${encodeURIComponent(redirectUrl)}`);
   };
 
   httpClient.logout = (redirectUrl = authConfig.appBaseUrl) => {
-    window.location.assign(`${httpClient.logoutUrl}?redirect_url=${encodeURIComponent(redirectUrl)}`);
+    global.location.assign(`${httpClient.logoutUrl}?redirect_url=${encodeURIComponent(redirectUrl)}`);
   };
 
   httpClient.refreshAccessToken = () =>
