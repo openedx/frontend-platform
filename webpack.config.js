@@ -16,6 +16,7 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
     library: 'frontend-logging',
     libraryTarget: 'umd',
+    globalObject: 'typeof self !== \'undefined\' ? self : this',
   },
   resolve: {
     extensions: ['.js', '.jsx'],
