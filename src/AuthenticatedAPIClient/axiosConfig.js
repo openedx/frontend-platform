@@ -78,8 +78,9 @@ function applyAxiosInterceptors(authenticatedAPIClient) {
           queueRequests = false;
           PubSub.publishSync(ACCESS_TOKEN_REFRESH);
         })
-        .catch((error) => {
-          logAPIErrorResponse(error, { errorFunctionName: 'ensureValidJWTCookie' });
+        .catch(() => {
+          // TODO: We should give the client app an opportunity to
+          // take control here before logout/redirect to sign in.
           authenticatedAPIClient.logout();
         });
     }
