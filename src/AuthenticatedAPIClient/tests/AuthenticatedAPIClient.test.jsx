@@ -1,3 +1,4 @@
+import PubSub from 'pubsub-js';
 import Cookies from 'universal-cookie';
 import { NewRelicLoggingService } from '@edx/frontend-logging';
 
@@ -34,14 +35,6 @@ jest.genMockFromModule('universal-cookie');
 Cookies.mockImplementation(() => mockCookies);
 jest.mock('universal-cookie');
 
-function expectLogoutToHaveBeenCalled(client) {
-  expect(client.logout).toHaveBeenCalled();
-}
-
-function expectLogoutToNotHaveBeenCalled(client) {
-  expect(client.logout).not.toHaveBeenCalled();
-}
-
 function expectRefreshAccessTokenToHaveBeenCalled(client) {
   expect(client.refreshAccessToken).toHaveBeenCalled();
 }
@@ -70,6 +63,7 @@ function testJwtCookieInterceptorFulfillment(
   rejectRefreshAccessToken,
   expects,
 ) {
+  // eslint-disable-next-line consistent-return
   it(`${expects.name} when isAuthUrl=${isAuthUrl} mockAccessToken=${mockAccessToken} isAccessTokenExpired=${isAccessTokenExpired}`, () => {
     const client = getAuthenticatedAPIClient(authConfig);
     applyMockAuthInterface(client, rejectRefreshAccessToken);
@@ -82,9 +76,12 @@ function testJwtCookieInterceptorFulfillment(
     expects(client);
 
     if (rejectRefreshAccessToken) {
-      fulfilledResult.catch(() => {
+      return fulfilledResult.catch(() => {
         expect(client.logout).toHaveBeenCalled();
       });
+    } else { // eslint-disable-line no-else-return
+      expect(client.logout).not.toHaveBeenCalled();
+      expect(fulfilledResult).toBeInstanceOf(Object); // from above: fullfilled({})
     }
   });
 }
@@ -121,17 +118,6 @@ function testCsrfTokenInterceptorFulfillment(
         expectCsrfHeaderSet(fulfilledResult);
       }
     }
-  });
-}
-
-function testResponseInterceptorRejection(error, expects) {
-  it(`${expects.name} when error=${error}`, () => {
-    const client = getAuthenticatedAPIClient(authConfig);
-    applyMockAuthInterface(client);
-    client.interceptors.response.handlers[0].rejected(error)
-      .catch(() => {
-        expects(client);
-      });
   });
 }
 
@@ -283,6 +269,10 @@ describe('AuthenticatedAPIClient request headers', () => {
 });
 
 describe('AuthenticatedAPIClient ensureValidJWTCookie request interceptor', () => {
+  beforeEach(() => {
+    PubSub.clearAllSubscriptions();
+  });
+
   [
     /*
     isAuthUrl, mockAccessToken, isAccessTokenExpired, queueRequests,
@@ -310,6 +300,40 @@ describe('AuthenticatedAPIClient ensureValidJWTCookie request interceptor', () =
         expect(rejection).toBe(error);
       });
   });
+
+  it('redirects to logout if a token refresh fails', () => {
+    const rejectRefreshAccessToken = true;
+    const client = getAuthenticatedAPIClient(authConfig);
+    applyMockAuthInterface(client, rejectRefreshAccessToken);
+    client.isAuthUrl.mockReturnValue(false);
+    client.getDecodedAccessToken.mockReturnValue({});
+    client.isAccessTokenExpired.mockReturnValue(true);
+    // eslint-disable-next-line no-underscore-dangle
+    axiosConfig.__Rewire__('queueRequests', false);
+    const fulfilledResult = client.interceptors.request.handlers[0].fulfilled({});
+    return fulfilledResult.catch(() => {
+      expect(client.logout).toHaveBeenCalled();
+    });
+  });
+
+  it('executes the handleRefreshAccessTokenFailure instead of logout if a token refresh fails', () => {
+    const rejectRefreshAccessToken = true;
+    const client = getAuthenticatedAPIClient(authConfig);
+    client.handleRefreshAccessTokenFailure = jest.fn();
+    applyMockAuthInterface(client, rejectRefreshAccessToken);
+    client.isAuthUrl.mockReturnValue(false);
+    client.getDecodedAccessToken.mockReturnValue({});
+    client.isAccessTokenExpired.mockReturnValue(true);
+    // eslint-disable-next-line no-underscore-dangle
+    axiosConfig.__Rewire__('queueRequests', false);
+    const fulfilledResult = client.interceptors.request.handlers[0].fulfilled({});
+
+    return fulfilledResult.catch(() => {
+      expect(client.logout).not.toHaveBeenCalled();
+      expect(client.handleRefreshAccessTokenFailure).toHaveBeenCalled();
+      delete client.handleRefreshAccessTokenFailure;
+    });
+  });
 });
 
 describe('AuthenticatedAPIClient ensureCsrfToken request interceptor', () => {
@@ -336,17 +360,36 @@ describe('AuthenticatedAPIClient ensureCsrfToken request interceptor', () => {
 });
 
 describe('AuthenticatedAPIClient response interceptor', () => {
-  const data = 'Response data';
-  const request = { url: 'https://example.com' };
-  [
-    [{ response: { status: 401, data }, request, message: 'Failed' }, expectLogoutToHaveBeenCalled],
-    [{ response: {} }, expectLogoutToNotHaveBeenCalled],
-    [{ request }, expectLogoutToNotHaveBeenCalled],
-    [{}, expectLogoutToNotHaveBeenCalled],
-  ].forEach((mockValues) => {
-    testResponseInterceptorRejection(...mockValues);
+  it('returns error if it fails with 401', () => {
+    const client = getAuthenticatedAPIClient(authConfig);
+    const errorResponse = { response: { status: 401, data: 'it failed' } };
+    client.interceptors.response.handlers[0].rejected(errorResponse)
+      .catch((promiseError) => {
+        expect(promiseError).toBe(errorResponse);
+      });
   });
-
+  it('returns error if token refresh fails with 401', () => {
+    const client = getAuthenticatedAPIClient(authConfig);
+    const errorResponse = {
+      response: {
+        status: 401,
+        data: 'it failed',
+        config: { url: authConfig.refreshAccessTokenEndpoint },
+      },
+    };
+    client.interceptors.response.handlers[0].rejected(errorResponse)
+      .catch((promiseError) => {
+        expect(promiseError).toBe(errorResponse);
+      });
+  });
+  it('returns error if it fails with 403', () => {
+    const client = getAuthenticatedAPIClient(authConfig);
+    const errorResponse = { response: { status: 403, data: 'it failed' } };
+    client.interceptors.response.handlers[0].rejected(errorResponse)
+      .catch((promiseError) => {
+        expect(promiseError).toBe(errorResponse);
+      });
+  });
   it('returns response if it is fulfilled', () => {
     const client = getAuthenticatedAPIClient(authConfig);
     const response = { data: 'It worked!' };

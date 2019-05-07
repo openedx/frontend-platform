@@ -28,6 +28,10 @@ To install frontend-auth into your project:
      refreshAccessTokenEndpoint: process.env.REFRESH_ACCESS_TOKEN_ENDPOINT,
      accessTokenCookieName: process.env.ACCESS_TOKEN_COOKIE_NAME,
      loggingService: NewRelicLoggingService, // could be any concrete logging service
+     // handleRefreshAccessTokenFailure is an optional callback 
+     // to handle failures to refresh an access token (the user is likely logged out).
+     // If no callback is supplied frontend-auth will redirect the user to login.
+     // handleRefreshAccessTokenFailure: error => {},
    });
 
 ``frontend-auth`` provides a ``PrivateRoute`` component which can be used along with ``react-router`` to require authentication for specific routes in your app. Here is an example of defining a route that requires authentication:

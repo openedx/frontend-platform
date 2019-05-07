@@ -1,6 +1,6 @@
 import PubSub from 'pubsub-js';
 import Url from 'url-parse';
-import { logAPIErrorResponse, logInfo } from '@edx/frontend-logging';
+import { logInfo } from '@edx/frontend-logging';
 
 const ACCESS_TOKEN_REFRESH = 'ACCESS_TOKEN_REFRESH';
 const CSRF_TOKEN_REFRESH = 'CSRF_TOKEN_REFRESH';
@@ -76,31 +76,54 @@ function applyAxiosInterceptors(authenticatedAPIClient) {
       authenticatedAPIClient.refreshAccessToken()
         .then(() => {
           queueRequests = false;
-          PubSub.publishSync(ACCESS_TOKEN_REFRESH);
+          PubSub.publishSync(ACCESS_TOKEN_REFRESH, { success: true });
         })
-        .catch(() => {
-          // TODO: We should give the client app an opportunity to
-          // take control here before logout/redirect to sign in.
-          authenticatedAPIClient.logout();
+        .catch((error) => {
+          // If no callback is supplied frontend-auth will (ultimately) redirect the user to login.
+          // The user is redirected to logout to ensure authentication clean-up, which in turn
+          // redirects to login.
+          if (authenticatedAPIClient.handleRefreshAccessTokenFailure) {
+            authenticatedAPIClient.handleRefreshAccessTokenFailure(error);
+          } else {
+            authenticatedAPIClient.logout();
+          }
+          PubSub.publishSync(ACCESS_TOKEN_REFRESH, { success: false });
         });
     }
 
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       logInfo(`Queuing API request ${originalRequest.url} while access token is refreshed`);
-      PubSub.subscribeOnce(ACCESS_TOKEN_REFRESH, () => {
-        logInfo(`Resolving queued API request ${originalRequest.url}`);
-        resolve(originalRequest);
+      PubSub.subscribeOnce(ACCESS_TOKEN_REFRESH, (msg, { success }) => {
+        if (success) {
+          logInfo(`Resolving queued API request ${originalRequest.url}`);
+          resolve(originalRequest);
+        } else {
+          reject(originalRequest);
+        }
       });
     });
   }
 
-  // Redirect to the logout page if an unauthorized API response was received.
+  // Log errors and info for unauthorized API responses
   function handleUnauthorizedAPIResponse(error) {
-    const errorStatus = error && error.response && error.response.status;
-    if (errorStatus === 401 || errorStatus === 403) {
-      logAPIErrorResponse(error, { errorFunctionName: 'handleUnauthorizedAPIResponse' });
-      authenticatedAPIClient.logout(authenticatedAPIClient.appBaseUrl);
+    const response = error && error.response;
+    const errorStatus = response && response.status;
+    const requestUrl = response && response.config && response.config.url;
+    const requestIsTokenRefresh = requestUrl === authenticatedAPIClient.refreshAccessTokenEndpoint;
+
+    switch (errorStatus) { // eslint-disable-line default-case
+      case 401:
+        if (requestIsTokenRefresh) {
+          logInfo(`Unauthorized token refresh response from ${requestUrl}. This is expected if the user is not yet logged in.`);
+        } else {
+          logInfo(`Unauthorized API response from ${requestUrl}`);
+        }
+        break;
+      case 403:
+        logInfo(`Forbidden API response from ${requestUrl}`);
+        break;
     }
+
     return Promise.reject(error);
   }
 
