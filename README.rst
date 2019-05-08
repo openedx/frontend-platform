@@ -1,0 +1,1 @@
+# frontend-i18n
