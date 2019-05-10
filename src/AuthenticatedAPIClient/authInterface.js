@@ -37,6 +37,7 @@ export default function applyAuthInterface(httpClient, authConfig) {
       state.authentication = {
         userId: token.user_id,
         username: token.preferred_username,
+        roles: token.roles,
       };
     }
 
