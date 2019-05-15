@@ -57,9 +57,10 @@ describe('logError', () => {
 describe('logAPIErrorResponse', () => {
   beforeEach(() => {
     global.newrelic.noticeError.mockReset();
+    global.newrelic.addPageAction.mockReset();
   });
 
-  it('calls New Relic client to log error when error has request object', () => {
+  it('calls New Relic client to log info when error has request object', () => {
     const error = {
       request: {
         status: 400,
@@ -71,8 +72,8 @@ describe('logAPIErrorResponse', () => {
       },
     };
     const message = `${error.request.status} ${error.config.method} ${error.request.responseURL} ${error.request.responseText}`;
-    const expectedError = new Error(`API request failed: ${message}`);
     const expectedAttributes = {
+      message: `API request failed: ${message}`,
       errorType: 'api-request-error',
       errorStatus: error.request.status,
       errorMethod: error.config.method,
@@ -80,7 +81,7 @@ describe('logAPIErrorResponse', () => {
       errorData: error.request.responseText,
     };
     NewRelicLoggingService.logAPIErrorResponse(error);
-    expect(global.newrelic.noticeError).toHaveBeenCalledWith(expectedError, expectedAttributes);
+    expect(global.newrelic.addPageAction).toHaveBeenCalledWith('INFO', expectedAttributes);
   });
 
   it('calls New Relic client to log error when error has response object', () => {
