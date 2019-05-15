@@ -17,12 +17,12 @@ function fixErrorLength(error) {
 }
 
 class NewRelicLoggingService {
-  static logInfo(message) {
+  static logInfo(message, customAttributes = {}) {
     if (process.env.NODE_ENV === 'development') {
       console.log(message); // eslint-disable-line
     }
     if (window && typeof window.newrelic !== 'undefined') {
-      window.newrelic.addPageAction('INFO', { message });
+      window.newrelic.addPageAction('INFO', Object.assign({}, { message }, customAttributes));
     }
   }
 
@@ -54,6 +54,8 @@ class NewRelicLoggingService {
       };
       updatedCustomAttributes = Object.assign({}, responseAttributes, customAttributes);
       processedError = new Error(`API request failed: ${error.response.status} ${responseAttributes.errorUrl} ${data}`);
+
+      this.logError(processedError, updatedCustomAttributes);
     } else if (error.request) {
       const { config, request } = error;
       const errorMessage = request.responseText || error.message;
@@ -67,10 +69,12 @@ class NewRelicLoggingService {
         errorData: errorMessage,
       };
       updatedCustomAttributes = Object.assign({}, requestAttributes, customAttributes);
-      processedError = new Error(`API request failed: ${request.status} ${requestMethod} ${requestUrl} ${errorMessage}`);
-    }
 
-    this.logError(processedError, updatedCustomAttributes);
+      this.logInfo(
+        `API request failed: ${request.status} ${requestMethod} ${requestUrl} ${errorMessage}`,
+        updatedCustomAttributes,
+      );
+    }
   }
 }
 
