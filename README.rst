@@ -55,7 +55,7 @@ Configuration Example::
 Exports
 -------
 
-Note: Better documentation forthcoming.  In the meantime, if you have any questions, please contact @arch-squad
+Note: Better documentation forthcoming.  In the meantime, if you have any questions, please contact @edx/arch-team
 
 Core functionality:
 
