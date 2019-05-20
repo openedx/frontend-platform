@@ -21,36 +21,36 @@ takes two arguments, a configuration object and a messages object.
 
 Example of messages object::
 
-    import arMessages from './messages/ar.json';
-    import es419Messages from './messages/es_419.json';
+  import arMessages from './messages/ar.json';
+  import es419Messages from './messages/es_419.json';
 
-    const messages = {
-      ar: arMessages,
-      // 'en' should not be included here, as it is the default/fallback language.
-      'es-419': es419Messages,
-    };
+  const messages = {
+    ar: arMessages,
+    // 'en' should not be included here, as it is the default/fallback language.
+    'es-419': es419Messages,
+  };
 
 Example of es_419.json messages JSON file::
 
-    {
-      "siteheader.links.courses": "Cursos",
-      "siteheader.links.programs": "Programas y Titulos",
-    }
+  {
+    "siteheader.links.courses": "Cursos",
+    "siteheader.links.programs": "Programas y Titulos",
+  }
 
 Configuration Example::
 
-    import { configure as configureI18n } from '@edx/frontend-i18n';
+  import { configure as configureI18n } from '@edx/frontend-i18n';
 
-    // frontend-i18n relies on two pieces of configuration.
-    const configuration = {
-      ENVIRONMENT: 'production',
-      LANGUAGE_PREFERENCE_COOKIE_NAME: 'openedx-language-preference'
-    }
-    const messages = {
-      ar: require('./messages/ar.json')
-      // ... other languages ...
-    }
-    configureI18n(configuration, messages);
+  // frontend-i18n relies on two pieces of configuration.
+  const configuration = {
+    ENVIRONMENT: 'production',
+    LANGUAGE_PREFERENCE_COOKIE_NAME: 'openedx-language-preference'
+  }
+  const messages = {
+    ar: require('./messages/ar.json')
+    // ... other languages ...
+  }
+  configureI18n(configuration, messages);
 
 Exports
 -------
@@ -59,44 +59,43 @@ Note: Better documentation forthcoming.  In the meantime, if you have any questi
 
 Core functionality:
 
-  - configure
-  - getPrimaryLanguageSubtag
-  - getLocale
-  - getMessages
-  - isRtl
-  - handleRtl
-  - localeSortFunction
+- configure
+- getPrimaryLanguageSubtag
+- getLocale
+- getMessages
+- isRtl
+- handleRtl
+- localeSortFunction
 
 From 'react-intl':
 
-  - intlShape
-  - FormattedMessage
-  - defineMessages
-  - IntlProvider
-  - injectIntl
+- intlShape
+- FormattedMessage
+- defineMessages
+- IntlProvider
+- injectIntl
 
 Actions:
 
-  - setLocale
+- setLocale
 
 Reducers:
 
-  - reducer
+- reducer
 
 Selectors:
 
-  - localeSelector
+- localeSelector
 
 Localized country lists:
 
-  - getCountryList
-  - getCountryMessages
+- getCountryList
+- getCountryMessages
 
 Localized language lists:
 
-  - getLanguageList
-  - getLanguageMessages
-
+- getLanguageList
+- getLanguageMessages
 
 .. |Build Status| image:: https://api.travis-ci.org/edx/frontend-i18n.svg?branch=master
    :target: https://travis-ci.org/edx/frontend-i18n
