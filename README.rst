@@ -1,5 +1,5 @@
 frontend-i18n
-================
+=============
 
 |Build Status| |Coveralls| |npm_version| |npm_downloads| |license| |semantic-release|
 
