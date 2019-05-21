@@ -1,7 +1,3 @@
-import LANGUAGES, { langs as languageLangs } from '@cospired/i18n-iso-languages';
-
-import { getPrimaryLanguageSubtag, localeSortFunction } from './lib';
-
 /**
  * LANGUAGE LISTS
  *
@@ -12,6 +8,10 @@ import { getPrimaryLanguageSubtag, localeSortFunction } from './lib';
  * for reference. That's because they're not implemented in this library.  If you read this and it's
  * been a while, go check and see if that's changed!
  */
+
+import LANGUAGES, { langs as languageLangs } from '@cospired/i18n-iso-languages';
+
+import { getPrimaryLanguageSubtag, localeSortFunction } from './lib';
 
 // LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/ar.json'));
 LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/en.json'));

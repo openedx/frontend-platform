@@ -2,7 +2,10 @@ import React from 'react';
 import { injectIntl, intlShape } from 'react-intl';
 import LoggingService from '@edx/frontend-logging';
 
-
+/**
+ * This function wraps react-intl's injectIntl function in order to add error logging to the intl
+ * property's formatMessage function.
+ */
 const injectIntlWithShim = (WrappedComponent) => {
   class ShimmedIntlComponent extends React.Component {
     static propTypes = {
@@ -21,7 +24,7 @@ const injectIntlWithShim = (WrappedComponent) => {
                 return '!!! Missing message supplied to intl.formatMessage !!!';
               }
               LoggingService.logError(error);
-              return ''; // Fail silent in production
+              return ''; // Fail silently in production
             }
             return this.props.intl.formatMessage(definition, ...args);
           },

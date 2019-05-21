@@ -1,7 +1,3 @@
-import COUNTRIES, { langs as countryLangs } from 'i18n-iso-countries';
-
-import { getPrimaryLanguageSubtag, localeSortFunction } from './lib';
-
 /**
  *  COUNTRY LISTS
  *
@@ -9,6 +5,11 @@ import { getPrimaryLanguageSubtag, localeSortFunction } from './lib';
  *
  * TODO: When we start dynamically loading translations only for the current locale, change this.
  * */
+
+import COUNTRIES, { langs as countryLangs } from 'i18n-iso-countries';
+
+import { getPrimaryLanguageSubtag, localeSortFunction } from './lib';
+
 COUNTRIES.registerLocale(require('i18n-iso-countries/langs/ar.json'));
 COUNTRIES.registerLocale(require('i18n-iso-countries/langs/en.json'));
 COUNTRIES.registerLocale(require('i18n-iso-countries/langs/es.json'));

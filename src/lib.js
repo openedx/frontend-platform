@@ -133,7 +133,8 @@ export const configure = (newConfig, msgs) => {
 
 /**
  * Some of our dependencies function on primary language subtags, rather than full locales.
- * This function strips a locale down to that first subtag.  Depending on the code
+ * This function strips a locale down to that first subtag.  Depending on the code, this
+ * may be 2 or more characters.
  */
 export const getPrimaryLanguageSubtag = code => code.split('-')[0];
 
@@ -158,8 +159,9 @@ export const findSupportedLocale = (locale) => {
 };
 
 /**
- * Get the locale by setting priority. Gracefully fall back to a more general primary language
- * subtag or to English (en) if we don't support that language.
+ * Get the locale from the cookie or, failing that, the browser setting.
+ * Gracefully fall back to a more general primary language subtag or to English (en)
+ * if we don't support that language.
  *
  * @param locale If a locale is provided, returns the closest supported locale. Optional.
  * @throws An error if i18n has not yet been configured.
