@@ -203,14 +203,17 @@ export const isRtl = locale => rtlLocales.includes(locale);
  */
 export const handleRtl = () => {
   if (config.ENVIRONMENT === 'production') {
+    // Get external style sheets only.  The app may add <style> based stylesheets.
+    const appStylesheets = [].slice.call(global.document.styleSheets)
+      .filter(element => element.href !== null);
     if (isRtl(getLocale())) {
       global.document.getElementsByTagName('html')[0].setAttribute('dir', 'rtl');
-      global.document.styleSheets[0].disabled = true;
-      global.document.styleSheets[1].disabled = false;
+      appStylesheets[0].disabled = true;
+      appStylesheets[1].disabled = false;
     } else {
       global.document.getElementsByTagName('html')[0].removeAttribute('dir');
-      global.document.styleSheets[0].disabled = false;
-      global.document.styleSheets[1].disabled = true;
+      appStylesheets[0].disabled = false;
+      appStylesheets[1].disabled = true;
     }
   }
 };

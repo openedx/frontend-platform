@@ -218,7 +218,12 @@ describe('lib', () => {
       // Allow us to modify stylesheets in these tests.  The styleSheets object cannot normally
       // be set.
       Object.defineProperty(global.document, 'styleSheets', {
-        value: [{ disabled: false }, { disabled: false }],
+        value: [
+          { disabled: false, href: null }, // Should be ignored because it has no href
+          { disabled: false, href: 'real href' },
+          { disabled: false, href: 'real href' },
+          { disabled: false, href: null }, // Should be ignored because it has no href
+        ],
       });
     });
 
@@ -254,8 +259,8 @@ describe('lib', () => {
       handleRtl();
       expect(setAttribute).not.toHaveBeenCalled();
       expect(removeAttribute).toHaveBeenCalledWith('dir');
-      expect(global.document.styleSheets[0].disabled).toBe(false);
-      expect(global.document.styleSheets[1].disabled).toBe(true);
+      expect(global.document.styleSheets[1].disabled).toBe(false);
+      expect(global.document.styleSheets[2].disabled).toBe(true);
     });
 
     it('should do the right thing for RTL languages', () => {
@@ -273,8 +278,8 @@ describe('lib', () => {
       handleRtl();
       expect(setAttribute).toHaveBeenCalledWith('dir', 'rtl');
       expect(removeAttribute).not.toHaveBeenCalled();
-      expect(global.document.styleSheets[0].disabled).toBe(true);
-      expect(global.document.styleSheets[1].disabled).toBe(false);
+      expect(global.document.styleSheets[1].disabled).toBe(true);
+      expect(global.document.styleSheets[2].disabled).toBe(false);
     });
   });
 });
