@@ -3,7 +3,10 @@ frontend-i18n
 
 |Build Status| |Coveralls| |npm_version| |npm_downloads| |license| |semantic-release|
 
-frontend-i18n contains a shared interface for internationalizing and localizing frontend code.
+frontend-i18n contains a shared interface for internationalizing and localizing frontend code.  For detailed soup-to-nuts instructions on internationalizing your React app, see the _HOWTO .
+
+.. _HOWTO: https://github.com/edx/frontend-i18n/blob/master/docs/how_tos/i18n.rst
+
 
 Installation
 ------------
