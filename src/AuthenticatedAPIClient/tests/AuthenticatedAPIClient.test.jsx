@@ -23,6 +23,8 @@ tomorrow.setDate(tomorrow.getDate() + 1);
 const jwt = {
   user_id: '12345',
   preferred_username: 'test',
+  roles: ['role1', 'role2'],
+  administrator: false,
 };
 const expiredJwt = Object.assign({ exp: yesterday.getTime() / 1000 }, jwt);
 const validJwt = Object.assign({ exp: tomorrow.getTime() / 1000 }, jwt);
@@ -140,6 +142,10 @@ describe('AuthenticatedAPIClient auth interface', () => {
     expect(result.authentication.userId).toEqual(validJwt.user_id);
     expect(result.authentication.username).toBeDefined();
     expect(result.authentication.username).toEqual(validJwt.preferred_username);
+    expect(result.authentication.roles).toBeDefined();
+    expect(result.authentication.roles).toEqual(validJwt.roles);
+    expect(result.authentication.administrator).toBeDefined();
+    expect(result.authentication.administrator).toEqual(validJwt.administrator);
   });
 
   it('has method getAuthenticationState that returns empty state when no JWT cookie exists', () => {
