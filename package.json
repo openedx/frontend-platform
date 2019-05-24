@@ -34,6 +34,7 @@
     "@commitlint/config-angular": "^6.0.2",
     "@commitlint/prompt": "^6.0.2",
     "@commitlint/prompt-cli": "^6.0.2",
+    "@edx/frontend-logging": "^2.0.1",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
     "babel-eslint": "^10.0.1",
@@ -48,6 +49,7 @@
     "eslint-config-edx": "^4.0.4",
     "husky": "^0.14.3",
     "jest": "23.6.0",
+    "react": "^16.8.6",
     "semantic-release": "^15.1.7",
     "source-map-loader": "^0.2.1",
     "travis-deploy-once": "^5.0.0",
@@ -57,11 +59,9 @@
   },
   "dependencies": {
     "@cospired/i18n-iso-languages": "^2.0.2",
-    "@edx/frontend-logging": "^2.0.1",
     "glob": "^7.1.4",
     "i18n-iso-countries": "^4.0.0",
     "iso-countries-languages": "^0.2.1",
-    "react": "^16.8.6",
     "react-intl": "^2.9.0",
     "universal-cookie": "^4.0.0"
   },
