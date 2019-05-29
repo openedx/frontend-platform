@@ -8,7 +8,7 @@
 
 import COUNTRIES, { langs as countryLangs } from 'i18n-iso-countries';
 
-import { getPrimaryLanguageSubtag, localeSortFunction } from './lib';
+import { getPrimaryLanguageSubtag } from './lib';
 
 COUNTRIES.registerLocale(require('i18n-iso-countries/langs/ar.json'));
 COUNTRIES.registerLocale(require('i18n-iso-countries/langs/en.json'));
@@ -48,7 +48,5 @@ export const getCountryMessages = (locale) => {
  */
 export const getCountryList = (locale) => {
   const countryMessages = getCountryMessages(locale);
-  return Object.entries(countryMessages)
-    .sort(localeSortFunction)
-    .map(([code, name]) => ({ code, name }));
+  return Object.entries(countryMessages).map(([code, name]) => ({ code, name }));
 };
