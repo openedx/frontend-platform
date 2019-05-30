@@ -11,7 +11,7 @@
 
 import LANGUAGES, { langs as languageLangs } from '@cospired/i18n-iso-languages';
 
-import { getPrimaryLanguageSubtag, localeSortFunction } from './lib';
+import { getPrimaryLanguageSubtag } from './lib';
 
 // LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/ar.json'));
 LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/en.json'));
@@ -51,7 +51,5 @@ export const getLanguageMessages = (locale) => {
  */
 export const getLanguageList = (locale) => {
   const languageMessages = getLanguageMessages(locale);
-  return Object.entries(languageMessages)
-    .sort(localeSortFunction)
-    .map(([code, name]) => ({ code, name }));
+  return Object.entries(languageMessages).map(([code, name]) => ({ code, name }));
 };

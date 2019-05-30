@@ -68,7 +68,6 @@ Core functionality:
 - getMessages
 - isRtl
 - handleRtl
-- localeSortFunction
 
 From 'react-intl':
 

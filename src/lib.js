@@ -217,19 +217,3 @@ export const handleRtl = () => {
     }
   }
 };
-
-/**
- * Strings are sorted differently in different languages.  This method does a locale-specific
- * string comparison.
- */
-export const localeSortFunction = (a, b) => {
-  // If localeCompare exists, use that.  (Not supported in some older browsers)
-  if (typeof String.prototype.localeCompare === 'function') {
-    return a[1].localeCompare(b[1], getLocale());
-  }
-  if (a[1] === b[1]) {
-    return 0;
-  }
-  // Otherwise make a best effort.
-  return a[1] > b[1] ? 1 : -1;
-};

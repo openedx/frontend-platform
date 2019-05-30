@@ -1,5 +1,6 @@
 export {
   intlShape,
+  FormattedDate,
   FormattedMessage,
   defineMessages,
   IntlProvider,
@@ -12,7 +13,6 @@ export {
   getMessages,
   isRtl,
   handleRtl,
-  localeSortFunction,
 } from './lib';
 
 export {
