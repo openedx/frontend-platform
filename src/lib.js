@@ -93,10 +93,10 @@ addLocaleData([
 /**
  * Configures the i18n library with messages for your application.
  *
- * The first parameter is an object containing messages for each supported locale,
- * indexed by locale name. The second is the application configuration object.
+ * The first is the application configuration object. The second parameter is an object containing messages for each supported locale,
+ * indexed by locale name.
  *
- * Example of first parameter:
+ * Example of second parameter:
  *
  * {
  *   en: {

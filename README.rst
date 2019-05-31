@@ -58,46 +58,129 @@ Configuration Example::
 Exports
 -------
 
-Note: Better documentation forthcoming.  In the meantime, if you have any questions, please contact @edx/arch-team
+**configure(configObject, messages)**
 
-Core functionality:
+Configures the i18n library with messages for your application.
 
-- configure
-- getPrimaryLanguageSubtag
-- getLocale
-- getMessages
-- isRtl
-- handleRtl
+The first is the application configuration object.
 
-From 'react-intl':
+The second parameter is an object containing messages for each supported locale, indexed by locale name.
 
-- intlShape
+Example of second parameter::
+
+  {
+    en: {
+      "message.key": "Message Value"
+    },
+    'es-419': {
+      "message.key": "Valor del mensaje"
+    }
+    ...
+  }
+
+Logs a warning if it detects a locale it doesn't expect (as defined by the supportedLocales list
+above), or if an expected locale is not provided.
+
+
+**getPrimaryLanguageSubtag**
+
+Some of our dependencies function on primary language subtags, rather than full locales. This function strips a locale down to that first subtag.  Depending on the code, this may be 2 or more characters.
+
+**getLocale([locale])**
+
+Get the locale from the cookie or, failing that, the browser setting.
+Gracefully fall back to a more general primary language subtag or to English (en) if we don't support that language. Throws An error if i18n has not yet been configured.
+
+locale (Optional): If a locale is provided, returns the closest supported locale.
+
+**getMessages([locale])**
+
+Returns messages for the provided locale, or the user's preferred locale if no argument is provided.
+
+**isRtl()**
+
+Determines if the provided locale is a right-to-left language.
+
+
+**handleRtl()**
+
+Handles applying the RTL stylesheet and "dir=rtl" attribute to the html tag if the current locale is a RTL language.
+
+
+Passthrough components from `react-intl <https://github.com/formatjs/react-intl/wiki/Components>`_.
+
+- FormattedDate
+- FormattedHTMLMessage
 - FormattedMessage
+- FormattedNumber
+- FormattedPlural
+- FormattedRelative
+- FormattedTime
 - defineMessages
+- injectIntl (shimmed by this library to throw errors instead of crash when non existent message ids are supplied)
 - IntlProvider
-- injectIntl
+- intlShape
 
-Actions:
+Redux Related API:
+~~~~~~~~~~~~~~~~~~
 
-- setLocale
+**setLocale()**
 
-Reducers:
+A redux action creator. It creates an action in the form below::
 
-- reducer
+  {
+    type: 'I18N__SET_LOCALE',
+    payload: {
+      locale: 'the-locale',
+    }
+  }
 
-Selectors:
+**reducer**
 
-- localeSelector
+The reducer for locale actions.
+
+**localeSelector**
+
+A selector that retrieves the locale when given the redux state.
+
 
 Localized country lists:
+~~~~~~~~~~~~~~~~~~~~~~~~
 
-- getCountryList
-- getCountryMessages
+**getCountryList(locale)**
+
+Provides a list of countries represented as objects of the following shape::
+
+  {
+    key, // The ID of the country
+    name // The localized name of the country
+  }
+
+The list is sorted alphabetically in the current locale. This is useful for select dropdowns primarily.
+
+**getCountryMessages(locale)**
+
+Provides a lookup table of country IDs to country names for the current locale.
 
 Localized language lists:
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- getLanguageList
-- getLanguageMessages
+**getLanguageList(locale)**
+
+Provides a lookup table of language IDs to language names for the current locale.
+
+**getLanguageMessages(locale)**
+
+Provides a list of languages represented as objects of the following shape::
+
+  {
+    key, // The ID of the language
+    name // The localized name of the language
+  }
+
+The list is sorted alphabetically in the current locale.
+This is useful for select dropdowns primarily.
+
 
 .. |Build Status| image:: https://api.travis-ci.org/edx/frontend-i18n.svg?branch=master
    :target: https://travis-ci.org/edx/frontend-i18n
