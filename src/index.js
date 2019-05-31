@@ -1,7 +1,12 @@
 export {
   intlShape,
   FormattedDate,
+  FormattedTime,
+  FormattedRelative,
+  FormattedNumber,
+  FormattedPlural,
   FormattedMessage,
+  FormattedHTMLMessage,
   defineMessages,
   IntlProvider,
 } from 'react-intl';
