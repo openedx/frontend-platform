@@ -109,17 +109,17 @@ Handles applying the RTL stylesheet and "dir=rtl" attribute to the html tag if t
 
 Passthrough components from `react-intl <https://github.com/formatjs/react-intl/wiki/Components>`_.
 
-- FormattedDate
-- FormattedHTMLMessage
-- FormattedMessage
-- FormattedNumber
-- FormattedPlural
-- FormattedRelative
-- FormattedTime
-- defineMessages
-- injectIntl (shimmed by this library to throw errors instead of crash when non existent message ids are supplied)
-- IntlProvider
-- intlShape
+- **FormattedDate**
+- **FormattedHTMLMessage**
+- **FormattedMessage**
+- **FormattedNumber**
+- **FormattedPlural**
+- **FormattedRelative**
+- **FormattedTime**
+- **defineMessages**
+- **injectIntl** (shimmed by this library to throw errors instead of crash when non existent message ids are supplied)
+- **IntlProvider**
+- **intlShape**
 
 Redux Related API:
 ~~~~~~~~~~~~~~~~~~
