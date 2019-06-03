@@ -128,14 +128,16 @@ function applyAxiosInterceptors(authenticatedAPIClient) {
   }
 
   // Apply Axios interceptors
-  authenticatedAPIClient.interceptors.request.use(
-    ensureValidJWTCookie,
-    error => Promise.reject(error),
-  );
-  authenticatedAPIClient.interceptors.request.use(
-    ensureCsrfToken,
-    error => Promise.reject(error),
-  );
+  // Axios runs the interceptors in reverse order from how they are listed.
+  // ensureValidJWTCookie needs to run first to ensure the user is authenticated
+  // before making the CSRF token request.
+  const requestInterceptors = [ensureCsrfToken, ensureValidJWTCookie];
+  for (let i = 0; i < requestInterceptors.length; i += 1) {
+    authenticatedAPIClient.interceptors.request.use(
+      requestInterceptors[i],
+      error => Promise.reject(error),
+    );
+  }
   authenticatedAPIClient.interceptors.response.use(
     response => response,
     handleUnauthorizedAPIResponse,

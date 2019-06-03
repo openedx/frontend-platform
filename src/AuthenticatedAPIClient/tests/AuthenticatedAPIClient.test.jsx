@@ -74,7 +74,7 @@ function testJwtCookieInterceptorFulfillment(
     client.isAccessTokenExpired.mockReturnValue(isAccessTokenExpired);
     // eslint-disable-next-line no-underscore-dangle
     axiosConfig.__Rewire__('queueRequests', queueRequests);
-    const fulfilledResult = client.interceptors.request.handlers[0].fulfilled({});
+    const fulfilledResult = client.interceptors.request.handlers[1].fulfilled({});
     expects(client);
 
     if (rejectRefreshAccessToken) {
@@ -104,7 +104,7 @@ function testCsrfTokenInterceptorFulfillment(
     axiosConfig.__Rewire__('queueRequests', queueRequests);
     axiosConfig.__Rewire__('csrfTokens', csrfTokens);
     /* eslint-enable no-underscore-dangle */
-    const fulfilledResult = client.interceptors.request.handlers[1].fulfilled({
+    const fulfilledResult = client.interceptors.request.handlers[0].fulfilled({
       url: 'https://testserver.org',
       method,
       headers: {},
@@ -316,7 +316,7 @@ describe('AuthenticatedAPIClient ensureValidJWTCookie request interceptor', () =
     client.isAccessTokenExpired.mockReturnValue(true);
     // eslint-disable-next-line no-underscore-dangle
     axiosConfig.__Rewire__('queueRequests', false);
-    const fulfilledResult = client.interceptors.request.handlers[0].fulfilled({});
+    const fulfilledResult = client.interceptors.request.handlers[1].fulfilled({});
     return fulfilledResult.catch(() => {
       expect(client.logout).toHaveBeenCalled();
     });
@@ -332,7 +332,7 @@ describe('AuthenticatedAPIClient ensureValidJWTCookie request interceptor', () =
     client.isAccessTokenExpired.mockReturnValue(true);
     // eslint-disable-next-line no-underscore-dangle
     axiosConfig.__Rewire__('queueRequests', false);
-    const fulfilledResult = client.interceptors.request.handlers[0].fulfilled({});
+    const fulfilledResult = client.interceptors.request.handlers[1].fulfilled({});
 
     return fulfilledResult.catch(() => {
       expect(client.logout).not.toHaveBeenCalled();
