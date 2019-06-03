@@ -91,47 +91,6 @@ addLocaleData([
 ]);
 
 /**
- * Configures the i18n library with messages for your application.
- *
- * The first is the application configuration object. The second parameter is an
- * object containing messages for each supported locale, indexed by locale name.
- *
- * Example of second parameter:
- *
- * {
- *   en: {
- *     "message.key": "Message Value"
- *   },
- *   'es-419': {
- *     "message.key": "Valor del mensaje"
- *   }
- *   ...
- * }
- *
- * Logs a warning if it detects a locale it doesn't expect (as defined by the supportedLocales list
- * above), or if an expected locale is not provided.
- */
-export const configure = (newConfig, msgs) => {
-  validateConfiguration(newConfig);
-  messages = msgs;
-  config = newConfig;
-
-  if (config.ENVIRONMENT !== 'production') {
-    Object.keys(messages).forEach((key) => {
-      if (supportedLocales.indexOf(key) < 0) {
-        console.warn(`Unexpected locale: ${key}`); // eslint-disable-line no-console
-      }
-    });
-
-    supportedLocales.forEach((key) => {
-      if (messages[key] === undefined) {
-        console.warn(`Missing locale: ${key}`); // eslint-disable-line no-console
-      }
-    });
-  }
-};
-
-/**
  * Some of our dependencies function on primary language subtags, rather than full locales.
  * This function strips a locale down to that first subtag.  Depending on the code, this
  * may be 2 or more characters.
@@ -202,18 +161,52 @@ export const isRtl = locale => rtlLocales.includes(locale);
  * is a RTL language.
  */
 export const handleRtl = () => {
-  if (config.ENVIRONMENT === 'production') {
-    // Get external style sheets only.  The app may add <style> based stylesheets.
-    const appStylesheets = [].slice.call(global.document.styleSheets)
-      .filter(element => element.href !== null);
-    if (isRtl(getLocale())) {
-      global.document.getElementsByTagName('html')[0].setAttribute('dir', 'rtl');
-      appStylesheets[0].disabled = true;
-      appStylesheets[1].disabled = false;
-    } else {
-      global.document.getElementsByTagName('html')[0].removeAttribute('dir');
-      appStylesheets[0].disabled = false;
-      appStylesheets[1].disabled = true;
-    }
+  if (isRtl(getLocale())) {
+    global.document.getElementsByTagName('html')[0].setAttribute('dir', 'rtl');
+  } else {
+    global.document.getElementsByTagName('html')[0].setAttribute('dir', 'ltr');
   }
+};
+
+/**
+ * Configures the i18n library with messages for your application.
+ *
+ * The first is the application configuration object. The second parameter is an
+ * object containing messages for each supported locale, indexed by locale name.
+ *
+ * Example of second parameter:
+ *
+ * {
+ *   en: {
+ *     "message.key": "Message Value"
+ *   },
+ *   'es-419': {
+ *     "message.key": "Valor del mensaje"
+ *   }
+ *   ...
+ * }
+ *
+ * Logs a warning if it detects a locale it doesn't expect (as defined by the supportedLocales list
+ * above), or if an expected locale is not provided.
+ */
+export const configure = (newConfig, msgs) => {
+  validateConfiguration(newConfig);
+  messages = msgs;
+  config = newConfig;
+
+  if (config.ENVIRONMENT !== 'production') {
+    Object.keys(messages).forEach((key) => {
+      if (supportedLocales.indexOf(key) < 0) {
+        console.warn(`Unexpected locale: ${key}`); // eslint-disable-line no-console
+      }
+    });
+
+    supportedLocales.forEach((key) => {
+      if (messages[key] === undefined) {
+        console.warn(`Missing locale: ${key}`); // eslint-disable-line no-console
+      }
+    });
+  }
+
+  handleRtl();
 };
