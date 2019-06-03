@@ -175,9 +175,9 @@ export const getLocale = (locale) => {
     return findSupportedLocale(locale);
   }
   // 2. User setting in cookie
-  const cookieLangPref = cookies.get(config.LANGUAGE_PREFERENCE_COOKIE_NAME).toLowerCase();
+  const cookieLangPref = cookies.get(config.LANGUAGE_PREFERENCE_COOKIE_NAME);
   if (cookieLangPref) {
-    return findSupportedLocale(cookieLangPref);
+    return findSupportedLocale(cookieLangPref.toLowerCase());
   }
   // 3. Browser language (default)
   // Note that some browers prefer upper case for the region part of the locale, while others don't.

@@ -156,6 +156,10 @@ describe('lib', () => {
         getCookies().get = jest.fn(() => 'de-bah');
         expect(getLocale()).toEqual('de');
       });
+      it('should fallback to the browser locale if the cookie does not exist', () => {
+        getCookies().get = jest.fn(() => null);
+        expect(getLocale()).toEqual(global.navigator.language.toLowerCase());
+      });
     });
   });
 
