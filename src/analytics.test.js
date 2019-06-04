@@ -160,7 +160,6 @@ describe('analytics identifyAuthenticatedUser', () => {
     identifyAuthenticatedUser();
 
     expect(mockLoggingService.logError.mock.calls.length).toBe(1);
-    expect(mockLoggingService.logError).toBeCalledWith('UserId was not available for call to sendAuthenticatedIdentify.');
   });
 });
 

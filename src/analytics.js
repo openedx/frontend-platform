@@ -87,7 +87,7 @@ function identifyAuthenticatedUser(traits) {
     window.analytics.identify(authState.authentication.userId, traits);
     hasIdentifyBeenCalled = true;
   } else {
-    loggingService.logError('UserId was not available for call to sendAuthenticatedIdentify.');
+    loggingService.logError(`Failed to sendAuthenticatedIdentify. authState is: ${JSON.stringify(authState)}`);
   }
 }
 
