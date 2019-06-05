@@ -1,4 +1,5 @@
 import formurlencoded from 'form-urlencoded';
+import Cookies from 'universal-cookie';
 import { snakeCaseObject } from './utils';
 
 let config = {};
@@ -80,14 +81,18 @@ function sendTrackingLogEvent(eventName, properties) {
  * @param traits (optional)
  */
 function identifyAuthenticatedUser(traits) {
-  const authState = getAuthApiClient().getAuthenticationState();
+  const apiClient = getAuthApiClient();
+  const authState = apiClient.getAuthenticationState();
   const loggingService = getLoggingService(); // verifies configuration early
   if (authState.authentication && authState.authentication.userId) {
     // eslint-disable-next-line no-undef
     window.analytics.identify(authState.authentication.userId, traits);
     hasIdentifyBeenCalled = true;
   } else {
-    loggingService.logError(`Failed to sendAuthenticatedIdentify. authState is: ${JSON.stringify(authState)}`);
+    const cookies = new Cookies();
+    const accessToken = cookies.get(apiClient.accessTokenCookieName);
+    const details = `authState: ${JSON.stringify(authState)} accessToken: ${accessToken}`;
+    loggingService.logError(`Failed to sendAuthenticatedIdentify. ${details}`);
   }
 }
 
