@@ -19,6 +19,10 @@
     "test": "jest --coverage",
     "travis-deploy-once": "travis-deploy-once"
   },
+  "bin": {
+    "transifex-utils.js": "src/scripts/transifex-utils.js",
+    "transifex-Makefile": "src/scripts/Makefile"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/edx/frontend-i18n.git"
