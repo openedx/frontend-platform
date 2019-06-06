@@ -15,19 +15,19 @@ This is a step by step guide to making your React app ready to accept translatio
 Internationalize your application with react-intl
 *************************************************
 
-These steps will allow your application to accept translation strings. See `frontend-app-profile <https://github.com/edx/frontend-app-profile/>`_ for an example app to follow.
+These steps will allow your application to accept translation strings. See `frontend-app-account <https://github.com/edx/frontend-app-account/>`_ for an example app to follow.
 
-#. Add ``react-intl`` as a dependency to your ``package.json`` . (If you are actually writing a consumable component, add ``react-intl`` as both a dev dependency and peer dependency instead.)
+#. Add ``@edx/frontend-i18n`` as a dependency to your ``package.json`` . (If you are actually writing a consumable component, add ``@edx/frontend-i18n`` as both a dev dependency and peer dependency instead.)  ``@edx/frontend-i18n`` is a wrapper around ``react-intl`` that adds some shims. You should only access the ``react-intl`` functions and elements exposed by ``@edx/frontend-i18n``. (They have the same names as in ``react-intl``.)
 
 #. In ``App.js``, wrap your entire app in an ``IntlProvider`` element. See `Load up your translation files`_ for details. (Consumable components: Don't do this step, except possibly in tests. Your consuming application will do it for you. Instead, update your `README like this example <https://github.com/edx/frontend-component-footer/blame/master/README.rst#L23-L27>`__.)
 
 #. For places in your code where you need a display string, and it's okay if it's a React element (generally, most messages): use a ``FormattedMessage``.
 
-   * The ``id`` is required and must be a unique dot-separated string. The first part of it should be your app name. The rest can be whatever you want, though a hierarchical namespacing part followed by some descriptive words is most commonly used.
+   * The ``id`` is required and must be a unique dot-separated string. The first part of it should be your app name. The rest can be whatever you want, though a hierarchical namespacing part followed by some descriptive words is most common.
 
    * The ``defaultMessage`` is required, and should be the English display string. Otherwise translators won't know what they're translating.
 
-   * The ``description`` is notes to the translators that can help them figure out how to translate your text. It is optional but recommended.
+   * The ``description`` is a note to the translators that can help them figure out how to translate your text. It is optional, but recommended.
 
      Example::
 
@@ -43,15 +43,15 @@ These steps will allow your application to accept translation strings. See `fron
 
    #. Inject the ``intl`` object into your component:
 
-      #. ``import { injectIntl, intlShape } from 'react-intl'``;
+      #. ``import { injectIntl, intlShape } from '@edx/frontend-i18n';``;
 
       #. add ``intl: intlShape.isRequired`` to your component's ``propTypes``.
 
       #. instead of ``export Foo``, ``export injectIntl(Foo)`` .
 
-   #. Define your messages using ``defineMessages``. This function doesn't actually do anything, but it is a hook for the translation pipeline to be able to find translation strings. You can call ``defineMessages`` wherever you want, but if you have a lot of them you might want to move them to a separate file. Either ``MyAppName.messages.js`` (if your entire app has only a few strings) or ``SomeComponent.messages.js`` will work. Your file should look like the example below. For your own sanity, make the property name the same as the ``id`` for each object. Example::
+   #. Define your messages using ``defineMessages``. This function doesn't actually do anything; it's just a hook for the translation pipeline to be able to find your translation strings. You can call ``defineMessages`` wherever you want, but if you have a lot of them you might want to move them to a separate file. Either ``MyAppName.messages.js`` (if your entire app has only a few strings) or ``SomeComponent.messages.js`` will work. Your file should look like the example below. For your own sanity, make the property name the same as the ``id`` for each object. Example::
 
-       import { defineMessages } from 'react-intl';
+       import { defineMessages } from '@edx/frontend-i18n';
 
        const messages = defineMessages({
          'myapp.cart.pay.now': {
@@ -94,13 +94,13 @@ Set up the pipeline tools
 
 The pipeline jobs live in the ``ecommerce-scripts`` repo, but you don't have to modify them. They will interact with your repo through ``make`` targets.
 
-#. Copy the `frontend-app-profile Makefile <https://github.com/edx/frontend-app-profile/blob/f3777ddc35dd8d00c7f99d6a76d3c28d89ba886c/Makefile>`__ to your project.
+#. Copy the `frontend-app-account Makefile <https://github.com/edx/frontend-app-account/blob/master/Makefile>`__ to your project.
 
-   * Modify ``tx_url1`` and ``tx_url2`` to use your own Transifex resource name.
+   * Modify the ``transifex_resource`` variable with your own Transifex resource name.
 
-#. The job to push strings to Transifex will call ``make push_translations`` in your repo. This target should do everything necessary to extract your strings, concat them into one file, and put them in ``src/i18n/transifex_input.json``.
+#. The job to push strings to Transifex will call ``make push_translations`` in your repo. This target should do everything necessary to extract your strings, concat them into one file, and put them in ``src/i18n/transifex_input.json``. If you don't have any special requirements, you can just use the default target that is included ``from frontend-i18n``.
 
-   #. Extraction: We will be using a Babel plugin to find all the strings inside a ``FormattedMessage`` component or a call to ``defineMessages``.
+   #. Extraction: We will be using a Babel plugin to find all the strings inside a ``FormattedMessage`` component or inside a call to ``defineMessages``.
 
       * Add this to ``scripts`` in ``package.json``::
 
@@ -116,25 +116,24 @@ The pipeline jobs live in the ``ecommerce-scripts`` repo, but you don't have to 
             "i18n": {
               "plugins": [
                 ["react-intl", {
-                  "messagesDir": "./temp"
+                  "messagesDir": "./temp/babel-plugin-react-intl",
+                  "moduleSourceName": "@edx/frontend-i18n"
                  }]
                ]
              }
            }
 
-      * Confirm that running ``make i18n.extract`` creates a lot of ``.json`` files in ``your-repo/temp/`` .
+      * Confirm that running ``make i18n.extract`` creates a lot of ``.json`` files in ``your-repo/temp/babel-plugin-react-intl/`` .
 
-      * Add ``temp`` to your ``.gitignore``.
+      * Add ``temp`` and ``src/i18n/transifex_input.json`` to your ``.gitignore``.
 
    #. Concatenation: All those ``.json`` files need to become one file.
-
-      * Copy `i18n-concat.js <https://github.com/edx/frontend-component-footer/blob/master/src/i18n/i18n-concat.js>`__ into ``src/i18n``.
 
       * Confirm that running ``make i18n.concat`` creates ``src/i18n/transifex_input.json``, which should be a file of message id / English pairs.
 
         * If you are missing any dependencies, like ``glob``, you will need to add these to your dev dependencies.
 
-   #. Uploading comments: The ``KEYVALUEJSON`` format doesn't have a way to put in translator comments (the ``description`` field in your message definitions), so we work around this by making calls to the Transifex API. There isn't a bulk call available, so it will be one API call per string. (...I know.) The rate limit is 6000 calls per hour.
+   #. Uploading comments: The ``KEYVALUEJSON`` format doesn't have a way to put in translator comments (the ``description`` field in your message definitions), so we work around this by making calls to the Transifex API. There isn't a bulk call available, so it will be one API call per string. (...I know.) As of June 2019, the rate limit is 6000 calls per hour.
 
       * Add ``reactifex`` to your dev dependencies::
 
@@ -142,58 +141,67 @@ The pipeline jobs live in the ``ecommerce-scripts`` repo, but you don't have to 
 
       * You can't test this one without Transifex credentials, so at this point it's probably easiest to just make your pipeline job and run that.
 
-      * Note: comments won't be added during the ``push`` Jenkins job (see below), until the strings made it through the ``pull`` job successfully, which is not intuitive.
+#. The job to pull translations out of Transifex and commit them to your repo will call ``make pull_translations``.
 
-#. The job to pull strings back out of Transifex and commit them to your repo will call ``make pull_translations``. You'll need to specify which languages you want to pull in the make target, and the user ``edx_transifex_bot`` will need to have permissions to merge an unreviewed pull request into your repo. This means your repo must either allow that for everyone, or ``edx_transifex_bot`` needs to be an administrator.
+      * If the languages you want to pull down differ from the default set listed in the ``frontend-i18n`` Makefile, you can set the ``transifex_langs`` variable in your local Makefile, after the include.
+
+      * The user ``edx_transifex_bot`` will need to have permissions to merge an unreviewed pull request into your repo. This means your repo must either allow merging unreviewed pull requests for everyone, or ``edx_transifex_bot`` needs to be an administrator.
+
+*******************************************
+Create empty translation files in your repo
+*******************************************
+
+#. You must commit an empty language file for each language, or the ``pull`` job will fail. Each file is named ``src/i18n/messages/LANG_CODE.json`` and consists of an empty JSON object (``{}``). See this `example code with empty language files <https://github.com/edx/frontend-component-footer/commit/46772ecc0e8de2ce1815607fdf2e8f2867dc83cf>`__.
 
 ***********************************
 Create your pipeline job on Jenkins
 ***********************************
 
-#. In the ``edx-internal`` repo, add your job to `tools-edx-jenkins/translation-jobs.yml <https://github.com/edx/edx-internal/blob/master/tools-edx-jenkins/translation-jobs.yml>`__ using one of the existing frontend apps as a model.
+#. In the ``edx-internal`` repo, add your job to `tools-edx-jenkins/translation-jobs.yml <https://github.com/edx/edx-internal/blob/master/tools-edx-jenkins/translation-jobs.yml>`__, using one of the existing frontend apps as a model.
 
    * Add an opsgenie email address that actually exists :-) so you get notified of failures.
 
      * You will need to set up OpsGenie to properly send these alerts, and to auto-close notifications when Jenkins goes back to normal.
 
-   * In the command lines that run the job, put in your repo name and the github team name that you'd like notifications sent to.
+   * In the command lines that run the job, put in your repo name and the GitHub team name that you'd like notifications sent to.
 
-   * By default these jobs run once a week, on Sunday evening, but you can pick a schedule on the ``cron`` line. It's best to move your new job off of 8PM so we don't have to worry about the Transifex API rate limit described above.
+   * The existing jobs push translation strings to Transifex daily, and pull completed translations once a week, on Sunday. You can pick your own schedule on the ``cron`` line. It's best to move your new job off of 8PM UTC, so we don't have to worry about the Transifex API rate limit described above.
+
+     * Note that the Jenkins machine uses UTC.
 
 #. Open a pull request with your change, then `open a devops ticket <https://openedx.atlassian.net/servicedesk/customer/portal/3>`_ requesting them to review your pull request and rerun the seed job. Only devops can merge pull requests in this repo.
 
 #. Connect to the edX VPN to see your two new jobs at https://tools-edx-jenkins.edx.org/job/translations/ . ``push_translations`` extracts the strings from your repo and pushes them to Transifex. ``pull_translations`` pulls the translated strings from Transifex and checks them into your repo. You can test these jobs out by running them manually.
 
-   * Note: If you can't see this page, you must be added to the ``jenkins-tools-translation-jobs`` team in Github.
-
-   * You must add empty language files first, or the ``pull`` job will fail.  See this `example code with empty language files <https://github.com/edx/frontend-component-footer/commit/46772ecc0e8de2ce1815607fdf2e8f2867dc83cf>`__.
+   * Note: If you can't see this page, you must be added to the ``jenkins-tools-translation-jobs`` team in GitHub.
 
 ******************************
 Load up your translation files
 ******************************
 
-.. note:: This step is for applications only.  You can skip this for consumable components.
+.. note:: This step is for applications only. You can skip this for consumable components.
 
-   Also, you can actually do this step even before you have Transifex and Jenkins set up, by providing your own translation files in ``src/i18n/messages/LANG_CODE.json``.
+   You can actually do this step even before you have Transifex and Jenkins set up, by providing your own translation files in ``src/i18n/messages/LANG_CODE.json``.
 
 #. Your pipeline job should have updated several translation files in ``src/i18n/messages/LANG_CODE.json`` .
 
-#. Copy ``i18n-loader.js`` from the ``frontend-app-profile`` repo into your ``i18n`` directory. Update it as needed for the languages your app will offer.
+#. Create ``src/i18n/index.js`` using `frontend-app-account <https://github.com/edx/frontend-app-account/blob/master/src/i18n/index.js>`_ as a model.
 
-#. In ``App.js``, make the following changes::
+#. In ``App.jsx``, make the following changes::
 
-     import { IntlProvider } from 'react-intl';
-     import { getLocale, getMessages } from '../i18n/i18n-loader';
+     import { IntlProvider, getMessages } from '@edx/frontend-i18n';
      // ...
-     <IntlProvider locale={getLocale()} messages={getMessages()}>
+     <IntlProvider locale={this.props.locale} messages={getMessages()}>
 
-As of this writing, ``i18n-loader.js`` reads the locale from the user language preference cookie and if none is found, the browser settings. You can verify everything is working by changing your language preference in your account settings or if you are not logged in, changing your browser language to one of the languages you have translations for.
+#. In ``src/index.jsx``, call ``configureI18n`` as per the `README instructions <https://github.com/edx/frontend-i18n/blob/master/README.rst#configuration>`__.
+
+#. As of this writing, ``frontend-i18n`` reads the locale from the user language preference cookie, or, if none is found, from the browser's language setting. You can verify everything is working by changing your language preference in your account settings. If you are not logged in, you can change your browser language to one of the languages you have translations for.
 
 ********************
 For more information
 ********************
 
-* `ADR for react-intl <https://github.com/edx/paragon/blob/1fbbefe1936ba72577adad9af10272067f2f2579/docs/decisions/0002-react-i18n.rst>`_
+* `ADR for react-intl <https://github.com/edx/paragon/blob/master/docs/decisions/0002-react-i18n.rst>`_
 
 * `Working i18n notes <https://openedx.atlassian.net/wiki/spaces/LOC/pages/946503833/i18n+for+React>`_
 

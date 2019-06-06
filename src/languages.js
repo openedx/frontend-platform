@@ -46,8 +46,8 @@ export const getLanguageMessages = (locale) => {
  *   name // The localized name of the language
  * }
  *
- * The list is sorted alphabetically in the current locale.
- * This is useful for select dropdowns primarily.
+ * TODO: ARCH-878: The list should be sorted alphabetically in the current locale.
+ * This is useful for populating dropdowns.
  */
 export const getLanguageList = (locale) => {
   const languageMessages = getLanguageMessages(locale);

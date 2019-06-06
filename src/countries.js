@@ -43,8 +43,8 @@ export const getCountryMessages = (locale) => {
  *   name // The localized name of the country
  * }
  *
- * The list is sorted alphabetically in the current locale.
- * This is useful for select dropdowns primarily.
+ * TODO: ARCH-878: The list should be sorted alphabetically in the current locale.
+ * This is useful for populating dropdowns.
  */
 export const getCountryList = (locale) => {
   const countryMessages = getCountryMessages(locale);
