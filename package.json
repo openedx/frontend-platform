@@ -62,7 +62,6 @@
   },
   "dependencies": {
     "form-urlencoded": "^3.0.0",
-    "lodash.snakecase": "^4.1.1",
-    "universal-cookie": "^3.1.0"
+    "lodash.snakecase": "^4.1.1"
   }
 }

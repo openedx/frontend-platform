@@ -1,5 +1,4 @@
 import formurlencoded from 'form-urlencoded';
-import Cookies from 'universal-cookie';
 import { snakeCaseObject } from './utils';
 
 let config = {};
@@ -89,9 +88,7 @@ function identifyAuthenticatedUser(traits) {
     window.analytics.identify(authState.authentication.userId, traits);
     hasIdentifyBeenCalled = true;
   } else {
-    const cookies = new Cookies();
-    const accessToken = cookies.get(apiClient.accessTokenCookieName);
-    const details = `authState: ${JSON.stringify(authState)} accessToken: ${accessToken}`;
+    const details = `authState: ${JSON.stringify(authState)} cookies: ${document.cookie}`;
     loggingService.logError(`Failed to sendAuthenticatedIdentify. ${details}`);
   }
 }
