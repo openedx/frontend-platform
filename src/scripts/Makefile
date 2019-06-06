@@ -6,9 +6,6 @@ transifex_input = ./src/i18n/transifex_input.json
 tx_url1 = https://www.transifex.com/api/2/project/edx-platform/resource/$(transifex_resource)/translation/en/strings/
 tx_url2 = https://www.transifex.com/api/2/project/edx-platform/resource/$(transifex_resource)/source/
 
-requirements:
-	npm install
-
 i18n.extract:
 	# Pulling display strings from .jsx files into .json files...
 	rm -rf $(transifex_temp)
@@ -17,8 +14,6 @@ i18n.extract:
 i18n.concat:
 	# Gathering JSON messages into one file...
 	$(transifex_utils) $(transifex_temp) $(transifex_input)
-
-extract_translations: | requirements i18n.extract i18n.concat
 
 detect_changed_source_translations:
 	# Checking for changed translations...
