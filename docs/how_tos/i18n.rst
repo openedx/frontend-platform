@@ -92,7 +92,7 @@ In your repo, create and commit a file named ``.tx/config``::
 Set up the pipeline tools
 *************************
 
-The pipeline jobs live in the ``ecommerce-scripts`` repo, but you don't have to modify them. They will interact with your repo through ``make`` targets.
+The pipeline jobs live in the `ecommerce-scripts <https://github.com/edx/ecommerce-scripts/tree/master/transifex>`__ repo, but you don't have to modify them. They will interact with your repo through ``make`` targets.
 
 #. Copy the `frontend-app-account Makefile <https://github.com/edx/frontend-app-account/blob/master/Makefile>`__ to your project.
 
@@ -143,7 +143,7 @@ The pipeline jobs live in the ``ecommerce-scripts`` repo, but you don't have to 
 
 #. The job to pull translations out of Transifex and commit them to your repo will call ``make pull_translations``.
 
-      * If the languages you want to pull down differ from the default set listed in the ``frontend-i18n`` Makefile, you can set the ``transifex_langs`` variable in your local Makefile, after the include.
+      * If the languages you want to pull down differ from the default set, you can update the ``transifex_langs`` variable in your local Makefile.
 
       * The user ``edx_transifex_bot`` will need to have permissions to merge an unreviewed pull request into your repo. This means your repo must either allow merging unreviewed pull requests for everyone, or ``edx_transifex_bot`` needs to be an administrator.
 
