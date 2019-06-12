@@ -36,15 +36,6 @@ function createMockAuthApiClientAuthenticated() {
   };
 }
 
-function createMockAuthApiClientAuthenticationIncomplete() {
-  mockAuthApiClient = {
-    getAuthenticationState:
-      jest.fn(() => ({
-        authentication: {},
-      })),
-  };
-}
-
 function createMockAuthApiClientPostResolved() {
   mockAuthApiClient = {
     post: jest.fn().mockResolvedValue(undefined),
@@ -122,44 +113,14 @@ describe('analytics identifyAuthenticatedUser', () => {
     };
   });
 
-  it('fails when loggingService is not configured', () => {
-    mockLoggingService = undefined;
-    createMockAuthApiClientAuthenticated();
-    configureAnalyticsWithMocks();
-
-    expect(() => identifyAuthenticatedUser())
-      .toThrowError('You must configure the loggingService.');
-  });
-
-  it('fails when authApiClient is not configured', () => {
-    createMockLoggingService();
-    mockAuthApiClient = undefined;
-    configureAnalyticsWithMocks();
-
-    expect(() => identifyAuthenticatedUser())
-      .toThrowError('You must configure the authApiClient.');
-  });
-
   it('calls Segment identify on success', () => {
-    createMockLoggingService();
-    createMockAuthApiClientAuthenticated();
     configureAnalyticsWithMocks();
 
     const testTraits = { anything: 'Yay!' };
-    identifyAuthenticatedUser(testTraits);
+    identifyAuthenticatedUser(testUserId, testTraits);
 
     expect(window.analytics.identify.mock.calls.length).toBe(1);
     expect(window.analytics.identify).toBeCalledWith(testUserId, testTraits);
-  });
-
-  it('logs error when authentication problem.', () => {
-    createMockLoggingService();
-    createMockAuthApiClientAuthenticationIncomplete();
-    configureAnalyticsWithMocks();
-
-    identifyAuthenticatedUser();
-
-    expect(mockLoggingService.logError.mock.calls.length).toBe(1);
   });
 });
 
