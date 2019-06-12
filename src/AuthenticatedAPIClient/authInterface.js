@@ -29,6 +29,10 @@ export default function applyAuthInterface(httpClient, authConfig) {
     httpClient.refreshAccessTokenEndpoint,
   ];
 
+  /**
+   * WARNING: This function provides unreliable results.
+   * TODO: ARCH-948: See for details on potential fix.
+   */
   httpClient.getAuthenticationState = () => {
     const state = {};
 
