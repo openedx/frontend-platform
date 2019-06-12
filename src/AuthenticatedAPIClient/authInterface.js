@@ -97,14 +97,16 @@ export default function applyAuthInterface(httpClient, authConfig) {
       // Attempt to refresh the JWT cookies.
       return httpClient.refreshAccessToken()
         // Successfully refreshed the JWT cookies, fire the callback function.
-        .then(callback)
+        .then(() => {
+          callback(httpClient.getDecodedAccessToken());
+        })
         .catch(() => {
           // The user is not authenticated, send them to the login page.
           httpClient.login(httpClient.appBaseUrl + route);
         });
     }
     // We already have valid JWT cookies, fire the callback function.
-    return callback();
+    return callback(accessToken);
   };
 
   httpClient.isRoutePublic = route => /^\/public.*$/.test(route);
