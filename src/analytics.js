@@ -76,21 +76,13 @@ function sendTrackingLogEvent(eventName, properties) {
 }
 
 /**
- * Send identify call to Segment, using userId from authApiClient.
+ * Send identify call to Segment.
+ * @param userId
  * @param traits (optional)
  */
-function identifyAuthenticatedUser(traits) {
-  const apiClient = getAuthApiClient();
-  const authState = apiClient.getAuthenticationState();
-  const loggingService = getLoggingService(); // verifies configuration early
-  if (authState.authentication && authState.authentication.userId) {
-    // eslint-disable-next-line no-undef
-    window.analytics.identify(authState.authentication.userId, traits);
-    hasIdentifyBeenCalled = true;
-  } else {
-    const details = `authState: ${JSON.stringify(authState)} cookies: ${document.cookie}`;
-    loggingService.logError(`Failed to sendAuthenticatedIdentify. ${details}`);
-  }
+function identifyAuthenticatedUser(userId, traits) {
+  window.analytics.identify(userId, traits);
+  hasIdentifyBeenCalled = true;
 }
 
 /**
