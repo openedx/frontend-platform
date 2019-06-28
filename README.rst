@@ -107,7 +107,6 @@ If the current locale is an RTL language, adds a "dir=rtl" attribute to the html
 Passthrough components from `react-intl <https://github.com/formatjs/react-intl/wiki/Components>`_.
 
 - **FormattedDate**
-- **FormattedHTMLMessage**
 - **FormattedMessage**
 - **FormattedNumber**
 - **FormattedPlural**

@@ -6,7 +6,6 @@ export {
   FormattedNumber,
   FormattedPlural,
   FormattedMessage,
-  FormattedHTMLMessage,
   defineMessages,
   IntlProvider,
 } from 'react-intl';
