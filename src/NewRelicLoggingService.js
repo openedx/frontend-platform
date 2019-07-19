@@ -18,18 +18,22 @@ function fixErrorLength(error) {
 
 class NewRelicLoggingService {
   static logInfo(message, customAttributes = {}) {
+    /* istanbul ignore next */
     if (process.env.NODE_ENV === 'development') {
-      console.log(message); // eslint-disable-line
+      console.log(message, customAttributes); // eslint-disable-line
     }
+    /* istanbul ignore else */
     if (window && typeof window.newrelic !== 'undefined') {
       window.newrelic.addPageAction('INFO', Object.assign({}, { message }, customAttributes));
     }
   }
 
   static logError(error, customAttributes) {
+    /* istanbul ignore next */
     if (process.env.NODE_ENV === 'development') {
       console.error(error, customAttributes); // eslint-disable-line
     }
+    /* istanbul ignore else */
     if (window && typeof window.newrelic !== 'undefined') {
       // Note: customProperties are not sent.  Presumably High-Security Mode is being used.
       window.newrelic.noticeError(fixErrorLength(error), customAttributes);

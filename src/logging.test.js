@@ -36,8 +36,8 @@ describe('configured logging service', () => {
       const mockStatic = jest.fn();
       NewRelicLoggingService.logInfo = mockStatic.bind(NewRelicLoggingService);
 
-      logInfo(arg1);
-      expect(mockStatic).toHaveBeenCalledWith(arg1);
+      logInfo(arg1, arg2);
+      expect(mockStatic).toHaveBeenCalledWith(arg1, arg2);
     });
   });
 

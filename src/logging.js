@@ -36,8 +36,8 @@ function getLoggingService() {
   return loggingService;
 }
 
-function logInfo(message) {
-  return getLoggingService().logInfo(message);
+function logInfo(message, customAttributes) {
+  return getLoggingService().logInfo(message, customAttributes);
 }
 
 function logError(error, customAttributes) {
