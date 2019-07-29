@@ -13,6 +13,7 @@ export default function applyAuthInterface(httpClient, authConfig) {
   httpClient.logoutUrl = authConfig.logoutUrl;
   httpClient.refreshAccessTokenEndpoint = authConfig.refreshAccessTokenEndpoint;
   httpClient.handleRefreshAccessTokenFailure = authConfig.handleRefreshAccessTokenFailure;
+  httpClient.loggingService = authConfig.loggingService;
 
   /**
    * We will not try to refresh an expired access token before
@@ -79,11 +80,26 @@ export default function applyAuthInterface(httpClient, authConfig) {
   httpClient.getDecodedAccessToken = () => {
     const cookies = new Cookies();
     let decodedToken = null;
+    /* istanbul ignore next */
     try {
-      decodedToken = jwtDecode(cookies.get(httpClient.accessTokenCookieName));
+      const cookieValue = cookies.get(httpClient.accessTokenCookieName);
+      try {
+        decodedToken = jwtDecode(cookieValue);
+      } catch (error) {
+        if (httpClient.loggingService && httpClient.loggingService.logInfo) {
+          httpClient.loggingService.logInfo(
+            'Error decoding JWT token.',
+            {
+              jwtDecodeError: error,
+              cookieValue,
+            },
+          );
+        }
+      }
     } catch (error) {
-      // empty
+      httpClient.loggingService.logInfo(`Error reading the cookie: ${httpClient.accessTokenCookieName}.`);
     }
+
     return decodedToken;
   };
 
@@ -101,8 +117,47 @@ export default function applyAuthInterface(httpClient, authConfig) {
       // Attempt to refresh the JWT cookies.
       return httpClient.refreshAccessToken()
         // Successfully refreshed the JWT cookies, fire the callback function.
-        .then(() => {
-          callback(httpClient.getDecodedAccessToken());
+        .then((response) => {
+          const refreshedAccessToken = httpClient.getDecodedAccessToken();
+
+          /* istanbul ignore next */
+          if (refreshedAccessToken === null) {
+            // This is the success block for refreshing an access token.
+            // Sometimes the access token is null for an unknown reason.
+            // Log here to learn more.
+            if (httpClient.loggingService && httpClient.loggingService.logError) {
+              httpClient.loggingService.logError(
+                new Error('Access token is null after refresh.'),
+                {
+                  previousAccessToken: accessToken,
+                  axiosResponse: response,
+                },
+              );
+
+              // Wait some time and check again.
+              // Maybe we're in a race to set the cookie?
+              const checkForAccessTokenAfterDelay = (delay) => {
+                setTimeout(() => {
+                  const delayedRefreshAccessToken = httpClient.getDecodedAccessToken();
+                  httpClient.loggingService.logInfo(
+                    `Access token check after ${delay}ms after null refresh token: ${delayedRefreshAccessToken !== null}`,
+                    {
+                      delayedRefreshAccessTokenIsNotNull: delayedRefreshAccessToken !== null,
+                      delayedRefreshAccessToken,
+                      refreshedAccessToken,
+                      accessToken,
+                    },
+                  );
+                }, delay);
+              };
+
+              checkForAccessTokenAfterDelay(50);
+              checkForAccessTokenAfterDelay(500);
+            }
+          }
+
+          // TODO: Determine what to do in the case that the token is still null.
+          callback(refreshedAccessToken);
         })
         .catch(() => {
           // The user is not authenticated, send them to the login page.
