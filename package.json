@@ -62,12 +62,12 @@
     "webpack-cli": "3.3.2"
   },
   "dependencies": {
-    "@cospired/i18n-iso-languages": "^2.0.2",
-    "glob": "^7.1.4",
-    "i18n-iso-countries": "^4.0.0",
-    "iso-countries-languages": "^0.2.1",
-    "react-intl": "^2.9.0",
-    "universal-cookie": "^4.0.0"
+    "@cospired/i18n-iso-languages": "2.0.2",
+    "glob": "7.1.4",
+    "i18n-iso-countries": "4.0.0",
+    "iso-countries-languages": "0.2.1",
+    "react-intl": "2.9.0",
+    "universal-cookie": "4.0.0"
   },
   "peerDependencies": {
     "@edx/frontend-logging": "^2.0.1",
