@@ -65,7 +65,7 @@
     "@cospired/i18n-iso-languages": "2.0.2",
     "glob": "7.1.4",
     "i18n-iso-countries": "4.0.0",
-    "iso-countries-languages": "0.2.1",
+    "iso-countries-languages": "0.3.0",
     "react-intl": "2.9.0",
     "universal-cookie": "4.0.0"
   },
