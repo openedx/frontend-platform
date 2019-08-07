@@ -27,6 +27,9 @@ These steps will allow your application to accept translation strings. See `fron
 
    * The ``defaultMessage`` is required, and should be the English display string. Otherwise translators won't know what they're translating.
 
+    .. note::
+        English strings should not include the HTML brackets < or > since those characters will break Transifex.
+
    * The ``description`` is a note to the translators that can help them figure out how to translate your text. It is optional, but recommended.
 
      Example::
@@ -173,7 +176,7 @@ Create your pipeline job on Jenkins
 
 #. Connect to the edX VPN to see your two new jobs at https://tools-edx-jenkins.edx.org/job/translations/ . ``push_translations`` extracts the strings from your repo and pushes them to Transifex. ``pull_translations`` pulls the translated strings from Transifex and checks them into your repo. You can test these jobs out by running them manually.
 
-   * Note: If you can't see this page, you must be added to the ``jenkins-tools-translation-jobs`` team in GitHub.
+   * If you can't see this page, you might need to be added to the ``jenkins-tools-translation-jobs`` team in GitHub.
 
 ******************************
 Load up your translation files
@@ -185,7 +188,7 @@ Load up your translation files
 
 #. Your pipeline job should have updated several translation files in ``src/i18n/messages/LANG_CODE.json`` .
 
-#. Create ``src/i18n/index.js`` using `frontend-app-account <https://github.com/edx/frontend-app-account/blob/master/src/i18n/index.js>`_ as a model.
+#. Create ``src/i18n/index.js`` using `frontend-app-account's index.js <https://github.com/edx/frontend-app-account/blob/master/src/i18n/index.js>`_ as a model.
 
 #. In ``App.jsx``, make the following changes::
 
