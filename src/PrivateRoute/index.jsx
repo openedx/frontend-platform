@@ -22,10 +22,10 @@ const PrivateRoute = ({
     : <Route
       {...rest}
       path={path}
-      render={props => (
+      render={renderProps => (
         <LoginRedirect
-          {...props}
-          redirect={redirect + path}
+          {...renderProps}
+          redirect={redirect + renderProps.location.pathname}
           authenticatedAPIClient={authenticatedAPIClient}
         />
       )}

@@ -21,7 +21,7 @@ const PrivateRouteWrapper = props => (
       <PrivateRoute
         store={props.store}
         exact
-        path="/authenticated"
+        path={props.path}
         component={TestAuthenticatedComponent}
         authenticatedAPIClient={{
           login: mockLogin,
@@ -35,7 +35,12 @@ const PrivateRouteWrapper = props => (
 PrivateRouteWrapper.propTypes = {
   store: PropTypes.shape({}).isRequired,
   initialEntries: PropTypes.arrayOf(PropTypes.string).isRequired,
+  path: PropTypes.string,
   redirect: PropTypes.string.isRequired,
+};
+
+PrivateRouteWrapper.defaultProps = {
+  path: '/authenticated',
 };
 
 describe('PrivateRoute', () => {
@@ -83,6 +88,22 @@ describe('PrivateRoute', () => {
       <PrivateRouteWrapper
         store={store}
         initialEntries={[route]}
+        redirect={redirect}
+      />
+    ));
+    expect(mockLogin).toHaveBeenCalledWith(redirect + route);
+  });
+
+  it('redirects to correct URL even if path has match params', () => {
+    const store = mockStore({});
+    const route = '/12345';
+    const redirect = 'https://example.com';
+
+    mount((
+      <PrivateRouteWrapper
+        store={store}
+        initialEntries={[route]}
+        path="/:id"
         redirect={redirect}
       />
     ));
