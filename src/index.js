@@ -1,14 +1,16 @@
 import NewRelicLoggingService from './NewRelicLoggingService';
 import {
   configureLoggingService,
-  logAPIErrorResponse,
+  logApiClientError,
+  processApiClientError,
   logInfo,
   logError,
 } from './logging';
 
 export {
   configureLoggingService,
-  logAPIErrorResponse,
+  logApiClientError,
+  processApiClientError,
   logInfo,
   logError,
   NewRelicLoggingService,

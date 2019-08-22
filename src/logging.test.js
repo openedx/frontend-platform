@@ -2,7 +2,8 @@ import NewRelicLoggingService from './NewRelicLoggingService';
 
 import {
   configureLoggingService,
-  logAPIErrorResponse,
+  logApiClientError,
+  processApiClientError,
   logInfo,
   logError,
   resetLoggingService,
@@ -21,7 +22,7 @@ describe('configureLoggingService', () => {
 
   it('fails when loggingService has invalid API', () => {
     expect(() => configureLoggingService({}))
-      .toThrowError(new Error('The loggingService API must have a logAPIErrorResponse function.'));
+      .toThrowError(new Error('The loggingService API must have a logApiClientError function.'));
   });
 });
 
@@ -51,13 +52,23 @@ describe('configured logging service', () => {
     });
   });
 
-  describe('logAPIErrorResponse', () => {
+  describe('logApiClientError', () => {
     it('passes call through to NewRelicLoggingService', () => {
       const mockStatic = jest.fn();
-      NewRelicLoggingService.logAPIErrorResponse = mockStatic.bind(NewRelicLoggingService);
+      NewRelicLoggingService.logApiClientError = mockStatic.bind(NewRelicLoggingService);
 
-      logAPIErrorResponse(arg1, arg2);
+      logApiClientError(arg1, arg2);
       expect(mockStatic).toHaveBeenCalledWith(arg1, arg2);
+    });
+  });
+
+  describe('processApiClientError', () => {
+    it('passes call through to NewRelicLoggingService', () => {
+      const mockStatic = jest.fn();
+      NewRelicLoggingService.processApiClientError = mockStatic.bind(NewRelicLoggingService);
+
+      processApiClientError(arg1);
+      expect(mockStatic).toHaveBeenCalledWith(arg1);
     });
   });
 });
@@ -81,9 +92,9 @@ describe('test failures when logging service is not configured', () => {
     });
   });
 
-  describe('logAPIErrorResponse', () => {
+  describe('logApiClientError', () => {
     it('throws an error', () => {
-      expect(() => logAPIErrorResponse(arg1, arg2))
+      expect(() => logApiClientError(arg1, arg2))
         .toThrowError(new Error('You must first configure the loggingService.'));
     });
   });

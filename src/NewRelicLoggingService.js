@@ -40,44 +40,78 @@ class NewRelicLoggingService {
     }
   }
 
+  static processApiClientError(error = {}) {
+    const { request, response } = error;
+
+    if (response) {
+      const { status, config, data } = response;
+      const url = config ? config.url : '';
+      const stringifiedData = data ? JSON.stringify(data) : '';
+      const responseIsHTML = stringifiedData.includes('<!DOCTYPE html>');
+
+      return {
+        errorType: 'api-response-error',
+        errorStatus: status || '',
+        errorUrl: url,
+        // Don't include data if it is just an HTML document, like a 500 error page.
+        errorData: responseIsHTML ? '<Response is HTML>' : stringifiedData,
+      };
+    }
+
+    if (request) {
+      const { config, message } = error;
+      const { responseText, responseURL, status } = request;
+      const url = responseURL || (config && config.url);
+      const data = responseText || message;
+      const method = config ? config.method : '';
+
+      return {
+        errorType: 'api-request-error',
+        errorStatus: status || '',
+        errorUrl: url || '',
+        errorData: data || '',
+        errorMethod: method || '',
+      };
+    }
+
+    return {
+      errorType: 'api-request-config-error',
+      errorData: error.message || '',
+    };
+  }
+
   // API errors look for axios API error format.
   // Note: function will simply log errors that don't seem to be API error responses.
-  static logAPIErrorResponse(error, customAttributes) {
-    let processedError = error;
-    let updatedCustomAttributes = customAttributes;
+  static logApiClientError(error = {}, _customAttributes = {}) {
+    const processedError = this.processApiClientError(error);
+    const { messagePrefix, ...customAttributes } = _customAttributes;
+    const {
+      errorType,
+      errorStatus: status,
+      errorMethod: method,
+      errorUrl: url,
+      errorData: data,
+    } = processedError;
+    let message;
 
-    if (error.response) {
-      let data = !error.response.data ? '' : JSON.stringify(error.response.data);
-      // Don't include data if it is just an HTML document, like a 500 error page.
-      data = data.includes('<!DOCTYPE html>') ? '' : data;
-      const responseAttributes = {
-        errorType: 'api-response-error',
-        errorStatus: error.response.status,
-        errorUrl: error.response.config ? error.response.config.url : '',
-        errorData: data,
-      };
-      updatedCustomAttributes = Object.assign({}, responseAttributes, customAttributes);
-      processedError = new Error(`API request failed: ${error.response.status} ${responseAttributes.errorUrl} ${data}`);
+    switch (errorType) {
+      case 'api-response-error':
+        message = messagePrefix ?
+          `${messagePrefix}: (API request failed) ${status} ${url} ${data}` :
+          `API request failed: ${status} ${url} ${data}`;
 
-      this.logError(processedError, updatedCustomAttributes);
-    } else if (error.request) {
-      const { config, request } = error;
-      const errorMessage = request.responseText || error.message;
-      const requestMethod = config && config.method;
-      const requestUrl = request.responseURL || (config && config.url);
-      const requestAttributes = {
-        errorType: 'api-request-error',
-        errorStatus: request.status,
-        errorMethod: requestMethod,
-        errorUrl: requestUrl,
-        errorData: errorMessage,
-      };
-      updatedCustomAttributes = Object.assign({}, requestAttributes, customAttributes);
+        this.logError(new Error(message), { ...processedError, ...customAttributes });
+        break;
+      case 'api-request-error':
+        message = messagePrefix ?
+          `${messagePrefix}: API request failed: ${status} ${method} ${url} ${data}` :
+          `API request failed: ${status} ${method} ${url} ${data}`;
 
-      this.logInfo(
-        `API request failed: ${request.status} ${requestMethod} ${requestUrl} ${errorMessage}`,
-        updatedCustomAttributes,
-      );
+        this.logInfo(message, { ...processedError, ...customAttributes });
+        break;
+      /* istanbul ignore next */
+      default:
+        break;
     }
   }
 }

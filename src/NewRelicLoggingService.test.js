@@ -54,7 +54,94 @@ describe('logError', () => {
   });
 });
 
-describe('logAPIErrorResponse', () => {
+describe('processApiClientError', () => {
+  it('will process an empty object', () => {
+    expect(NewRelicLoggingService.processApiClientError())
+      .toEqual({
+        errorType: 'api-request-config-error',
+        errorData: '',
+      });
+  });
+  it('will process a poorly formed axios response object', () => {
+    expect(NewRelicLoggingService.processApiClientError({
+      request: {},
+      response: {},
+      config: {},
+    })).toEqual({
+      errorType: 'api-response-error',
+      errorData: '',
+      errorStatus: '',
+      errorUrl: '',
+    });
+  });
+  it('will process a poorly formed axios request object', () => {
+    expect(NewRelicLoggingService.processApiClientError({
+      request: {},
+      config: {},
+    })).toEqual({
+      errorType: 'api-request-error',
+      errorData: '',
+      errorStatus: '',
+      errorUrl: '',
+      errorMethod: '',
+    });
+  });
+  it('will process an axios request object', () => {
+    expect(NewRelicLoggingService.processApiClientError({
+      request: {
+        responseText: 'Hello',
+        responseURL: 'http://edx.org',
+        status: 400,
+      },
+      config: {
+        method: 'GET',
+        url: 'http://edx.org',
+      },
+    })).toEqual({
+      errorType: 'api-request-error',
+      errorData: 'Hello',
+      errorStatus: 400,
+      errorUrl: 'http://edx.org',
+      errorMethod: 'GET',
+    });
+  });
+  it('will process an axios response object', () => {
+    expect(NewRelicLoggingService.processApiClientError({
+      response: {
+        data: 'Hello',
+        status: 400,
+        config: {
+          method: 'GET',
+          url: 'http://edx.org',
+        },
+      },
+    })).toEqual({
+      errorType: 'api-response-error',
+      errorData: JSON.stringify('Hello'),
+      errorStatus: 400,
+      errorUrl: 'http://edx.org',
+    });
+  });
+  it('will process an axios response object with HTML data in it', () => {
+    expect(NewRelicLoggingService.processApiClientError({
+      response: {
+        data: '<!DOCTYPE html><html>Hi</html>',
+        status: 400,
+        config: {
+          method: 'GET',
+          url: 'http://edx.org',
+        },
+      },
+    })).toEqual({
+      errorType: 'api-response-error',
+      errorData: '<Response is HTML>',
+      errorStatus: 400,
+      errorUrl: 'http://edx.org',
+    });
+  });
+});
+
+describe('logApiClientError', () => {
   beforeEach(() => {
     global.newrelic.noticeError.mockReset();
     global.newrelic.addPageAction.mockReset();
@@ -71,16 +158,16 @@ describe('logAPIErrorResponse', () => {
         method: 'get',
       },
     };
-    const message = `${error.request.status} ${error.config.method} ${error.request.responseURL} ${error.request.responseText}`;
+
     const expectedAttributes = {
-      message: `API request failed: ${message}`,
+      message: 'API request failed: 400 get http://example.com Very bad request',
       errorType: 'api-request-error',
       errorStatus: error.request.status,
       errorMethod: error.config.method,
       errorUrl: error.request.responseURL,
       errorData: error.request.responseText,
     };
-    NewRelicLoggingService.logAPIErrorResponse(error);
+    NewRelicLoggingService.logApiClientError(error);
     expect(global.newrelic.addPageAction).toHaveBeenCalledWith('INFO', expectedAttributes);
   });
 
@@ -96,8 +183,8 @@ describe('logAPIErrorResponse', () => {
         },
       },
     };
-    const message = `${error.response.status} ${error.response.config.url} ${JSON.stringify(error.response.data)}`;
-    const expectedError = new Error(`API request failed: ${message}`);
+    const message = 'API request failed: 500 http://example.com {"detail":"Very bad request"}';
+    const expectedError = new Error(message);
     const expectedAttributes = {
       errorType: 'api-response-error',
       errorStatus: error.response.status,
@@ -105,7 +192,7 @@ describe('logAPIErrorResponse', () => {
       errorData: JSON.stringify(error.response.data),
       test: 'custom',
     };
-    NewRelicLoggingService.logAPIErrorResponse(error, { test: 'custom' });
+    NewRelicLoggingService.logApiClientError(error, { test: 'custom' });
     expect(global.newrelic.noticeError).toHaveBeenCalledWith(expectedError, expectedAttributes);
   });
 
@@ -116,15 +203,15 @@ describe('logAPIErrorResponse', () => {
         data: '<!DOCTYPE html><html lang="en"><body></body></html>',
       },
     };
-    const message = `${error.response.status}  `;
-    const expectedError = new Error(`API request failed: ${message}`);
+    const message = 'API request failed: 500  <Response is HTML>';
+    const expectedError = new Error(message);
     const expectedAttributes = {
       errorType: 'api-response-error',
       errorStatus: error.response.status,
       errorUrl: '',
-      errorData: '',
+      errorData: '<Response is HTML>',
     };
-    NewRelicLoggingService.logAPIErrorResponse(error);
+    NewRelicLoggingService.logApiClientError(error);
     expect(global.newrelic.noticeError).toHaveBeenCalledWith(expectedError, expectedAttributes);
   });
 });
