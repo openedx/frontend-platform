@@ -20,6 +20,7 @@ function configureLoggingService(newLoggingService) {
     throw Error('The loggingService is required.');
   }
   ensureLoggingServiceAPI(newLoggingService, 'logApiClientError');
+  ensureLoggingServiceAPI(newLoggingService, 'logAPIErrorResponse');
   ensureLoggingServiceAPI(newLoggingService, 'logInfo');
   ensureLoggingServiceAPI(newLoggingService, 'logError');
   loggingService = newLoggingService;
@@ -48,6 +49,10 @@ function logApiClientError(error, customAttributes) {
   return getLoggingService().logApiClientError(error, customAttributes);
 }
 
+function logAPIErrorResponse(error, customAttributes) {
+  return getLoggingService().logAPIErrorResponse(error, customAttributes);
+}
+
 function processApiClientError(error) {
   return getLoggingService().processApiClientError(error);
 }
@@ -56,6 +61,7 @@ export {
   configureLoggingService,
   logApiClientError,
   processApiClientError,
+  logAPIErrorResponse,
   logInfo,
   logError,
   resetLoggingService,

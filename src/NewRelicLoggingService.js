@@ -114,6 +114,11 @@ class NewRelicLoggingService {
         break;
     }
   }
+
+  /* istanbul ignore next */
+  static logAPIErrorResponse(error, customAttributes) {
+    this.logApiClientError(error, customAttributes);
+  }
 }
 
 export default NewRelicLoggingService;

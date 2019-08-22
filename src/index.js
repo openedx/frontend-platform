@@ -2,6 +2,7 @@ import NewRelicLoggingService from './NewRelicLoggingService';
 import {
   configureLoggingService,
   logApiClientError,
+  logAPIErrorResponse,
   processApiClientError,
   logInfo,
   logError,
@@ -10,6 +11,7 @@ import {
 export {
   configureLoggingService,
   logApiClientError,
+  logAPIErrorResponse,
   processApiClientError,
   logInfo,
   logError,

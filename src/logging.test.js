@@ -4,6 +4,7 @@ import {
   configureLoggingService,
   logApiClientError,
   processApiClientError,
+  logAPIErrorResponse,
   logInfo,
   logError,
   resetLoggingService,
@@ -58,6 +59,16 @@ describe('configured logging service', () => {
       NewRelicLoggingService.logApiClientError = mockStatic.bind(NewRelicLoggingService);
 
       logApiClientError(arg1, arg2);
+      expect(mockStatic).toHaveBeenCalledWith(arg1, arg2);
+    });
+  });
+
+  describe('logAPIErrorResponse', () => {
+    it('passes call through to NewRelicLoggingService', () => {
+      const mockStatic = jest.fn();
+      NewRelicLoggingService.logAPIErrorResponse = mockStatic.bind(NewRelicLoggingService);
+
+      logAPIErrorResponse(arg1, arg2);
       expect(mockStatic).toHaveBeenCalledWith(arg1, arg2);
     });
   });
