@@ -218,52 +218,115 @@ describe('AuthenticatedAPIClient auth interface', () => {
     expect(client.isCsrfExempt(nonCsrfExemptUrl)).toBe(false);
   });
 
-  it('ensurePublicOrAuthenticationAndCookies fires callback when public route', () => {
-    const mockCallback = jest.fn();
-    client.refreshAccessToken = jest.fn();
-    client.ensurePublicOrAuthenticationAndCookies('/public/', mockCallback);
-    expect(client.refreshAccessToken).not.toHaveBeenCalled();
-    expect(mockCallback).toHaveBeenCalled();
-  });
+  describe('ensurePublicOrAuthenticationAndCookies', () => {
+    it('fires callback when public route', () => {
+      const mockCallback = jest.fn();
+      client.refreshAccessToken = jest.fn();
+      client.ensurePublicOrAuthenticationAndCookies('/public/', mockCallback);
+      expect(client.refreshAccessToken).not.toHaveBeenCalled();
+      expect(mockCallback).toHaveBeenCalled();
+    });
 
-  it('ensurePublicOrAuthenticationAndCookies redirects to login when no valid JWT', () => {
-    const mockCallback = jest.fn();
-    const loginUrl = process.env.LOGIN_URL;
-    const expectedRedirectUrl = encodeURIComponent(process.env.BASE_URL);
-    const expectedLocation = `${loginUrl}?next=${expectedRedirectUrl}`;
-    client.isAccessTokenExpired = jest.fn();
-    client.isAccessTokenExpired.mockReturnValueOnce(true);
-    client.refreshAccessToken = jest.fn();
-    client.refreshAccessToken.mockReturnValueOnce(new Promise((resolve, reject) => {
-      reject({ message: 'Failed!' }); // eslint-disable-line prefer-promise-reject-errors
-    }));
-    client.ensurePublicOrAuthenticationAndCookies('', mockCallback);
-    expect(mockCallback).not.toHaveBeenCalled();
-    expect(window.location.assign).toHaveBeenCalledWith(expectedLocation);
-  });
+    it('resolves promise with no accessToken when public route', async () => {
+      client.refreshAccessToken = jest.fn();
+      const result = await client.ensurePublicOrAuthenticationAndCookies('/public/');
+      expect(client.refreshAccessToken).not.toHaveBeenCalled();
+      expect(result).toBeUndefined();
+    });
 
-  it('ensurePublicOrAuthenticationAndCookies fires callback after JWT refreshed', () => {
-    const mockCallback = jest.fn();
-    client.isAccessTokenExpired = jest.fn();
-    client.isAccessTokenExpired.mockReturnValueOnce(true);
-    client.refreshAccessToken = jest.fn();
-    client.refreshAccessToken.mockReturnValueOnce(new Promise((resolve) => {
-      resolve();
-    }));
-    client.ensurePublicOrAuthenticationAndCookies('', mockCallback)
-      .then(() => {
-        expect(mockCallback).toHaveBeenCalled();
-      });
-  });
+    it('redirects to login when no valid JWT', () => {
+      const mockCallback = jest.fn();
+      const loginUrl = process.env.LOGIN_URL;
+      const expectedRedirectUrl = encodeURIComponent(process.env.BASE_URL);
+      const expectedLocation = `${loginUrl}?next=${expectedRedirectUrl}`;
+      client.isAccessTokenExpired = jest.fn();
+      client.isAccessTokenExpired.mockReturnValueOnce(true);
+      client.refreshAccessToken = jest.fn();
+      client.refreshAccessToken.mockReturnValueOnce(new Promise((resolve, reject) => {
+        reject({ message: 'Failed!' }); // eslint-disable-line prefer-promise-reject-errors
+      }));
+      client.ensurePublicOrAuthenticationAndCookies('', mockCallback);
+      expect(mockCallback).not.toHaveBeenCalled();
+      expect(window.location.assign).toHaveBeenCalledWith(expectedLocation);
+    });
 
-  it('ensurePublicOrAuthenticationAndCookies fires callback when valid JWT', () => {
-    const mockCallback = jest.fn();
-    client.isAccessTokenExpired = jest.fn();
-    client.isAccessTokenExpired.mockReturnValueOnce(false);
-    client.refreshAccessToken = jest.fn();
-    client.ensurePublicOrAuthenticationAndCookies('', mockCallback);
-    expect(client.refreshAccessToken).not.toHaveBeenCalled();
-    expect(mockCallback).toHaveBeenCalled();
+    it('fires callback after JWT refreshed', () => {
+      const mockCallback = jest.fn();
+      client.isAccessTokenExpired = jest.fn();
+      client.isAccessTokenExpired.mockReturnValueOnce(true);
+      client.refreshAccessToken = jest.fn();
+      client.refreshAccessToken.mockReturnValueOnce(new Promise((resolve) => {
+        resolve();
+      }));
+      client.ensurePublicOrAuthenticationAndCookies('', mockCallback)
+        .then(() => {
+          expect(mockCallback).toHaveBeenCalled();
+        });
+    });
+
+    it('fires callback when valid JWT', () => {
+      const mockCallback = jest.fn();
+      client.isAccessTokenExpired = jest.fn();
+      client.isAccessTokenExpired.mockReturnValueOnce(false);
+      client.refreshAccessToken = jest.fn();
+      client.ensurePublicOrAuthenticationAndCookies('', mockCallback);
+      expect(client.refreshAccessToken).not.toHaveBeenCalled();
+      expect(mockCallback).toHaveBeenCalled();
+    });
+
+    it('promise resolves to access token when valid JWT', async () => {
+      const rejectRefreshAccessToken = false;
+      applyMockAuthInterface(client, rejectRefreshAccessToken);
+      const mockCallback = jest.fn();
+      client.isAccessTokenExpired = jest.fn();
+      client.isAccessTokenExpired.mockReturnValueOnce(false);
+      client.refreshAccessToken = jest.fn();
+      client.getDecodedAccessToken.mockReturnValue({});
+      const accessToken = await client.ensurePublicOrAuthenticationAndCookies('', mockCallback);
+      expect(accessToken).toEqual({});
+      expect(mockCallback).toHaveBeenCalledWith({});
+    });
+
+    it('promise resolves to access token when valid JWT with no callback', async () => {
+      const rejectRefreshAccessToken = false;
+      applyMockAuthInterface(client, rejectRefreshAccessToken);
+      client.isAccessTokenExpired = jest.fn();
+      client.isAccessTokenExpired.mockReturnValueOnce(false);
+      client.refreshAccessToken = jest.fn();
+      client.getDecodedAccessToken.mockReturnValue({});
+      const accessToken = await client.ensurePublicOrAuthenticationAndCookies('');
+      expect(accessToken).toEqual({});
+    });
+
+    it('promise resolves to access token after refresh', async () => {
+      const rejectRefreshAccessToken = false;
+      applyMockAuthInterface(client, rejectRefreshAccessToken);
+      const mockCallback = jest.fn();
+      client.isAccessTokenExpired = jest.fn();
+      client.isAccessTokenExpired.mockReturnValueOnce(true);
+      client.refreshAccessToken = jest.fn();
+      client.refreshAccessToken.mockReturnValueOnce(new Promise((resolve) => {
+        resolve();
+      }));
+      client.getDecodedAccessToken.mockReturnValue({});
+      const accessToken = await client.ensurePublicOrAuthenticationAndCookies('', mockCallback);
+      expect(accessToken).toEqual({});
+      expect(mockCallback).toHaveBeenCalledWith({});
+    });
+
+    it('promise resolves to access token after refresh with no callback', async () => {
+      const rejectRefreshAccessToken = false;
+      applyMockAuthInterface(client, rejectRefreshAccessToken);
+      client.isAccessTokenExpired = jest.fn();
+      client.isAccessTokenExpired.mockReturnValueOnce(true);
+      client.refreshAccessToken = jest.fn();
+      client.refreshAccessToken.mockReturnValueOnce(new Promise((resolve) => {
+        resolve();
+      }));
+      client.getDecodedAccessToken.mockReturnValue({});
+      const accessToken = await client.ensurePublicOrAuthenticationAndCookies('');
+      expect(accessToken).toEqual({});
+    });
   });
 });
 
