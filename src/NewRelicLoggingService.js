@@ -107,6 +107,7 @@ class NewRelicLoggingService {
           `${messagePrefix}: API request failed: ${status} ${method} ${url} ${data}` :
           `API request failed: ${status} ${method} ${url} ${data}`;
 
+        // log info for client-side errors, like "Network Error", that we can't do anything about.
         this.logInfo(message, { ...processedError, ...customAttributes });
         break;
       /* istanbul ignore next */
