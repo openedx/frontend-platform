@@ -12,7 +12,6 @@ export const APP_ERROR = 'APP.ERROR';
 /* eslint no-underscore-dangle: "off" */
 export default class App {
   static _config = null;
-  static _ready = false;
   static history = createBrowserHistory();
   static authentication = defaultAuthentication;
   static getQueryParameters = memoize(getQueryParameters);
@@ -34,12 +33,10 @@ export default class App {
   }
 
   static ready() {
-    this._ready = true;
     PubSub.publish(APP_READY);
   }
 
   static error(error) {
-    this._ready = false;
     this.error = error;
     PubSub.publish(APP_ERROR);
   }
