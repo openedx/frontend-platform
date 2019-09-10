@@ -1,7 +1,7 @@
 frontend-base
 =============
 
-|Build Status| |Coveralls| |npm_version| |npm_downloads| |license| |semantic-release|
+|Build Status| |Codecov| |npm_version| |npm_downloads| |license| |semantic-release|
 
 This repository is a work in progress.  Nothing found here is at all production-ready.
 
