@@ -11,12 +11,13 @@
     "lint": "eslint --ext .js --ext .jsx .",
     "prepublishOnly": "npm run build",
     "semantic-release": "semantic-release",
-    "test": "jest --coverage",
+    "test": "jest --coverage --passWithNoTests",
     "travis-deploy-once": "travis-deploy-once"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run lint"
+      "pre-commit": "npm run lint",
+      "commit-msg": "commitlint -e $GIT_PARAMS"
     }
   },
   "repository": {
