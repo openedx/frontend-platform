@@ -7,8 +7,8 @@ This repository is a work in progress.  Nothing found here is at all production-
 
 .. |Build Status| image:: https://api.travis-ci.org/edx/frontend-base.svg?branch=master
    :target: https://travis-ci.org/edx/frontend-base
-.. |Coveralls| image:: https://img.shields.io/coveralls/edx/frontend-base.svg?branch=master
-   :target: https://coveralls.io/github/edx/frontend-base
+.. |Codecov| image:: https://img.shields.io/codecov/c/github/edx/frontend-base
+   :target: @edx/frontend-base
 .. |npm_version| image:: https://img.shields.io/npm/v/@edx/frontend-base.svg
    :target: @edx/frontend-base
 .. |npm_downloads| image:: https://img.shields.io/npm/dt/@edx/frontend-base.svg
