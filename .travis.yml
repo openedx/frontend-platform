@@ -10,7 +10,6 @@ install:
   - npm install
 script:
   - npm run lint
-  - npm audit
   - npm run test
   - npm run build
 after_success:
