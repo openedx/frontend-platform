@@ -1,15 +1,18 @@
 language: node_js
 node_js:
-  - 8
+  - 12
 cache:
   directories:
     - "~/.npm"
+before_install:
+  - npm install -g npm@latest
 install:
   - npm install
 script:
   - npm run lint
+  - npm audit
   - npm run test
   - npm run build
 after_success:
   - npm run travis-deploy-once "npm run semantic-release"
-  - npm run coveralls
+  - codecov
