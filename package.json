@@ -1,7 +1,7 @@
 {
   "name": "@edx/frontend-base",
   "version": "1.0.0-semantically-released",
-  "description": "Core client code used by micro-frontends.",
+  "description": "Foundational bootstrapping code for Open edX micro-frontend applications.",
   "main": "dist/index.js",
   "publishConfig": {
     "access": "public"
