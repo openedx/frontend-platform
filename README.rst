@@ -5,6 +5,8 @@ frontend-base
 
 This repository is a work in progress.  Nothing found here is at all production-ready.
 
+Documentation forthcoming.
+
 .. |Build Status| image:: https://api.travis-ci.org/edx/frontend-base.svg?branch=master
    :target: https://travis-ci.org/edx/frontend-base
 .. |Codecov| image:: https://img.shields.io/codecov/c/github/edx/frontend-base
