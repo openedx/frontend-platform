@@ -13,14 +13,15 @@ import configuration from './configuration';
 import mergeMessages from './mergeMessages';
 import { configureUserAccountApiService, getAuthentication } from './frontendAuthWrapper';
 
+// Our configuration is known statically, so we set it immediately.
+App.config = configuration;
+
 export default async function initialize({ messages, loggingService, ...other }) {
   const otherKeys = Object.keys(other);
   if (otherKeys.length > 0) {
     throw new Error(`Unexpected options passed to application initialize: ${otherKeys.join(' ')}.`);
   }
   try {
-    // Initialize App singleton
-    App.config = configuration;
     App.apiClient = getAuthenticatedAPIClient({
       appBaseUrl: configuration.BASE_URL,
       authBaseUrl: configuration.LMS_BASE_URL,

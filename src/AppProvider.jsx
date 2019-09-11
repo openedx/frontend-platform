@@ -25,7 +25,6 @@ const AppProvider = ({ store, children }) => (
 );
 
 AppProvider.propTypes = {
-  authentication: PropTypes.object.isRequired, // eslint-disable-line
   store: PropTypes.object.isRequired, // eslint-disable-line
   children: PropTypes.node.isRequired,
 };
