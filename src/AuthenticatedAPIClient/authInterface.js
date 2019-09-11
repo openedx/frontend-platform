@@ -98,8 +98,17 @@ export default function applyAuthInterface(httpClient, authConfig) {
     try {
       const cookieValue = cookies.get(httpClient.accessTokenCookieName);
       try {
-        if (cookieValue !== undefined) {
+        if (cookieValue) {
           decodedToken = jwtDecode(cookieValue);
+        /* istanbul ignore next */
+        } else {
+          const simplestCookieFound = global.document.cookie
+            .includes(httpClient.accessTokenCookieName);
+          const simpleCookieFound = !!httpClient.getCookie(httpClient.accessTokenCookieName);
+          httpClient.loggingService.logInfo('No access token cookie found with universal-cookie.', {
+            simplestCookieFound,
+            simpleCookieFound,
+          });
         }
       } catch (error) {
         httpClient.loggingService.logInfo('Error decoding JWT token.', {
@@ -112,6 +121,13 @@ export default function applyAuthInterface(httpClient, authConfig) {
     }
 
     return decodedToken;
+  };
+
+  /* TODO: Add a test if we use this, but not if we delete it. */
+  /* istanbul ignore next */
+  httpClient.getCookie = (name) => {
+    const v = global.document.cookie.match(`(^|;) ?${name}=([^;]*)(;|$)`);
+    return v ? v[2] : null;
   };
 
   httpClient.getCsrfToken = (apiProtocol, apiHost) =>
