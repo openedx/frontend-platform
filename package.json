@@ -11,8 +11,7 @@
     "lint": "eslint --ext .js --ext .jsx .",
     "prepublishOnly": "npm run build",
     "semantic-release": "semantic-release",
-    "test": "jest --coverage --passWithNoTests",
-    "travis-deploy-once": "travis-deploy-once"
+    "test": "jest --coverage --passWithNoTests"
   },
   "husky": {
     "hooks": {
@@ -62,8 +61,7 @@
     "react-router-dom": "^5.0.1",
     "redux": "4.0.4",
     "redux-saga": "1.0.5",
-    "semantic-release": "15.13.24",
-    "travis-deploy-once": "5.0.11"
+    "semantic-release": "15.13.24"
   },
   "dependencies": {
     "history": "^4.9.0",
