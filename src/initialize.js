@@ -9,9 +9,15 @@ import { configure as configureI18n } from '@edx/frontend-i18n';
 import { configureLoggingService } from '@edx/frontend-logging';
 
 import App from './App';
+import configuration from './configuration';
+import mergeMessages from './mergeMessages';
 import { configureUserAccountApiService, getAuthentication } from './frontendAuthWrapper';
 
-export default async function initialize(configuration, messages, loggingService) {
+export default async function initialize({ messages, loggingService, ...other }) {
+  const otherKeys = Object.keys(other);
+  if (otherKeys.length > 0) {
+    throw new Error(`Unexpected options passed to application initialize: ${otherKeys.join(' ')}.`);
+  }
   try {
     // Initialize App singleton
     App.config = configuration;
@@ -40,7 +46,7 @@ export default async function initialize(configuration, messages, loggingService
     App.authentication = getAuthentication(App.apiClient);
 
     // Configure services.
-    configureI18n(configuration, messages);
+    configureI18n(configuration, Array.isArray(messages) ? mergeMessages(messages) : messages);
     configureLoggingService(loggingService);
     initializeSegment(configuration.SEGMENT_KEY);
     configureAnalytics({
