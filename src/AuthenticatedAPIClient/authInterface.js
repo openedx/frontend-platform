@@ -1,19 +1,6 @@
 import Cookies from 'universal-cookie';
 import jwtDecode from 'jwt-decode';
 
-/**
- * Temporary helper function to log information about a missing access token.
- */
-/* istanbul ignore next */
-function logMissingAccessToken(httpClient, accessToken, response) {
-  // This is the success block for refreshing an access token.
-  // Sometimes the access token is null for an unknown reason.
-  // Log here to learn more.
-  httpClient.loggingService.logError(new Error('Access token is null after refresh.'), {
-    previousAccessToken: accessToken,
-    axiosResponse: response,
-  });
-}
 
 // Apply the auth-related properties and functions to the Axios API client.
 export default function applyAuthInterface(httpClient, authConfig) {
@@ -34,6 +21,7 @@ export default function applyAuthInterface(httpClient, authConfig) {
    * making requests to these auth-related URLs.
    */
   httpClient.authUrls = [httpClient.refreshAccessTokenEndpoint];
+
   /**
    * We will not try to retrieve a CSRF token before
    * making requests to these CSRF-exempt URLS.
@@ -100,15 +88,6 @@ export default function applyAuthInterface(httpClient, authConfig) {
       try {
         if (cookieValue) {
           decodedToken = jwtDecode(cookieValue);
-        /* istanbul ignore next */
-        } else {
-          const simplestCookieFound = global.document.cookie
-            .includes(httpClient.accessTokenCookieName);
-          const simpleCookieFound = !!httpClient.getCookie(httpClient.accessTokenCookieName);
-          httpClient.loggingService.logInfo('No access token cookie found with universal-cookie.', {
-            simplestCookieFound,
-            simpleCookieFound,
-          });
         }
       } catch (error) {
         httpClient.loggingService.logInfo('Error decoding JWT token.', {
@@ -144,16 +123,30 @@ export default function applyAuthInterface(httpClient, authConfig) {
         // Attempt to refresh the JWT cookies.
         httpClient
           .refreshAccessToken()
-          // Successfully refreshed the JWT cookies, fire the callback function.
+          // Successfully refreshed the JWT cookies
           .then((response) => {
             const refreshedAccessToken = httpClient.getDecodedAccessToken();
 
-            /* istanbul ignore next */
             if (refreshedAccessToken === null) {
-              logMissingAccessToken(httpClient, accessToken, response);
+              // TODO: ARCH-948: This should never happen, but it does. Researching...
+              const errorMessage = 'Access token is null after supposedly successful refresh.';
+              const cookieFound = global.document.cookie
+                .includes(httpClient.accessTokenCookieName);
+              const cookieEnabledIsDefined = global.navigator &&
+                global.navigator.cookieEnabled !== undefined;
+              const cookieDisabled = cookieEnabledIsDefined && !global.navigator.cookieEnabled;
+              // Logging as error over info to simplify search for root problem.
+              httpClient.loggingService.logError(`frontend-auth: ${errorMessage}`, {
+                previousAccessToken: accessToken,
+                axiosResponse: response,
+                cookieEnabledIsDefined,
+                cookieDisabled,
+                cookieFound,
+              });
+              throw new Error(errorMessage);
             }
 
-            // TODO: Determine what to do in the case that the token is still null.
+            // TODO: Remove deprecated callback and force use of promise below.
             if (callback !== null) {
               callback(refreshedAccessToken);
             }
