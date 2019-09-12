@@ -4,7 +4,7 @@ import { Button } from '@edx/paragon';
 
 export default class ErrorPage extends Component {
   reload() {
-    window.location.reload();
+    global.location.reload();
   }
 
   render() {
