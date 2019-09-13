@@ -1,20 +1,23 @@
 import PubSub from 'pubsub-js';
 import { createBrowserHistory } from 'history';
 import memoize from 'lodash.memoize';
+import pick from 'lodash.pick';
 
 import getQueryParameters from './getQueryParameters';
 import { defaultAuthentication } from './frontendAuthWrapper';
 import validateConfig from './validateConfig';
 
-export const APP_READY = 'APP.READY';
-export const APP_ERROR = 'APP.ERROR';
+export const APP_TOPIC = 'APP';
+export const APP_READY = `${APP_TOPIC}.READY`;
+export const APP_ERROR = `${APP_TOPIC}.ERROR`;
 
 /* eslint no-underscore-dangle: "off" */
 export default class App {
   static _config = null;
+  static _apiClient = null;
   static history = createBrowserHistory();
   static authentication = defaultAuthentication;
-  static getQueryParameters = memoize(getQueryParameters);
+  static getQueryParams = memoize(getQueryParameters);
 
   static set config(newConfiguration) {
     validateConfig(newConfiguration, 'App');
@@ -37,8 +40,7 @@ export default class App {
   }
 
   static error(error) {
-    this.error = error;
-    PubSub.publish(APP_ERROR);
+    PubSub.publish(APP_ERROR, error);
   }
 
   static set apiClient(apiClient) {
@@ -53,16 +55,24 @@ export default class App {
   }
 
   static get queryParams() {
-    return getQueryParameters(global.location.search);
+    return this.getQueryParams(global.location.search);
   }
 
   static requireConfig(keys, requester) {
-    this.subscribe(APP_READY, () => {
-      keys.forEach((key) => {
-        if (this.config[key] === undefined) {
-          throw new Error(`App configuration error: ${key} is required by ${requester}.`);
-        }
-      });
+    keys.forEach((key) => {
+      if (this.config[key] === undefined) {
+        throw new Error(`App configuration error: ${key} is required by ${requester}.`);
+      }
     });
+
+    return pick(this.config, keys);
+  }
+
+  static reset() {
+    this._config = null;
+    this._apiClient = null;
+    this._error = null;
+    this.authentication = defaultAuthentication;
+    PubSub.unsubscribe(APP_TOPIC);
   }
 }
