@@ -47,6 +47,7 @@
     "@edx/frontend-logging": "3.0.1",
     "@edx/paragon": "7.1.2",
     "babel-eslint": "10.0.3",
+    "babel-jest": "^24.9.0",
     "babel-loader": "8.0.6",
     "codecov": "^3.5.0",
     "es-check": "5.0.0",
@@ -66,6 +67,7 @@
   "dependencies": {
     "history": "4.9.0",
     "lodash.memoize": "^4.1.2",
+    "lodash.pick": "^4.4.0",
     "pubsub-js": "1.7.0",
     "redux-devtools-extension": "2.13.8",
     "redux-logger": "3.0.6",
@@ -87,9 +89,11 @@
   },
   "jest": {
     "collectCoverageFrom": [
-      "src/**/*.{js,jsx}",
-      "!src/index.js",
-      "!**/node_modules/**"
-    ]
+      "src/**/*.{js,jsx}"
+    ],
+    "transform": {
+      "^.+\\.jsx?$": "babel-jest"
+    },
+    "testURL": "https://localhost/"
   }
 }
