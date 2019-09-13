@@ -1,3 +1,3 @@
-export default function mergeMessages(messagesArray) {
-  return Object.assign({}, ...messagesArray);
+export default function mergeMessages(messagesArray = []) {
+  return Array.isArray(messagesArray) ? Object.assign({}, ...messagesArray) : {};
 }

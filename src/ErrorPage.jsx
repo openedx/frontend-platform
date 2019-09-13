@@ -3,6 +3,7 @@ import { FormattedMessage } from '@edx/frontend-i18n';
 import { Button } from '@edx/paragon';
 
 export default class ErrorPage extends Component {
+  /* istanbul ignore next */
   reload() {
     global.location.reload();
   }
