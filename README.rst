@@ -3,9 +3,9 @@ frontend-base
 
 |Build Status| |Codecov| |npm_version| |npm_downloads| |license| |semantic-release|
 
-This repository is a work in progress.  Nothing found here is at all production-ready.
+This repository is under active development. It is currently in use in production as part of a pilot program in https://github.com/edx/frontend-app-profile, but may otherwise change.  Please contact https://github.com/orgs/edx/teams/arch-fed with any questions.
 
-Documentation forthcoming.
+Further documentation forthcoming.
 
 .. |Build Status| image:: https://api.travis-ci.org/edx/frontend-base.svg?branch=master
    :target: https://travis-ci.org/edx/frontend-base
