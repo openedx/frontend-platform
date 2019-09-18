@@ -1,24 +1,21 @@
 import { fetchUserAccount as _fetchUserAccount, UserAccountApiService } from '@edx/frontend-auth';
+import App from './App';
 
-export const defaultAuthentication = {
+export const defaultAuthenticatedUser = {
   userId: null,
   username: null,
+  roles: [],
   administrator: false,
 };
 
-let userAccountApiService = null;
-
-export const configureUserAccountApiService = (configuration, apiClient) => {
-  userAccountApiService = new UserAccountApiService(apiClient, configuration.LMS_BASE_URL);
+export const fetchUserAccount = (username) => {
+  const userAccountApiService = new UserAccountApiService(App.apiClient, App.config.LMS_BASE_URL);
+  _fetchUserAccount(userAccountApiService, username);
 };
 
-export const fetchUserAccount = username => _fetchUserAccount(userAccountApiService, username);
-
-export const getAuthentication = (apiClient) => {
-  const { authentication } = apiClient.getAuthenticationState();
-  return authentication === undefined ? defaultAuthentication : {
-    userId: authentication.userId,
-    username: authentication.username,
-    administrator: authentication.administrator,
-  };
-};
+export const getAuthenticatedUser = accessToken => ({
+  userId: accessToken.user_id,
+  username: accessToken.preferred_username,
+  roles: accessToken.roles ? accessToken.roles : [],
+  administrator: accessToken.administrator,
+});

@@ -1,6 +1,9 @@
+import validateConfig from '../validateConfig';
+
+/* eslint-disable no-param-reassign */
 const ENVIRONMENT = process.env.NODE_ENV;
 
-const configuration = {
+export const env = {
   ACCESS_TOKEN_COOKIE_NAME: process.env.ACCESS_TOKEN_COOKIE_NAME,
   BASE_URL: process.env.BASE_URL,
   CREDENTIALS_BASE_URL: process.env.CREDENTIALS_BASE_URL,
@@ -21,4 +24,7 @@ const configuration = {
   USER_INFO_COOKIE_NAME: process.env.USER_INFO_COOKIE_NAME,
 };
 
-export default configuration;
+export default async function configuration(app) {
+  app.config = env;
+  validateConfig(app.config, 'App validation handler');
+}

@@ -12,6 +12,7 @@
     "lint": "eslint --ext .js --ext .jsx .",
     "prepublishOnly": "npm run build",
     "semantic-release": "semantic-release",
+    "start": "parcel ./example/index.html --no-source-maps --out-dir example/dist",
     "test": "jest --coverage --passWithNoTests"
   },
   "husky": {
@@ -47,31 +48,34 @@
     "@edx/frontend-logging": "3.0.1",
     "@edx/paragon": "7.1.2",
     "babel-eslint": "10.0.3",
-    "babel-jest": "^24.9.0",
+    "babel-jest": "24.9.0",
     "babel-loader": "8.0.6",
-    "codecov": "^3.5.0",
-    "enzyme": "^3.10.0",
-    "enzyme-adapter-react-16": "^1.14.0",
+    "codecov": "3.5.0",
+    "enzyme": "3.10.0",
+    "enzyme-adapter-react-16": "1.14.0",
     "es-check": "5.0.0",
     "eslint": "6.3.0",
     "eslint-config-edx": "4.0.4",
     "husky": "3.0.5",
     "jest": "24.9.0",
+    "parcel-bundler": "1.12.3",
     "prop-types": "15.7.2",
     "react": "16.9.0",
     "react-dom": "16.9.0",
     "react-redux": "7.1.1",
-    "react-router-dom": "^5.0.1",
+    "react-router-dom": "5.0.1",
     "redux": "4.0.4",
-    "redux-mock-store": "^1.5.3",
+    "redux-mock-store": "1.5.3",
     "redux-saga": "1.0.5",
+    "sass": "1.22.12",
     "semantic-release": "15.13.24"
   },
   "dependencies": {
+    "babel-polyfill": "6.26.0",
     "history": "4.9.0",
-    "lodash.memoize": "^4.1.2",
-    "lodash.merge": "^4.6.2",
-    "lodash.pick": "^4.4.0",
+    "lodash.memoize": "4.1.2",
+    "lodash.merge": "4.6.2",
+    "lodash.pick": "4.4.0",
     "pubsub-js": "1.7.0",
     "redux-devtools-extension": "2.13.8",
     "redux-logger": "3.0.6",
@@ -93,17 +97,20 @@
   },
   "jest": {
     "collectCoverageFrom": [
-      "src/**/*.{js,jsx}"
+      "src/**/*.{js,jsx}",
+      "!**/node_modules/**",
+      "!**/dist/**"
     ],
     "transform": {
       "^.+\\.jsx?$": "babel-jest"
     },
     "testURL": "http://localhost/",
     "setupFiles": [
-      "./src/setupTest.js"
+      "./src/setupTest.js",
+      "dotenv/config"
     ],
     "transformIgnorePatterns": [
-      "/node_modules/(?!(@edx/paragon)/).*/"
+      "/node_modules/(?!@edx)"
     ]
   }
 }
