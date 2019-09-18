@@ -34,11 +34,13 @@ To install frontend-auth into your project:
      // handleRefreshAccessTokenFailure: error => {},
    });
 
-   apiClient.ensurePublicOrAuthenticationAndCookies(window.location.pathname).then((accessToken) => {
-     // A non-null accessToken here indicates that the user is authenticated and the apiClient is ready to be used.
-
-     // NOTE: There is a bug where the accessToken occasionally comes back blank.  See https://openedx.atlassian.net/browse/ARCH-948 for more details.
-   });
+   apiClient.ensureAuthenticatedUser(window.location.pathname)
+     .then(({ authenticatedUser, decodedAccessToken }) => {
+        // 1. Successfully resolving the promise means that the user is authenticated and the apiClient is ready to be used.
+        // 2. ``authenticatedUser`` is an object containing user account data that was stored in the access token.
+        // 3. You probably won't need ``decodedAccessToken``, but it is included for completeness and is the raw version
+        //    of the data used to create ``authenticatedUser``.
+     });
 
 ``frontend-auth`` provides a ``PrivateRoute`` component which can be used along with ``react-router`` to require authentication for specific routes in your app. Here is an example of defining a route that requires authentication:
 
