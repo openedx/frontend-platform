@@ -23,12 +23,15 @@ tomorrow.setDate(tomorrow.getDate() + 1);
 const jwt = {
   user_id: '12345',
   preferred_username: 'test',
-  roles: ['role1', 'role2'],
   administrator: false,
 };
 const expiredJwt = Object.assign({ exp: yesterday.getTime() / 1000 }, jwt);
+const encodedExpiredJwt = `header.${btoa(JSON.stringify(expiredJwt))}`;
 const validJwt = Object.assign({ exp: tomorrow.getTime() / 1000 }, jwt);
 const encodedValidJwt = `header.${btoa(JSON.stringify(validJwt))}`;
+const jwtWithRoles = Object.assign({ roles: ['role1', 'role2'] }, jwt);
+const validJwtWithRoles = Object.assign({ exp: tomorrow.getTime() / 1000 }, jwtWithRoles);
+const encodedValidJwtWithRoles = `header.${btoa(JSON.stringify(validJwtWithRoles))}`;
 
 const mockCookies = {
   get: jest.fn(),
@@ -37,19 +40,30 @@ jest.genMockFromModule('universal-cookie');
 Cookies.mockImplementation(() => mockCookies);
 jest.mock('universal-cookie');
 
-function expectRefreshAccessTokenToHaveBeenCalled(client) {
+// client is a singleton, so we need to store originals once before any mocking
+const client = getAuthenticatedAPIClient(authConfig);
+const originalGetDecodedAccessToken = client.getDecodedAccessToken;
+const originalIsAccessTokenExpired = client.isAccessTokenExpired;
+
+beforeEach(() => {
+  client.getDecodedAccessToken = originalGetDecodedAccessToken;
+  client.isAccessTokenExpired = originalIsAccessTokenExpired;
+  jest.spyOn(global.document, 'referrer', 'get').mockReturnValue('');
+});
+
+function expectRefreshAccessTokenToHaveBeenCalled() {
   expect(client.refreshAccessToken).toHaveBeenCalled();
 }
 
-function expectRefreshAccessTokenToNotHaveBeenCalled(client) {
+function expectRefreshAccessTokenToNotHaveBeenCalled() {
   expect(client.refreshAccessToken).not.toHaveBeenCalled();
 }
 
-function expectGetCsrfTokenToHaveBeenCalled(client) {
+function expectGetCsrfTokenToHaveBeenCalled() {
   expect(client.getCsrfToken).toHaveBeenCalled();
 }
 
-function expectGetCsrfTokenToNotHaveBeenCalled(client) {
+function expectGetCsrfTokenToNotHaveBeenCalled() {
   expect(client.getCsrfToken).not.toHaveBeenCalled();
 }
 
@@ -67,7 +81,6 @@ function testJwtCookieInterceptorFulfillment(
 ) {
   // eslint-disable-next-line consistent-return
   it(`${expects.name} when isAuthUrl=${isAuthUrl} mockAccessToken=${mockAccessToken} isAccessTokenExpired=${isAccessTokenExpired}`, () => {
-    const client = getAuthenticatedAPIClient(authConfig);
     applyMockAuthInterface(client, rejectRefreshAccessToken);
     client.isAuthUrl.mockReturnValue(isAuthUrl);
     client.getDecodedAccessToken.mockReturnValue(mockAccessToken);
@@ -97,7 +110,6 @@ function testCsrfTokenInterceptorFulfillment(
   expectHeaderSet,
 ) {
   it(`${expects.name} when isCsrfExempt=${isCsrfExempt} and method=${method} and queueRequests=${queueRequests} and csrfTokens=${JSON.stringify(csrfTokens)}`, () => {
-    const client = getAuthenticatedAPIClient(authConfig);
     applyMockAuthInterface(client);
     client.isCsrfExempt.mockReturnValue(isCsrfExempt);
     /* eslint-disable no-underscore-dangle */
@@ -131,27 +143,20 @@ describe('getAuthenticatedAPIClient', () => {
   });
 });
 
+function expectEnsureSuccessfulAuthenticatedUserResponse(authenticatedUser, decodedAccessToken, testJwt = validJwt) {
+  expect(decodedAccessToken).toEqual(testJwt);
+  expect(authenticatedUser.userId).toBeDefined();
+  expect(authenticatedUser.userId).toEqual(testJwt.user_id);
+  expect(authenticatedUser.username).toBeDefined();
+  expect(authenticatedUser.username).toEqual(testJwt.preferred_username);
+  expect(authenticatedUser.roles).toBeDefined();
+  expect(authenticatedUser.roles).toEqual(testJwt.roles ? testJwt.roles : []);
+  expect(authenticatedUser.administrator).toBeDefined();
+  expect(authenticatedUser.administrator).toEqual(testJwt.administrator);
+}
+
 describe('AuthenticatedAPIClient auth interface', () => {
-  const client = getAuthenticatedAPIClient(authConfig);
   window.location.assign = jest.fn();
-
-  it('has method getAuthenticationState that returns authentication state when valid JWT cookie exists', () => {
-    mockCookies.get.mockReturnValueOnce(encodedValidJwt);
-    const result = client.getAuthenticationState();
-    expect(result.authentication.userId).toBeDefined();
-    expect(result.authentication.userId).toEqual(validJwt.user_id);
-    expect(result.authentication.username).toBeDefined();
-    expect(result.authentication.username).toEqual(validJwt.preferred_username);
-    expect(result.authentication.roles).toBeDefined();
-    expect(result.authentication.roles).toEqual(validJwt.roles);
-    expect(result.authentication.administrator).toBeDefined();
-    expect(result.authentication.administrator).toEqual(validJwt.administrator);
-  });
-
-  it('has method getAuthenticationState that returns empty state when no JWT cookie exists', () => {
-    const result = client.getAuthenticationState();
-    expect(result.authentication).toBeUndefined();
-  });
 
   it('has method isAccessTokenExpired', () => {
     expect(client.isAccessTokenExpired(validJwt)).toBe(false);
@@ -218,24 +223,8 @@ describe('AuthenticatedAPIClient auth interface', () => {
     expect(client.isCsrfExempt(nonCsrfExemptUrl)).toBe(false);
   });
 
-  describe('ensurePublicOrAuthenticationAndCookies', () => {
-    it('fires callback when public route', () => {
-      const mockCallback = jest.fn();
-      client.refreshAccessToken = jest.fn();
-      client.ensurePublicOrAuthenticationAndCookies('/public/', mockCallback);
-      expect(client.refreshAccessToken).not.toHaveBeenCalled();
-      expect(mockCallback).toHaveBeenCalled();
-    });
-
-    it('resolves promise with no accessToken when public route', async () => {
-      client.refreshAccessToken = jest.fn();
-      const result = await client.ensurePublicOrAuthenticationAndCookies('/public/');
-      expect(client.refreshAccessToken).not.toHaveBeenCalled();
-      expect(result).toBeUndefined();
-    });
-
+  describe('ensureAuthenticatedUser', () => {
     it('redirects to login when no valid JWT', () => {
-      const mockCallback = jest.fn();
       const loginUrl = process.env.LOGIN_URL;
       const expectedRedirectUrl = encodeURIComponent(process.env.BASE_URL);
       const expectedLocation = `${loginUrl}?next=${expectedRedirectUrl}`;
@@ -245,94 +234,73 @@ describe('AuthenticatedAPIClient auth interface', () => {
       client.refreshAccessToken.mockReturnValueOnce(new Promise((resolve, reject) => {
         reject({ message: 'Failed!' }); // eslint-disable-line prefer-promise-reject-errors
       }));
-      client.ensurePublicOrAuthenticationAndCookies('', mockCallback);
-      expect(mockCallback).not.toHaveBeenCalled();
+      client.ensureAuthenticatedUser('');
       expect(window.location.assign).toHaveBeenCalledWith(expectedLocation);
     });
 
-    it('fires callback after JWT refreshed', () => {
-      const mockCallback = jest.fn();
+    it('errors when no valid JWT after coming from login', async () => {
+      jest.spyOn(global.document, 'referrer', 'get').mockReturnValue(process.env.LOGIN_URL);
       client.isAccessTokenExpired = jest.fn();
       client.isAccessTokenExpired.mockReturnValueOnce(true);
       client.refreshAccessToken = jest.fn();
-      client.refreshAccessToken.mockReturnValueOnce(new Promise((resolve) => {
-        resolve();
+      client.refreshAccessToken.mockReturnValueOnce(new Promise((resolve, reject) => {
+        reject({ message: 'Failed!' }); // eslint-disable-line prefer-promise-reject-errors
       }));
-      client.ensurePublicOrAuthenticationAndCookies('', mockCallback)
-        .then(() => {
-          expect(mockCallback).toHaveBeenCalled();
-        });
-    });
 
-    it('fires callback when valid JWT', () => {
-      const mockCallback = jest.fn();
-      client.isAccessTokenExpired = jest.fn();
-      client.isAccessTokenExpired.mockReturnValueOnce(false);
-      client.refreshAccessToken = jest.fn();
-      client.ensurePublicOrAuthenticationAndCookies('', mockCallback);
-      expect(client.refreshAccessToken).not.toHaveBeenCalled();
-      expect(mockCallback).toHaveBeenCalled();
+      await expect(client.ensureAuthenticatedUser('')).rejects
+        .toThrow(new Error('Redirect from login page. Rejecting to avoid infinite redirect loop.'));
     });
 
     it('promise resolves to access token when valid JWT', async () => {
-      const rejectRefreshAccessToken = false;
-      applyMockAuthInterface(client, rejectRefreshAccessToken);
-      const mockCallback = jest.fn();
-      client.isAccessTokenExpired = jest.fn();
-      client.isAccessTokenExpired.mockReturnValueOnce(false);
-      client.refreshAccessToken = jest.fn();
-      client.getDecodedAccessToken.mockReturnValue({});
-      const accessToken = await client.ensurePublicOrAuthenticationAndCookies('', mockCallback);
-      expect(accessToken).toEqual({});
-      expect(mockCallback).toHaveBeenCalledWith({});
+      mockCookies.get.mockReturnValueOnce(encodedValidJwt);
+      const { authenticatedUser, decodedAccessToken } = await client.ensureAuthenticatedUser('');
+
+      expectEnsureSuccessfulAuthenticatedUserResponse(authenticatedUser, decodedAccessToken);
     });
 
-    it('promise resolves to access token when valid JWT with no callback', async () => {
-      const rejectRefreshAccessToken = false;
-      applyMockAuthInterface(client, rejectRefreshAccessToken);
-      client.isAccessTokenExpired = jest.fn();
-      client.isAccessTokenExpired.mockReturnValueOnce(false);
-      client.refreshAccessToken = jest.fn();
-      client.getDecodedAccessToken.mockReturnValue({});
-      const accessToken = await client.ensurePublicOrAuthenticationAndCookies('');
-      expect(accessToken).toEqual({});
+    it('promise resolves to access token with roles when valid JWT', async () => {
+      mockCookies.get.mockReturnValueOnce(encodedValidJwtWithRoles);
+      const { authenticatedUser, decodedAccessToken } = await client.ensureAuthenticatedUser('');
+
+      expectEnsureSuccessfulAuthenticatedUserResponse(authenticatedUser, decodedAccessToken, validJwtWithRoles);
     });
 
     it('promise resolves to access token after refresh', async () => {
-      const rejectRefreshAccessToken = false;
-      applyMockAuthInterface(client, rejectRefreshAccessToken);
-      const mockCallback = jest.fn();
-      client.isAccessTokenExpired = jest.fn();
-      client.isAccessTokenExpired.mockReturnValueOnce(true);
+      mockCookies.get
+        .mockReturnValueOnce(encodedExpiredJwt)
+        .mockReturnValueOnce(encodedValidJwt);
       client.refreshAccessToken = jest.fn();
       client.refreshAccessToken.mockReturnValueOnce(new Promise((resolve) => {
         resolve();
       }));
-      client.getDecodedAccessToken.mockReturnValue({});
-      const accessToken = await client.ensurePublicOrAuthenticationAndCookies('', mockCallback);
-      expect(accessToken).toEqual({});
-      expect(mockCallback).toHaveBeenCalledWith({});
+
+      const { authenticatedUser, decodedAccessToken } = await client.ensureAuthenticatedUser('');
+
+      expect(client.refreshAccessToken.mock.calls.length).toBe(1);
+      expectEnsureSuccessfulAuthenticatedUserResponse(authenticatedUser, decodedAccessToken);
     });
 
-    it('promise resolves to access token after refresh with no callback', async () => {
-      const rejectRefreshAccessToken = false;
-      applyMockAuthInterface(client, rejectRefreshAccessToken);
-      client.isAccessTokenExpired = jest.fn();
-      client.isAccessTokenExpired.mockReturnValueOnce(true);
+    it('logs and throws error if refresh access token does not properly set cookie', async () => {
+      client.loggingService.logError = jest.fn();
+      client.getDecodedAccessToken = jest.fn();
+      client.getDecodedAccessToken.mockReturnValue(null);
       client.refreshAccessToken = jest.fn();
       client.refreshAccessToken.mockReturnValueOnce(new Promise((resolve) => {
         resolve();
       }));
-      client.getDecodedAccessToken.mockReturnValue({});
-      const accessToken = await client.ensurePublicOrAuthenticationAndCookies('');
-      expect(accessToken).toEqual({});
+
+      await expect(client.ensureAuthenticatedUser('')).rejects
+        .toThrow(new Error('Access token is null after supposedly successful refresh.'));
+
+      expect(client.loggingService.logError.mock.calls.length).toBe(1);
+      expect(client.loggingService.logError.mock.calls[0][0])
+        .toEqual('frontend-auth: Access token is null after supposedly successful refresh.');
     });
   });
 });
 
 describe('AuthenticatedAPIClient request headers', () => {
   it('should contain USE-JWT-COOKIE', () => {
-    const client = getAuthenticatedAPIClient(authConfig);
     expect(client.defaults.headers.common['USE-JWT-COOKIE']).toBe(true);
   });
 });
@@ -362,7 +330,6 @@ describe('AuthenticatedAPIClient ensureValidJWTCookie request interceptor', () =
   });
 
   it('returns error if it is rejected', () => {
-    const client = getAuthenticatedAPIClient(authConfig);
     const error = new Error('It failed!');
     client.interceptors.request.handlers[0].rejected(error)
       .catch((rejection) => {
@@ -372,7 +339,6 @@ describe('AuthenticatedAPIClient ensureValidJWTCookie request interceptor', () =
 
   it('redirects to logout if a token refresh fails', () => {
     const rejectRefreshAccessToken = true;
-    const client = getAuthenticatedAPIClient(authConfig);
     applyMockAuthInterface(client, rejectRefreshAccessToken);
     client.isAuthUrl.mockReturnValue(false);
     client.getDecodedAccessToken.mockReturnValue({});
@@ -387,7 +353,6 @@ describe('AuthenticatedAPIClient ensureValidJWTCookie request interceptor', () =
 
   it('executes the handleRefreshAccessTokenFailure instead of logout if a token refresh fails', () => {
     const rejectRefreshAccessToken = true;
-    const client = getAuthenticatedAPIClient(authConfig);
     client.handleRefreshAccessTokenFailure = jest.fn();
     applyMockAuthInterface(client, rejectRefreshAccessToken);
     client.isAuthUrl.mockReturnValue(false);
@@ -419,7 +384,6 @@ describe('AuthenticatedAPIClient ensureCsrfToken request interceptor', () => {
   });
 
   it('returns error if it is rejected', () => {
-    const client = getAuthenticatedAPIClient(authConfig);
     const error = new Error('It failed!');
     client.interceptors.request.handlers[1].rejected(error)
       .catch((rejection) => {
@@ -430,7 +394,6 @@ describe('AuthenticatedAPIClient ensureCsrfToken request interceptor', () => {
 
 describe('AuthenticatedAPIClient response interceptor', () => {
   it('returns error if it fails with 401', () => {
-    const client = getAuthenticatedAPIClient(authConfig);
     const errorResponse = { response: { status: 401, data: 'it failed' } };
     client.interceptors.response.handlers[0].rejected(errorResponse)
       .catch((promiseError) => {
@@ -438,7 +401,6 @@ describe('AuthenticatedAPIClient response interceptor', () => {
       });
   });
   it('returns error if token refresh fails with 401', () => {
-    const client = getAuthenticatedAPIClient(authConfig);
     const errorResponse = {
       response: {
         status: 401,
@@ -452,7 +414,6 @@ describe('AuthenticatedAPIClient response interceptor', () => {
       });
   });
   it('returns error if it fails with 403', () => {
-    const client = getAuthenticatedAPIClient(authConfig);
     const errorResponse = { response: { status: 403, data: 'it failed' } };
     client.interceptors.response.handlers[0].rejected(errorResponse)
       .catch((promiseError) => {
@@ -460,7 +421,6 @@ describe('AuthenticatedAPIClient response interceptor', () => {
       });
   });
   it('returns response if it is fulfilled', () => {
-    const client = getAuthenticatedAPIClient(authConfig);
     const response = { data: 'It worked!' };
     const result = client.interceptors.response.handlers[0].fulfilled(response);
     expect(result).toBe(response);

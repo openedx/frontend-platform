@@ -2,6 +2,27 @@ import Cookies from 'universal-cookie';
 import jwtDecode from 'jwt-decode';
 
 
+function getAuthenticatedUserFromDecodedAccessToken(decodedAccessToken) {
+  /* istanbul ignore next */
+  if (decodedAccessToken === null) {
+    throw new Error('Decoded access token is required to get authenticated user.');
+  }
+
+  return {
+    userId: decodedAccessToken.user_id,
+    username: decodedAccessToken.preferred_username,
+    roles: decodedAccessToken.roles ? decodedAccessToken.roles : [],
+    administrator: decodedAccessToken.administrator,
+  };
+}
+
+function formatAuthenticatedResponse(decodedAccessToken) {
+  return {
+    authenticatedUser: getAuthenticatedUserFromDecodedAccessToken(decodedAccessToken),
+    decodedAccessToken,
+  };
+}
+
 // Apply the auth-related properties and functions to the Axios API client.
 export default function applyAuthInterface(httpClient, authConfig) {
   /* eslint-disable no-param-reassign */
@@ -29,93 +50,13 @@ export default function applyAuthInterface(httpClient, authConfig) {
   httpClient.csrfExemptUrls = [httpClient.refreshAccessTokenEndpoint];
 
   /**
-   * WARNING: This function provides unreliable results.
-   * TODO: ARCH-948: See for details on potential fix.
+   * Ensures a user is authenticated, including redirecting to login when not authenticated.
+   *
+   * @param route: used to return user after login when not authenticated.
+   * @returns Promise that resolves to { authenticatedUser: {...}, decodedAccessToken: {...}}
    */
-  httpClient.getAuthenticationState = () => {
-    const state = {};
-
-    const token = httpClient.getDecodedAccessToken();
-    if (token) {
-      state.authentication = {
-        userId: token.user_id,
-        username: token.preferred_username,
-        roles: token.roles,
-        administrator: token.administrator,
-      };
-    }
-
-    return state;
-  };
-
-  httpClient.ensurePublicOrAuthenticationAndCookies = (route, callback = null) =>
-    new Promise((resolve) => {
-      if (httpClient.isRoutePublic(route)) {
-        if (callback !== null) {
-          callback();
-        }
-        // TODO: Return accessToken if it exists even for public routes.
-        resolve();
-      } else {
-        httpClient
-          .ensureAuthenticationAndCookies(route, callback)
-          .then(accessToken => resolve(accessToken));
-      }
-    });
-
-  // JWT expiration is serialized as seconds since the epoch,
-  // Date.now returns the number of milliseconds since the epoch.
-  httpClient.isAccessTokenExpired = token => !token || token.exp < Date.now() / 1000;
-
-  httpClient.login = (redirectUrl = authConfig.appBaseUrl) => {
-    global.location.assign(`${httpClient.loginUrl}?next=${encodeURIComponent(redirectUrl)}`);
-  };
-
-  httpClient.logout = (redirectUrl = authConfig.appBaseUrl) => {
-    global.location.assign(`${httpClient.logoutUrl}?redirect_url=${encodeURIComponent(redirectUrl)}`);
-  };
-
-  httpClient.refreshAccessToken = () => httpClient.post(httpClient.refreshAccessTokenEndpoint);
-
-  httpClient.isAuthUrl = url => httpClient.authUrls.includes(url);
-
-  httpClient.getDecodedAccessToken = () => {
-    const cookies = new Cookies();
-    let decodedToken = null;
-    /* istanbul ignore next */
-    try {
-      const cookieValue = cookies.get(httpClient.accessTokenCookieName);
-      try {
-        if (cookieValue) {
-          decodedToken = jwtDecode(cookieValue);
-        }
-      } catch (error) {
-        httpClient.loggingService.logInfo('Error decoding JWT token.', {
-          jwtDecodeError: error,
-          cookieValue,
-        });
-      }
-    } catch (error) {
-      httpClient.loggingService.logInfo(`Error reading the cookie: ${httpClient.accessTokenCookieName}.`);
-    }
-
-    return decodedToken;
-  };
-
-  /* TODO: Add a test if we use this, but not if we delete it. */
-  /* istanbul ignore next */
-  httpClient.getCookie = (name) => {
-    const v = global.document.cookie.match(`(^|;) ?${name}=([^;]*)(;|$)`);
-    return v ? v[2] : null;
-  };
-
-  httpClient.getCsrfToken = (apiProtocol, apiHost) =>
-    httpClient.get(`${apiProtocol}//${apiHost}${httpClient.csrfTokenApiPath}`);
-
-  httpClient.isCsrfExempt = url => httpClient.csrfExemptUrls.includes(url);
-
-  httpClient.ensureAuthenticationAndCookies = (route, callback) =>
-    new Promise((resolve) => {
+  httpClient.ensureAuthenticatedUser = route =>
+    new Promise((resolve, reject) => {
       // Validate auth-related cookies are in a consistent state.
       const accessToken = httpClient.getDecodedAccessToken();
       const tokenExpired = httpClient.isAccessTokenExpired(accessToken);
@@ -143,27 +84,71 @@ export default function applyAuthInterface(httpClient, authConfig) {
                 cookieDisabled,
                 cookieFound,
               });
-              throw new Error(errorMessage);
+              reject(new Error(errorMessage));
+              return;
             }
 
-            // TODO: Remove deprecated callback and force use of promise below.
-            if (callback !== null) {
-              callback(refreshedAccessToken);
-            }
-            resolve(refreshedAccessToken);
+            resolve(formatAuthenticatedResponse(refreshedAccessToken));
           })
           .catch(() => {
+            const isRedirectFromLoginPage = global.document.referrer &&
+              global.document.referrer.startsWith(httpClient.loginUrl);
+            if (isRedirectFromLoginPage) {
+              reject(new Error('Redirect from login page. Rejecting to avoid infinite redirect loop.'));
+              return;
+            }
+
             // The user is not authenticated, send them to the login page.
             httpClient.login(httpClient.appBaseUrl + route);
           });
       } else {
-        // We already have valid JWT cookies, fire the callback function.
-        if (callback !== null) {
-          callback(accessToken);
-        }
-        resolve(accessToken);
+        // We already have valid JWT cookies
+        resolve(formatAuthenticatedResponse(accessToken));
       }
     });
 
-  httpClient.isRoutePublic = route => /^\/public.*$/.test(route);
+  // JWT expiration is serialized as seconds since the epoch,
+  // Date.now returns the number of milliseconds since the epoch.
+  httpClient.isAccessTokenExpired = token => !token || token.exp < Date.now() / 1000;
+
+  httpClient.login = (redirectUrl = authConfig.appBaseUrl) => {
+    global.location.assign(`${httpClient.loginUrl}?next=${encodeURIComponent(redirectUrl)}`);
+  };
+
+  httpClient.logout = (redirectUrl = authConfig.appBaseUrl) => {
+    global.location.assign(`${httpClient.logoutUrl}?redirect_url=${encodeURIComponent(redirectUrl)}`);
+  };
+
+  httpClient.refreshAccessToken = () => httpClient.post(httpClient.refreshAccessTokenEndpoint);
+
+  httpClient.isAuthUrl = url => httpClient.authUrls.includes(url);
+
+  httpClient.getDecodedAccessToken = () => {
+    const cookies = new Cookies();
+    let decodedToken = null;
+    try {
+      const cookieValue = cookies.get(httpClient.accessTokenCookieName);
+      try {
+        if (cookieValue) {
+          decodedToken = jwtDecode(cookieValue);
+        }
+      } catch (error) {
+        /* istanbul ignore next */
+        httpClient.loggingService.logInfo('Error decoding JWT token.', {
+          jwtDecodeError: error,
+          cookieValue,
+        });
+      }
+    } catch (error) {
+      /* istanbul ignore next */
+      httpClient.loggingService.logInfo(`Error reading the cookie: ${httpClient.accessTokenCookieName}.`);
+    }
+
+    return decodedToken;
+  };
+
+  httpClient.getCsrfToken = (apiProtocol, apiHost) =>
+    httpClient.get(`${apiProtocol}//${apiHost}${httpClient.csrfTokenApiPath}`);
+
+  httpClient.isCsrfExempt = url => httpClient.csrfExemptUrls.includes(url);
 }
