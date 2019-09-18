@@ -122,6 +122,13 @@ describe('analytics identifyAuthenticatedUser', () => {
     expect(window.analytics.identify.mock.calls.length).toBe(1);
     expect(window.analytics.identify).toBeCalledWith(testUserId, testTraits);
   });
+
+  it('throws error if userId is not supplied', () => {
+    configureAnalyticsWithMocks();
+
+    expect(() => identifyAuthenticatedUser(null))
+      .toThrowError(new Error('UserId is required for identifyAuthenticatedUser.'));
+  });
 });
 
 describe('analytics identifyAnonymousUser', () => {
@@ -172,7 +179,8 @@ describe('analytics send Page event', () => {
   });
 
   it('calls Segment page on success after identifyAuthenticatedUser', () => {
-    testSendPageAfterIdentify(identifyAuthenticatedUser);
+    const userId = 1;
+    testSendPageAfterIdentify(() => identifyAuthenticatedUser(userId));
   });
 
   it('calls Segment page on success after identifyAnonymousUser', () => {
@@ -222,7 +230,8 @@ describe('analytics send Track event', () => {
   });
 
   it('calls Segment track on success after identifyAuthenticatedUser', () => {
-    testSendTrackEventAfterIdentify(identifyAuthenticatedUser);
+    const userId = 1;
+    testSendTrackEventAfterIdentify(() => identifyAuthenticatedUser(userId));
   });
 
   it('calls Segment track on success after identifyAnonymousUser', () => {
