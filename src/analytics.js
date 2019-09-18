@@ -24,14 +24,14 @@ function getTrackingLogApiBaseUrl() {
 
 function getAuthApiClient() {
   if (!config.authApiClient) {
-    throw Error('You must configure the authApiClient.');
+    throw new Error('You must configure the authApiClient.');
   }
   return config.authApiClient;
 }
 
 function getLoggingService() {
   if (!config.loggingService) {
-    throw Error('You must configure the loggingService.');
+    throw new Error('You must configure the loggingService.');
   }
   return config.loggingService;
 }
@@ -81,6 +81,9 @@ function sendTrackingLogEvent(eventName, properties) {
  * @param traits (optional)
  */
 function identifyAuthenticatedUser(userId, traits) {
+  if (!userId) {
+    throw new Error('UserId is required for identifyAuthenticatedUser.');
+  }
   window.analytics.identify(userId, traits);
   hasIdentifyBeenCalled = true;
 }
