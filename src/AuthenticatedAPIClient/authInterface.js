@@ -69,20 +69,11 @@ export default function applyAuthInterface(httpClient, authConfig) {
             const refreshedAccessToken = httpClient.getDecodedAccessToken();
 
             if (refreshedAccessToken === null) {
-              // TODO: ARCH-948: This should never happen, but it does. Researching...
+              // This should never happen, but it does. See ARCH-948 for past research into why.
               const errorMessage = 'Access token is null after supposedly successful refresh.';
-              const cookieFound = global.document.cookie
-                .includes(httpClient.accessTokenCookieName);
-              const cookieEnabledIsDefined = global.navigator &&
-                global.navigator.cookieEnabled !== undefined;
-              const cookieDisabled = cookieEnabledIsDefined && !global.navigator.cookieEnabled;
-              // Logging as error over info to simplify search for root problem.
               httpClient.loggingService.logError(`frontend-auth: ${errorMessage}`, {
                 previousAccessToken: accessToken,
                 axiosResponse: response,
-                cookieEnabledIsDefined,
-                cookieDisabled,
-                cookieFound,
               });
               reject(new Error(errorMessage));
               return;
