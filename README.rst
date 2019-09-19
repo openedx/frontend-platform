@@ -40,6 +40,9 @@ To install frontend-auth into your project:
         // 2. ``authenticatedUser`` is an object containing user account data that was stored in the access token.
         // 3. You probably won't need ``decodedAccessToken``, but it is included for completeness and is the raw version
         //    of the data used to create ``authenticatedUser``.
+     })
+     .catch(e => {
+       // throw or handle error
      });
 
 ``frontend-auth`` provides a ``PrivateRoute`` component which can be used along with ``react-router`` to require authentication for specific routes in your app. Here is an example of defining a route that requires authentication:
