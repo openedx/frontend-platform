@@ -10,5 +10,5 @@ it('should log the App error', () => {
     },
   };
   error(app);
-  expect(app.loggingService.logError).toHaveBeenCalledWith('oh no!');
+  expect(app.loggingService.logError).toHaveBeenCalledWith({ message: 'oh no!' });
 });
