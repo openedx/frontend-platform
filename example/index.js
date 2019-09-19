@@ -3,7 +3,6 @@ import 'babel-polyfill';
 import { NewRelicLoggingService } from '@edx/frontend-logging';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { createStore } from 'redux';
 
 /* TODO: When Parcel 2.0 comes out, use the source code instead of the dist here again.
  * Parcel 1.x has a limitation where it can't use babel.config.js, meaning that we can't use our

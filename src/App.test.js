@@ -272,8 +272,4 @@ describe('App', () => {
       }).toThrow(new Error('App configuration error: MAYBE is required by Test.'));
     });
   });
-
-  describe('queryParams', () => {
-
-  });
 });
