@@ -5,6 +5,8 @@ import pick from 'lodash.pick';
 import getQueryParameters from './getQueryParameters';
 import { defaultAuthenticatedUser } from './frontendAuthWrapper';
 import * as handlers from './handlers';
+import validateConfig from './validateConfig';
+import env from './env';
 
 export const APP_TOPIC = 'APP';
 export const APP_BEFORE_INIT = `${APP_TOPIC}.BEFORE_INIT`;
@@ -19,7 +21,7 @@ export const APP_ERROR = `${APP_TOPIC}.ERROR`;
 
 /* eslint no-underscore-dangle: "off" */
 export default class App {
-  static _config = null;
+  static _config = env;
   static _apiClient = null;
   static history = null;
   static authenticatedUser = defaultAuthenticatedUser;
@@ -28,14 +30,15 @@ export default class App {
 
   static async initialize({
     messages,
-    loggingService,
     overrideHandlers = {},
+    loggingService,
     ...custom
   }) {
     try {
       await this.override(handlers.beforeInit, overrideHandlers.beforeInit);
       PubSub.publish(APP_BEFORE_INIT);
 
+      validateConfig(this._config, 'App environment config validation handler');
       this.messages = messages;
       this.loggingService = loggingService;
       this.custom = custom;
@@ -76,13 +79,11 @@ export default class App {
   }
 
   static set config(newConfiguration) {
+    validateConfig(newConfiguration, 'App configuration setter');
     this._config = newConfiguration;
   }
 
   static get config() {
-    if (this._config === null) {
-      throw new Error('App.config has not been initialized. Are you calling it too early?');
-    }
     return this._config;
   }
 
@@ -124,7 +125,7 @@ export default class App {
   }
 
   static reset() {
-    this._config = null;
+    this._config = env;
     this._apiClient = null;
     this._error = null;
     this.authenticatedUser = defaultAuthenticatedUser;
