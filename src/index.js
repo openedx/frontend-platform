@@ -18,13 +18,14 @@ export { default as ErrorPage } from './ErrorPage';
 export { default as getQueryParameters } from './getQueryParameters';
 export { default as validateConfig } from './validateConfig';
 export { fetchUserAccount } from './frontendAuthWrapper';
+export { default as env } from './env';
 
 // Handlers
 export { default as analytics } from './handlers/analytics';
 export { default as authentication } from './handlers/authentication';
 export { default as beforeInit } from './handlers/beforeInit';
 export { default as beforeReady } from './handlers/beforeReady';
-export { default as configuration, env } from './handlers/configuration';
+export { default as configuration } from './handlers/configuration';
 export { default as error } from './handlers/error';
 export { default as i18n } from './handlers/i18n';
 export { default as logging } from './handlers/logging';
