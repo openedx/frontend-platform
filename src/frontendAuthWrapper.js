@@ -10,5 +10,5 @@ export const defaultAuthenticatedUser = {
 
 export const fetchUserAccount = (username) => {
   const userAccountApiService = new UserAccountApiService(App.apiClient, App.config.LMS_BASE_URL);
-  _fetchUserAccount(userAccountApiService, username);
+  return _fetchUserAccount(userAccountApiService, username);
 };
