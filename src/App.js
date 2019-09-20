@@ -25,6 +25,7 @@ export default class App {
   static _apiClient = null;
   static history = null;
   static authenticatedUser = defaultAuthenticatedUser;
+  static decodedAccessToken = null;
   static getQueryParams = memoize(getQueryParameters);
   static error = null;
 

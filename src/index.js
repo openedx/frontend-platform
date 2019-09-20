@@ -17,10 +17,7 @@ export { default as ErrorBoundary } from './ErrorBoundary';
 export { default as ErrorPage } from './ErrorPage';
 export { default as getQueryParameters } from './getQueryParameters';
 export { default as validateConfig } from './validateConfig';
-export {
-  fetchUserAccount,
-  getAuthenticatedUser,
-} from './frontendAuthWrapper';
+export { fetchUserAccount } from './frontendAuthWrapper';
 
 // Handlers
 export { default as analytics } from './handlers/analytics';

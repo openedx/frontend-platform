@@ -5,11 +5,19 @@ import { defaultAuthenticatedUser } from '../frontendAuthWrapper';
 
 jest.mock('@edx/frontend-auth', () => ({
   getAuthenticatedAPIClient: jest.fn(() => ({
-    ensurePublicOrAuthenticationAndCookies: jest.fn(async () => ({
-      user_id: 'user123',
-      preferred_username: 'user_person',
-      roles: [],
-      administrator: true,
+    ensureAuthenticatedUser: jest.fn(async () => ({
+      authenticatedUser: {
+        userId: 'user123',
+        username: 'user_person',
+        roles: [],
+        administrator: true,
+      },
+      decodedAccessToken: {
+        user_id: 'user123',
+        preferred_username: 'user_person',
+        roles: [],
+        administrator: true,
+      },
     })),
   })),
 }));
@@ -50,10 +58,16 @@ it('should create an API client, ensure we have an authenticated user, and extra
     loggingService: 'logging service',
   });
   // TODO: There's an async in here - we probably need to wait for it.
-  expect(app.apiClient.ensurePublicOrAuthenticationAndCookies).toHaveBeenCalledWith('/i/am/a/path');
+  expect(app.apiClient.ensureAuthenticatedUser).toHaveBeenCalledWith('/i/am/a/path');
   expect(app.authenticatedUser).toEqual({
     userId: 'user123',
     username: 'user_person',
+    roles: [],
+    administrator: true,
+  });
+  expect(app.decodedAccessToken).toEqual({
+    user_id: 'user123',
+    preferred_username: 'user_person',
     roles: [],
     administrator: true,
   });
