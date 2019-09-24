@@ -14,7 +14,7 @@ Further documentation forthcoming.
 .. |npm_version| image:: https://img.shields.io/npm/v/@edx/frontend-base.svg
    :target: https://www.npmjs.com/package/@edx/frontend-base
 .. |npm_downloads| image:: https://img.shields.io/npm/dt/@edx/frontend-base.svg
-   :target: @edx/frontend-base
+   :target: https://www.npmjs.com/package/@edx/frontend-base
 .. |license| image:: https://img.shields.io/npm/l/@edx/frontend-base.svg
    :target: https://github.com/edx/frontend-base/blob/master/LICENSE
 .. |semantic-release| image:: https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg
