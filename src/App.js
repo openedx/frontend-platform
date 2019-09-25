@@ -34,7 +34,7 @@ export default class App {
     overrideHandlers = {},
     loggingService,
     ...custom
-  }) {
+  } = {}) {
     try {
       await this.override(handlers.beforeInit, overrideHandlers.beforeInit);
       PubSub.publish(APP_BEFORE_INIT);
@@ -48,6 +48,10 @@ export default class App {
       await this.override(handlers.configuration, overrideHandlers.configuration);
       PubSub.publish(APP_CONFIGURED);
 
+      // Logging
+      await this.override(handlers.logging, overrideHandlers.logging);
+      PubSub.publish(APP_LOGGING_CONFIGURED);
+
       // Authentication
       await this.override(handlers.authentication, overrideHandlers.authentication);
       PubSub.publish(APP_AUTHENTICATED);
@@ -55,10 +59,6 @@ export default class App {
       // Internationalization
       await this.override(handlers.i18n, overrideHandlers.i18n);
       PubSub.publish(APP_I18N_CONFIGURED);
-
-      // Logging
-      await this.override(handlers.logging, overrideHandlers.logging);
-      PubSub.publish(APP_LOGGING_CONFIGURED);
 
       // Analytics
       await this.override(handlers.analytics, overrideHandlers.analytics);

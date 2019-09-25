@@ -97,7 +97,7 @@ describe('App', () => {
       App.subscribe(APP_BEFORE_READY, checkDispatchedDone);
       App.subscribe(APP_READY, checkDispatchedDone);
 
-      await App.initialize({ messages: null, loggingService: 'logging service' });
+      await App.initialize();
 
       expect(analytics).toHaveBeenCalledWith(App);
       expect(authentication).toHaveBeenCalledWith(App);
@@ -168,6 +168,7 @@ describe('App', () => {
       // All of these.
       expect(beforeInit).toHaveBeenCalledWith(App);
       expect(configuration).toHaveBeenCalledWith(App);
+      expect(logging).toHaveBeenCalledWith(App);
       expect(overrideHandlers.authentication).toHaveBeenCalledWith(App);
 
       // None of these.
@@ -175,7 +176,6 @@ describe('App', () => {
       expect(authentication).not.toHaveBeenCalled();
       expect(beforeReady).not.toHaveBeenCalled();
       expect(i18n).not.toHaveBeenCalled();
-      expect(logging).not.toHaveBeenCalled();
       expect(ready).not.toHaveBeenCalled();
 
       // Hey, an error!
@@ -205,6 +205,7 @@ describe('App', () => {
       // All of these.
       expect(beforeInit).toHaveBeenCalledWith(App);
       expect(configuration).toHaveBeenCalledWith(App);
+      expect(logging).toHaveBeenCalledWith(App);
       expect(overrideHandlers.authentication).toHaveBeenCalledWith(App);
 
       // None of these.
@@ -212,7 +213,6 @@ describe('App', () => {
       expect(authentication).not.toHaveBeenCalled();
       expect(beforeReady).not.toHaveBeenCalled();
       expect(i18n).not.toHaveBeenCalled();
-      expect(logging).not.toHaveBeenCalled();
       expect(ready).not.toHaveBeenCalled();
       // Not the default error handler.
       expect(error).not.toHaveBeenCalled();

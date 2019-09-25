@@ -1,4 +1,8 @@
+import { logError } from '@edx/frontend-logging';
+
 import error from './error';
+
+jest.mock('@edx/frontend-logging');
 
 it('should log the App error', () => {
   const app = {
@@ -10,5 +14,5 @@ it('should log the App error', () => {
     },
   };
   error(app);
-  expect(app.loggingService.logError).toHaveBeenCalledWith({ message: 'oh no!' });
+  expect(logError).toHaveBeenCalledWith({ message: 'oh no!' });
 });

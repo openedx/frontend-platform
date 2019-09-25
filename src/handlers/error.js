@@ -1,3 +1,5 @@
+import { logError } from '@edx/frontend-logging';
+
 export default async function error(app) {
-  app.loggingService.logError(app.error);
+  logError(app.error);
 }
