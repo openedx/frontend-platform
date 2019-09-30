@@ -1,5 +1,5 @@
 
-import App, { APP_BEFORE_INIT, APP_ERROR, APP_CONFIGURED, APP_AUTHENTICATED, APP_I18N_CONFIGURED, APP_LOGGING_CONFIGURED, APP_ANALYTICS_CONFIGURED, APP_BEFORE_READY, APP_READY } from './App';
+import App, { APP_BEFORE_INIT, APP_ERROR, APP_CONFIG_LOADED, APP_AUTHENTICATED, APP_I18N_CONFIGURED, APP_LOGGING_CONFIGURED, APP_ANALYTICS_CONFIGURED, APP_BEFORE_READY, APP_READY } from './App';
 
 import {
   analytics,
@@ -69,7 +69,7 @@ describe('App', () => {
     it('should call default handlers in the absence of overrides', async (done) => {
       const expectedEvents = [
         APP_BEFORE_INIT,
-        APP_CONFIGURED,
+        APP_CONFIG_LOADED,
         APP_AUTHENTICATED,
         APP_I18N_CONFIGURED,
         APP_LOGGING_CONFIGURED,
@@ -89,7 +89,7 @@ describe('App', () => {
         }
       }
       App.subscribe(APP_BEFORE_INIT, checkDispatchedDone);
-      App.subscribe(APP_CONFIGURED, checkDispatchedDone);
+      App.subscribe(APP_CONFIG_LOADED, checkDispatchedDone);
       App.subscribe(APP_AUTHENTICATED, checkDispatchedDone);
       App.subscribe(APP_I18N_CONFIGURED, checkDispatchedDone);
       App.subscribe(APP_LOGGING_CONFIGURED, checkDispatchedDone);
