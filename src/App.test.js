@@ -6,7 +6,7 @@ import {
   authentication,
   beforeInit,
   beforeReady,
-  configuration,
+  loadConfig,
   error,
   i18n,
   logging,
@@ -59,7 +59,7 @@ describe('App', () => {
       authentication.mockClear();
       beforeInit.mockClear();
       beforeReady.mockClear();
-      configuration.mockClear();
+      loadConfig.mockClear();
       error.mockClear();
       i18n.mockClear();
       logging.mockClear();
@@ -103,7 +103,7 @@ describe('App', () => {
       expect(authentication).toHaveBeenCalledWith(App);
       expect(beforeInit).toHaveBeenCalledWith(App);
       expect(beforeReady).toHaveBeenCalledWith(App);
-      expect(configuration).toHaveBeenCalledWith(App);
+      expect(loadConfig).toHaveBeenCalledWith(App);
       expect(i18n).toHaveBeenCalledWith(App);
       expect(logging).toHaveBeenCalledWith(App);
       expect(ready).toHaveBeenCalledWith(App);
@@ -118,7 +118,7 @@ describe('App', () => {
         authentication: jest.fn(),
         beforeInit: jest.fn(),
         beforeReady: jest.fn(),
-        configuration: jest.fn(),
+        loadConfig: jest.fn(),
         i18n: jest.fn(),
         logging: jest.fn(),
         ready: jest.fn(),
@@ -134,7 +134,7 @@ describe('App', () => {
       expect(authentication).not.toHaveBeenCalled();
       expect(beforeInit).not.toHaveBeenCalled();
       expect(beforeReady).not.toHaveBeenCalled();
-      expect(configuration).not.toHaveBeenCalled();
+      expect(loadConfig).not.toHaveBeenCalled();
       expect(i18n).not.toHaveBeenCalled();
       expect(logging).not.toHaveBeenCalled();
       expect(ready).not.toHaveBeenCalled();
@@ -144,7 +144,7 @@ describe('App', () => {
       expect(overrideHandlers.authentication).toHaveBeenCalledWith(App);
       expect(overrideHandlers.beforeInit).toHaveBeenCalledWith(App);
       expect(overrideHandlers.beforeReady).toHaveBeenCalledWith(App);
-      expect(overrideHandlers.configuration).toHaveBeenCalledWith(App);
+      expect(overrideHandlers.loadConfig).toHaveBeenCalledWith(App);
       expect(overrideHandlers.i18n).toHaveBeenCalledWith(App);
       expect(overrideHandlers.logging).toHaveBeenCalledWith(App);
       expect(overrideHandlers.ready).toHaveBeenCalledWith(App);
@@ -167,7 +167,7 @@ describe('App', () => {
       });
       // All of these.
       expect(beforeInit).toHaveBeenCalledWith(App);
-      expect(configuration).toHaveBeenCalledWith(App);
+      expect(loadConfig).toHaveBeenCalledWith(App);
       expect(logging).toHaveBeenCalledWith(App);
       expect(overrideHandlers.authentication).toHaveBeenCalledWith(App);
 
@@ -204,7 +204,7 @@ describe('App', () => {
       });
       // All of these.
       expect(beforeInit).toHaveBeenCalledWith(App);
-      expect(configuration).toHaveBeenCalledWith(App);
+      expect(loadConfig).toHaveBeenCalledWith(App);
       expect(logging).toHaveBeenCalledWith(App);
       expect(overrideHandlers.authentication).toHaveBeenCalledWith(App);
 

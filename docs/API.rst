@@ -114,7 +114,7 @@ handler if provided.
 Possible keys:
 
 -  beforeInit
--  configuration
+-  loadConfig
 -  logging
 -  authentication
 -  i18n
@@ -214,11 +214,11 @@ The method returns the required config values.
    // "App configuration error: LOGIN_URL is required by MySpecialComponent."
    // if LOGIN_URL is undefined, for example.
 
-**NOTE**: If you use a custom handler for the ``configuration`` phase,
+**NOTE**: If you use a custom handler for the ``loadConfig`` phase,
 be mindful of when you call ``App.requireConfig``. Normally, environment
 variable configuration is available immediately before
 ``App.initialize`` is even called because it's statically linked into
-the app. If you load additional configuration at runtime, it won't be
+the app. If you load additional configuration at runtime (via the ``loadConfig`` phase), it won't be
 available until the ``APP_CONFIG_LOADED`` event is published:
 
 ::
@@ -423,14 +423,14 @@ want to perform actions prior to validation of the environment
 configuration, then write your code before calling ``App.initialize``
 itself.
 
-configuration
+loadConfig
 ~~~~~~~~~~~~~
 
 Event constant: ``APP_CONFIG_LOADED``
 
-The ``configuration`` phase has no default behavior.
+The ``loadConfig`` phase has no default behavior.
 
-The ``configuration`` phase can be used to provide dynamic, runtime
+The ``loadConfig`` phase can be used to provide dynamic, runtime
 configuration prior to the initialization of any other services the
 application may need.
 

@@ -46,7 +46,7 @@ export default class App {
       this.custom = custom;
 
       // Configuration
-      await this._override(handlers.configuration, overrideHandlers.configuration);
+      await this._override(handlers.loadConfig, overrideHandlers.loadConfig);
       PubSub.publish(APP_CONFIG_LOADED);
 
       // Logging

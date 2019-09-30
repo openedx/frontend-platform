@@ -25,7 +25,7 @@ export { default as analytics } from './handlers/analytics';
 export { default as authentication } from './handlers/authentication';
 export { default as beforeInit } from './handlers/beforeInit';
 export { default as beforeReady } from './handlers/beforeReady';
-export { default as configuration } from './handlers/configuration';
+export { default as loadConfig } from './handlers/loadConfig';
 export { default as error } from './handlers/error';
 export { default as i18n } from './handlers/i18n';
 export { default as logging } from './handlers/logging';

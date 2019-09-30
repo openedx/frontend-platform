@@ -1,9 +1,9 @@
-import configuration from './configuration';
+import loadConfig from './loadConfig';
 
 it('should do nothing to the app', () => {
   const app = {};
 
-  configuration(app);
+  loadConfig(app);
 
   expect(app).toEqual({});
 });
