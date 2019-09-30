@@ -128,7 +128,7 @@ Additional Resources
 --------------------
 
 -  `API
-   Reference <https://github.com/edx/frontend-base/blob/master/docs/API.md>`__
+   Reference <https://github.com/edx/frontend-base/blob/master/docs/API.rst>`__
 
 .. |Build Status| image:: https://api.travis-ci.org/edx/frontend-base.svg?branch=master
    :target: https://travis-ci.org/edx/frontend-base
