@@ -1,4 +1,4 @@
-
+import PubSub from 'pubsub-js';
 import App, { APP_BEFORE_INIT, APP_ERROR, APP_CONFIG_LOADED, APP_AUTHENTICATED, APP_I18N_CONFIGURED, APP_LOGGING_CONFIGURED, APP_ANALYTICS_CONFIGURED, APP_BEFORE_READY, APP_READY } from './App';
 
 import {
@@ -256,33 +256,34 @@ describe('App', () => {
     });
   });
 
-  describe('requireConfig', () => {
-    it('should require config provided via requireConfig', () => {
+  describe('ensureConfig', () => {
+    it('should ensure config exists', () => {
       App.config = {
         YES: 'yes',
         NO: 'no',
         MAYBE: 'maybe',
       };
 
-      const dichotomyConfig = App.requireConfig(['YES', 'NO'], 'Test');
-      const wafflingConfig = App.requireConfig(['MAYBE'], 'Test');
-
-      expect(dichotomyConfig).toEqual({
-        YES: 'yes',
-        NO: 'no',
-      });
-
-      expect(wafflingConfig).toEqual({
-        MAYBE: 'maybe',
-      });
+      expect(() => {
+        App.ensureConfig(['YES', 'NO'], 'Test');
+        App.ensureConfig(['MAYBE'], 'Test');
+        PubSub.immediateExceptions = true;
+        PubSub.publishSync(APP_CONFIG_LOADED);
+      }).not.toThrow();
     });
 
     it('should throw an error if a piece of required config is not configured', () => {
-      expect(() => {
-        App.config = {
-          YES: 'yes',
-        };
-        App.requireConfig(['MAYBE'], 'Test');
+      App.config = {
+        YES: 'yes',
+      };
+
+      expect((done) => {
+        App.ensureConfig(['MAYBE'], 'Test');
+        App.subscribe(APP_CONFIG_LOADED, () => {
+          done();
+        });
+        PubSub.immediateExceptions = true;
+        PubSub.publishSync(APP_CONFIG_LOADED);
       }).toThrow(new Error('App configuration error: MAYBE is required by Test.'));
     });
   });

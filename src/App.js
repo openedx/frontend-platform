@@ -1,6 +1,5 @@
 import PubSub from 'pubsub-js';
 import memoize from 'lodash.memoize';
-import pick from 'lodash.pick';
 
 import getQueryParameters from './getQueryParameters';
 import { defaultAuthenticatedUser } from './frontendAuthWrapper';
@@ -80,9 +79,9 @@ export default class App {
     }
   }
 
-  static set config(newConfiguration) {
-    validateConfig(newConfiguration, 'App configuration setter');
-    this._config = newConfiguration;
+  static set config(newConfig) {
+    validateConfig(newConfig, 'App configuration setter');
+    this._config = newConfig;
   }
 
   static get config() {
@@ -108,14 +107,19 @@ export default class App {
     return this.getQueryParams(global.location.search);
   }
 
-  static requireConfig(keys, requester = 'unspecified application code') {
-    keys.forEach((key) => {
-      if (this.config[key] === undefined) {
-        throw new Error(`App configuration error: ${key} is required by ${requester}.`);
-      }
-    });
+  static mergeConfig(newConfig, requester = 'unspecified application code') {
+    validateConfig(newConfig, requester);
+    this._config = Object.assign(this._config, newConfig);
+  }
 
-    return pick(this.config, keys);
+  static ensureConfig(keys, requester = 'unspecified application code') {
+    this.subscribe(APP_CONFIG_LOADED, () => {
+      keys.forEach((key) => {
+        if (this.config[key] === undefined) {
+          throw new Error(`App configuration error: ${key} is required by ${requester}.`);
+        }
+      });
+    });
   }
 
   static async _override(defaultHandler, overrideHandler) {

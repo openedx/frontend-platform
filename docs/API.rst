@@ -171,7 +171,7 @@ Note: By default, ``App.config`` is available to be used *immediately*,
 even before ``App.initialize`` is called. This is because environment
 variable-based config (using process.env) is statically linked into the
 application and so is available as soon as the code is loaded by the
-browser. See additional notes under ``App.requireConfig`` below.
+browser. See additional notes under ``App.ensureConfig`` below.
 
 .. _appapiclient:
 
@@ -197,38 +197,36 @@ Phases". There are constants for all the event types:
 
 .. _apprequireconfigkeys-requester:
 
-``App.requireConfig(keys, requester)``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+``App.mergeConfig(newConfig, requester)``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Merges additional configuration values into ``App.config``.  Will override any values that exist with the same keys.
+
+::
+
+   App.mergeConfig({
+     NEW_KEY: 'new value',
+     OTHER_NEW_KEY: 'other new value',
+   }, 'MySpecialComponent');
+
+If any of the key values are ``undefined``, an error will be thrown.
+
+``App.ensureConfig(keys, requester)``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 A method allowing application code to indicate that particular
 ``App.config`` keys are required for them to function. Requester is for
 informational/error reporting purposes only.
 
-The method returns the required config values.
-
 ::
 
-   const config = App.requireConfig(['LMS_BASE_URL', 'LOGIN_URL'], 'MySpecialComponent');
+   App.ensureConfig(['LMS_BASE_URL', 'LOGIN_URL'], 'MySpecialComponent');
 
    // Will throw an error with:
    // "App configuration error: LOGIN_URL is required by MySpecialComponent."
    // if LOGIN_URL is undefined, for example.
 
-**NOTE**: If you use a custom handler for the ``loadConfig`` phase,
-be mindful of when you call ``App.requireConfig``. Normally, environment
-variable configuration is available immediately before
-``App.initialize`` is even called because it's statically linked into
-the app. If you load additional configuration at runtime (via the ``loadConfig`` phase), it won't be
-available until the ``APP_CONFIG_LOADED`` event is published:
-
-::
-
-   let config = null;
-   App.subscribe(APP_CONFIG_LOADED, () => {
-     config = App.requireConfig(['DYNAMICALLY_CONFIGURED_URL'], 'Consumer of custom config');
-
-     // Dynamic config is known to be set here.
-   });
+**NOTE**: ``App.ensureConfig`` waits until ``APP_CONFIG_LOADED`` is published to verify the existence of the specified properties.  If you use one of the properties prior to ``APP_CONFIG_LOADED``, then there is no guarantee that it's been loaded.
 
 .. _appqueryparams:
 
@@ -266,7 +264,7 @@ This will provide the following to HelloWorld:
    property is passed to ``AppProvider``.
 -  A ``Router`` for react-router.
 
-\`AppContext`\`
+``AppContext``
 ---------------
 
 ``AppContext`` provides data from ``App`` in a way that React components
