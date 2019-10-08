@@ -34,7 +34,6 @@ describe('App', () => {
         ACCESS_TOKEN_COOKIE_NAME: 'edx-jwt-cookie-header-payload',
         BASE_URL: 'localhost:1995',
         CREDENTIALS_BASE_URL: 'http://localhost:18150',
-        CSRF_COOKIE_NAME: 'csrftoken',
         CSRF_TOKEN_API_PATH: '/csrf/api/v1/token',
         ECOMMERCE_BASE_URL: 'http://localhost:18130',
         ENVIRONMENT: 'test',

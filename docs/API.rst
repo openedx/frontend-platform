@@ -148,7 +148,6 @@ The environment configuration. Contains the following keys:
 -  ACCESS_TOKEN_COOKIE_NAME
 -  BASE_URL
 -  CREDENTIALS_BASE_URL
--  CSRF_COOKIE_NAME
 -  CSRF_TOKEN_API_PATH
 -  ECOMMERCE_BASE_URL
 -  ENVIRONMENT

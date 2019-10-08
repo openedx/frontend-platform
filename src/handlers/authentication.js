@@ -11,7 +11,6 @@ export default async function authentication(app) {
     loginUrl: app.config.LOGIN_URL,
     logoutUrl: app.config.LOGOUT_URL,
     refreshAccessTokenEndpoint: app.config.REFRESH_ACCESS_TOKEN_ENDPOINT,
-    csrfCookieName: app.config.CSRF_COOKIE_NAME,
     loggingService: app.loggingService,
   });
 

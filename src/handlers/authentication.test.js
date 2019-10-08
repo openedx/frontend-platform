@@ -38,7 +38,6 @@ it('should create an API client, ensure we have an authenticated user, and extra
       REFRESH_ACCESS_TOKEN_ENDPOINT: 'http://localhost:5',
       ACCESS_TOKEN_COOKIE_NAME: 'access_token_cookie',
       USER_INFO_COOKIE_NAME: 'user_info_cookie',
-      CSRF_COOKIE_NAME: 'csrf_cookie',
     },
     authenticatedUser: defaultAuthenticatedUser,
   };
@@ -54,7 +53,6 @@ it('should create an API client, ensure we have an authenticated user, and extra
     refreshAccessTokenEndpoint: 'http://localhost:5',
     accessTokenCookieName: 'access_token_cookie',
     userInfoCookieName: 'user_info_cookie',
-    csrfCookieName: 'csrf_cookie',
     loggingService: 'logging service',
   });
   // TODO: There's an async in here - we probably need to wait for it.

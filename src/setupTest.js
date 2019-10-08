@@ -11,7 +11,6 @@ Enzyme.configure({ adapter: new Adapter() });
 process.env.ACCESS_TOKEN_COOKIE_NAME = 'edx-jwt-cookie-header-payload';
 process.env.BASE_URL = 'localhost:1995';
 process.env.CREDENTIALS_BASE_URL = 'http://localhost:18150';
-process.env.CSRF_COOKIE_NAME = 'csrftoken';
 process.env.CSRF_TOKEN_API_PATH = '/csrf/api/v1/token';
 process.env.ECOMMERCE_BASE_URL = 'http://localhost:18130';
 process.env.LANGUAGE_PREFERENCE_COOKIE_NAME = 'openedx-language-preference';
