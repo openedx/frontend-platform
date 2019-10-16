@@ -477,7 +477,7 @@ beforeReady
 
 Event constant: ``APP_BEFORE_READY``
 
-The ``beforeReady`` phase has no default behavior.
+The ``beforeReady`` phase calls ``identifyAuthenticatedUser`` and ``sendPageEvent`` from @edx/frontend-analytics, establishing that the page has been initialized for a specific user.
 
 ready
 ~~~~~
