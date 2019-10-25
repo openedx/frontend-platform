@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { injectIntl } from '@edx/frontend-i18n';
 import { logInfo } from '@edx/frontend-logging';
 
-import App from '../dist/App';
-import AppContext from '../dist/AppContext';
+import App from '../src/App';
+import AppContext from '../src/AppContext';
 import messages from './messages';
 
 App.ensureConfig([

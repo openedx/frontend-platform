@@ -3,5 +3,4 @@ coverage
 dist
 node_modules
 /.vscode
-/.parcel-cache
-/.cache
+/.DS_Store

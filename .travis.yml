@@ -9,7 +9,7 @@ script:
 - npm run test
 - npm run build
 after_success:
-- npm run semantic-release
+- npx semantic-release
 - codecov
 env:
   global:
