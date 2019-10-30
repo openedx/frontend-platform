@@ -1,11 +1,10 @@
 import PubSub from 'pubsub-js';
 import memoize from 'lodash.memoize';
 
-import getQueryParameters from './getQueryParameters';
-import { defaultAuthenticatedUser } from './frontendAuthWrapper';
+import getQueryParameters from './data/getQueryParameters';
 import * as handlers from './handlers';
-import validateConfig from './validateConfig';
-import env from './env';
+import validateConfig from './data/validateConfig';
+import env from './data/env';
 
 export const APP_TOPIC = 'APP';
 export const APP_BEFORE_INIT = `${APP_TOPIC}.BEFORE_INIT`;
@@ -18,20 +17,30 @@ export const APP_BEFORE_READY = `${APP_TOPIC}.BEFORE_READY`;
 export const APP_READY = `${APP_TOPIC}.READY`;
 export const APP_ERROR = `${APP_TOPIC}.ERROR`;
 
+export const AUTHENTICATED_USER_TOPIC = 'AUTHENTICATED_USER';
+export const AUTHENTICATED_USER_CHANGED = `${AUTHENTICATED_USER_TOPIC}.CHANGED`;
+
+export const CONFIG_TOPIC = 'CONFIG';
+export const CONFIG_CHANGED = `${CONFIG_TOPIC}.CHANGED`;
+
 /* eslint no-underscore-dangle: "off" */
 export default class App {
   static _config = env;
   static _apiClient = null;
+  static requireAuthenticatedUser = false;
+  static hydrateAuthenticatedUser = false;
   static history = null;
-  static authenticatedUser = defaultAuthenticatedUser;
+  static _authenticatedUser = null;
   static decodedAccessToken = null;
   static getQueryParams = memoize(getQueryParameters);
   static error = null;
 
   static async initialize({
+    requireAuthenticatedUser = false,
+    hydrateAuthenticatedUser = false,
+    loggingService,
     messages,
     overrideHandlers = {},
-    loggingService,
     ...custom
   } = {}) {
     validateConfig(this._config, 'App environment config validation handler');
@@ -40,6 +49,8 @@ export default class App {
       await this._override(handlers.beforeInit, overrideHandlers.beforeInit);
       PubSub.publish(APP_BEFORE_INIT);
 
+      this.requireAuthenticatedUser = requireAuthenticatedUser;
+      this.hydrateAuthenticatedUser = hydrateAuthenticatedUser;
       this.messages = messages;
       this.loggingService = loggingService;
       this.custom = custom;
@@ -79,9 +90,19 @@ export default class App {
     }
   }
 
+  static set authenticatedUser(newAuthenticatedUser) {
+    this._authenticatedUser = newAuthenticatedUser;
+    PubSub.publish(AUTHENTICATED_USER_CHANGED);
+  }
+
+  static get authenticatedUser() {
+    return this._authenticatedUser;
+  }
+
   static set config(newConfig) {
     validateConfig(newConfig, 'App configuration setter');
     this._config = newConfig;
+    PubSub.publish(CONFIG_CHANGED);
   }
 
   static get config() {
@@ -100,7 +121,11 @@ export default class App {
   }
 
   static subscribe(type, callback) {
-    PubSub.subscribe(type, callback);
+    return PubSub.subscribe(type, callback);
+  }
+
+  static unsubscribe(token) {
+    PubSub.unsubscribe(token);
   }
 
   static get queryParams() {
@@ -110,6 +135,7 @@ export default class App {
   static mergeConfig(newConfig, requester = 'unspecified application code') {
     validateConfig(newConfig, requester);
     this._config = Object.assign(this._config, newConfig);
+    PubSub.publish(CONFIG_CHANGED);
   }
 
   static ensureConfig(keys, requester = 'unspecified application code') {
@@ -134,7 +160,7 @@ export default class App {
     this._config = env;
     this._apiClient = null;
     this._error = null;
-    this.authenticatedUser = defaultAuthenticatedUser;
+    this._authenticatedUser = null;
     PubSub.unsubscribe(APP_TOPIC);
   }
 }

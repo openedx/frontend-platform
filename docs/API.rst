@@ -1,6 +1,36 @@
 API Reference
 =============
 
+- `App`_
+   - `App.history`_
+   - `App.authenticatedUser`_
+   - `App.decodedAccessToken`_
+   - `App.error`_
+   - `App.initialize(options)`_
+   - `App.config`_
+   - `App.apiClient`_
+   - `App.subscribe(type, callback)`_
+   - `App.mergeConfig(newConfig, requester)`_
+   - `App.ensureConfig(keys, requester)`_
+   - `App.queryParams`_
+- `AppProvider`_
+- `AppContext`_
+- `AuthenticatedRoute`_
+- `LoginRedirect`_
+- `getAuthenticatedUserAccount`_
+- `validateConfig`_
+- `App Initialization Lifecycle Phases`_
+   - `beforeInit`_
+   - `loadConfig`_
+   - `logging`_
+   - `authentication`_
+   - `i18n`_
+   - `analytics`_
+   - `beforeReady`_
+   - `ready`_
+   - `error`_
+
+
 ``App``
 -------
 
@@ -64,11 +94,20 @@ error phase.
 
 .. _appinitialize-messages-loggingservice-overridehandlers-custom-:
 
-``App.initialize({ messages, loggingService, overrideHandlers, custom })``
+``App.initialize(options)``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The ``App.initialize`` method takes an options object with four possible
-keys:
+The ``App.initialize`` method takes an options object with the following possible keys:
+
+requireAuthenticatedUser
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+If true, turns on automatic login redirection for unauthenticated users.  Defaults to false, meaning that by default the application will allow anonymous/unauthenticated sessions.
+
+hydrateAuthenticatedUser
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+If true, makes an API call to the user account endpoint (```${App.config.LMS_BASE_URL}/api/user/v1/accounts/${username}```) to fetch detailed account information for the authenticated user. This data is merged into ```App.authenticatedUser```, overriding any duplicate keys that already exist. Defaults to false, meaning that no additional account information will be loaded.
 
 messages
 ^^^^^^^^
@@ -194,6 +233,10 @@ Phases". There are constants for all the event types:
      APP_BEFORE_INIT, APP_CONFIG_LOADED, APP_AUTHENTICATED, APP_I18N_CONFIGURED, APP_LOGGING_CONFIGURED, APP_ANALYTICS_CONFIGURED, APP_BEFORE_READY, APP_READY, APP_ERROR
    } from `@edx/frontend-base`
 
+   App.subscribe(APP_BEFORE_READY, () => {
+     // Do something in the beforeReady phase.
+   });
+
 .. _apprequireconfigkeys-requester:
 
 ``App.mergeConfig(newConfig, requester)``
@@ -277,16 +320,34 @@ the following data structure:
      config: <THE App.config OBJECT>
    }
 
-While the only data in ``AppContext`` today is data that would generally
-become stable/unchanging prior to ``APP_READY`` (meaning before React
-even renders for the first time), using ``AppContext`` is a preferrable
-way to access it in React components as it leaves the door open for that
-data to become mutable in the future. You could imagine an in-app login
-experience which updates authenticatedUser after React mounts, for
-instance, or loading config data dynamically based on user actions.
+If the ``App.authenticatedUser`` or ``App.config`` data changes, ``AppContext`` will be updated accordingly and pass those changes onto React components using the context.
 
 ``AppContext`` is used in a React application like any other `React
 Context <https://reactjs.org/docs/context.html>`__
+
+``AuthenticatedRoute``
+----------------------
+
+``AuthenticatedRoute`` can be used when ``requireAuthenticatedUser`` is ``false`` to configure a subset of an application's client-side routes to redirect to login for unauthenticated users.
+
+::
+
+   <AppProvider>
+     <Route exact path="/" component={UnauthenticatedPage} />
+     <AuthenticatedRoute exact path="/authenticated" component={AuthenticatedPage} />
+   </AppProvider>
+
+In the above example, an anonmyous/unauthenticated user navigating to /authenticated will be redirected to the login page.
+
+``LoginRedirect``
+-----------------
+
+``LoginRedirect`` is a React component that, when rendered, redirects to the login page as a side effect.
+
+``getAuthenticatedUserAccount``
+-------------------------------
+
+This async function is used internally when the ``hydrateAuthenticatedUser`` initialization option is true in order to fetch user account information.  In general, you shouldn't need to use this directly.
 
 ``validateConfig``
 ------------------
@@ -308,84 +369,6 @@ configuration document, it will throw an error if any of the keys are
 
 An exception will be thrown if any of the keys in ``customConfig`` are
 ``undefined``.
-
-``fetchUserAccount``
---------------------
-
-The ``fetchUserAccount`` action is a wrapper around @edx/frontend-auth's
-own ``fetchUserAccount`` action which makes it a bit easier to use.
-Normally ``fetchUserAccount`` requires creating a UserAccountApiService
-with an API client prior to calling it - @edx/frontend-base's version
-hides that requirement from the user and uses the API client created by
-``App.initialize``.
-
-::
-
-   import { fetchUserAccount, AppContext } from '@edx/frontend-base';
-
-   class MyComponent extends React.Component {
-     componentDidMount() {
-       const username = this.context.authenticatedUser.username;
-       this.props.fetchUserAccount(username);
-     }
-   }
-
-   export default connect(null, {
-     fetchUserAccount,
-   })(MyComponent);
-
-   MyComponent.contextType = AppContext;
-
-The result of calling ``fetchUserAccount`` is that a ``userAccount`` key
-is set in the redux store.
-
-::
-
-   // Redux state tree sample:
-   {
-     userAccount: {
-       loading: false,
-       loaded: true,
-       error: null,
-       username: 'edx_example_user',
-       email: 'edx@example.com',
-       bio: 'An example user',
-       name: 'Example User',
-       country: 'US',
-       socialLinks: [
-         {
-           platform: 'twitter',
-           socialLink: 'https://www.twitter.com/edx_example_user'
-         }
-       ],
-       profileImage: {
-         imageUrlFull: 'https://profile-images.example.com/images/full/edx_example_user.png',
-         imageUrlLarge: 'https://profile-images.example.com/images/large/edx_example_user.png',
-         imageUrlMedium: 'https://profile-images.example.com/images/medium/edx_example_user.png',
-         imageUrlSmall: 'https://profile-images.example.com/images/small/edx_example_user.png',
-         hasImage: true
-       },
-       levelOfEducation: 'b',
-       mailingAddress: null,
-       extendedProfile: [],
-       dateJoined: '2019-01-01T01:01:01Z',
-       accomplishmentsShared: false,
-       isActive: true,
-       yearOfBirth: 1912,
-       goals: null,
-       languageProficiencies: [
-         {
-           code: 'en'
-         }
-       ],
-       courseCertificates: null,
-       requiresParentalConsent: false,
-       secondaryEmail: null,
-       timeZone: null,
-       gender: null,
-       accountPrivacy: 'custom'
-     }
-   }
 
 App Initialization Lifecycle Phases
 -----------------------------------

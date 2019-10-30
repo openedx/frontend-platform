@@ -16,7 +16,7 @@ export default class ErrorPage extends Component {
             <p className="my-0 py-5 text-muted">
               <FormattedMessage
                 id="unexpected.error.message.text"
-                defaultMessage="An unexpected error occurred. Please click the button below to return to refresh the page."
+                defaultMessage="An unexpected error occurred. Please click the button below to refresh the page."
                 description="error message when an unexpected error occurs"
               />
             </p>

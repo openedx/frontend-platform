@@ -23,12 +23,7 @@ describe('App', () => {
   describe('defaults', () => {
     it('should have sensible defaults', () => {
       expect(App.history).toBeNull();
-      expect(App.authenticatedUser).toEqual({
-        userId: null,
-        username: null,
-        roles: [],
-        administrator: false,
-      });
+      expect(App.authenticatedUser).toEqual(null);
       expect(App.error).toBeNull();
       expect(App.config).toEqual({
         ACCESS_TOKEN_COOKIE_NAME: 'edx-jwt-cookie-header-payload',

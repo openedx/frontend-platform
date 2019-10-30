@@ -1,8 +1,7 @@
 import React from 'react';
-import { defaultAuthenticatedUser } from './frontendAuthWrapper';
 
 const AppContext = React.createContext({
-  authenticatedUser: defaultAuthenticatedUser,
+  authenticatedUser: null,
   config: {},
 });
 

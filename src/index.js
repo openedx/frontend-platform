@@ -10,15 +10,25 @@ export {
   APP_LOGGING_CONFIGURED,
   APP_READY,
   APP_TOPIC,
+  AUTHENTICATED_USER_TOPIC,
+  AUTHENTICATED_USER_CHANGED,
+  CONFIG_TOPIC,
+  CONFIG_CHANGED,
 } from './App';
-export { default as AppProvider } from './AppProvider';
+
+export {
+  modifyObjectKeys,
+  camelCaseObject,
+  snakeCaseObject,
+  convertKeyNames,
+} from './api';
+
+// Components & Context
 export { default as AppContext } from './AppContext';
+export { default as AppProvider } from './AppProvider';
+export { default as AuthenticatedRoute } from './AuthenticatedRoute';
 export { default as ErrorBoundary } from './ErrorBoundary';
 export { default as ErrorPage } from './ErrorPage';
-export { default as getQueryParameters } from './getQueryParameters';
-export { default as validateConfig } from './validateConfig';
-export { fetchUserAccount } from './frontendAuthWrapper';
-export { default as env } from './env';
 
 // Handlers
 export { default as analytics } from './handlers/analytics';
@@ -30,3 +40,10 @@ export { default as error } from './handlers/error';
 export { default as i18n } from './handlers/i18n';
 export { default as logging } from './handlers/logging';
 export { default as ready } from './handlers/ready';
+
+// Utilities
+export { default as getQueryParameters } from './data/getQueryParameters';
+export { default as validateConfig } from './data/validateConfig';
+export { default as env } from './data/env';
+export { useAppEvent } from './data/hooks';
+export { getAuthenticatedUserAccount } from './data/service';

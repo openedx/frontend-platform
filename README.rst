@@ -41,7 +41,7 @@ library.
    npm install # do this once
    npm start # starts the dev server
 
-Visit `http://localhost:1234/ <http://localhost:1234/>`__ in your
+Visit `http://localhost:8080/ <http://localhost:8080/>`__ in your
 browser.
 
 The jest test suite can be run with:
