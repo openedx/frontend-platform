@@ -19,6 +19,11 @@ API Reference
 - `LoginRedirect`_
 - `getAuthenticatedUserAccount`_
 - `validateConfig`_
+- `API Helpers`_
+   - `camelCaseObject(object)`_
+   - `snakeCaseObject(object)`_
+   - `convertKeyNames(object, nameMap)`_
+   - `modifyObjectKeys(object, modify)`_
 - `App Initialization Lifecycle Phases`_
    - `beforeInit`_
    - `loadConfig`_
@@ -95,7 +100,7 @@ error phase.
 .. _appinitialize-messages-loggingservice-overridehandlers-custom-:
 
 ``App.initialize(options)``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The ``App.initialize`` method takes an options object with the following possible keys:
 
@@ -369,6 +374,67 @@ configuration document, it will throw an error if any of the keys are
 
 An exception will be thrown if any of the keys in ``customConfig`` are
 ``undefined``.
+
+API Helpers
+-----------
+
+``camelCaseObject(object)``
+~~~~~~~~~~~~~~~~~~~~
+
+Performs a deep conversion to camelCase on all keys in the provided object and its tree of children.  Uses `lodash.camelcase <https://lodash.com/docs/4.17.15#camelCase>`_ on each key.  This is commonly used to convert snake_case keys in models from a backend server into camelCase keys for use in the JavaScript client.
+
+Can accept arrays as well as objects, and will perform its conversion on any objects it finds in the array.
+
+``snakeCaseObject(object)``
+~~~~~~~~~~~~~~~~~~~~
+
+Performs a deep conversion to snake_case on all keys in the provided object and its tree of children.  Uses `lodash.snakecase <https://lodash.com/docs/4.17.15#snakeCase>`_ on each key.  This is commonly used to convert camelCase keys from the JavaScript app into snake_case keys expected by backend servers.
+
+Can accept arrays as well as objects, and will perform its conversion on any objects it finds in the array.
+
+``convertKeyNames(object, nameMap)``
+~~~~~~~~~~~~~~~~~~~~
+
+Given a map of key-value pairs, performs a deep conversion key names in the specified object _from_ the key _to_ the value.  This is useful for updating names in an API request to the names used throughout a client application if they happen to differ.  It can also be used in the reverse - formatting names from the client application to names expected by an API.
+
+::
+
+   import { convertKeyNames } from '@edx/frontend-base';
+
+   // This object can be of any shape or depth with subobjects/arrays.
+   const myObject = {
+     myKey: 'my value',
+   }
+
+   const result = convertKeyNames(myObject, { myKey: 'their_key' });
+
+   console.log(result) // { their_key: 'my value' }
+
+Can accept arrays as well as objects, and will perform its conversion on any objects it finds in the array.
+
+``modifyObjectKeys(object, modify)``
+~~~~~~~~~~~~~~~~~~~~
+
+This is the underlying function used by camelCaseObject, snakeCaseObject, and convertKeyNames above.
+
+Given an object (or array) and a modification function, will perform the function on each key it encounters on the object and its tree of children.
+
+The modification function must take a string as an argument and returns a string.
+
+Example:
+
+::
+
+   (key) => {
+      if (key === 'edX') {
+        return 'Open edX';
+      }
+      return key;
+   }
+
+This function will turn any key that matches 'edX' into 'Open edX'.  All other keys will be passed through unmodified.
+
+Can accept arrays as well as objects, and will perform its conversion on any objects it finds in the array.
 
 App Initialization Lifecycle Phases
 -----------------------------------
