@@ -1,13 +1,8 @@
-import PubSub from 'pubsub-js';
-import Url from 'url-parse';
-import { logInfo } from '@edx/frontend-logging';
+import { getLoggingService } from './index';
+import { logFrontendAuthError } from './utils';
 
-const ACCESS_TOKEN_REFRESH = 'ACCESS_TOKEN_REFRESH';
-const CSRF_TOKEN_REFRESH = 'CSRF_TOKEN_REFRESH';
 const CSRF_HEADER_NAME = 'X-CSRFToken';
 const CSRF_PROTECTED_METHODS = ['POST', 'PUT', 'PATCH', 'DELETE'];
-const csrfTokens = {};
-let queueRequests = false;
 
 // Apply default configuration options to the Axios HTTP client.
 function applyAxiosDefaults(authenticatedAPIClient) {
@@ -22,105 +17,51 @@ function applyAxiosInterceptors(authenticatedAPIClient) {
   /**
    * Ensure we have a CSRF token header when making POST, PUT, and DELETE requests.
    */
-  function ensureCsrfToken(request) {
-    const originalRequest = request;
-    const method = request.method.toUpperCase();
-    const isCsrfExempt = authenticatedAPIClient.isCsrfExempt(originalRequest.url);
-    if (!isCsrfExempt && CSRF_PROTECTED_METHODS.includes(method)) {
-      const url = new Url(request.url);
-      const { protocol } = url;
-      const { host } = url;
-      const csrfToken = csrfTokens[host];
-      if (csrfToken) {
-        request.headers[CSRF_HEADER_NAME] = csrfToken;
-      } else {
-        if (!queueRequests) {
-          queueRequests = true;
-          authenticatedAPIClient.getCsrfToken(protocol, host)
-            .then((response) => {
-              queueRequests = false;
-              PubSub.publishSync(CSRF_TOKEN_REFRESH, response.data.csrfToken);
-            });
-        }
+  function ensureCsrfTokenInterceptor(axiosRequestConfig) {
+    const { url, method } = axiosRequestConfig;
+    const isCsrfTokenRequired = CSRF_PROTECTED_METHODS.includes(method.toUpperCase());
 
-        return new Promise((resolve) => {
-          logInfo(`Queuing API request ${originalRequest.url} while CSRF token is retrieved`);
-          PubSub.subscribeOnce(CSRF_TOKEN_REFRESH, (msg, token) => {
-            logInfo(`Resolving queued API request ${originalRequest.url}`);
-            csrfTokens[host] = token;
-            originalRequest.headers[CSRF_HEADER_NAME] = token;
-            resolve(originalRequest);
-          });
+    if (isCsrfTokenRequired) {
+      return authenticatedAPIClient.csrfTokens.getTokenForUrl(url)
+        .then((csrfToken) => {
+          // eslint-disable-next-line no-param-reassign
+          axiosRequestConfig.headers[CSRF_HEADER_NAME] = csrfToken;
+          return axiosRequestConfig;
         });
-      }
     }
-    return request;
+
+    return Promise.resolve(axiosRequestConfig);
   }
 
-  /**
-   * Ensure the browser has an unexpired JWT cookie before making API requests.
-   *
-   * This will attempt to refresh the JWT cookie if a valid refresh token cookie exists.
-   */
-  function ensureValidJWTCookie(request) {
-    const originalRequest = request;
-    const isAuthUrl = authenticatedAPIClient.isAuthUrl(originalRequest.url);
-    const accessToken = authenticatedAPIClient.getDecodedAccessToken();
-    const tokenExpired = authenticatedAPIClient.isAccessTokenExpired(accessToken);
-    if (isAuthUrl || !tokenExpired) {
-      return request;
-    }
-
-    if (!queueRequests) {
-      queueRequests = true;
-      authenticatedAPIClient.refreshAccessToken()
-        .then(() => {
-          queueRequests = false;
-          PubSub.publishSync(ACCESS_TOKEN_REFRESH, { success: true });
-        })
-        .catch((error) => {
-          // If no callback is supplied frontend-auth will (ultimately) redirect the user to login.
-          // The user is redirected to logout to ensure authentication clean-up, which in turn
-          // redirects to login.
-          if (authenticatedAPIClient.handleRefreshAccessTokenFailure) {
-            authenticatedAPIClient.handleRefreshAccessTokenFailure(error);
-          } else {
-            authenticatedAPIClient.logout();
-          }
-          PubSub.publishSync(ACCESS_TOKEN_REFRESH, { success: false });
-        });
-    }
-
-    return new Promise((resolve, reject) => {
-      logInfo(`Queuing API request ${originalRequest.url} while access token is refreshed`);
-      PubSub.subscribeOnce(ACCESS_TOKEN_REFRESH, (msg, { success }) => {
-        if (success) {
-          logInfo(`Resolving queued API request ${originalRequest.url}`);
-          resolve(originalRequest);
-        } else {
-          reject(originalRequest);
+  function ensureValidJWTCookieInterceptor(axiosRequestConfig) {
+    return authenticatedAPIClient.accessToken.get()
+      .then((authenticatedUserAccessToken) => {
+        if (authenticatedUserAccessToken === null) {
+          authenticatedAPIClient.handleRefreshAccessTokenFailure(new Error('User is not authenticated'));
         }
+
+        return axiosRequestConfig;
+      })
+      .catch((error) => {
+        // There were unexpected errors getting the access token.
+        logFrontendAuthError(error);
+        authenticatedAPIClient.logout();
+        throw error;
       });
-    });
   }
 
-  // Log errors and info for unauthorized API responses
+  // Log info for unauthorized API responses
   function handleUnauthorizedAPIResponse(error) {
     const response = error && error.response;
     const errorStatus = response && response.status;
     const requestUrl = response && response.config && response.config.url;
-    const requestIsTokenRefresh = requestUrl === authenticatedAPIClient.refreshAccessTokenEndpoint;
 
     switch (errorStatus) { // eslint-disable-line default-case
       case 401:
-        if (requestIsTokenRefresh) {
-          logInfo(`Unauthorized token refresh response from ${requestUrl}. This is expected if the user is not yet logged in.`);
-        } else {
-          logInfo(`Unauthorized API response from ${requestUrl}`);
-        }
+        getLoggingService().logInfo(`Unauthorized API response from ${requestUrl}`);
         break;
       case 403:
-        logInfo(`Forbidden API response from ${requestUrl}`);
+        getLoggingService().logInfo(`Forbidden API response from ${requestUrl}`);
         break;
     }
 
@@ -131,13 +72,8 @@ function applyAxiosInterceptors(authenticatedAPIClient) {
   // Axios runs the interceptors in reverse order from how they are listed.
   // ensureValidJWTCookie needs to run first to ensure the user is authenticated
   // before making the CSRF token request.
-  const requestInterceptors = [ensureCsrfToken, ensureValidJWTCookie];
-  for (let i = 0; i < requestInterceptors.length; i += 1) {
-    authenticatedAPIClient.interceptors.request.use(
-      requestInterceptors[i],
-      error => Promise.reject(error),
-    );
-  }
+  authenticatedAPIClient.interceptors.request.use(ensureCsrfTokenInterceptor);
+  authenticatedAPIClient.interceptors.request.use(ensureValidJWTCookieInterceptor);
   authenticatedAPIClient.interceptors.response.use(
     response => response,
     handleUnauthorizedAPIResponse,

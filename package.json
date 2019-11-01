@@ -78,7 +78,6 @@
     "redux": "^4.0.0"
   },
   "dependencies": {
-    "@edx/frontend-logging": "^2.0.1",
     "axios": "^0.18.1",
     "camelcase-keys": "^5.0.0",
     "jwt-decode": "^2.2.0",
