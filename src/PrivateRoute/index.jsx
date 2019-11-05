@@ -5,11 +5,13 @@ import PropTypes from 'prop-types';
 
 import LoginRedirect from '../LoginRedirect';
 
+/**
+ * @type ReactComponent
+ */
 const PrivateRoute = ({
   component: Component,
   isAuthenticated,
   path,
-  authenticatedAPIClient,
   redirect,
   ...rest
 }) => (
@@ -26,7 +28,6 @@ const PrivateRoute = ({
         <LoginRedirect
           {...renderProps}
           redirect={redirect + renderProps.location.pathname}
-          authenticatedAPIClient={authenticatedAPIClient}
         />
       )}
     />
@@ -36,9 +37,6 @@ PrivateRoute.propTypes = {
   isAuthenticated: PropTypes.bool.isRequired,
   path: PropTypes.string.isRequired,
   component: PropTypes.func.isRequired,
-  authenticatedAPIClient: PropTypes.shape({
-    login: PropTypes.func.isRequired,
-  }).isRequired,
   redirect: PropTypes.string.isRequired,
 };
 

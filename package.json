@@ -8,6 +8,7 @@
   },
   "scripts": {
     "build": "NODE_ENV=production BABEL_ENV=production webpack --config webpack.config.js",
+    "docs": "jsdoc2md --global-index-format none ./src/**/* > ./docs/api.md",
     "gc": "commit",
     "commitmsg": "commitlint -e $GIT_PARAMS",
     "coveralls": "cat ./coverage/lcov.info | coveralls",
@@ -54,6 +55,7 @@
     "eslint-config-edx": "4.0.4",
     "husky": "0.14.3",
     "jest": "23.6.0",
+    "jsdoc-to-markdown": "^5.0.2",
     "prop-types": "15.6.2",
     "react": "16.9.0",
     "react-dom": "16.9.0",

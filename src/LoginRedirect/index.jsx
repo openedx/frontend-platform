@@ -1,9 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { redirectToLogin } from '../AuthenticatedApiClient';
 
+/**
+ * @type ReactComponent
+ */
 class LoginRedirect extends React.Component {
   componentDidMount() {
-    this.props.authenticatedAPIClient.login(this.props.redirect);
+    redirectToLogin(this.props.redirect);
   }
   render() {
     return (<section>Logging in...</section>);
@@ -11,9 +15,6 @@ class LoginRedirect extends React.Component {
 }
 
 LoginRedirect.propTypes = {
-  authenticatedAPIClient: PropTypes.shape({
-    login: PropTypes.func.isRequired,
-  }).isRequired,
   redirect: PropTypes.string.isRequired,
 };
 

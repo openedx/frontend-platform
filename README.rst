@@ -5,6 +5,8 @@ frontend-auth
 
 frontend-auth simplifies the process of making authenticated API requests to backend edX services by providing common authN/authZ client code that enables the login/logout flow and handles ensuring the presence of a valid `JWT cookie <https://github.com/edx/edx-platform/blob/master/openedx/core/djangoapps/oauth_dispatch/docs/decisions/0009-jwt-in-session-cookie.rst>`__.
 
+For detailed usage information `read the API doc <docs/api.md>`__
+
 Usage
 -----
 
@@ -14,36 +16,46 @@ To install frontend-auth into your project:
 
    npm i --save @edx/frontend-auth
 
-``frontend-auth`` uses `axios interceptors <https://github.com/axios/axios#interceptors>`__ to ensure that a valid JWT cookie exists in your user’s browser before making any API requests. If a valid JWT cookie does not exist, it will attempt to obtain a new valid JWT cookie using a refresh token if one exists in cookies. If a refresh token does not exist or the refresh token is not valid the user will be logged out and redirected to a page of your choosing. Instead of referencing axios directly, you should obtain an http client by calling the ``getAuthenticatedAPIClient`` function provided by ``frontend-auth``:
+``frontend-auth`` uses `axios interceptors <https://github.com/axios/axios#interceptors>`__ to ensure that a valid JWT cookie exists in your user’s browser before making any API requests. If a valid JWT cookie does not exist, it will attempt to refresh the JWT cookie. Instead of referencing axios directly, you should obtain an http client by calling the ``getAuthenticatedApiClient`` function provided by ``frontend-auth``:
 
 ::
 
-   import { NewRelicLoggingService } from '@edx/frontend-logging';
-   import { getAuthenticatedAPIClient } from '@edx/frontend-auth';
+  import { getAuthenticatedApiClient } from '@edx/frontend-auth';
 
-   const apiClient = getAuthenticatedAPIClient({
-     appBaseUrl: process.env.BASE_URL,
-     loginUrl: process.env.LOGIN_URL,
-     logoutUrl: process.env.LOGOUT_URL,
-     refreshAccessTokenEndpoint: process.env.REFRESH_ACCESS_TOKEN_ENDPOINT,
-     accessTokenCookieName: process.env.ACCESS_TOKEN_COOKIE_NAME,
-     loggingService: NewRelicLoggingService, // could be any concrete logging service
-     // handleRefreshAccessTokenFailure is an optional callback
-     // to handle failures to refresh an access token (the user is likely logged out).
-     // If no callback is supplied frontend-auth will redirect the user to login.
-     // handleRefreshAccessTokenFailure: error => {},
-   });
+  const apiClient = getAuthenticatedApiClient({
+    appBaseUrl: process.env.BASE_URL,
+    loginUrl: process.env.LOGIN_URL,
+    logoutUrl: process.env.LOGOUT_URL,
+    refreshAccessTokenEndpoint: process.env.REFRESH_ACCESS_TOKEN_ENDPOINT,
+    accessTokenCookieName: process.env.ACCESS_TOKEN_COOKIE_NAME,
+    csrfTokenApiPath: process.env.CSRF_TOKEN_API_PATH,
+    loggingService: configuredLoggingService, // see @edx/frontend-logging
+  });
 
-   apiClient.ensureAuthenticatedUser(window.location.pathname)
-     .then(({ authenticatedUser, decodedAccessToken }) => {
-        // 1. Successfully resolving the promise means that the user is authenticated and the apiClient is ready to be used.
-        // 2. ``authenticatedUser`` is an object containing user account data that was stored in the access token.
-        // 3. You probably won't need ``decodedAccessToken``, but it is included for completeness and is the raw version
-        //    of the data used to create ``authenticatedUser``.
-     })
-     .catch(e => {
-       // throw or handle error
-     });
+  apiClient.get('https://edx.org/api/v1/user).then((response) => {});
+
+When bootstrapping an application it may be useful to get the user's access token data from the jwt cookie. This can be done using `getAuthenticatedUser` or `ensureAuthenticatedUser`.
+
+::
+
+  import { getAuthenticatedUser, ensureAuthenticatedUser } from '@edx/frontend-auth';
+
+  apiClient.getAuthenticatedUser()
+    .then((authenticatedUserAccessToken) => {
+      // If the authenticatedUserAccessToken is null it means the user is not logged in.
+    })
+    .catch(e => {
+      // There was an unexpected problem
+    });
+
+  apiClient.ensureAuthenticatedUser(window.location.pathname)
+    .then((authenticatedUserAccessToken) => {
+      // If the authenticatedUserAccessToken is null it means the user is not logged in and
+      // will be redirected to login.
+    })
+    .catch(e => {
+      // There was an unexpected problem
+    });
 
 ``frontend-auth`` provides a ``PrivateRoute`` component which can be used along with ``react-router`` to require authentication for specific routes in your app. Here is an example of defining a route that requires authentication:
 
@@ -55,13 +67,17 @@ To install frontend-auth into your project:
        <PrivateRoute
          path="/authenticated"
          component={AuthenticatedComponent}
-         authenticatedAPIClient={apiClient}
          redirect={process.env.BASE_URL}  // This should be the base URL of your app.
        />
      </Switch>
    </ConnectedRouter>
 
 ``frontend-auth`` also provides Redux actions and a reducer for injecting user profile data into your store.
+
+Doc Generation
+--------------
+
+The docs at `docs/api.md <docs/api.md>`__ are generated using JSDoc. Run `npm run docs` to regenerate them.
 
 .. |Build Status| image:: https://api.travis-ci.org/edx/frontend-auth.svg?branch=master
    :target: https://travis-ci.org/edx/frontend-auth

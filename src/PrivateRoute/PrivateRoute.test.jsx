@@ -3,11 +3,25 @@ import PropTypes from 'prop-types';
 import { mount } from 'enzyme';
 import { MemoryRouter, Switch } from 'react-router-dom';
 import configureMockStore from 'redux-mock-store';
+import { configure } from '../AuthenticatedApiClient/index';
 
 import PrivateRoute from './index';
 
+configure({
+  appBaseUrl: process.env.BASE_URL,
+  accessTokenCookieName: process.env.ACCESS_TOKEN_COOKIE_NAME,
+  csrfTokenApiPath: '/get-csrf-token',
+  loginUrl: process.env.LOGIN_URL,
+  logoutUrl: process.env.LOGOUT_URL,
+  refreshAccessTokenEndpoint: process.env.REFRESH_ACCESS_TOKEN_ENDPOINT,
+  loggingService: {
+    logError: jest.fn(),
+    logInfo: jest.fn(),
+  },
+});
+
+window.location.assign = jest.fn();
 const mockStore = configureMockStore([]);
-const mockLogin = jest.fn();
 
 const TestAuthenticatedComponent = () => (
   <div>
@@ -23,9 +37,6 @@ const PrivateRouteWrapper = props => (
         exact
         path={props.path}
         component={TestAuthenticatedComponent}
-        authenticatedAPIClient={{
-          login: mockLogin,
-        }}
         redirect={props.redirect}
       />
     </Switch>
@@ -44,6 +55,10 @@ PrivateRouteWrapper.defaultProps = {
 };
 
 describe('PrivateRoute', () => {
+  beforeEach(() => {
+    window.location.assign.mockReset();
+  });
+
   it('renders private component if authenticated', () => {
     const store = mockStore({
       authentication: {
@@ -76,7 +91,10 @@ describe('PrivateRoute', () => {
         redirect={redirect}
       />
     ));
-    expect(mockLogin).toHaveBeenCalledWith(redirect + route);
+
+    const encodedRedirectUrl = encodeURIComponent(redirect + route);
+    expect(window.location.assign)
+      .toHaveBeenCalledWith(`${process.env.LOGIN_URL}?next=${encodedRedirectUrl}`);
   });
 
   it('renders LoginRedirect if not authenticated, missing auth state', () => {
@@ -91,7 +109,10 @@ describe('PrivateRoute', () => {
         redirect={redirect}
       />
     ));
-    expect(mockLogin).toHaveBeenCalledWith(redirect + route);
+
+    const encodedRedirectUrl = encodeURIComponent(redirect + route);
+    expect(window.location.assign)
+      .toHaveBeenCalledWith(`${process.env.LOGIN_URL}?next=${encodedRedirectUrl}`);
   });
 
   it('redirects to correct URL even if path has match params', () => {
@@ -107,6 +128,9 @@ describe('PrivateRoute', () => {
         redirect={redirect}
       />
     ));
-    expect(mockLogin).toHaveBeenCalledWith(redirect + route);
+
+    const encodedRedirectUrl = encodeURIComponent(redirect + route);
+    expect(window.location.assign)
+      .toHaveBeenCalledWith(`${process.env.LOGIN_URL}?next=${encodedRedirectUrl}`);
   });
 });

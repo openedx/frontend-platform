@@ -2,6 +2,12 @@
     "extends": "eslint-config-edx",
     "parser": "babel-eslint",
     "rules": {
+        "no-trailing-spaces":  [
+            "error",
+            {
+                "ignoreComments": true
+            }
+        ],
         "import/no-extraneous-dependencies": [
             "error",
             {
