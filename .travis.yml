@@ -1,0 +1,16 @@
+language: node_js
+node_js: 12
+install:
+  - npm install
+script:
+  - npm run lint
+  - npm run test
+  - npm run build
+  - npm run is-es5
+after_success:
+  - npm run travis-deploy-once "npm run semantic-release"
+  - npm run coveralls
+env:
+  global:
+    - secure: ewwrWdigVxrUIJ/MNLy0q74sz21JWs0yQ1TfBi865Nrs0aFtQpdoch86Hiz+C/aHTQJFoBGajFr6NWB22kRbKf08EOXyxxOLmxeRr6z9oThpxMK/WajAqFwEPkVY4JjjmgMazi5dXgNuU8EPzQO62/VOR7OrsiCxxzfHRk7nV4tu/CJbKcZDHrkPsRszAqwbN40dImW1K2y8mWspMPJLJl90Z+l0mrAh8zCwb0xhr8M6gcBAPQ9119VFdChAMq5aZ4WRyZMc9QjmGKkf2N7SfvwRDrKddaN/q+0I02yMM86BCrnwmb39fHl3f5YUzkY93XAyoZcuKU5y3b/d9eCY7uj975mbV1Zg6FKsv60XZgXD7Znpk8oEJcCVTmnrXs8dX6UPThKdmhLnWK2tcDRv43Wt3/5qEDKutFMmt0vZVWkOB3yZz2I0vNyfxw+EZ/Rjgv7TDfhRdW4rtJMJx2EgF8p4puaOL2/+sadqKHoosXqWWHBJM1zhYoR5hBxqARM0sBwyS5hSInLPsbWfDlyyUR2k+EKqCuT621Xe0PPV/j06niLQ0lxD2c9/h/qDlZGUOGUBmQFFv5VNQTXcPmmAwyR82/za/IQIVcAFpXRFvUnBtzh69tB253leM5ibywHUXXlcXRCX6Til3iQSKhP2TO1Z7J/aqg2CPdcJNqRWNP8=
+    - secure: h+xxbiEoiCcwiBXE9TGAfFdb8SermdF2wHcyDeO1sLt/fq/5BD/khCxqU94ez0dHAS9Jq3xxyELwIrz1AjScX0O4xdaNQq3lkRb0rkU5ksSu5nHS8vlP0e7q/PEkZzPT//ognFBrQjZCPy8pN5FwfX9D3SKoSlmvnPEeM6AbMYxz9YGMoyHJrGB5VQdonUV0SAgI+MNu9nfls9wiDzt+2IAJcz/DvfZu+M94JC2r2Jo5Ryx9DjZG3/sXIfHRpN1/8ueM3xx22Yjf/1SCpAJ3Y/JWMBqZMnQ6c/3aTfCvUkBbf4Y5yeYm76qIiqkwUK9kCj74YkqWxTDZhaaLri69BUlxJjVJ1RsCl/GwRwO7rtNDy1LSfTivVN34yaEqxDPpuQIpeyMxQJzRfG1xCyle0jGofCkZSeq34QqU3UIVpsOFiEnPAUmF/hRSHypG+9h1HJhqGauI4I5JMn3Ak/DAsuIL9iHXfzUq2385G1J7DLmakHUUtT2N/zkkveUWezjSKL2+ysdipH5aDgJi7W6J9ewgHa7+leczxvvYsok5aqveqQg2ss7tZkAll/vK7d/K18S8FlQFZeLxi067Mf5GQgSd5wIYI509Zm221aIqjYCz/FS2H0wwZohvrE+YydNadPUYV4wEyBNqPdHQTniADjZKrv/xcT4F9F786JcM0dU=
