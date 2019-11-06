@@ -1,3 +1,4 @@
+import { redirectToLogin } from '@edx/frontend-auth';
 import App from '../App';
 import { camelCaseObject } from '../api';
 
@@ -18,5 +19,5 @@ function breakOnRedirectFromLogin() {
 
 export function loginRedirect() {
   breakOnRedirectFromLogin();
-  App.apiClient.login(global.location.href);
+  redirectToLogin(global.location.href);
 }
