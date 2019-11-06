@@ -1,0 +1,65 @@
+{
+  "name": "@edx/frontend-auth",
+  "version": "1.0.0-semantically-released",
+  "description": "Frontend auth client code for use with the edX auth service.",
+  "main": "dist/index.js",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "fedx-scripts babel src --out-dir dist --delete-dir-on-start --copy-files --source-maps",
+    "docs": "npx jsdoc2md --global-index-format none ./src/**/* > ./docs/api.md",
+    "lint": "fedx-scripts eslint --ext .js --ext .jsx .",
+    "test": "fedx-scripts jest --coverage",
+    "watch": "npx watch 'npm run build' ./src"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint",
+      "commit-msg": "commitlint -e $GIT_PARAMS"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/edx/frontend-auth.git"
+  },
+  "author": "edX",
+  "license": "AGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/edx/frontend-auth/issues"
+  },
+  "homepage": "https://github.com/edx/frontend-auth#readme",
+  "devDependencies": {
+    "@commitlint/cli": "8.1.0",
+    "@commitlint/config-angular": "8.1.0",
+    "@edx/frontend-build": "^2.0.0",
+    "axios-mock-adapter": "1.16.0",
+    "babel-plugin-rewire": "1.2.0",
+    "codecov": "3.6.1",
+    "enzyme": "3.8.0",
+    "enzyme-adapter-react-16": "1.8.0",
+    "husky": "3.0.9",
+    "prop-types": "15.6.2",
+    "react": "16.9.0",
+    "react-dom": "16.9.0",
+    "react-redux": "5.1.1",
+    "react-router-dom": "4.3.1",
+    "redux": "4.0.1",
+    "redux-mock-store": "1.5.3",
+    "redux-thunk": "2.3.0"
+  },
+  "peerDependencies": {
+    "prop-types": "^15.5.10",
+    "react": "^16.4.2",
+    "react-redux": "^5.0.7",
+    "react-router-dom": "^4.3.1",
+    "redux": "^4.0.0"
+  },
+  "dependencies": {
+    "axios": "^0.18.1",
+    "camelcase-keys": "^5.0.0",
+    "jwt-decode": "^2.2.0",
+    "snakecase-keys": "^2.1.0",
+    "universal-cookie": "^3.0.4"
+  }
+}
