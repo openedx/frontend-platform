@@ -6,10 +6,9 @@ script:
   - npm run lint
   - npm run test
   - npm run build
-  - npm run is-es5
 after_success:
-  - npm run travis-deploy-once "npm run semantic-release"
-  - npm run coveralls
+  - npx semantic-release
+  - codecov
 env:
   global:
     - secure: lycL1urR9Q+jEe0w08WqjLxoaif+4xPJF5LY30zQrpR2Vr4MYAlqfY390Z4HQta7Ml6VYCDpolEeZB/Am9msVlh6TOqvXkEZqXcAEnrnrKpww+nAmESL2eZ5Nmnh6KsfcWEu6J5SLipQSJm3pdmXK4KrXavcIRLo5WPDyo5lfC1sevvtW5Byhx2XBN2zij8wwr/n5bddlAGwt/xL2levAT8qjPcXHYu4jM1u1iWk/0rM9NkrVvSvdA2c33DKxgNe8FvVOMxcryVgQtgmdq/Shjo5Gwbvzl/BzX+HASWNuWoDJ1RMn1257rHyusEvx/RISQEh5ApdY9nU5NF0w92ZPdVzvMa1Ahu5PMOBD3oPtfhETeHXJY5abuKx3Z+06QJUSOuzIKiBJA1xf2diA1CeWV7t0qD8EiXiWqDODG5t5N94iZi19pN29ErWVj/j/2q8LyAfTkzy6108Hnw8ioYVCJu08nuSp0DWdZ5uQcv8tVFdvcPAOGw+T2uh6DRnkNaotZcX4fkIUelprDqNpayw+YMMXPQTF5if4st63jJo+8+yNmd9ec2fkDBZMGn61Ul/D+rUgLPB6hykU5ddxtfS3DTWxBfTh74Oy8X3WITi311YkjVjdcB2Y3PfijQL6Q3D+4pZVKnXx3FWDOvciZZ0pEBUdsuUkE4uASCfwKhV2xw=

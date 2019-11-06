@@ -2,24 +2,22 @@
   "name": "@edx/frontend-auth",
   "version": "1.0.0-semantically-released",
   "description": "Frontend auth client code for use with the edX auth service.",
-  "main": "dist/main.js",
+  "main": "dist/index.js",
   "publishConfig": {
     "access": "public"
   },
   "scripts": {
-    "build": "NODE_ENV=production BABEL_ENV=production webpack --config webpack.config.js",
-    "docs": "jsdoc2md --global-index-format none ./src/**/* > ./docs/api.md",
-    "gc": "commit",
-    "commitmsg": "commitlint -e $GIT_PARAMS",
-    "coveralls": "cat ./coverage/lcov.info | coveralls",
-    "lint": "eslint --ext .js --ext .jsx .",
-    "is-es5": "es-check es5 ./dist/*.js",
-    "precommit": "npm run lint",
-    "prepublishOnly": "npm run build",
-    "semantic-release": "semantic-release",
-    "test": "jest --coverage",
-    "travis-deploy-once": "travis-deploy-once",
-    "watch": "watch 'npm run build' ./src"
+    "build": "fedx-scripts babel src --out-dir dist --delete-dir-on-start --copy-files --source-maps",
+    "docs": "npx jsdoc2md --global-index-format none ./src/**/* > ./docs/api.md",
+    "lint": "fedx-scripts eslint --ext .js --ext .jsx .",
+    "test": "fedx-scripts jest --coverage",
+    "watch": "npx watch 'npm run build' ./src"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint",
+      "commit-msg": "commitlint -e $GIT_PARAMS"
+    }
   },
   "repository": {
     "type": "git",
@@ -34,28 +32,13 @@
   "devDependencies": {
     "@commitlint/cli": "8.1.0",
     "@commitlint/config-angular": "8.1.0",
-    "@commitlint/prompt": "8.1.0",
-    "@commitlint/prompt-cli": "8.1.0",
+    "@edx/frontend-build": "^2.0.0",
     "axios-mock-adapter": "1.16.0",
-    "babel-cli": "6.26.0",
-    "babel-core": "6.26.3",
-    "babel-eslint": "10.0.3",
-    "babel-loader": "7.1.5",
     "babel-plugin-rewire": "1.2.0",
-    "babel-plugin-transform-object-rest-spread": "6.26.0",
-    "babel-plugin-transform-runtime": "6.23.0",
-    "babel-preset-env": "1.7.0",
-    "babel-preset-react": "6.24.1",
-    "babel-runtime": "6.26.0",
-    "coveralls": "3.0.2",
+    "codecov": "3.6.1",
     "enzyme": "3.8.0",
     "enzyme-adapter-react-16": "1.8.0",
-    "es-check": "5.0.0",
-    "eslint": "6.2.2",
-    "eslint-config-edx": "4.0.4",
-    "husky": "0.14.3",
-    "jest": "23.6.0",
-    "jsdoc-to-markdown": "^5.0.2",
+    "husky": "3.0.9",
     "prop-types": "15.6.2",
     "react": "16.9.0",
     "react-dom": "16.9.0",
@@ -63,14 +46,7 @@
     "react-router-dom": "4.3.1",
     "redux": "4.0.1",
     "redux-mock-store": "1.5.3",
-    "redux-thunk": "2.3.0",
-    "semantic-release": "^15.13.24",
-    "source-map-loader": "0.2.4",
-    "travis-deploy-once": "5.0.11",
-    "uglifyjs-webpack-plugin": "1.3.0",
-    "watch": "1.0.2",
-    "webpack": "4.29.0",
-    "webpack-cli": "3.2.1"
+    "redux-thunk": "2.3.0"
   },
   "peerDependencies": {
     "prop-types": "^15.5.10",
@@ -83,21 +59,7 @@
     "axios": "^0.18.1",
     "camelcase-keys": "^5.0.0",
     "jwt-decode": "^2.2.0",
-    "pubsub-js": "^1.7.0",
     "snakecase-keys": "^2.1.0",
-    "universal-cookie": "^3.0.4",
-    "url-parse": "^1.4.3"
-  },
-  "jest": {
-    "setupFiles": [
-      "./src/tests/setupTest.js"
-    ],
-    "collectCoverageFrom": [
-      "src/**/*.{js,jsx}",
-      "!src/tests/setupTest.js",
-      "!src/index.js",
-      "!**/node_modules/**",
-      "!**/tests/**"
-    ]
+    "universal-cookie": "^3.0.4"
   }
 }
