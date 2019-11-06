@@ -1,3 +1,5 @@
+.idea
 coverage
 dist
 node_modules
+src/analytics/segment.js
