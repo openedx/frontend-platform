@@ -1,0 +1,25 @@
+{
+  "name": "frontend-platform",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "directories": {
+    "example": "example"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/davidjoy/frontend-platform.git"
+  },
+  "author": "edX",
+  "license": "AGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/davidjoy/frontend-platform/issues"
+  },
+  "homepage": "https://github.com/davidjoy/frontend-platform#readme",
+  "devDependencies": {
+    "@edx/frontend-build": "^2.0.0"
+  }
+}
