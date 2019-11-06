@@ -2,11 +2,11 @@
 
 Take these:
 
-frontend-base
-frontend-auth
-frontend-analytics
-frontend-i18n
-frontend-logging
+- frontend-base
+- frontend-auth
+- frontend-analytics
+- frontend-i18n
+- frontend-logging
 
 And roll them into frontend-platform.
 
@@ -16,7 +16,9 @@ auth, analytics, i18n, and logging do not directly reference each other.  They'r
 
 Usage of the four other libraries is accomplished via:
 
-Example: `import { logError } from 'frontend-platform/logging';`
+Example: 
+
+`import { logError } from 'frontend-platform/logging';`
 
 Assuming the consuming app is using webpack, this allows us to continue to treeshake out any code that isn't explicitly imported, meaning that just because you have frontend-platform as a dependency, you aren't burdened by unused code in your actual build artifacts.
 
