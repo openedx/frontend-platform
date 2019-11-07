@@ -1,4 +1,4 @@
-import { configureLoggingService, NewRelicLoggingService } from '@edx/frontend-logging';
+import { configureLoggingService, NewRelicLoggingService } from '../../logging';
 
 /* eslint-disable no-param-reassign */
 export default async function logging(app) {

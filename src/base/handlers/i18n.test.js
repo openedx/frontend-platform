@@ -1,7 +1,7 @@
-import * as frontendI18n from '@edx/frontend-i18n';
+import * as frontendI18n from '../../i18n';
 import i18n, { mergeMessages } from './i18n';
 
-jest.mock('@edx/frontend-i18n', () => ({
+jest.mock('../../i18n', () => ({
   configure: jest.fn(),
 }));
 

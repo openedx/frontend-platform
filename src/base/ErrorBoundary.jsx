@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import { logApiClientError } from '@edx/frontend-logging';
+import { logApiClientError } from '../logging';
 
 import ErrorPage from './ErrorPage';
 

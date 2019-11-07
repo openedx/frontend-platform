@@ -1,10 +1,10 @@
 import {
   configureLoggingService,
-} from '@edx/frontend-logging';
+} from '../../logging';
 
 import logging from './logging';
 
-jest.mock('@edx/frontend-logging', () => ({
+jest.mock('../../logging', () => ({
   configureLoggingService: jest.fn(),
   NewRelicLoggingService: 'default service',
 }));

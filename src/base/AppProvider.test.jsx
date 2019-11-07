@@ -2,7 +2,7 @@ import React from 'react';
 import { createStore } from 'redux';
 import { mount } from 'enzyme';
 import { createBrowserHistory } from 'history';
-import { configure as configureI18n } from '@edx/frontend-i18n';
+import { configure as configureI18n } from '../i18n';
 import env from './data/env';
 import AppProvider from './AppProvider';
 import App from './App';

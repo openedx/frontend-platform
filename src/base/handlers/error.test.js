@@ -1,8 +1,8 @@
-import { logError } from '@edx/frontend-logging';
+import { logError } from '../../logging';
 
 import error from './error';
 
-jest.mock('@edx/frontend-logging');
+jest.mock('../../logging');
 
 it('should log the App error', () => {
   const app = {

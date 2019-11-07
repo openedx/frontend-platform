@@ -130,7 +130,11 @@ function expectLogin(redirectUrl = process.env.BASE_URL) {
 
 // customAttributes is sent into expect.objectContaining
 // and can include other matchers in the object like expect.any(Number)
-const expectLogFunctionToHaveBeenCalledWithMessage = (callParams, errorMessage, customAttributes) => {
+const expectLogFunctionToHaveBeenCalledWithMessage = (
+  callParams,
+  errorMessage,
+  customAttributes,
+) => {
   const loggedError = callParams[0];
   expect(loggedError.message).toEqual(errorMessage);
   if (customAttributes) {
@@ -407,13 +411,13 @@ describe('Token refresh failures', () => {
           expectNoCallToCsrfTokenFetch();
           expectLogFunctionToHaveBeenCalledWithMessage(
             mockLoggingService.logError.mock.calls[0],
-            '[frontend-auth] HTTP Client Error: 403 http://auth.example.com/api/refreshToken (empty response)',
+            '[frontend-auth] HTTP Client Error: 403 http://localhost:18000/login_refresh (empty response)',
             {
               httpErrorRequestMethod: 'post',
               httpErrorResponseData: '(empty response)',
               httpErrorStatus: 403,
               httpErrorType: 'api-response-error',
-              httpErrorRequestUrl: 'http://auth.example.com/api/refreshToken',
+              httpErrorRequestUrl: 'http://localhost:18000/login_refresh',
             },
           );
         });
@@ -435,12 +439,12 @@ describe('Token refresh failures', () => {
           expectNoCallToCsrfTokenFetch();
           expectLogFunctionToHaveBeenCalledWithMessage(
             mockLoggingService.logError.mock.calls[0],
-            '[frontend-auth] HTTP Client Error: timeout of 0ms exceeded post http://auth.example.com/api/refreshToken',
+            '[frontend-auth] HTTP Client Error: timeout of 0ms exceeded post http://localhost:18000/login_refresh',
             {
               httpErrorRequestMethod: 'post',
               httpErrorMessage: 'timeout of 0ms exceeded',
               httpErrorType: 'api-request-config-error',
-              httpErrorRequestUrl: 'http://auth.example.com/api/refreshToken',
+              httpErrorRequestUrl: 'http://localhost:18000/login_refresh',
             },
           );
         });

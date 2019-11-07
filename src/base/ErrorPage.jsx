@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { FormattedMessage } from '@edx/frontend-i18n';
 import { Button } from '@edx/paragon';
+
+import { FormattedMessage } from '../i18n';
 
 export default class ErrorPage extends Component {
   /* istanbul ignore next */

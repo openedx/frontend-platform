@@ -2,7 +2,7 @@ import {
   identifyAuthenticatedUser,
   identifyAnonymousUser,
   sendPageEvent,
-} from '@edx/frontend-analytics';
+} from '../../analytics';
 
 export default async function beforeReady(app) {
   if (app.authenticatedUser === null) {

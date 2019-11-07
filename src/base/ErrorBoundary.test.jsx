@@ -3,8 +3,9 @@ import { mount } from 'enzyme';
 
 import ErrorBoundary from './ErrorBoundary';
 
-jest.mock('@edx/frontend-logging');
-import { logApiClientError } from '@edx/frontend-logging'; // eslint-disable-line import/first
+import { logApiClientError } from '../logging';
+
+jest.mock('../logging');
 
 describe('ErrorBoundary', () => {
   beforeEach(() => {

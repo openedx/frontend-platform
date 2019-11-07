@@ -1,5 +1,6 @@
-import { configure } from '@edx/frontend-i18n';
 import merge from 'lodash.merge';
+
+import { configure } from '../../i18n';
 
 export function mergeMessages(messagesArray = []) {
   return Array.isArray(messagesArray) ? merge({}, ...messagesArray) : {};

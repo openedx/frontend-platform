@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { getLocale, getMessages, IntlProvider } from '@edx/frontend-i18n';
 import { Router } from 'react-router-dom';
+import { getLocale, getMessages, IntlProvider } from '../i18n';
 
 import OptionalReduxProvider from './OptionalReduxProvider';
 

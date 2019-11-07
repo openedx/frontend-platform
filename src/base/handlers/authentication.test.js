@@ -1,4 +1,4 @@
-import { getAuthenticatedApiClient, redirectToLogin, getAuthenticatedUser } from '@edx/frontend-auth';
+import { getAuthenticatedApiClient, redirectToLogin, getAuthenticatedUser } from '../../auth';
 
 import authentication from './authentication';
 import App, { AUTHENTICATED_USER_CHANGED } from '../App';
@@ -10,7 +10,7 @@ const mockAuthenticatedUser = {
   administrator: true,
 };
 
-jest.mock('@edx/frontend-auth', () => ({
+jest.mock('../../auth', () => ({
   getAuthenticatedApiClient: jest.fn(() => ({
     get: jest.fn(async () => ({
       data: {

@@ -1,11 +1,11 @@
 import {
   configureAnalytics,
   initializeSegment,
-} from '@edx/frontend-analytics';
+} from '../../analytics';
 
 import analytics from './analytics';
 
-jest.mock('@edx/frontend-analytics', () => ({
+jest.mock('../../analytics', () => ({
   configureAnalytics: jest.fn(),
   initializeSegment: jest.fn(),
 }));

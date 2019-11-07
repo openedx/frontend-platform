@@ -1,7 +1,7 @@
 import {
   configureAnalytics,
   initializeSegment,
-} from '@edx/frontend-analytics';
+} from '../../analytics';
 
 export default async function analytics(app) {
   initializeSegment(app.config.SEGMENT_KEY);

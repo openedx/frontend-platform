@@ -1,8 +1,8 @@
-import { identifyAuthenticatedUser, identifyAnonymousUser, sendPageEvent } from '@edx/frontend-analytics';
+import { identifyAuthenticatedUser, identifyAnonymousUser, sendPageEvent } from '../../analytics';
 
 import beforeReady from './beforeReady';
 
-jest.mock('@edx/frontend-analytics', () => ({
+jest.mock('../../analytics', () => ({
   identifyAuthenticatedUser: jest.fn(),
   identifyAnonymousUser: jest.fn(),
   sendPageEvent: jest.fn(),

@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import { getAuthenticatedApiClient, getAuthenticatedUser } from '@edx/frontend-auth';
+import { getAuthenticatedApiClient, getAuthenticatedUser } from '../../auth';
 
 import { loginRedirect, getAuthenticatedUserAccount } from '../data/service';
 

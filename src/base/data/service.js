@@ -1,4 +1,4 @@
-import { redirectToLogin } from '@edx/frontend-auth';
+import { redirectToLogin } from '../../auth';
 import App from '../App';
 import { camelCaseObject } from '../api';
 

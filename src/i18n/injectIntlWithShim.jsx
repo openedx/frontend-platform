@@ -1,6 +1,6 @@
 import React from 'react';
 import { injectIntl, intlShape } from 'react-intl';
-import { logError } from '@edx/frontend-logging';
+import { logError } from '../logging';
 
 /**
  * This function wraps react-intl's injectIntl function in order to add error logging to the intl
