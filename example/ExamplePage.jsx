@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import { injectIntl, intlShape } from '@edx/frontend-i18n';
-import { logInfo } from '@edx/frontend-logging';
 import { Link } from 'react-router-dom';
 
-import App from '../src/App';
-import AppContext from '../src/AppContext';
+import { injectIntl, intlShape } from '@edx/frontend-platform/i18n';
+import { logInfo } from '@edx/frontend-platform/logging';
+import { App, AppContext } from '@edx/frontend-platform/base';
 import messages from './messages';
 
 App.ensureConfig([

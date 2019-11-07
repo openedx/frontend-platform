@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 
-import AppContext from '../src/AppContext';
+import { AppContext } from '@edx/frontend-platform/base';
 
 export default function AuthenticatedPage() {
   const { authenticatedUser, config } = useContext(AppContext);

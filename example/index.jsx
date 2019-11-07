@@ -3,7 +3,8 @@ import 'babel-polyfill'; // eslint-disable-line import/no-extraneous-dependencie
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Route } from 'react-router-dom';
-import { App, AppProvider, APP_ERROR, APP_READY, ErrorPage, AuthenticatedRoute } from '../src';
+import { App, AppProvider, APP_ERROR, APP_READY, ErrorPage, AuthenticatedRoute } from '@edx/frontend-platform/base';
+
 import './index.scss';
 import ExamplePage from './ExamplePage';
 import AuthenticatedPage from './AuthenticatedPage';
