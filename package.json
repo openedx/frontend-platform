@@ -8,6 +8,7 @@
   },
   "sideEffects": false,
   "scripts": {
+    "docs": "npx jsdoc2md --global-index-format none ./src/**/* > ./docs/api.md",
     "lint": "fedx-scripts eslint --ext .js --ext .jsx .",
     "snapshot": "fedx-scripts jest --updateSnapshot",
     "start": "fedx-scripts webpack-dev-server --progress",
@@ -68,6 +69,7 @@
     "axios": "^0.19.0",
     "camelcase-keys": "^6.1.0",
     "form-urlencoded": "^4.1.0",
+    "glob": "^7.1.6",
     "history": "^4.10.1",
     "i18n-iso-countries": "^4.3.1",
     "jwt-decode": "^2.2.0",
