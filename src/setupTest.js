@@ -23,3 +23,15 @@ process.env.REFRESH_ACCESS_TOKEN_ENDPOINT = 'http://localhost:18000/login_refres
 process.env.SEGMENT_KEY = 'segment_whoa';
 process.env.SITE_NAME = 'edX';
 process.env.USER_INFO_COOKIE_NAME = 'edx-user-info';
+
+/* Auth test variables
+
+process.env.BASE_URL = 'http://example.com';
+process.env.LMS_BASE_URL = 'http://auth.example.com';
+process.env.LOGIN_URL = 'http://auth.example.com/login';
+process.env.LOGOUT_URL = 'http://auth.example.com/logout';
+process.env.REFRESH_ACCESS_TOKEN_ENDPOINT = 'http://auth.example.com/api/refreshToken';
+process.env.ACCESS_TOKEN_COOKIE_NAME = 'access-token-cookie-name';
+process.env.USER_INFO_COOKIE_NAME = 'user-info-cookie-name';
+
+*/
