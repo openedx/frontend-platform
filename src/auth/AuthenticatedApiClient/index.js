@@ -73,17 +73,17 @@ const handleUnexpectedAccessTokenRefreshError = (error) => {
  * config options. Setting these to true will prevent this
  * client from attempting to refresh the jwt access token
  * or a csrf token respectively.
- * 
+ *
  * ```
  *  // A public endpoint (no jwt token refresh)
  *  apiClient.get('/path/to/endpoint', { isPublic: true });
  * ```
- * 
+ *
  * ```
  *  // A csrf exempt endpoint
  *  apiClient.post('/path/to/endpoint', { data }, { isCsrfExempt: true });
  * ```
- * 
+ *
  * @typedef HttpClient
  * @property {function} get
  * @property {function} head
@@ -96,8 +96,8 @@ const handleUnexpectedAccessTokenRefreshError = (error) => {
 
 /**
  * Gets the apiClient singleton which is an axios instance.
- * 
- * @param {object} config 
+ *
+ * @param {object} config
  * @param {string} [config.appBaseUrl]
  * @param {string} [config.authBaseUrl]
  * @param {string} [config.loginUrl]
@@ -114,7 +114,7 @@ function getAuthenticatedApiClient(authConfig) {
     authenticatedApiClient = axios.create();
     // Set withCredentials to true. Enables cross-site Access-Control requests
     // to be made using cookies, authorization headers or TLS client
-    // certificates. More on MDN: 
+    // certificates. More on MDN:
     // https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/withCredentials
     authenticatedApiClient.defaults.withCredentials = true;
 
@@ -170,13 +170,17 @@ function getAuthenticatedApiClient(authConfig) {
  * Gets the authenticated user's access token. Resolves to null if the user is
  * unauthenticated.
  *
- * @returns {Promise<UserData>|Promise<null>} Resolves to the user's access token if they are logged in.
+ * @returns {Promise<UserData>|Promise<null>} Resolves to the user's access token if they are
+ * logged in.
  */
 const getAuthenticatedUser = async () => {
   let decodedAccessToken;
 
   try {
-    decodedAccessToken = await getJwtToken(config.accessTokenCookieName, config.refreshAccessTokenEndpoint);
+    decodedAccessToken = await getJwtToken(
+      config.accessTokenCookieName,
+      config.refreshAccessTokenEndpoint,
+    );
   } catch (error) {
     // There were unexpected errors getting the access token.
     handleUnexpectedAccessTokenRefreshError(error);
@@ -195,7 +199,7 @@ const getAuthenticatedUser = async () => {
 };
 
 /**
- * Ensures a user is authenticated. It will redirect to login when not 
+ * Ensures a user is authenticated. It will redirect to login when not
  * authenticated.
  *
  * @param {string} route to return user after login when not authenticated.

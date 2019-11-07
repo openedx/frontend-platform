@@ -6,7 +6,7 @@ import { logFrontendAuthError, processAxiosErrorAndThrow } from './utils';
 const httpClient = axios.create();
 // Set withCredentials to true. Enables cross-site Access-Control requests
 // to be made using cookies, authorization headers or TLS client
-// certificates. More on MDN: 
+// certificates. More on MDN:
 // https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/withCredentials
 httpClient.defaults.withCredentials = true;
 
