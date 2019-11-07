@@ -1,20 +1,40 @@
 {
   "name": "@edx/frontend-platform",
-  "version": "1.0.0",
-  "description": "",
+  "version": "1.0.0-semantically-released",
+  "description": "Foundational application framework for Open edX micro-frontend applications.",
   "main": "src/index.js",
-  "directories": {
-    "example": "example"
+  "publishConfig": {
+    "access": "public"
   },
+  "sideEffects": false,
   "scripts": {
+    "lint": "fedx-scripts eslint --ext .js --ext .jsx .",
+    "snapshot": "fedx-scripts jest --updateSnapshot",
     "start": "fedx-scripts webpack-dev-server --progress",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "fedx-scripts eslint --ext .js --ext .jsx ."
+    "test": "fedx-scripts jest --coverage"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint",
+      "commit-msg": "commitlint -e $GIT_PARAMS"
+    }
+  },
+  "bin": {
+    "transifex-utils.js": "src/i18n/scripts/transifex-utils.js",
+    "transifex-Makefile": "src/i18n/scripts/Makefile"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/davidjoy/frontend-platform.git"
   },
+  "files": [
+    "/src",
+    "/analytics.js",
+    "/auth.js",
+    "/i18n.js",
+    "/logging.js",
+    "/basejs"
+  ],
   "author": "edX",
   "license": "AGPL-3.0",
   "bugs": {
@@ -22,11 +42,17 @@
   },
   "homepage": "https://github.com/davidjoy/frontend-platform#readme",
   "devDependencies": {
+    "@commitlint/cli": "^8.2.0",
+    "@commitlint/config-angular": "^8.2.0",
     "@edx/frontend-build": "^2.0.0",
     "@edx/paragon": "^7.1.5",
     "axios-mock-adapter": "^1.17.0",
+    "babel-plugin-rewire": "^1.2.0",
+    "babel-polyfill": "^6.26.0",
+    "codecov": "^3.6.1",
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.15.1",
+    "husky": "^3.0.9",
     "prop-types": "^15.7.2",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
@@ -34,17 +60,8 @@
     "react-router-dom": "^5.1.2",
     "redux": "^4.0.4",
     "redux-mock-store": "^1.5.3",
+    "redux-saga": "^1.1.3",
     "redux-thunk": "^2.3.0"
-  },
-  "peerDependencies": {
-    "@edx/paragon": "^7.1.3",
-    "prop-types": "^15.7.2",
-    "react": "^16.9.0",
-    "react-dom": "^16.9.0",
-    "react-redux": "^7.1.1",
-    "react-router-dom": "^5.0.1",
-    "redux": "^4.0.4",
-    "redux-saga": "^1.0.5"
   },
   "dependencies": {
     "@cospired/i18n-iso-languages": "2.0.2",
@@ -62,5 +79,15 @@
     "react-intl": "^2.9.0",
     "snakecase-keys": "^3.1.0",
     "universal-cookie": "^4.0.2"
+  },
+  "peerDependencies": {
+    "@edx/paragon": "^7.1.3",
+    "prop-types": "^15.7.2",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
+    "react-redux": "^7.1.1",
+    "react-router-dom": "^5.0.1",
+    "redux": "^4.0.4",
+    "redux-saga": "^1.0.5"
   }
 }
