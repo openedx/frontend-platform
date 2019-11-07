@@ -1,0 +1,15 @@
+__mocks__
+babel.config.js
+codecov.yml
+commitlint.config.js
+coverage
+example
+jest.config.js
+Makefile
+public
+renovate.json
+src/**/*.test.js
+src/**/*.test.jsx
+src/**/tests
+src/**/setupTest.js
+webpack.dev.config.js

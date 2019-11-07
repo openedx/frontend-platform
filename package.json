@@ -28,14 +28,6 @@
     "type": "git",
     "url": "git+https://github.com/davidjoy/frontend-platform.git"
   },
-  "files": [
-    "/src",
-    "/analytics.js",
-    "/auth.js",
-    "/i18n.js",
-    "/logging.js",
-    "/basejs"
-  ],
   "author": "edX",
   "license": "AGPL-3.0",
   "bugs": {
