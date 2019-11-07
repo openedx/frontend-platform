@@ -14,12 +14,6 @@
     "start": "fedx-scripts webpack-dev-server --progress",
     "test": "fedx-scripts jest --coverage"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run lint",
-      "commit-msg": "commitlint -e $GIT_PARAMS"
-    }
-  },
   "bin": {
     "transifex-utils.js": "src/i18n/scripts/transifex-utils.js",
     "transifex-Makefile": "src/i18n/scripts/Makefile"
@@ -58,7 +52,7 @@
   },
   "dependencies": {
     "@cospired/i18n-iso-languages": "2.0.2",
-    "axios": "^0.19.0",
+    "axios": "^0.18.1",
     "camelcase-keys": "^6.1.0",
     "form-urlencoded": "^4.1.0",
     "glob": "^7.1.6",

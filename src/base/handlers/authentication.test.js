@@ -36,11 +36,11 @@ describe('authentication', () => {
 
     expect(getAuthenticatedApiClient).toHaveBeenCalledWith({
       accessTokenCookieName: 'edx-jwt-cookie-header-payload',
-      appBaseUrl: 'localhost:1995',
+      appBaseUrl: 'localhost:8080',
       csrfTokenApiPath: '/csrf/api/v1/token',
       loggingService: undefined,
       loginUrl: 'http://localhost:18000/login',
-      logoutUrl: 'http://localhost:18000/login',
+      logoutUrl: 'http://localhost:18000/logout',
       refreshAccessTokenEndpoint: 'http://localhost:18000/login_refresh',
     });
     expect(getAuthenticatedUser).toHaveBeenCalled();
@@ -61,11 +61,11 @@ describe('authentication', () => {
     await authentication(App);
     expect(getAuthenticatedApiClient).toHaveBeenCalledWith({
       accessTokenCookieName: 'edx-jwt-cookie-header-payload',
-      appBaseUrl: 'localhost:1995',
+      appBaseUrl: 'localhost:8080',
       csrfTokenApiPath: '/csrf/api/v1/token',
       loggingService: undefined,
       loginUrl: 'http://localhost:18000/login',
-      logoutUrl: 'http://localhost:18000/login',
+      logoutUrl: 'http://localhost:18000/logout',
       refreshAccessTokenEndpoint: 'http://localhost:18000/login_refresh',
     });
     expect(getAuthenticatedUser).toHaveBeenCalled();
@@ -92,11 +92,11 @@ describe('authentication', () => {
     await authentication(App);
     expect(getAuthenticatedApiClient).toHaveBeenCalledWith({
       accessTokenCookieName: 'edx-jwt-cookie-header-payload',
-      appBaseUrl: 'localhost:1995',
+      appBaseUrl: 'localhost:8080',
       csrfTokenApiPath: '/csrf/api/v1/token',
       loggingService: undefined,
       loginUrl: 'http://localhost:18000/login',
-      logoutUrl: 'http://localhost:18000/login',
+      logoutUrl: 'http://localhost:18000/logout',
       refreshAccessTokenEndpoint: 'http://localhost:18000/login_refresh',
     });
     expect(getAuthenticatedUser).toHaveBeenCalledWith();

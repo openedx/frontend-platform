@@ -27,7 +27,7 @@ describe('App', () => {
       expect(App.error).toBeNull();
       expect(App.config).toEqual({
         ACCESS_TOKEN_COOKIE_NAME: 'edx-jwt-cookie-header-payload',
-        BASE_URL: 'localhost:1995',
+        BASE_URL: 'localhost:8080',
         CREDENTIALS_BASE_URL: 'http://localhost:18150',
         CSRF_TOKEN_API_PATH: '/csrf/api/v1/token',
         ECOMMERCE_BASE_URL: 'http://localhost:18130',
@@ -35,7 +35,7 @@ describe('App', () => {
         LANGUAGE_PREFERENCE_COOKIE_NAME: 'openedx-language-preference',
         LMS_BASE_URL: 'http://localhost:18000',
         LOGIN_URL: 'http://localhost:18000/login',
-        LOGOUT_URL: 'http://localhost:18000/login',
+        LOGOUT_URL: 'http://localhost:18000/logout',
         MARKETING_SITE_BASE_URL: 'http://localhost:18000',
         ORDER_HISTORY_URL: 'localhost:1996/orders',
         REFRESH_ACCESS_TOKEN_ENDPOINT: 'http://localhost:18000/login_refresh',
