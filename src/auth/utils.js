@@ -1,4 +1,4 @@
-import { getConfig } from './index';
+import { getLoggingService } from './index';
 
 // Lifted from here: https://regexr.com/3ok5o
 const urlRegex = /([a-z]{1,2}tps?):\/\/((?:(?!(?:\/|#|\?|&)).)+)(?:(\/(?:(?:(?:(?!(?:#|\?|&)).)+\/))?))?(?:((?:(?!(?:\.|$|\?|#)).)+))?(?:(\.(?:(?!(?:\?|$|#)).)+))?(?:(\?(?:(?!(?:$|#)).)+))?(?:(#.+))?/;
@@ -34,7 +34,7 @@ const getUrlParts = (url) => {
 const logFrontendAuthError = (error) => {
   const prefixedMessageError = Object.create(error);
   prefixedMessageError.message = `[frontend-auth] ${error.message}`;
-  getConfig().loggingService.logError(prefixedMessageError, prefixedMessageError.customAttributes);
+  getLoggingService().logError(prefixedMessageError, prefixedMessageError.customAttributes);
 };
 
 const processAxiosError = (axiosErrorObject) => {

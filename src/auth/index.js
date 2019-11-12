@@ -4,6 +4,10 @@ import { logFrontendAuthError } from './utils';
 import addAuthenticationToHttpClient from './addAuthenticationToHttpClient';
 import getJwtToken from './getJwtToken';
 
+// Singletons
+let authenticatedHttpClient = null;
+let config = null;
+
 const configPropTypes = {
   appBaseUrl: PropTypes.string.isRequired,
   loginUrl: PropTypes.string.isRequired,
@@ -17,10 +21,7 @@ const configPropTypes = {
   }).isRequired,
 };
 
-let authenticatedHttpClient = null;
-let config = null;
-
-function validateConfig(configObj) {
+const validateConfig = (configObj) => {
   PropTypes.checkPropTypes(configPropTypes, configObj, 'config', 'Auth');
 
   Object.keys(configPropTypes)
@@ -30,88 +31,33 @@ function validateConfig(configObj) {
     });
 
   return configObj;
-}
-
-function configure(incomingConfig) {
-  config = validateConfig(incomingConfig);
-  authenticatedHttpClient = addAuthenticationToHttpClient(axios.create(), config);
-}
-
-function getConfig() {
-  return config;
-}
-
-/**
- * Redirect the user to login
- *
- * @param {string} redirectUrl the url to redirect to after login
- */
-const redirectToLogin = (redirectUrl = config.appBaseUrl) => {
-  global.location.assign(`${config.loginUrl}?next=${encodeURIComponent(redirectUrl)}`);
 };
 
 /**
- * Redirect the user to logout
- *
- * @param {string} redirectUrl the url to redirect to after logout
- */
-const redirectToLogout = (redirectUrl = config.appBaseUrl) => {
-  global.location.assign(`${config.logoutUrl}?redirect_url=${encodeURIComponent(redirectUrl)}`);
-};
-
-/**
- * A configured axios client. See axios docs for more
- * info https://github.com/axios/axios. All the functions
- * below accept isPublic and isCsrfExempt in the request
- * config options. Setting these to true will prevent this
- * client from attempting to refresh the jwt access token
- * or a csrf token respectively.
- *
- * ```
- *  // A public endpoint (no jwt token refresh)
- *  apiClient.get('/path/to/endpoint', { isPublic: true });
- * ```
- *
- * ```
- *  // A csrf exempt endpoint
- *  apiClient.post('/path/to/endpoint', { data }, { isCsrfExempt: true });
- * ```
- *
- * @typedef HttpClient
- * @property {function} get
- * @property {function} head
- * @property {function} options
- * @property {function} delete (csrf protected)
- * @property {function} post (csrf protected)
- * @property {function} put (csrf protected)
- * @property {function} patch (csrf protected)
- */
-
-/**
- * Gets the apiClient singleton which is an axios instance.
+ * Configures an httpClient to make authenticated http requests.
  *
  * @param {object} config
  * @param {string} [config.appBaseUrl]
- * @param {string} [config.authBaseUrl]
  * @param {string} [config.loginUrl]
  * @param {string} [config.logoutUrl]
  * @param {object} [config.loggingService] requires logError and logInfo methods
  * @param {string} [config.refreshAccessTokenEndpoint]
  * @param {string} [config.accessTokenCookieName]
  * @param {string} [config.csrfTokenApiPath]
- * @returns {HttpClient} Singleton. A configured axios http client
  */
-function getAuthenticatedHttpClient() {
-  return authenticatedHttpClient;
-}
+const configure = (incomingConfig) => {
+  config = validateConfig(incomingConfig);
+  authenticatedHttpClient = addAuthenticationToHttpClient(axios.create(), config);
+};
+
+const getLoggingService = () => config.loggingService;
 
 /**
- * @typedef UserData
- * @property {string} userId
- * @property {string} username
- * @property {array} roles
- * @property {bool} administrator
+ * Gets the apiClient singleton which is an axios instance.
+ *
+ * @returns {HttpClient} Singleton. A configured axios http client
  */
+const getAuthenticatedHttpClient = () => authenticatedHttpClient;
 
 /**
  * Gets the authenticated user's access token. Resolves to null if the user is
@@ -136,6 +82,24 @@ const getAuthenticatedUser = async () => {
   }
 
   return null;
+};
+
+/**
+ * Redirect the user to login
+ *
+ * @param {string} redirectUrl the url to redirect to after login
+ */
+const redirectToLogin = (redirectUrl = config.appBaseUrl) => {
+  global.location.assign(`${config.loginUrl}?next=${encodeURIComponent(redirectUrl)}`);
+};
+
+/**
+ * Redirect the user to logout
+ *
+ * @param {string} redirectUrl the url to redirect to after logout
+ */
+const redirectToLogout = (redirectUrl = config.appBaseUrl) => {
+  global.location.assign(`${config.logoutUrl}?redirect_url=${encodeURIComponent(redirectUrl)}`);
 };
 
 /**
@@ -167,10 +131,46 @@ const ensureAuthenticatedUser = async (route) => {
 
 export {
   configure,
-  getConfig,
+  getLoggingService,
   getAuthenticatedHttpClient,
   ensureAuthenticatedUser,
   getAuthenticatedUser,
   redirectToLogin,
   redirectToLogout,
 };
+
+/**
+ * A configured axios client. See axios docs for more
+ * info https://github.com/axios/axios. All the functions
+ * below accept isPublic and isCsrfExempt in the request
+ * config options. Setting these to true will prevent this
+ * client from attempting to refresh the jwt access token
+ * or a csrf token respectively.
+ *
+ * ```
+ *  // A public endpoint (no jwt token refresh)
+ *  apiClient.get('/path/to/endpoint', { isPublic: true });
+ * ```
+ *
+ * ```
+ *  // A csrf exempt endpoint
+ *  apiClient.post('/path/to/endpoint', { data }, { isCsrfExempt: true });
+ * ```
+ *
+ * @typedef HttpClient
+ * @property {function} get
+ * @property {function} head
+ * @property {function} options
+ * @property {function} delete (csrf protected)
+ * @property {function} post (csrf protected)
+ * @property {function} put (csrf protected)
+ * @property {function} patch (csrf protected)
+  */
+
+/**
+ * @typedef UserData
+ * @property {string} userId
+ * @property {string} username
+ * @property {array} roles
+ * @property {bool} administrator
+ */

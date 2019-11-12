@@ -1,5 +1,4 @@
-
-import { getConfig } from './index';
+import { getLoggingService } from './index';
 import { processAxiosError } from './utils';
 import getCsrfToken from './getCsrfToken';
 import getJwtToken from './getJwtToken';
@@ -51,7 +50,7 @@ const processAxiosRequestErrorInterceptor = (error) => {
   const processedError = processAxiosError(error);
   const { httpErrorStatus } = processedError.customAttributes;
   if (httpErrorStatus === 401 || httpErrorStatus === 403) {
-    getConfig().loggingService.logInfo(processedError, processedError.customAttributes);
+    getLoggingService().logInfo(processedError, processedError.customAttributes);
   }
   return Promise.reject(processedError);
 };
