@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import { logApiClientError } from '../logging';
+import { logError } from '../logging';
 
 import ErrorPage from './ErrorPage';
 
@@ -20,7 +20,7 @@ export default class ErrorBoundary extends Component {
   }
 
   componentDidCatch(error, info) {
-    logApiClientError(error.message, { stack: info.componentStack });
+    logError(error, { stack: info.componentStack });
   }
 
   render() {
