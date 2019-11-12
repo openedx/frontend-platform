@@ -1,41 +1,40 @@
 import axios from 'axios';
-import {
-  csrfTokenProviderInterceptor,
-  jwtTokenProviderInterceptor,
-  processAxiosRequestErrorInterceptor,
-} from './axiosInterceptors';
+import PropTypes from 'prop-types';
 import { logFrontendAuthError } from './utils';
+import addAuthenticationToHttpClient from './addAuthenticationToHttpClient';
 import getJwtToken from './getJwtToken';
 
-let authenticatedApiClient = null;
+const configPropTypes = {
+  appBaseUrl: PropTypes.string.isRequired,
+  loginUrl: PropTypes.string.isRequired,
+  logoutUrl: PropTypes.string.isRequired,
+  refreshAccessTokenEndpoint: PropTypes.string.isRequired,
+  accessTokenCookieName: PropTypes.string.isRequired,
+  csrfTokenApiPath: PropTypes.string.isRequired,
+  loggingService: PropTypes.shape({
+    logError: PropTypes.func.isRequired,
+    logInfo: PropTypes.func.isRequired,
+  }).isRequired,
+};
+
+let authenticatedHttpClient = null;
 let config = null;
 
-function configure(incomingConfig) {
-  [
-    'appBaseUrl',
-    'loginUrl',
-    'logoutUrl',
-    'loggingService',
-    'refreshAccessTokenEndpoint',
-    'accessTokenCookieName',
-    'csrfTokenApiPath',
-  ].forEach((key) => {
-    if (incomingConfig[key] === undefined) {
+function validateConfig(configObj) {
+  PropTypes.checkPropTypes(configPropTypes, configObj, 'config', 'Auth');
+
+  Object.keys(configPropTypes)
+    .filter(key => configObj[key] === undefined)
+    .forEach((key) => {
       throw new Error(`Invalid configuration supplied to frontend auth. ${key} is required.`);
-    }
-  });
+    });
 
-  // validate the logging service
-  [
-    'logInfo',
-    'logError',
-  ].forEach((key) => {
-    if (incomingConfig.loggingService[key] === undefined) {
-      throw new Error(`Invalid configuration supplied to frontend auth. loggingService.${key} must be a function.`);
-    }
-  });
+  return configObj;
+}
 
-  config = incomingConfig;
+function configure(incomingConfig) {
+  config = validateConfig(incomingConfig);
+  authenticatedHttpClient = addAuthenticationToHttpClient(axios.create(), config);
 }
 
 function getConfig() {
@@ -58,12 +57,6 @@ const redirectToLogin = (redirectUrl = config.appBaseUrl) => {
  */
 const redirectToLogout = (redirectUrl = config.appBaseUrl) => {
   global.location.assign(`${config.logoutUrl}?redirect_url=${encodeURIComponent(redirectUrl)}`);
-};
-
-const handleUnexpectedAccessTokenRefreshError = (error) => {
-  // There were unexpected errors getting the access token.
-  logFrontendAuthError(error);
-  throw error;
 };
 
 /**
@@ -108,54 +101,8 @@ const handleUnexpectedAccessTokenRefreshError = (error) => {
  * @param {string} [config.csrfTokenApiPath]
  * @returns {HttpClient} Singleton. A configured axios http client
  */
-function getAuthenticatedApiClient(authConfig) {
-  if (authenticatedApiClient === null) {
-    configure(authConfig);
-    authenticatedApiClient = axios.create();
-    // Set withCredentials to true. Enables cross-site Access-Control requests
-    // to be made using cookies, authorization headers or TLS client
-    // certificates. More on MDN:
-    // https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/withCredentials
-    authenticatedApiClient.defaults.withCredentials = true;
-
-    // Axios interceptors
-
-    // The JWT access token interceptor attempts to refresh the user's jwt token
-    // before any request unless the isPublic flag is set on the request config.
-    const refreshAccessTokenInterceptor = jwtTokenProviderInterceptor({
-      tokenCookieName: config.accessTokenCookieName,
-      tokenRefreshEndpoint: config.refreshAccessTokenEndpoint,
-      handleUnexpectedRefreshError: handleUnexpectedAccessTokenRefreshError,
-      shouldSkip: axiosRequestConfig => axiosRequestConfig.isPublic,
-    });
-    // The CSRF token intercepter fetches and caches a csrf token for any post,
-    // put, patch, or delete request. That token is then added to the request
-    // headers.
-    const attachCsrfTokenInterceptor = csrfTokenProviderInterceptor({
-      csrfTokenApiPath: config.csrfTokenApiPath,
-      shouldSkip: (axiosRequestConfig) => {
-        const { method, isCsrfExempt } = axiosRequestConfig;
-        const CSRF_PROTECTED_METHODS = ['post', 'put', 'patch', 'delete'];
-        return isCsrfExempt || !CSRF_PROTECTED_METHODS.includes(method);
-      },
-    });
-
-    // Request interceptors: Axios runs the interceptors in reverse order from
-    // how they are listed. After fetching csrf tokens no longer require jwt
-    // authentication, it won't matter which happens first. This change is
-    // coming soon in edx-platform. Nov. 2019
-    authenticatedApiClient.interceptors.request.use(attachCsrfTokenInterceptor);
-    authenticatedApiClient.interceptors.request.use(refreshAccessTokenInterceptor);
-
-    // Response interceptor: moves axios response error data into the error
-    // object at error.customAttributes
-    authenticatedApiClient.interceptors.response.use(
-      response => response,
-      processAxiosRequestErrorInterceptor,
-    );
-  }
-
-  return authenticatedApiClient;
+function getAuthenticatedHttpClient() {
+  return authenticatedHttpClient;
 }
 
 /**
@@ -174,17 +121,10 @@ function getAuthenticatedApiClient(authConfig) {
  * logged in.
  */
 const getAuthenticatedUser = async () => {
-  let decodedAccessToken;
-
-  try {
-    decodedAccessToken = await getJwtToken(
-      config.accessTokenCookieName,
-      config.refreshAccessTokenEndpoint,
-    );
-  } catch (error) {
-    // There were unexpected errors getting the access token.
-    handleUnexpectedAccessTokenRefreshError(error);
-  }
+  const decodedAccessToken = await getJwtToken(
+    config.accessTokenCookieName,
+    config.refreshAccessTokenEndpoint,
+  );
 
   if (decodedAccessToken !== null) {
     return {
@@ -228,7 +168,7 @@ const ensureAuthenticatedUser = async (route) => {
 export {
   configure,
   getConfig,
-  getAuthenticatedApiClient,
+  getAuthenticatedHttpClient,
   ensureAuthenticatedUser,
   getAuthenticatedUser,
   redirectToLogin,

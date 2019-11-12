@@ -28,7 +28,6 @@ const jwtTokenProviderInterceptor = (options) => {
   const {
     tokenCookieName,
     tokenRefreshEndpoint,
-    handleUnexpectedRefreshError,
     shouldSkip,
   } = options;
 
@@ -38,11 +37,7 @@ const jwtTokenProviderInterceptor = (options) => {
     if (shouldSkip(axiosRequestConfig)) {
       return axiosRequestConfig;
     }
-    try {
-      await getJwtToken(tokenCookieName, tokenRefreshEndpoint);
-    } catch (error) {
-      handleUnexpectedRefreshError(error);
-    }
+    await getJwtToken(tokenCookieName, tokenRefreshEndpoint);
     // Add the proper headers to tell the server to look for the jwt cookie
     // eslint-disable-next-line no-param-reassign
     axiosRequestConfig.headers.common['USE-JWT-COOKIE'] = true;

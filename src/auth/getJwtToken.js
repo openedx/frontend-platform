@@ -93,7 +93,12 @@ const getJwtToken = async (tokenCookieName, tokenRefreshEndpoint) => {
     logFrontendAuthError(e);
   }
 
-  return refresh(tokenCookieName, tokenRefreshEndpoint);
+  try {
+    return await refresh(tokenCookieName, tokenRefreshEndpoint);
+  } catch (e) {
+    logFrontendAuthError(e);
+    throw e;
+  }
 };
 
 export default getJwtToken;
