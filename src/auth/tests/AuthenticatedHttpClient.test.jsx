@@ -1,4 +1,4 @@
-/* eslint-disable arrow-body-style */
+/* eslint-disable arrow-body-style, no-console */
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 import MockAdapter from 'axios-mock-adapter';
@@ -6,7 +6,7 @@ import getJwtToken from '../getJwtToken';
 import getCsrfToken from '../getCsrfToken';
 import {
   configure,
-  getAuthenticatedApiClient,
+  getAuthenticatedHttpClient,
   ensureAuthenticatedUser,
   redirectToLogin,
   redirectToLogout,
@@ -96,7 +96,8 @@ const csrfTokensAxiosMock = new MockAdapter(csrfTokensAxios);
 getCsrfToken.__Rewire__('httpClient', csrfTokensAxios); // eslint-disable-line no-underscore-dangle
 
 
-const client = getAuthenticatedApiClient(authConfig);
+configure(authConfig);
+const client = getAuthenticatedHttpClient();
 
 // Helpers
 const setJwtCookieTo = (jwtCookieValue) => {
@@ -184,49 +185,31 @@ beforeEach(() => {
     .reply(200, { csrfToken: mockCsrfToken });
 });
 
-describe('getAuthenticatedApiClient', () => {
+describe('getAuthenticatedHttpClient', () => {
+  beforeEach(() => {
+    console.error = jest.fn();
+  });
+
+  afterAll(() => {
+    configure(authConfig);
+    console.error.mockRestore();
+  });
+
   it('returns a singleton', () => {
-    const client1 = getAuthenticatedApiClient(authConfig);
-    const client2 = getAuthenticatedApiClient(authConfig);
+    const client1 = getAuthenticatedHttpClient(authConfig);
+    const client2 = getAuthenticatedHttpClient(authConfig);
     expect(client2).toBe(client1);
   });
 
   it('throws an error if supplied an incomplete config', () => {
     expect.hasAssertions();
     try {
-      configure({
-        notwhatitneeds: 'yup',
-      });
+      configure({ notwhatitneeds: 'yup' });
     } catch (e) {
+      expect(console.error).toHaveBeenCalled();
       expect(e.message).toEqual('Invalid configuration supplied to frontend auth. appBaseUrl is required.');
     }
   });
-
-  it('throws an error if supplied a logging service without logError', () => {
-    expect.hasAssertions();
-    try {
-      configure({
-        ...authConfig,
-        loggingService: { logInfo: () => {} },
-      });
-    } catch (e) {
-      expect(e.message).toEqual('Invalid configuration supplied to frontend auth. loggingService.logError must be a function.');
-    }
-  });
-
-  it('throws an error if supplied a logging service without logInfo', () => {
-    expect.hasAssertions();
-    try {
-      configure({
-        ...authConfig,
-        loggingService: { logError: () => {} },
-      });
-    } catch (e) {
-      expect(e.message).toEqual('Invalid configuration supplied to frontend auth. loggingService.logInfo must be a function.');
-    }
-  });
-
-  configure(authConfig);
 });
 
 describe('User is logged in', () => {

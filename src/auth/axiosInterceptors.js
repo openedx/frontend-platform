@@ -1,5 +1,4 @@
-
-import { getConfig } from './index';
+import { getLoggingService } from './index';
 import { processAxiosError } from './utils';
 import getCsrfToken from './getCsrfToken';
 import getJwtToken from './getJwtToken';
@@ -28,7 +27,6 @@ const jwtTokenProviderInterceptor = (options) => {
   const {
     tokenCookieName,
     tokenRefreshEndpoint,
-    handleUnexpectedRefreshError,
     shouldSkip,
   } = options;
 
@@ -38,11 +36,7 @@ const jwtTokenProviderInterceptor = (options) => {
     if (shouldSkip(axiosRequestConfig)) {
       return axiosRequestConfig;
     }
-    try {
-      await getJwtToken(tokenCookieName, tokenRefreshEndpoint);
-    } catch (error) {
-      handleUnexpectedRefreshError(error);
-    }
+    await getJwtToken(tokenCookieName, tokenRefreshEndpoint);
     // Add the proper headers to tell the server to look for the jwt cookie
     // eslint-disable-next-line no-param-reassign
     axiosRequestConfig.headers.common['USE-JWT-COOKIE'] = true;
@@ -56,7 +50,7 @@ const processAxiosRequestErrorInterceptor = (error) => {
   const processedError = processAxiosError(error);
   const { httpErrorStatus } = processedError.customAttributes;
   if (httpErrorStatus === 401 || httpErrorStatus === 403) {
-    getConfig().loggingService.logInfo(processedError, processedError.customAttributes);
+    getLoggingService().logInfo(processedError, processedError.customAttributes);
   }
   return Promise.reject(processedError);
 };
