@@ -3,7 +3,7 @@ import { mount } from 'enzyme';
 
 import ErrorBoundary from './ErrorBoundary';
 
-import { logApiClientError } from '../logging';
+import { logError } from '../logging';
 
 jest.mock('../logging');
 
@@ -42,7 +42,7 @@ describe('ErrorBoundary', () => {
     );
     mount(component);
 
-    expect(logApiClientError).toHaveBeenCalledTimes(1);
-    expect(logApiClientError).toHaveBeenCalledWith('booyah', { stack: '\n    in ExplodingComponent\n    in ErrorBoundary (created by WrapperComponent)\n    in WrapperComponent' });
+    expect(logError).toHaveBeenCalledTimes(1);
+    expect(logError).toHaveBeenCalledWith(new Error('booyah'), { stack: '\n    in ExplodingComponent\n    in ErrorBoundary (created by WrapperComponent)\n    in WrapperComponent' });
   });
 });
