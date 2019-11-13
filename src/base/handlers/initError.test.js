@@ -1,6 +1,6 @@
 import { logError } from '../../logging';
 
-import error from './error';
+import error from './initError';
 
 jest.mock('../../logging');
 

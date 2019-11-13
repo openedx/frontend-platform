@@ -32,11 +32,11 @@ export { default as ErrorPage } from './ErrorPage';
 
 // Handlers
 export { default as analytics } from './handlers/analytics';
-export { default as authentication } from './handlers/authentication';
+export { default as auth } from './handlers/auth';
 export { default as beforeInit } from './handlers/beforeInit';
 export { default as beforeReady } from './handlers/beforeReady';
 export { default as loadConfig } from './handlers/loadConfig';
-export { default as error } from './handlers/error';
+export { default as initError } from './handlers/initError';
 export { default as i18n } from './handlers/i18n';
 export { default as logging } from './handlers/logging';
 export { default as ready } from './handlers/ready';
