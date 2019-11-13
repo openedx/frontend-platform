@@ -1,11 +1,12 @@
 import {
-  configureAnalytics,
+  configure,
   identifyAnonymousUser,
   identifyAuthenticatedUser,
   sendPageEvent,
   sendTrackEvent,
   sendTrackingLogEvent,
-} from './analytics';
+  SegmentAnalyticsService,
+} from './index';
 
 const eventType = 'test.event';
 const eventData = {
@@ -16,70 +17,37 @@ const eventData = {
 };
 const testUserId = 99;
 const testAnalyticsApiBaseUrl = '/analytics';
-let mockAuthApiClient;
-let mockLoggingService;
+const testTrackingLogApiBaseUrl = '/analytics/event';
+const mockLoggingService = {
+  logError: jest.fn(),
+  logInfo: jest.fn(),
+};
+const mockAuthApiClient = {
+  post: jest.fn().mockResolvedValue(undefined),
+};
 
+// SegmentAnalyticsService inserts a script before the first script element
+// in the document. Add one here.
+document.body.innerHTML = '<script id="stub" />';
 
-function createMockLoggingService() {
-  mockLoggingService = {
-    logError: jest.fn(),
-    logAPIErrorResponse: jest.fn(),
-  };
-}
-
-function createMockAuthApiClientAuthenticated() {
-  mockAuthApiClient = {
-    getAuthenticationState:
-      jest.fn(() => ({
-        authentication: { userId: testUserId },
-      })),
-  };
-}
-
-function createMockAuthApiClientPostResolved() {
-  mockAuthApiClient = {
-    post: jest.fn().mockResolvedValue(undefined),
-  };
-}
-
-function createMockAuthApiClientPostRejected() {
-  mockAuthApiClient = {
-    post: jest.fn().mockRejectedValue('test-error'),
-  };
-}
-
-function configureAnalyticsWithMocks() {
-  configureAnalytics({
+beforeEach(() => {
+  configure(SegmentAnalyticsService, {
     loggingService: mockLoggingService,
-    authApiClient: mockAuthApiClient,
+    httpClient: mockAuthApiClient,
     analyticsApiBaseUrl: testAnalyticsApiBaseUrl,
+    trackingLogApiBaseUrl: testTrackingLogApiBaseUrl,
+    apiKey: 'test-key',
   });
-}
+  mockLoggingService.logError.mockReset();
+  mockAuthApiClient.post.mockReset();
+  mockAuthApiClient.post.mockResolvedValue(undefined);
+  window.analytics.identify = jest.fn();
+  window.analytics.page = jest.fn();
+  window.analytics.track = jest.fn();
+});
 
 describe('analytics sendTrackingLogEvent', () => {
-  it('fails when loggingService is not configured', () => {
-    mockLoggingService = undefined;
-    createMockAuthApiClientPostResolved();
-    configureAnalyticsWithMocks();
-
-    expect(() => sendTrackingLogEvent(eventType, eventData))
-      .toThrowError('You must configure the loggingService.');
-  });
-
-  it('fails when authApiClient is not configured', () => {
-    createMockLoggingService();
-    mockAuthApiClient = undefined;
-    configureAnalyticsWithMocks();
-
-    expect(() => sendTrackingLogEvent(eventType, eventData))
-      .toThrowError('You must configure the authApiClient.');
-  });
-
   it('posts expected data when successful', () => {
-    createMockLoggingService();
-    createMockAuthApiClientPostResolved();
-    configureAnalyticsWithMocks();
-
     expect.assertions(4);
     return sendTrackingLogEvent(eventType, eventData)
       .then(() => {
@@ -92,30 +60,19 @@ describe('analytics sendTrackingLogEvent', () => {
       });
   });
 
-  it('calls loggingService.logAPIErrorResponse on error', () => {
-    createMockLoggingService();
-    createMockAuthApiClientPostRejected();
-    configureAnalyticsWithMocks();
-
+  it('calls loggingService.logError on error', () => {
+    mockAuthApiClient.post.mockRejectedValue('test-error');
     expect.assertions(2);
     return sendTrackingLogEvent(eventType, eventData)
       .then(() => {
-        expect(mockLoggingService.logAPIErrorResponse.mock.calls.length).toBe(1);
-        expect(mockLoggingService.logAPIErrorResponse).toBeCalledWith('test-error');
+        expect(mockLoggingService.logError.mock.calls.length).toBe(1);
+        expect(mockLoggingService.logError).toBeCalledWith('test-error');
       });
   });
 });
 
 describe('analytics identifyAuthenticatedUser', () => {
-  beforeEach(() => {
-    window.analytics = {
-      identify: jest.fn(),
-    };
-  });
-
   it('calls Segment identify on success', () => {
-    configureAnalyticsWithMocks();
-
     const testTraits = { anything: 'Yay!' };
     identifyAuthenticatedUser(testUserId, testTraits);
 
@@ -124,20 +81,12 @@ describe('analytics identifyAuthenticatedUser', () => {
   });
 
   it('throws error if userId is not supplied', () => {
-    configureAnalyticsWithMocks();
-
     expect(() => identifyAuthenticatedUser(null))
       .toThrowError(new Error('UserId is required for identifyAuthenticatedUser.'));
   });
 });
 
 describe('analytics identifyAnonymousUser', () => {
-  beforeEach(() => {
-    window.analytics = {
-      identify: jest.fn(),
-    };
-  });
-
   it('calls Segment identify on success', () => {
     const testTraits = { anything: 'Yay!' };
     identifyAnonymousUser(testTraits);
@@ -148,9 +97,6 @@ describe('analytics identifyAnonymousUser', () => {
 });
 
 function testSendPageAfterIdentify(identifyFunction) {
-  createMockLoggingService();
-  createMockAuthApiClientAuthenticated();
-  configureAnalyticsWithMocks();
   identifyFunction();
 
   const testCategory = 'test-category';
@@ -163,21 +109,6 @@ function testSendPageAfterIdentify(identifyFunction) {
 }
 
 describe('analytics send Page event', () => {
-  beforeEach(() => {
-    window.analytics = {
-      identify: jest.fn(),
-      page: jest.fn(),
-    };
-  });
-
-  it('fails when loggingService is not configured', () => {
-    mockLoggingService = undefined;
-    mockAuthApiClient = undefined;
-    configureAnalyticsWithMocks();
-
-    expect(() => sendPageEvent()).toThrowError('You must configure the loggingService.');
-  });
-
   it('calls Segment page on success after identifyAuthenticatedUser', () => {
     const userId = 1;
     testSendPageAfterIdentify(() => identifyAuthenticatedUser(userId));
@@ -188,10 +119,6 @@ describe('analytics send Page event', () => {
   });
 
   it('fails if page called with no identify', () => {
-    createMockLoggingService();
-    mockAuthApiClient = undefined;
-    configureAnalyticsWithMocks();
-
     sendPageEvent();
 
     expect(mockLoggingService.logError.mock.calls.length).toBe(1);
@@ -200,9 +127,6 @@ describe('analytics send Page event', () => {
 });
 
 function testSendTrackEventAfterIdentify(identifyFunction) {
-  createMockLoggingService();
-  createMockAuthApiClientAuthenticated();
-  configureAnalyticsWithMocks();
   identifyFunction();
 
   const testName = 'test-name';
@@ -214,21 +138,6 @@ function testSendTrackEventAfterIdentify(identifyFunction) {
 }
 
 describe('analytics send Track event', () => {
-  beforeEach(() => {
-    window.analytics = {
-      identify: jest.fn(),
-      track: jest.fn(),
-    };
-  });
-
-  it('fails when loggingService is not configured', () => {
-    mockLoggingService = undefined;
-    mockAuthApiClient = undefined;
-    configureAnalyticsWithMocks();
-
-    expect(() => sendTrackEvent()).toThrowError('You must configure the loggingService.');
-  });
-
   it('calls Segment track on success after identifyAuthenticatedUser', () => {
     const userId = 1;
     testSendTrackEventAfterIdentify(() => identifyAuthenticatedUser(userId));
@@ -239,10 +148,6 @@ describe('analytics send Track event', () => {
   });
 
   it('fails if track called with no identify', () => {
-    createMockLoggingService();
-    mockAuthApiClient = undefined;
-    configureAnalyticsWithMocks();
-
     sendTrackEvent();
 
     expect(mockLoggingService.logError.mock.calls.length).toBe(1);

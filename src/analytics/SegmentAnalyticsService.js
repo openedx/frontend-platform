@@ -1,28 +1,31 @@
+import formurlencoded from 'form-urlencoded';
+import { snakeCaseObject } from './utils';
+
 export default class SegmentAnalyticsService {
   static hasIdentifyBeenCalled = false;
 
-  constructor({ loggingService, httpClient, analyticsBaseUrl, apiKey }) {
-    this.loggingService = loggingService;
-    this.httpClient = httpClient;
-    this.analyticsBaseUrl = analyticsBaseUrl;
-    this.segmentKey = apiKey;
+  constructor(config) {
+    this.loggingService = config.loggingService;
+    this.httpClient = config.httpClient;
+    this.analyticsApiBaseUrl = config.analyticsApiBaseUrl;
+    this.trackingLogApiBaseUrl = config.trackingLogApiBaseUrl;
+    this.segmentKey = config.apiKey;
+    this.initialize();
   }
 
   // The code in this function is from Segment's website, with the following
   // update: - Takes the segment key as a parameter (
   // https://segment.com/docs/sources/website/analytics.js/quickstart/
-  intialize() {
+  initialize() {
     // Create a queue, but don't obliterate an existing one!
-    var analytics = window.analytics = window.analytics || [];
+    window.analytics = window.analytics || [];
+    const { analytics } = window;
 
     // If the real analytics.js is already on the page return.
     if (analytics.initialize) return;
 
-    // If the snippet was invoked already show an error.
+    // If the snippet was invoked do nothing.
     if (analytics.invoked) {
-      if (window.console && console.error) {
-        console.error('Segment snippet included twice.');
-      }
       return;
     }
 
@@ -47,42 +50,37 @@ export default class SegmentAnalyticsService {
       'page',
       'once',
       'off',
-      'on'
+      'on',
     ];
 
     // Define a factory to create stubs. These are placeholders
     // for methods in Analytics.js so that you never have to wait
     // for it to load to actually record data. The `method` is
     // stored as the first argument, so we can replay the data.
-    analytics.factory = function(method){
-      return function(){
-        var args = Array.prototype.slice.call(arguments);
-        args.unshift(method);
-        analytics.push(args);
-        return analytics;
-      };
-    };
+    analytics.factory = method => (({ ...args }) => {
+      args.unshift(method);
+      analytics.push(args);
+      return analytics;
+    });
 
     // For each of our methods, generate a queueing stub.
-    for (var i = 0; i < analytics.methods.length; i++) {
-      var key = analytics.methods[i];
+    analytics.methods.forEach((key) => {
       analytics[key] = analytics.factory(key);
-    }
+    });
 
     // Define a method to load Analytics.js from our CDN,
     // and that will be sure to only ever load it once.
-    analytics.load = function(key, options){
+    analytics.load = (key, options) => {
       // Create an async script element based on your key.
-      var script = document.createElement('script');
+      const script = document.createElement('script');
       script.type = 'text/javascript';
       script.async = true;
-      script.src = 'https://cdn.segment.com/analytics.js/v1/'
-        + key + '/analytics.min.js';
+      script.src = `https://cdn.segment.com/analytics.js/v1/${key}/analytics.min.js`;
 
       // Insert our script next to the first script element.
-      var first = document.getElementsByTagName('script')[0];
+      const first = document.getElementsByTagName('script')[0];
       first.parentNode.insertBefore(script, first);
-      analytics._loadOptions = options;
+      analytics._loadOptions = options; // eslint-disable-line no-underscore-dangle
     };
 
     // Add a version to keep track of what's in the wild.
@@ -91,6 +89,43 @@ export default class SegmentAnalyticsService {
     // Load Analytics.js with your key, which will automatically
     // load the tools you've enabled for your account. Boosh!
     analytics.load(this.segmentKey);
+  }
+
+  /**
+   * Checks that identify was first called.  Otherwise, logs error.
+   */
+  checkIdentifyCalled() {
+    if (!this.hasIdentifyBeenCalled) {
+      this.loggingService.logError('Identify must be called before other tracking events.');
+    }
+  }
+
+  /**
+   * Logs events to tracking log and downstream.
+   * For tracking log event documentation, see
+   * https://openedx.atlassian.net/wiki/spaces/AN/pages/13205895/Event+Design+and+Review+Process
+   * @param eventName (event_type on backend, but named to match Segment api)
+   * @param properties (event on backend, but named properties to match Segment api)
+   * @returns The promise returned by apiClient.post.
+   */
+  sendTrackingLogEvent(eventName, properties) {
+    const snakeEventData = snakeCaseObject(properties, { deep: true });
+    const serverData = {
+      event_type: eventName,
+      event: JSON.stringify(snakeEventData),
+      page: window.location.href,
+    };
+    return this.httpClient.post(
+      this.trackingLogApiBaseUrl,
+      formurlencoded(serverData),
+      {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      },
+    ).catch((error) => {
+      this.loggingService.logError(error);
+    });
   }
 
   /**
@@ -122,7 +157,7 @@ export default class SegmentAnalyticsService {
    * @param properties (optional)
    */
   sendTrackEvent(eventName, properties) {
-    checkIdentifyCalled();
+    this.checkIdentifyCalled();
     window.analytics.track(eventName, properties);
   }
 
@@ -133,7 +168,7 @@ export default class SegmentAnalyticsService {
    * @param properties (optional)
    */
   sendPageEvent(category, name, properties) {
-    checkIdentifyCalled();
+    this.checkIdentifyCalled();
     window.analytics.page(category, name, properties);
   }
 }
