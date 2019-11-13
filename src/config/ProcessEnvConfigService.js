@@ -36,7 +36,7 @@ function readProcessEnv() {
 export default class ProcessEnvConfigService {
   constructor({ pubSubService }) {
     this.pubSubService = pubSubService;
-    this.config = readProcessEnv();
+    this.setConfig(readProcessEnv());
   }
 
   getConfig() {
