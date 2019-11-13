@@ -30,8 +30,7 @@ export default class NewRelicLoggingService {
   }
 
   logError(error, customAttributes = {}) {
-    const errorCustomAttributes =
-      error.customAttributes !== undefined ? error.customAttributes : {};
+    const errorCustomAttributes = error.customAttributes || {};
     let allCustomAttributes = { ...errorCustomAttributes, ...customAttributes };
     if (Object.keys(allCustomAttributes).length === 0) {
       // noticeError expects undefined if there are no custom attributes.

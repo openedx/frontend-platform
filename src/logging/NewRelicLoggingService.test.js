@@ -41,6 +41,16 @@ describe('NewRelicLoggingService', () => {
       expect(global.newrelic.noticeError).toHaveBeenCalledWith(error, undefined);
     });
 
+    it('calls New Relic client to log error and merges in customAttributes from the error', () => {
+      const error = new Error('Failed!');
+      error.customAttributes = {
+        boo: 'yah',
+        foo: 'gah',
+      };
+      service.logError(error, { foo: 'wins', bar: 'baz' });
+      expect(global.newrelic.noticeError).toHaveBeenCalledWith(error, { boo: 'yah', foo: 'wins', bar: 'baz' });
+    });
+
     it('calls New Relic client with truncated error string', () => {
       const error = new Array(MAX_ERROR_LENGTH + 500 + 1).join('0');
       const expectedError = new Array(MAX_ERROR_LENGTH + 1).join('0');
