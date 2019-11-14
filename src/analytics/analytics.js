@@ -1,15 +1,15 @@
 import PropTypes from 'prop-types';
 
 const configShape = {
-  analyticsApiBaseUrl: PropTypes.string.isRequired,
-  trackingLogApiBaseUrl: PropTypes.string.isRequired,
-  apiKey: PropTypes.string.isRequired,
   loggingService: PropTypes.shape({
     logError: PropTypes.func.isRequired,
     logInfo: PropTypes.func.isRequired,
   }).isRequired,
   httpClient: PropTypes.shape({
     post: PropTypes.func.isRequired,
+  }).isRequired,
+  configService: PropTypes.shape({
+    getConfig: PropTypes.func.isRequired,
   }).isRequired,
 };
 

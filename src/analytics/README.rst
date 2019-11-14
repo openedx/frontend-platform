@@ -15,20 +15,15 @@ To install frontend-analytics into your project::
 
 Add the following configuration code to your app::
 
-    import { configure as configureAnalytics, SegmentAnalyticsService } from '@edx/analytics';
-    import LoggingService from '@edx/frontend-logging';
-
-    // Example of a configured frontend-auth api client
-    import apiClient from '../config/apiClient';
-    // Sample object containing app configuration
-    import { configuration } from '../config/environment';
+    import { configure as configureAnalytics, SegmentAnalyticsService } from '@edx/frontend-platform/analytics';
+    import { getLoggingService } from '@edx/frontend-platform/logging';
+    import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
+    import { getConfigService } from '@edx/frontend-platform/config';
 
     configureAnalytics(SegmentAnalyticsService, {
-      loggingService: LoggingService,
-      httpClient: apiClient,
-      analyticsApiBaseUrl: configuration.LMS_BASE_URL,
-      trackingLogApiBaseUrl: `${configuration.LMS_BASE_URL}/event`,
-      apiKey: configuration.SEGMENT_KEY,
+      loggingService: getLoggingService(),
+      httpClient: getAuthenticatedHttpClient(),
+      configService: getConfigService(),
     });
 
 .. |Build Status| image:: https://api.travis-ci.org/edx/frontend-analytics.svg?branch=master

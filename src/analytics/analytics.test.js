@@ -25,6 +25,15 @@ const mockLoggingService = {
 const mockAuthApiClient = {
   post: jest.fn().mockResolvedValue(undefined),
 };
+const mockConfigService = {
+  getConfig: (key) => {
+    const config = {
+      LMS_BASE_URL: 'https://example.com',
+      SEGMENT_KEY: 'test-key',
+    };
+    return config[key];
+  },
+};
 
 // SegmentAnalyticsService inserts a script before the first script element
 // in the document. Add one here.
@@ -34,9 +43,7 @@ beforeEach(() => {
   configure(SegmentAnalyticsService, {
     loggingService: mockLoggingService,
     httpClient: mockAuthApiClient,
-    analyticsApiBaseUrl: testAnalyticsApiBaseUrl,
-    trackingLogApiBaseUrl: testTrackingLogApiBaseUrl,
-    apiKey: 'test-key',
+    configService: mockConfigService,
   });
   mockLoggingService.logError.mockReset();
   mockAuthApiClient.post.mockReset();
@@ -52,7 +59,7 @@ describe('analytics sendTrackingLogEvent', () => {
     return sendTrackingLogEvent(eventType, eventData)
       .then(() => {
         expect(mockAuthApiClient.post.mock.calls.length).toEqual(1);
-        expect(mockAuthApiClient.post.mock.calls[0][0]).toEqual('/analytics/event');
+        expect(mockAuthApiClient.post.mock.calls[0][0]).toEqual('https://example.com/event');
         const expectedData = 'event_type=test.event&event=%7B%22test_shallow%22%3A%22test-shallow%22%2C%22test_object%22%3A%7B%22test_deep%22%3A%22test-deep%22%7D%7D&page=http%3A%2F%2Flocalhost%2F';
         expect(mockAuthApiClient.post.mock.calls[0][1]).toEqual(expectedData);
         const config = mockAuthApiClient.post.mock.calls[0][2];
