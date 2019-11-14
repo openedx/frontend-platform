@@ -16,8 +16,6 @@ const eventData = {
   },
 };
 const testUserId = 99;
-const testAnalyticsApiBaseUrl = '/analytics';
-const testTrackingLogApiBaseUrl = '/analytics/event';
 const mockLoggingService = {
   logError: jest.fn(),
   logInfo: jest.fn(),
