@@ -1,19 +1,19 @@
 import {
-  configureAnalytics,
+  configure,
   identifyAnonymousUser,
   identifyAuthenticatedUser,
   sendPageEvent,
   sendTrackEvent,
   sendTrackingLogEvent,
 } from './analytics';
-import { initializeSegment } from './segment';
 
 export {
-  configureAnalytics,
+  configure,
   identifyAnonymousUser,
   identifyAuthenticatedUser,
-  initializeSegment,
   sendPageEvent,
   sendTrackEvent,
   sendTrackingLogEvent,
 };
+export { default as SegmentAnalyticsService } from './SegmentAnalyticsService';
+
