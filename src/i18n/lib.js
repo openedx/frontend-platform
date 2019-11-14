@@ -59,6 +59,7 @@ let messages = null;
 let config = {
   ENVIRONMENT: null,
   LANGUAGE_PREFERENCE_COOKIE_NAME: null,
+  loggingService: null,
 };
 
 export function getCookies() {
@@ -210,3 +211,7 @@ export const configure = (newConfig, msgs) => {
 
   handleRtl();
 };
+
+export const getLoggingService = () => {
+  return config.loggingService;
+}

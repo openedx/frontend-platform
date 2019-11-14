@@ -8,5 +8,5 @@ export function mergeMessages(messagesArray = []) {
 
 export default async function i18n(app) {
   const messages = Array.isArray(app.messages) ? mergeMessages(app.messages) : app.messages;
-  configure(app.config, messages);
+  configure({ ...app.config, loggingService: app.loggingService }, messages);
 }

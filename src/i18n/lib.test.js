@@ -24,6 +24,7 @@ describe('lib', () => {
         {
           ENVIRONMENT: 'production',
           LANGUAGE_PREFERENCE_COOKIE_NAME: 'yum',
+          loggingService: { logError: jest.fn() },
         },
         {
           'es-419': {},
@@ -40,6 +41,7 @@ describe('lib', () => {
         {
           ENVIRONMENT: 'development', // turn on warnings!
           LANGUAGE_PREFERENCE_COOKIE_NAME: 'yum',
+          loggingService: { logError: jest.fn() },
         },
         {
           ar: {},
@@ -67,6 +69,7 @@ describe('lib', () => {
         {
           ENVIRONMENT: 'development', // turn on warnings!
           LANGUAGE_PREFERENCE_COOKIE_NAME: 'yum',
+          loggingService: { logError: jest.fn() },
         },
         {},
       );
@@ -108,6 +111,7 @@ describe('lib', () => {
         {
           ENVIRONMENT: 'production',
           LANGUAGE_PREFERENCE_COOKIE_NAME: 'yum',
+          loggingService: { logError: jest.fn() },
         },
         {
           'es-419': {},
@@ -152,6 +156,7 @@ describe('lib', () => {
         {
           ENVIRONMENT: 'production',
           LANGUAGE_PREFERENCE_COOKIE_NAME: 'yum',
+          loggingService: { logError: jest.fn() },
         },
         {
           'es-419': { message: 'es-hah' },
@@ -207,6 +212,7 @@ describe('lib', () => {
         {
           ENVIRONMENT: 'production',
           LANGUAGE_PREFERENCE_COOKIE_NAME: 'yum',
+          loggingService: { logError: jest.fn() },
         },
         {
           'es-419': { message: 'es-hah' },
@@ -223,6 +229,7 @@ describe('lib', () => {
         {
           ENVIRONMENT: 'production',
           LANGUAGE_PREFERENCE_COOKIE_NAME: 'yum',
+          loggingService: { logError: jest.fn() },
         },
         {
           ar: { message: 'ar-hah' },

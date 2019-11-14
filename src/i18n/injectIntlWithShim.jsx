@@ -1,6 +1,6 @@
 import React from 'react';
 import { injectIntl, intlShape } from 'react-intl';
-import { logError } from '../logging';
+import { getLoggingService } from './lib';
 
 /**
  * This function wraps react-intl's injectIntl function in order to add error logging to the intl
@@ -23,7 +23,7 @@ const injectIntlWithShim = (WrappedComponent) => {
                 console.error(error); // eslint-disable-line no-console
                 return '!!! Missing message supplied to intl.formatMessage !!!';
               }
-              logError(error);
+              getLoggingService().logError(error);
               return ''; // Fail silently in production
             }
             return this.props.intl.formatMessage(definition, ...args);
