@@ -18,41 +18,45 @@ const serviceShape = {
   identifyAuthenticatedUser: PropTypes.func.isRequired,
   identifyAnonymousUser: PropTypes.func.isRequired,
   sendTrackEvent: PropTypes.func.isRequired,
+  sendPageEvent: PropTypes.func.isRequired,
 };
 
 let service;
 
-function configure(AnalyticsService, config) {
-  PropTypes.checkPropTypes(configShape, config, 'config', 'Analytics');
+export function configure(AnalyticsService, config) {
+  PropTypes.checkPropTypes(configShape, config, 'property', 'Analytics');
+  PropTypes.checkPropTypes(serviceShape, service, 'property', 'AnalyticsService');
   service = new AnalyticsService(config);
-  PropTypes.checkPropTypes(serviceShape, service, 'service', 'AnalyticsService');
 }
 
-function sendTrackingLogEvent(eventName, properties) {
+export function sendTrackingLogEvent(eventName, properties) {
   return service.sendTrackingLogEvent(eventName, properties);
 }
 
-function identifyAuthenticatedUser(userId, traits) {
+export function identifyAuthenticatedUser(userId, traits) {
   return service.identifyAuthenticatedUser(userId, traits);
 }
 
-function identifyAnonymousUser(traits) {
+export function identifyAnonymousUser(traits) {
   return service.identifyAnonymousUser(traits);
 }
 
-function sendTrackEvent(eventName, properties) {
+export function sendTrackEvent(eventName, properties) {
   return service.sendTrackEvent(eventName, properties);
 }
 
-function sendPageEvent(category, name, properties) {
+export function sendPageEvent(category, name, properties) {
   return service.sendPageEvent(category, name, properties);
 }
 
-export {
-  configure,
-  identifyAnonymousUser,
-  identifyAuthenticatedUser,
-  sendPageEvent,
-  sendTrackEvent,
-  sendTrackingLogEvent,
-};
+export function getAnalyticsService() {
+  if (!service) {
+    throw Error('You must first configure the analytics service.');
+  }
+
+  return service;
+}
+
+export function resetAnalyticsService() {
+  service = null;
+}

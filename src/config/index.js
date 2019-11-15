@@ -1,2 +1,2 @@
+export { configure, getConfig, setConfig, mergeConfig, getConfigService, resetConfigService } from './interface';
 export { default as ProcessEnvConfigService } from './ProcessEnvConfigService';
-export { default as configure, getConfig, setConfig, mergeConfig } from './configure';

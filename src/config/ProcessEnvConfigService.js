@@ -1,7 +1,6 @@
 export const CONFIG_TOPIC = 'CONFIG';
 export const CONFIG_CHANGED = `${CONFIG_TOPIC}.CHANGED`;
 
-
 function validateConfig(config, requester) {
   Object.keys(config).forEach((key) => {
     if (config[key] === undefined) {

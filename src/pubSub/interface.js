@@ -1,13 +1,15 @@
 import PropTypes from 'prop-types';
 
+const serviceShape = {
+  subscribe: PropTypes.func.isRequired,
+  unsubscribe: PropTypes.func.isRequired,
+};
+
 let service = null;
 
-export default function configure(PubSubService, services) {
-  service = new PubSubService(services);
-  PropTypes.checkPropTypes({
-    subscribe: PropTypes.func.isRequired,
-    unsubscribe: PropTypes.func.isRequired,
-  }, service, 'property', 'PubSubService');
+export function configure(PubSubService) {
+  PropTypes.checkPropTypes(serviceShape, service, 'property', 'PubSubService');
+  service = new PubSubService();
 }
 
 export function subscribe(type, callback) {

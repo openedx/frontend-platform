@@ -1,12 +1,3 @@
-import {
-  configure,
-  identifyAnonymousUser,
-  identifyAuthenticatedUser,
-  sendPageEvent,
-  sendTrackEvent,
-  sendTrackingLogEvent,
-} from './analytics';
-
 export {
   configure,
   identifyAnonymousUser,
@@ -14,6 +5,7 @@ export {
   sendPageEvent,
   sendTrackEvent,
   sendTrackingLogEvent,
-};
+  getAnalyticsService,
+  resetAnalyticsService,
+} from './interface';
 export { default as SegmentAnalyticsService } from './SegmentAnalyticsService';
-
