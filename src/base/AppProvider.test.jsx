@@ -7,7 +7,10 @@ import env from './data/env';
 import AppProvider from './AppProvider';
 import App from './App';
 
-configureI18n(env, {
+configureI18n({
+  ...env,
+  loggingService: { logError: jest.fn() },
+}, {
   ar: {},
   'es-419': {},
   fr: {},

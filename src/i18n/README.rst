@@ -41,12 +41,14 @@ Example of es_419.json messages JSON file::
 
 Configuration Example::
 
-  import { configure as configureI18n } from '@edx/frontend-i18n';
+  import { configure as configureI18n } from '@edx/frontend-platform/i18n';
+  import { getLoggingService } from '@edx/frontend-platform/logging';
 
   // frontend-i18n relies on two pieces of configuration.
   const configuration = {
     ENVIRONMENT: 'production',
-    LANGUAGE_PREFERENCE_COOKIE_NAME: 'openedx-language-preference'
+    LANGUAGE_PREFERENCE_COOKIE_NAME: 'openedx-language-preference',
+    loggingService: getLoggingService(),
   }
   const messages = {
     ar: require('./messages/ar.json')
