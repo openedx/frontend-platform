@@ -45,19 +45,19 @@ const validateConfig = (configObj) => {
  * @param {string} [config.accessTokenCookieName]
  * @param {string} [config.csrfTokenApiPath]
  */
-const configure = (incomingConfig) => {
+export const configure = (incomingConfig) => {
   config = validateConfig(incomingConfig);
   authenticatedHttpClient = addAuthenticationToHttpClient(axios.create(), config);
 };
 
-const getLoggingService = () => config.loggingService;
+export const getLoggingService = () => config.loggingService;
 
 /**
  * Gets the apiClient singleton which is an axios instance.
  *
  * @returns {HttpClient} Singleton. A configured axios http client
  */
-const getAuthenticatedHttpClient = () => authenticatedHttpClient;
+export const getAuthenticatedHttpClient = () => authenticatedHttpClient;
 
 /**
  * Gets the authenticated user's access token. Resolves to null if the user is
@@ -66,7 +66,7 @@ const getAuthenticatedHttpClient = () => authenticatedHttpClient;
  * @returns {Promise<UserData>|Promise<null>} Resolves to the user's access token if they are
  * logged in.
  */
-const getAuthenticatedUser = async () => {
+export const getAuthenticatedUser = async () => {
   const decodedAccessToken = await getJwtToken(
     config.accessTokenCookieName,
     config.refreshAccessTokenEndpoint,
@@ -89,7 +89,7 @@ const getAuthenticatedUser = async () => {
  *
  * @param {string} redirectUrl the url to redirect to after login
  */
-const redirectToLogin = (redirectUrl = config.appBaseUrl) => {
+export const redirectToLogin = (redirectUrl = config.appBaseUrl) => {
   global.location.assign(`${config.loginUrl}?next=${encodeURIComponent(redirectUrl)}`);
 };
 
@@ -98,7 +98,7 @@ const redirectToLogin = (redirectUrl = config.appBaseUrl) => {
  *
  * @param {string} redirectUrl the url to redirect to after logout
  */
-const redirectToLogout = (redirectUrl = config.appBaseUrl) => {
+export const redirectToLogout = (redirectUrl = config.appBaseUrl) => {
   global.location.assign(`${config.logoutUrl}?redirect_url=${encodeURIComponent(redirectUrl)}`);
 };
 
@@ -109,7 +109,7 @@ const redirectToLogout = (redirectUrl = config.appBaseUrl) => {
  * @param {string} route to return user after login when not authenticated.
  * @returns {Promise<UserData>}
  */
-const ensureAuthenticatedUser = async (route) => {
+export const ensureAuthenticatedUser = async (route) => {
   const authenticatedUserData = await getAuthenticatedUser();
 
   if (authenticatedUserData === null) {
@@ -127,16 +127,6 @@ const ensureAuthenticatedUser = async (route) => {
   }
 
   return authenticatedUserData;
-};
-
-export {
-  configure,
-  getLoggingService,
-  getAuthenticatedHttpClient,
-  ensureAuthenticatedUser,
-  getAuthenticatedUser,
-  redirectToLogin,
-  redirectToLogout,
 };
 
 /**

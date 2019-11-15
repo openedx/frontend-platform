@@ -64,7 +64,7 @@ export default class App {
       PubSub.publish(APP_LOGGING_CONFIGURED);
 
       // Authentication
-      await this._override(handlers.authentication, overrideHandlers.authentication);
+      await this._override(handlers.auth, overrideHandlers.auth);
       PubSub.publish(APP_AUTHENTICATED);
 
       // Internationalization
