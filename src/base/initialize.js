@@ -20,15 +20,22 @@ export const APP_BEFORE_READY = `${APP_TOPIC}.BEFORE_READY`;
 export const APP_READY = `${APP_TOPIC}.READY`;
 export const APP_INIT_ERROR = `${APP_TOPIC}.INIT_ERROR`;
 
-const override = async (defaultHandler, overrideHandler, ...args) => {
-  if (overrideHandler !== undefined) {
-    await overrideHandler(args);
-  } else {
-    await defaultHandler(args);
-  }
-};
-
 export const history = createBrowserHistory();
+
+function applyHandlerOverrides(overrides) {
+  const noOp = async () => {};
+  return {
+    pubSub: noOp,
+    config: noOp,
+    logging: noOp,
+    auth,
+    analytics: noOp,
+    i18n: noOp,
+    ready: noOp,
+    initError,
+    ...overrides, // This will override any same-keyed handlers from above.
+  };
+}
 
 export default async function initialize({
   pubSubService = PubSubJsService,
@@ -42,48 +49,57 @@ export default async function initialize({
   // messages,
   handlers = {},
 } = {}) {
+  const finalHandlers = applyHandlerOverrides(handlers);
   try {
+    // Pub/Sub
     configurePubSub(pubSubService);
-    await override(() => {}, handlers.pubSub);
+    await finalHandlers.pubSub();
     publish(APP_PUBSUB_INITIALIZED);
 
+    // Configuration
     configureConfig(configService, {
       pubSubService: getPubSubService(),
     });
-    await override(() => {}, handlers.config);
+    await finalHandlers.config();
     publish(APP_CONFIG_INITIALIZED);
 
+    // Logging
     configureLogging(loggingService, {
       configService: getConfigService(),
     });
-    await override(() => {}, handlers.logging);
+    await finalHandlers.logging();
     publish(APP_LOGGING_INITIALIZED);
 
+    // Authentication
     // configureAuth(authService, {
     //   configService: getConfigService(),
     //   loggingService: getLoggingService(),
     // });
-    await override(auth, handlers.auth, requireAuthenticatedUser, hydrateAuthenticatedUser);
+    await finalHandlers.auth(requireAuthenticatedUser, hydrateAuthenticatedUser);
     publish(APP_AUTH_INITIALIZED);
 
+    // Analytics
     // configureAnalytics(analyticsService, {
     //   configService: getConfigService(),
     //   loggingService: getLoggingService(),
     // });
-    await override(() => {}, handlers.analytics);
+    await finalHandlers.analytics();
     publish(APP_ANALYTICS_INITIALIZED);
 
+    // Internationalization
     // configureI18n(i18nService, messages, {
     //   configService: getConfigService(),
     //   loggingService: getLoggingService(),
     // });
-    await override(() => {}, handlers.i18n);
+    await finalHandlers.i18n();
     publish(APP_I18N_INITIALIZED);
 
-    await override(() => {}, handlers.ready);
+    // Application Ready
+    await finalHandlers.ready();
     publish(APP_READY);
   } catch (error) {
-    await override(initError, handlers.initError);
+    // Initialization Error
+    await finalHandlers.initError(error);
     publish(APP_INIT_ERROR, error);
   }
 }

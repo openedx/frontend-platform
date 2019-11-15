@@ -1,5 +1,5 @@
 import { logError } from '../../logging';
 
-export default async function error(app) {
-  logError(app.error);
+export default async function initError(error) {
+  logError(error);
 }

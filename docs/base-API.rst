@@ -28,7 +28,7 @@ API Reference
    - `beforeInit`_
    - `loadConfig`_
    - `logging`_
-   - `authentication`_
+   - `auth`_
    - `i18n`_
    - `analytics`_
    - `beforeReady`_
@@ -135,15 +135,15 @@ the default behavior of any part of the startup sequence. It can also be
 used to add additional initialization behavior before or after the rest
 of the sequence.
 
-An example in which we override the authentication handling:
+An example in which we override the auth handling:
 
 ::
 
    App.initialize({
      overrideHandlers: {
-       authentication: (app) => {
+       auth: (app) => {
          // As a usage example of overriding one phase of the startup sequence,
-         // providing this function will override the default authentication
+         // providing this function will override the default auth
          // initialization.
 
          // The 'app' argument is a reference to the App singleton.
@@ -160,7 +160,7 @@ Possible keys:
 -  beforeInit
 -  loadConfig
 -  logging
--  authentication
+-  auth
 -  i18n
 -  analytics
 -  beforeReady
@@ -488,16 +488,16 @@ Event constant: ``APP_LOGGING_CONFIGURED``
 The ``logging`` phase initializes the NewRelicLoggingService from
 @edx/frontend-logging by default.
 
-authentication
-~~~~~~~~~~~~~~
+auth
+~~~~
 
 Event constant: ``APP_AUTHENTICATED``
 
-The ``authentication`` phase creates an authenticated apiClient and
+The ``auth`` phase creates an authenticated apiClient and
 makes it available at ``App.apiClient`` on the ``App`` singleton. It
 also runs ``getAuthenticatedUser`` from @edx/frontend-auth and will
 redirect to the login experience if the user does not have a valid
-authentication cookie and the ``requireAuthenticatedUser``
+auth cookie and the ``requireAuthenticatedUser``
 option is set to true. Finally, it will make authenticated user
 information available at ``App.authenticatedUser`` for later use by the
 application.

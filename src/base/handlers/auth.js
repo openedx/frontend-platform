@@ -1,5 +1,6 @@
-import { getAuthenticatedApiClient, getAuthenticatedUser, ensureAuthenticatedUser } from '../../auth';
+import { getAuthenticatedHttpClient, getAuthenticatedUser, ensureAuthenticatedUser } from '../../auth';
 import { getConfig } from '../../config';
+import { camelCaseObject } from '../api';
 
 export default async function auth(requireAuthenticatedUser, hydrateAuthenticatedUser) {
   // Get a valid access token for authenticated API access.
@@ -13,7 +14,9 @@ export default async function auth(requireAuthenticatedUser, hydrateAuthenticate
 
   if (authenticatedUser !== null && hydrateAuthenticatedUser) {
     const { username } = authenticatedUser;
-    getAuthenticatedApiClient()
+    // We use a promise (instead of await) here explicitly so that execution can continue while
+    // this request happens.
+    getAuthenticatedHttpClient()
       .get(`${getConfig().LMS_BASE_URL}/api/user/v1/accounts/${username}`)
       .then((response) => {
         const { data } = response;

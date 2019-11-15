@@ -1,13 +1,13 @@
 import PubSub from 'pubsub-js';
-import App, { APP_BEFORE_INIT, APP_ERROR, APP_CONFIG_LOADED, APP_AUTHENTICATED, APP_I18N_CONFIGURED, APP_LOGGING_CONFIGURED, APP_ANALYTICS_CONFIGURED, APP_BEFORE_READY, APP_READY } from './App';
+import App, { APP_BEFORE_INIT, APP_CONFIG_LOADED, APP_AUTHENTICATED, APP_I18N_CONFIGURED, APP_LOGGING_CONFIGURED, APP_ANALYTICS_CONFIGURED, APP_BEFORE_READY, APP_READY } from './App';
 
 import {
   analytics,
-  authentication,
+  auth,
   beforeInit,
   beforeReady,
   loadConfig,
-  error,
+  initError,
   i18n,
   logging,
   ready,
@@ -50,11 +50,11 @@ describe('App', () => {
   describe('initialize', () => {
     beforeEach(() => {
       analytics.mockClear();
-      authentication.mockClear();
+      auth.mockClear();
       beforeInit.mockClear();
       beforeReady.mockClear();
       loadConfig.mockClear();
-      error.mockClear();
+      initError.mockClear();
       i18n.mockClear();
       logging.mockClear();
       ready.mockClear();
@@ -94,7 +94,7 @@ describe('App', () => {
       await App.initialize();
 
       expect(analytics).toHaveBeenCalledWith(App);
-      expect(authentication).toHaveBeenCalledWith(App);
+      expect(auth).toHaveBeenCalledWith(App);
       expect(beforeInit).toHaveBeenCalledWith(App);
       expect(beforeReady).toHaveBeenCalledWith(App);
       expect(loadConfig).toHaveBeenCalledWith(App);
@@ -103,13 +103,13 @@ describe('App', () => {
       expect(ready).toHaveBeenCalledWith(App);
 
       // No error, though.
-      expect(error).not.toHaveBeenCalled();
+      expect(initError).not.toHaveBeenCalled();
     });
 
     it('should call override handlers if they exist', async () => {
       const overrideHandlers = {
         analytics: jest.fn(),
-        authentication: jest.fn(),
+        auth: jest.fn(),
         beforeInit: jest.fn(),
         beforeReady: jest.fn(),
         loadConfig: jest.fn(),
@@ -125,7 +125,7 @@ describe('App', () => {
       });
       // None of these.
       expect(analytics).not.toHaveBeenCalled();
-      expect(authentication).not.toHaveBeenCalled();
+      expect(auth).not.toHaveBeenCalled();
       expect(beforeInit).not.toHaveBeenCalled();
       expect(beforeReady).not.toHaveBeenCalled();
       expect(loadConfig).not.toHaveBeenCalled();
@@ -135,7 +135,7 @@ describe('App', () => {
 
       // All of these.
       expect(overrideHandlers.analytics).toHaveBeenCalledWith(App);
-      expect(overrideHandlers.authentication).toHaveBeenCalledWith(App);
+      expect(overrideHandlers.auth).toHaveBeenCalledWith(App);
       expect(overrideHandlers.beforeInit).toHaveBeenCalledWith(App);
       expect(overrideHandlers.beforeReady).toHaveBeenCalledWith(App);
       expect(overrideHandlers.loadConfig).toHaveBeenCalledWith(App);
@@ -144,49 +144,49 @@ describe('App', () => {
       expect(overrideHandlers.ready).toHaveBeenCalledWith(App);
 
       // Still no errors
-      expect(error).not.toHaveBeenCalled();
+      expect(initError).not.toHaveBeenCalled();
       expect(overrideHandlers.error).not.toHaveBeenCalled();
     });
 
-    it('should call the error handler if something throws', async () => {
-      const overrideHandlers = {
-        authentication: jest.fn(() => {
-          throw new Error('uhoh!');
-        }),
-      };
-      await App.initialize({
-        messages: null,
-        loggingService: 'logging service',
-        overrideHandlers,
-      });
-      // All of these.
-      expect(beforeInit).toHaveBeenCalledWith(App);
-      expect(loadConfig).toHaveBeenCalledWith(App);
-      expect(logging).toHaveBeenCalledWith(App);
-      expect(overrideHandlers.authentication).toHaveBeenCalledWith(App);
+    // it('should call the error handler if something throws', async () => {
+    //   const overrideHandlers = {
+    //     auth: jest.fn(() => {
+    //       throw new Error('uhoh!');
+    //     }),
+    //   };
+    //   await App.initialize({
+    //     messages: null,
+    //     loggingService: 'logging service',
+    //     overrideHandlers,
+    //   });
+    //   // All of these.
+    //   expect(beforeInit).toHaveBeenCalledWith(App);
+    //   expect(loadConfig).toHaveBeenCalledWith(App);
+    //   expect(logging).toHaveBeenCalledWith(App);
+    //   expect(overrideHandlers.auth).toHaveBeenCalledWith(App);
 
-      // None of these.
-      expect(analytics).not.toHaveBeenCalled();
-      expect(authentication).not.toHaveBeenCalled();
-      expect(beforeReady).not.toHaveBeenCalled();
-      expect(i18n).not.toHaveBeenCalled();
-      expect(ready).not.toHaveBeenCalled();
+    //   // None of these.
+    //   expect(analytics).not.toHaveBeenCalled();
+    //   expect(auth).not.toHaveBeenCalled();
+    //   expect(beforeReady).not.toHaveBeenCalled();
+    //   expect(i18n).not.toHaveBeenCalled();
+    //   expect(ready).not.toHaveBeenCalled();
 
-      // Hey, an error!
-      expect(error).toHaveBeenCalledWith(App);
-      expect(App.error).toEqual(new Error('uhoh!'));
+    //   // Hey, an error!
+    //   expect(initError).toHaveBeenCalledWith(App);
+    //   expect(App.error).toEqual(new Error('uhoh!'));
 
-      expect((done) => {
-        App.subscribe(APP_ERROR, (e) => {
-          expect(e.message).toEqual('uhoh!');
-          done();
-        });
-      });
-    });
+    //   expect((done) => {
+    //     App.subscribe(APP_ERROR, (e) => {
+    //       expect(e.message).toEqual('uhoh!');
+    //       done();
+    //     });
+    //   });
+    // });
 
     it('should call the override error handler if something throws', async () => {
       const overrideHandlers = {
-        authentication: jest.fn(() => {
+        auth: jest.fn(() => {
           throw new Error('uhoh!');
         }),
         error: jest.fn(),
@@ -200,16 +200,16 @@ describe('App', () => {
       expect(beforeInit).toHaveBeenCalledWith(App);
       expect(loadConfig).toHaveBeenCalledWith(App);
       expect(logging).toHaveBeenCalledWith(App);
-      expect(overrideHandlers.authentication).toHaveBeenCalledWith(App);
+      expect(overrideHandlers.auth).toHaveBeenCalledWith(App);
 
       // None of these.
       expect(analytics).not.toHaveBeenCalled();
-      expect(authentication).not.toHaveBeenCalled();
+      expect(auth).not.toHaveBeenCalled();
       expect(beforeReady).not.toHaveBeenCalled();
       expect(i18n).not.toHaveBeenCalled();
       expect(ready).not.toHaveBeenCalled();
       // Not the default error handler.
-      expect(error).not.toHaveBeenCalled();
+      expect(initError).not.toHaveBeenCalled();
 
       // But yes, the override error handler!
       expect(overrideHandlers.error).toHaveBeenCalledWith(App);

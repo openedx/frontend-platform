@@ -1,18 +1,13 @@
 import { logError } from '../../logging';
 
-import error from './initError';
+import initError from './initError';
 
 jest.mock('../../logging');
 
 it('should log the App error', () => {
-  const app = {
-    loggingService: {
-      logError: jest.fn(),
-    },
-    error: {
-      message: 'oh no!',
-    },
+  const error = {
+    message: 'oh no!',
   };
-  error(app);
+  initError(error);
   expect(logError).toHaveBeenCalledWith({ message: 'oh no!' });
 });
