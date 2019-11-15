@@ -3,7 +3,7 @@ import {
   camelCaseObject,
   snakeCaseObject,
   convertKeyNames,
-} from './api';
+} from './utils';
 
 describe('modifyObjectKeys', () => {
   it('should use the provided modify function to change all keys in and object and its children', () => {

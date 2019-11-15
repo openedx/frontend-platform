@@ -1,5 +1,5 @@
 import formurlencoded from 'form-urlencoded';
-import { snakeCaseObject } from './utils';
+import { snakeCaseObject } from '../utils';
 
 export default class SegmentAnalyticsService {
   static hasIdentifyBeenCalled = false;

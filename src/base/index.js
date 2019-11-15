@@ -12,13 +12,6 @@ export {
   APP_TOPIC,
 } from './App';
 
-export {
-  modifyObjectKeys,
-  camelCaseObject,
-  snakeCaseObject,
-  convertKeyNames,
-} from './api';
-
 // Handlers
 export { default as auth } from './handlers/auth';
 export { default as beforeReady } from './handlers/beforeReady';
