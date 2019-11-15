@@ -10,7 +10,6 @@ import {
   ensureAuthenticatedUser,
   redirectToLogin,
   redirectToLogout,
-  clearAuthenticatedUser,
   hydrateAuthenticatedUser,
   getAuthenticatedUser,
   setAuthenticatedUser,
@@ -174,7 +173,7 @@ const expectRequestToHaveCsrfToken = (request) => {
 };
 
 beforeEach(() => {
-  clearAuthenticatedUser();
+  setAuthenticatedUser(null);
   axiosMock.reset();
   accessTokenAxiosMock.reset();
   csrfTokensAxiosMock.reset();

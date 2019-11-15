@@ -5,6 +5,9 @@ import addAuthenticationToHttpClient from './addAuthenticationToHttpClient';
 import getJwtToken from './getJwtToken';
 import { camelCaseObject } from '../base/api';
 
+export const AUTHENTICATED_USER_TOPIC = 'AUTHENTICATED_USER';
+export const AUTHENTICATED_USER_CHANGED = `${AUTHENTICATED_USER_TOPIC}.CHANGED`;
+
 // Singletons
 let authenticatedHttpClient = null;
 let config = null;
@@ -21,6 +24,9 @@ const configPropTypes = {
     logError: PropTypes.func.isRequired,
     logInfo: PropTypes.func.isRequired,
   }).isRequired,
+  pubSubService: PropTypes.shape({
+    publish: PropTypes.func.isRequired,
+  }),
 };
 
 const validateConfig = (configObj) => {
@@ -91,17 +97,11 @@ export const getAuthenticatedUser = () => authenticatedUser;
  * Sets the authenticated user to the provided value.
  *
  * @param {UserData|null}
+ * @emits AUTHENTICATED_USER_CHANGED
  */
 export const setAuthenticatedUser = (authUser) => {
   authenticatedUser = authUser;
-};
-
-/**
- * Sets the authenticated user cache to null.  Has no affect on the user's access token or actual
- * authentication state.
- */
-export const clearAuthenticatedUser = () => {
-  authenticatedUser = null;
+  config.pubSubService.publish(AUTHENTICATED_USER_CHANGED);
 };
 
 /**
@@ -118,15 +118,15 @@ export const fetchAuthenticatedUser = async () => {
   );
 
   if (decodedAccessToken !== null) {
-    authenticatedUser = {
+    setAuthenticatedUser({
       userId: decodedAccessToken.user_id,
       username: decodedAccessToken.preferred_username,
       roles: decodedAccessToken.roles || [],
       administrator: decodedAccessToken.administrator,
-    };
+    });
   }
 
-  return authenticatedUser;
+  return getAuthenticatedUser();
 };
 
 /**
@@ -139,7 +139,7 @@ export const fetchAuthenticatedUser = async () => {
 export const ensureAuthenticatedUser = async (route) => {
   await fetchAuthenticatedUser();
 
-  if (authenticatedUser === null) {
+  if (getAuthenticatedUser() === null) {
     const isRedirectFromLoginPage = global.document.referrer &&
       global.document.referrer.startsWith(config.loginUrl);
 
@@ -153,7 +153,7 @@ export const ensureAuthenticatedUser = async (route) => {
     redirectToLogin(config.appBaseUrl + route);
   }
 
-  return authenticatedUser;
+  return getAuthenticatedUser();
 };
 
 /**
@@ -170,10 +170,11 @@ export const ensureAuthenticatedUser = async (route) => {
  * @returns {Promise<null>}
  */
 export const hydrateAuthenticatedUser = async () => {
-  if (authenticatedUser !== null) {
+  const user = getAuthenticatedUser();
+  if (user !== null) {
     const response = await authenticatedHttpClient
-      .get(`${config.lmsBaseUrl}/api/user/v1/accounts/${authenticatedUser.username}`);
-    authenticatedUser = Object.assign({}, authenticatedUser, camelCaseObject(response.data));
+      .get(`${config.lmsBaseUrl}/api/user/v1/accounts/${user.username}`);
+    setAuthenticatedUser({ ...user, ...camelCaseObject(response.data) });
   }
 };
 
