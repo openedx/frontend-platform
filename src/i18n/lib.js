@@ -212,6 +212,4 @@ export const configure = (newConfig, msgs) => {
   handleRtl();
 };
 
-export const getLoggingService = () => {
-  return config.loggingService;
-}
+export const getLoggingService = () => config.loggingService;
