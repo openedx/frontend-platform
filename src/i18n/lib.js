@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { addLocaleData } from 'react-intl';
 import arLocale from 'react-intl/locale-data/ar';
 import enLocale from 'react-intl/locale-data/en';
@@ -61,6 +62,10 @@ let config = {
   LANGUAGE_PREFERENCE_COOKIE_NAME: null,
   loggingService: null,
 };
+
+
+export const getConfigService = () => config.configService;
+export const getLoggingService = () => config.loggingService;
 
 export function getCookies() {
   return cookies;
@@ -135,7 +140,8 @@ export const getLocale = (locale) => {
     return findSupportedLocale(locale);
   }
   // 2. User setting in cookie
-  const cookieLangPref = cookies.get(config.LANGUAGE_PREFERENCE_COOKIE_NAME);
+  const cookieLangPref = cookies
+    .get(getConfigService().getConfig().LANGUAGE_PREFERENCE_COOKIE_NAME);
   if (cookieLangPref) {
     return findSupportedLocale(cookieLangPref.toLowerCase());
   }
@@ -169,6 +175,31 @@ export const handleRtl = () => {
   }
 };
 
+const configShape = {
+  configService: PropTypes.shape({
+    getConfig: PropTypes.func.isRequired,
+  }).isRequired,
+  loggingService: PropTypes.shape({
+    logError: PropTypes.func.isRequired,
+  }).isRequired,
+  messages: PropTypes.shape({
+    ar: PropTypes.objectOf(PropTypes.string), // Arabic
+    en: PropTypes.objectOf(PropTypes.string),
+    'es-419': PropTypes.objectOf(PropTypes.string), // Spanish, Latin American
+    fr: PropTypes.objectOf(PropTypes.string), // French
+    'zh-cn': PropTypes.objectOf(PropTypes.string), // Chinese, Simplified
+    ca: PropTypes.objectOf(PropTypes.string), // Catalan
+    he: PropTypes.objectOf(PropTypes.string), // Hebrew
+    id: PropTypes.objectOf(PropTypes.string), // Indonesian
+    'ko-kr': PropTypes.objectOf(PropTypes.string), // Korean (Korea)
+    pl: PropTypes.objectOf(PropTypes.string), // Polish
+    'pt-br': PropTypes.objectOf(PropTypes.string), // Portuguese (Brazil)
+    ru: PropTypes.objectOf(PropTypes.string), // Russian
+    th: PropTypes.objectOf(PropTypes.string), // Thai
+    uk: PropTypes.objectOf(PropTypes.string), // Ukrainian
+  }).isRequired,
+};
+
 /**
  * Configures the i18n library with messages for your application.
  *
@@ -190,12 +221,15 @@ export const handleRtl = () => {
  * Logs a warning if it detects a locale it doesn't expect (as defined by the supportedLocales list
  * above), or if an expected locale is not provided.
  */
-export const configure = (newConfig, msgs) => {
-  validateConfiguration(newConfig);
-  messages = msgs;
-  config = newConfig;
+export const configure = (newConfig) => {
+  PropTypes.checkPropTypes(configShape, newConfig, 'property', 'Config');
 
-  if (config.ENVIRONMENT !== 'production') {
+  validateConfiguration(newConfig);
+  config = newConfig;
+  // eslint-disable-next-line prefer-destructuring
+  messages = config.messages;
+
+  if (getConfigService().getConfig().ENVIRONMENT !== 'production') {
     Object.keys(messages).forEach((key) => {
       if (supportedLocales.indexOf(key) < 0) {
         console.warn(`Unexpected locale: ${key}`); // eslint-disable-line no-console
@@ -211,5 +245,3 @@ export const configure = (newConfig, msgs) => {
 
   handleRtl();
 };
-
-export const getLoggingService = () => config.loggingService;

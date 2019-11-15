@@ -6,8 +6,11 @@ import {
   PubSubJsService,
 } from '../pubSub';
 import { configure as configureConfig, ProcessEnvConfigService, getConfigService } from '../config';
-import { configureLogging, NewRelicLoggingService } from '../logging'; // getLoggingService
+import { configureLogging, getLoggingService, NewRelicLoggingService } from '../logging';
 import { auth, initError } from './handlers';
+import { configure as configureAnalytics, SegmentAnalyticsService } from '../analytics';
+import { getAuthenticatedHttpClient } from '../auth';
+import { configure as configureI18n } from '../i18n';
 
 export const APP_TOPIC = 'APP';
 export const APP_PUBSUB_INITIALIZED = `${APP_TOPIC}.PUBSUB_INITIALIZED`;
@@ -41,12 +44,12 @@ export default async function initialize({
   pubSubService = PubSubJsService,
   configService = ProcessEnvConfigService,
   loggingService = NewRelicLoggingService,
-  // analyticsService = null,
+  analyticsService = SegmentAnalyticsService,
   // authService = null,
   // i18nService = null,
   requireAuthenticatedUser = false,
   hydrateAuthenticatedUser = false,
-  // messages,
+  messages,
   handlers = {},
 } = {}) {
   const finalHandlers = applyHandlerOverrides(handlers);
@@ -74,23 +77,26 @@ export default async function initialize({
     // configureAuth(authService, {
     //   configService: getConfigService(),
     //   loggingService: getLoggingService(),
+    //   pubSubService: getPubSubService(),
     // });
     await finalHandlers.auth(requireAuthenticatedUser, hydrateAuthenticatedUser);
     publish(APP_AUTH_INITIALIZED);
 
     // Analytics
-    // configureAnalytics(analyticsService, {
-    //   configService: getConfigService(),
-    //   loggingService: getLoggingService(),
-    // });
+    configureAnalytics(analyticsService, {
+      configService: getConfigService(),
+      loggingService: getLoggingService(),
+      httpClient: getAuthenticatedHttpClient(),
+    });
     await finalHandlers.analytics();
     publish(APP_ANALYTICS_INITIALIZED);
 
     // Internationalization
-    // configureI18n(i18nService, messages, {
-    //   configService: getConfigService(),
-    //   loggingService: getLoggingService(),
-    // });
+    configureI18n({
+      messages,
+      configService: getConfigService(),
+      loggingService: getLoggingService(),
+    });
     await finalHandlers.i18n();
     publish(APP_I18N_INITIALIZED);
 
