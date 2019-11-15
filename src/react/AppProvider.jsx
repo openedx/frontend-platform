@@ -8,7 +8,7 @@ import OptionalReduxProvider from './OptionalReduxProvider';
 import App, { AUTHENTICATED_USER_CHANGED, CONFIG_CHANGED } from './App';
 import ErrorBoundary from './ErrorBoundary';
 import AppContext from './AppContext';
-import { useAppEvent } from './data/hooks';
+import { useAppEvent } from './hooks';
 
 const AppProvider = ({ store, children }) => {
   const [config, setConfig] = useState(App.config);
