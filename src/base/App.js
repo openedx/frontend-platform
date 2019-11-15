@@ -87,52 +87,8 @@ export default class App {
     }
   }
 
-  static set authenticatedUser(newAuthenticatedUser) {
-    this._authenticatedUser = newAuthenticatedUser;
-    PubSub.publish(AUTHENTICATED_USER_CHANGED);
-  }
-
-  static get authenticatedUser() {
-    return this._authenticatedUser;
-  }
-
-  static set config(newConfig) {
-    validateConfig(newConfig, 'App configuration setter');
-    this._config = newConfig;
-    PubSub.publish(CONFIG_CHANGED);
-  }
-
-  static get config() {
-    return this._config;
-  }
-
-  static set apiClient(apiClient) {
-    this._apiClient = apiClient;
-  }
-
-  static get apiClient() {
-    if (this._apiClient === null) {
-      throw new Error('App.apiClient has not been initialized. Are you calling it too early?');
-    }
-    return this._apiClient;
-  }
-
-  static subscribe(type, callback) {
-    return PubSub.subscribe(type, callback);
-  }
-
-  static unsubscribe(token) {
-    PubSub.unsubscribe(token);
-  }
-
   static get queryParams() {
     return this.getQueryParams(global.location.search);
-  }
-
-  static mergeConfig(newConfig, requester = 'unspecified application code') {
-    validateConfig(newConfig, requester);
-    this._config = Object.assign(this._config, newConfig);
-    PubSub.publish(CONFIG_CHANGED);
   }
 
   static ensureConfig(keys, requester = 'unspecified application code') {
