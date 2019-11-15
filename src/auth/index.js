@@ -3,10 +3,12 @@ import PropTypes from 'prop-types';
 import { logFrontendAuthError } from './utils';
 import addAuthenticationToHttpClient from './addAuthenticationToHttpClient';
 import getJwtToken from './getJwtToken';
+import { camelCaseObject } from '../base/api';
 
 // Singletons
 let authenticatedHttpClient = null;
 let config = null;
+let authenticatedUser = null;
 
 const configPropTypes = {
   appBaseUrl: PropTypes.string.isRequired,
@@ -60,31 +62,6 @@ export const getLoggingService = () => config.loggingService;
 export const getAuthenticatedHttpClient = () => authenticatedHttpClient;
 
 /**
- * Gets the authenticated user's access token. Resolves to null if the user is
- * unauthenticated.
- *
- * @returns {Promise<UserData>|Promise<null>} Resolves to the user's access token if they are
- * logged in.
- */
-export const getAuthenticatedUser = async () => {
-  const decodedAccessToken = await getJwtToken(
-    config.accessTokenCookieName,
-    config.refreshAccessTokenEndpoint,
-  );
-
-  if (decodedAccessToken !== null) {
-    return {
-      userId: decodedAccessToken.user_id,
-      username: decodedAccessToken.preferred_username,
-      roles: decodedAccessToken.roles || [],
-      administrator: decodedAccessToken.administrator,
-    };
-  }
-
-  return null;
-};
-
-/**
  * Redirect the user to login
  *
  * @param {string} redirectUrl the url to redirect to after login
@@ -103,6 +80,56 @@ export const redirectToLogout = (redirectUrl = config.appBaseUrl) => {
 };
 
 /**
+ * If it exists, returns the user data representing the currently authenticated user. If the user is
+ * anonymous, returns null.
+ *
+ * @returns {UserData|null}
+ */
+export const getAuthenticatedUser = () => authenticatedUser;
+
+/**
+ * Sets the authenticated user to the provided value.
+ *
+ * @param {UserData|null}
+ */
+export const setAuthenticatedUser = (authUser) => {
+  authenticatedUser = authUser;
+};
+
+/**
+ * Sets the authenticated user cache to null.  Has no affect on the user's access token or actual
+ * authentication state.
+ */
+export const clearAuthenticatedUser = () => {
+  authenticatedUser = null;
+};
+
+/**
+ * Reads the authenticated user's access token. Resolves to null if the user is
+ * unauthenticated.
+ *
+ * @returns {Promise<UserData>|Promise<null>} Resolves to the user's access token if they are
+ * logged in.
+ */
+export const fetchAuthenticatedUser = async () => {
+  const decodedAccessToken = await getJwtToken(
+    config.accessTokenCookieName,
+    config.refreshAccessTokenEndpoint,
+  );
+
+  if (decodedAccessToken !== null) {
+    authenticatedUser = {
+      userId: decodedAccessToken.user_id,
+      username: decodedAccessToken.preferred_username,
+      roles: decodedAccessToken.roles || [],
+      administrator: decodedAccessToken.administrator,
+    };
+  }
+
+  return authenticatedUser;
+};
+
+/**
  * Ensures a user is authenticated. It will redirect to login when not
  * authenticated.
  *
@@ -110,9 +137,9 @@ export const redirectToLogout = (redirectUrl = config.appBaseUrl) => {
  * @returns {Promise<UserData>}
  */
 export const ensureAuthenticatedUser = async (route) => {
-  const authenticatedUserData = await getAuthenticatedUser();
+  await fetchAuthenticatedUser();
 
-  if (authenticatedUserData === null) {
+  if (authenticatedUser === null) {
     const isRedirectFromLoginPage = global.document.referrer &&
       global.document.referrer.startsWith(config.loginUrl);
 
@@ -126,7 +153,28 @@ export const ensureAuthenticatedUser = async (route) => {
     redirectToLogin(config.appBaseUrl + route);
   }
 
-  return authenticatedUserData;
+  return authenticatedUser;
+};
+
+/**
+ * Fetches additional user account information for the authenticated user and merges it into the
+ * existing authenticatedUser object, available via getAuthenticatedUser().
+ *
+ * ```
+ *  console.log(authenticatedUser); // Will be sparse and only contain basic information.
+ *  await hydrateAuthenticatedUser()
+ *  const authenticatedUser = getAuthenticatedUser();
+ *  console.log(authenticatedUser); // Will contain additional user information
+ * ```
+ *
+ * @returns {Promise<null>}
+ */
+export const hydrateAuthenticatedUser = async () => {
+  if (authenticatedUser !== null) {
+    const response = await authenticatedHttpClient
+      .get(`${config.lmsBaseUrl}/api/user/v1/accounts/${authenticatedUser.username}`);
+    authenticatedUser = Object.assign({}, authenticatedUser, camelCaseObject(response.data));
+  }
 };
 
 /**

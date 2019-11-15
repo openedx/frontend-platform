@@ -10,6 +10,10 @@ import {
   ensureAuthenticatedUser,
   redirectToLogin,
   redirectToLogout,
+  clearAuthenticatedUser,
+  hydrateAuthenticatedUser,
+  getAuthenticatedUser,
+  setAuthenticatedUser,
 } from '../index';
 
 const mockLoggingService = {
@@ -21,6 +25,7 @@ const authConfig = {
   appBaseUrl: process.env.BASE_URL,
   accessTokenCookieName: process.env.ACCESS_TOKEN_COOKIE_NAME,
   csrfTokenApiPath: '/get-csrf-token',
+  lmsBaseUrl: process.env.LMS_BASE_URL,
   loginUrl: process.env.LOGIN_URL,
   logoutUrl: process.env.LOGOUT_URL,
   refreshAccessTokenEndpoint: process.env.REFRESH_ACCESS_TOKEN_ENDPOINT,
@@ -169,6 +174,7 @@ const expectRequestToHaveCsrfToken = (request) => {
 };
 
 beforeEach(() => {
+  clearAuthenticatedUser();
   axiosMock.reset();
   accessTokenAxiosMock.reset();
   csrfTokensAxiosMock.reset();
@@ -212,14 +218,121 @@ describe('getAuthenticatedHttpClient', () => {
   });
 });
 
-describe('User is logged in', () => {
-  describe('No jwt cookie exists on load', () => {
-    beforeEach(() => {
-      setJwtCookieTo(null);
-      setJwtTokenRefreshResponseTo(200, jwtTokens.valid.encoded);
+describe('authenticatedHttpClient usage', () => {
+  describe('User is logged in', () => {
+    describe('No jwt cookie exists on load', () => {
+      beforeEach(() => {
+        setJwtCookieTo(null);
+        setJwtTokenRefreshResponseTo(200, jwtTokens.valid.encoded);
+      });
+
+      describe('Single requests', () => {
+        ['get', 'options'].forEach((method) => {
+          it(`${method.toUpperCase()}: refreshes the jwt token`, () => {
+            return client[method](mockApiEndpointPath).then(() => {
+              expectSingleCallToJwtTokenRefresh();
+              expectNoCallToCsrfTokenFetch();
+              expectRequestToHaveJwtAuth(axiosMock.history[method][0]);
+            });
+          });
+        });
+
+        ['post', 'put', 'patch', 'delete'].forEach((method) => {
+          it(`${method.toUpperCase()}: refreshes the csrf and jwt tokens`, () => {
+            return client[method](mockApiEndpointPath).then(() => {
+              expectSingleCallToJwtTokenRefresh();
+              expectSingleCallToCsrfTokenFetch();
+              expectRequestToHaveJwtAuth(axiosMock.history[method][0]);
+              expectRequestToHaveCsrfToken(axiosMock.history[method][0]);
+            });
+          });
+        });
+      });
+
+      describe('Single request to relative url', () => {
+        ['post', 'put', 'patch', 'delete'].forEach((method) => {
+          it(`${method.toUpperCase()}: refreshes the csrf and jwt tokens`, () => {
+            return client[method]('/local/path').then(() => {
+              expectSingleCallToJwtTokenRefresh();
+              expectSingleCallToCsrfTokenFetch();
+              expectRequestToHaveCsrfToken(axiosMock.history[method][0]);
+              expectRequestToHaveJwtAuth(axiosMock.history[method][0]);
+              expect(csrfTokensAxiosMock.history.get[0].url)
+                .toEqual(`${global.location.origin}${authConfig.csrfTokenApiPath}`);
+            });
+          });
+        });
+      });
+
+      describe('Multiple parallel requests', () => {
+        ['get', 'options'].forEach((method) => {
+          it(`${method.toUpperCase()}: refresh the jwt token only once`, () => {
+            return Promise.all([
+              client[method](mockApiEndpointPath),
+              client[method](mockApiEndpointPath),
+            ]).then(() => {
+              expectSingleCallToJwtTokenRefresh();
+              expectNoCallToCsrfTokenFetch();
+              expectRequestToHaveJwtAuth(axiosMock.history[method][0]);
+              expectRequestToHaveJwtAuth(axiosMock.history[method][1]);
+            });
+          });
+        });
+
+        ['post', 'put', 'patch', 'delete'].forEach((method) => {
+          it(`${method.toUpperCase()}: refresh the jwt and csrf tokens only once`, () => {
+            return Promise.all([
+              client[method](mockApiEndpointPath),
+              client[method](mockApiEndpointPath),
+            ]).then(() => {
+              expectSingleCallToJwtTokenRefresh();
+              expectSingleCallToCsrfTokenFetch();
+              expectRequestToHaveJwtAuth(axiosMock.history[method][0]);
+              expectRequestToHaveCsrfToken(axiosMock.history[method][0]);
+              expectRequestToHaveJwtAuth(axiosMock.history[method][1]);
+              expectRequestToHaveCsrfToken(axiosMock.history[method][1]);
+            });
+          });
+        });
+      });
+
+      describe('Multiple serial requests', () => {
+        ['get', 'options'].forEach((method) => {
+          it(`${method.toUpperCase()}: refresh the jwt token only once`, () => {
+            return client[method](mockApiEndpointPath)
+              .then(() => client[method](mockApiEndpointPath))
+              .then(() => {
+                expectSingleCallToJwtTokenRefresh();
+                expectNoCallToCsrfTokenFetch();
+                expectRequestToHaveJwtAuth(axiosMock.history[method][0]);
+                expectRequestToHaveJwtAuth(axiosMock.history[method][1]);
+              });
+          });
+        });
+
+        ['post', 'put', 'patch', 'delete'].forEach((method) => {
+          it(`${method.toUpperCase()}: refreshes the csrf and jwt tokens only once`, () => {
+            return client[method](mockApiEndpointPath)
+              .then(() => client[method](mockApiEndpointPath))
+              .then(() => {
+                expectSingleCallToJwtTokenRefresh();
+                expectSingleCallToCsrfTokenFetch();
+                expectRequestToHaveJwtAuth(axiosMock.history[method][0]);
+                expectRequestToHaveCsrfToken(axiosMock.history[method][0]);
+                expectRequestToHaveJwtAuth(axiosMock.history[method][1]);
+                expectRequestToHaveCsrfToken(axiosMock.history[method][1]);
+              });
+          });
+        });
+      });
     });
 
-    describe('Single requests', () => {
+    describe('An expired token is found on load', () => {
+      beforeEach(() => {
+        setJwtCookieTo(jwtTokens.expired.encoded);
+        setJwtTokenRefreshResponseTo(200, jwtTokens.valid.encoded);
+      });
+
       ['get', 'options'].forEach((method) => {
         it(`${method.toUpperCase()}: refreshes the jwt token`, () => {
           return client[method](mockApiEndpointPath).then(() => {
@@ -242,388 +355,318 @@ describe('User is logged in', () => {
       });
     });
 
-    describe('Single request to relative url', () => {
-      ['post', 'put', 'patch', 'delete'].forEach((method) => {
-        it(`${method.toUpperCase()}: refreshes the csrf and jwt tokens`, () => {
-          return client[method]('/local/path').then(() => {
-            expectSingleCallToJwtTokenRefresh();
-            expectSingleCallToCsrfTokenFetch();
-            expectRequestToHaveCsrfToken(axiosMock.history[method][0]);
-            expectRequestToHaveJwtAuth(axiosMock.history[method][0]);
-            expect(csrfTokensAxiosMock.history.get[0].url)
-              .toEqual(`${global.location.origin}${authConfig.csrfTokenApiPath}`);
-          });
-        });
+    describe('A valid token is found on load', () => {
+      beforeEach(() => {
+        setJwtCookieTo(jwtTokens.valid.encoded);
+        setJwtTokenRefreshResponseTo(200, jwtTokens.valid.encoded);
       });
-    });
 
-    describe('Multiple parallel requests', () => {
       ['get', 'options'].forEach((method) => {
-        it(`${method.toUpperCase()}: refresh the jwt token only once`, () => {
-          return Promise.all([
-            client[method](mockApiEndpointPath),
-            client[method](mockApiEndpointPath),
-          ]).then(() => {
-            expectSingleCallToJwtTokenRefresh();
+        it(`${method.toUpperCase()}: does not attempt to refresh the jwt token`, () => {
+          setJwtCookieTo(jwtTokens.valid.encoded);
+          return client[method](mockApiEndpointPath).then(() => {
+            expectNoCallToJwtTokenRefresh();
             expectNoCallToCsrfTokenFetch();
             expectRequestToHaveJwtAuth(axiosMock.history[method][0]);
-            expectRequestToHaveJwtAuth(axiosMock.history[method][1]);
           });
         });
       });
 
       ['post', 'put', 'patch', 'delete'].forEach((method) => {
-        it(`${method.toUpperCase()}: refresh the jwt and csrf tokens only once`, () => {
-          return Promise.all([
-            client[method](mockApiEndpointPath),
-            client[method](mockApiEndpointPath),
-          ]).then(() => {
-            expectSingleCallToJwtTokenRefresh();
+        it(`${method.toUpperCase()}: refreshes the csrf token but does not attempt to refresh the jwt token`, () => {
+          setJwtCookieTo(jwtTokens.valid.encoded);
+          return client[method](mockApiEndpointPath).then(() => {
+            expectNoCallToJwtTokenRefresh();
             expectSingleCallToCsrfTokenFetch();
             expectRequestToHaveJwtAuth(axiosMock.history[method][0]);
             expectRequestToHaveCsrfToken(axiosMock.history[method][0]);
-            expectRequestToHaveJwtAuth(axiosMock.history[method][1]);
-            expectRequestToHaveCsrfToken(axiosMock.history[method][1]);
+          });
+        });
+      });
+    });
+  });
+
+  describe('Token refresh failures', () => {
+    describe('The refresh request fails for an unknown reason', () => {
+      beforeEach(() => {
+        setJwtCookieTo(null);
+        setJwtTokenRefreshResponseTo(403, null);
+      });
+
+      ['get', 'options', 'post', 'put', 'patch', 'delete'].forEach((method) => {
+        it(`${method.toUpperCase()}: throws an error and calls logError`, () => {
+          expect.hasAssertions();
+          return client[method](mockApiEndpointPath).catch(() => {
+            expectSingleCallToJwtTokenRefresh();
+            expectNoCallToCsrfTokenFetch();
+            expectLogFunctionToHaveBeenCalledWithMessage(
+              mockLoggingService.logError.mock.calls[0],
+              '[frontend-auth] HTTP Client Error: 403 http://localhost:18000/login_refresh (empty response)',
+              {
+                httpErrorRequestMethod: 'post',
+                httpErrorResponseData: '(empty response)',
+                httpErrorStatus: 403,
+                httpErrorType: 'api-response-error',
+                httpErrorRequestUrl: 'http://localhost:18000/login_refresh',
+              },
+            );
           });
         });
       });
     });
 
-    describe('Multiple serial requests', () => {
-      ['get', 'options'].forEach((method) => {
-        it(`${method.toUpperCase()}: refresh the jwt token only once`, () => {
-          return client[method](mockApiEndpointPath)
-            .then(() => client[method](mockApiEndpointPath))
-            .then(() => {
-              expectSingleCallToJwtTokenRefresh();
-              expectNoCallToCsrfTokenFetch();
-              expectRequestToHaveJwtAuth(axiosMock.history[method][0]);
-              expectRequestToHaveJwtAuth(axiosMock.history[method][1]);
-            });
-        });
+    describe('The refresh request fails due to a timeout', () => {
+      beforeEach(() => {
+        setJwtCookieTo(null);
+        accessTokenAxiosMock.onPost().timeout();
       });
 
-      ['post', 'put', 'patch', 'delete'].forEach((method) => {
-        it(`${method.toUpperCase()}: refreshes the csrf and jwt tokens only once`, () => {
-          return client[method](mockApiEndpointPath)
-            .then(() => client[method](mockApiEndpointPath))
-            .then(() => {
-              expectSingleCallToJwtTokenRefresh();
-              expectSingleCallToCsrfTokenFetch();
-              expectRequestToHaveJwtAuth(axiosMock.history[method][0]);
-              expectRequestToHaveCsrfToken(axiosMock.history[method][0]);
-              expectRequestToHaveJwtAuth(axiosMock.history[method][1]);
-              expectRequestToHaveCsrfToken(axiosMock.history[method][1]);
-            });
+      ['get', 'options', 'post', 'put', 'patch', 'delete'].forEach((method) => {
+        it(`${method.toUpperCase()}: throws an error and calls logError`, () => {
+          expect.hasAssertions();
+          return client[method](mockApiEndpointPath).catch(() => {
+            expectSingleCallToJwtTokenRefresh();
+            expectNoCallToCsrfTokenFetch();
+            expectLogFunctionToHaveBeenCalledWithMessage(
+              mockLoggingService.logError.mock.calls[0],
+              '[frontend-auth] HTTP Client Error: timeout of 0ms exceeded post http://localhost:18000/login_refresh',
+              {
+                httpErrorRequestMethod: 'post',
+                httpErrorMessage: 'timeout of 0ms exceeded',
+                httpErrorType: 'api-request-config-error',
+                httpErrorRequestUrl: 'http://localhost:18000/login_refresh',
+              },
+            );
+          });
+        });
+      });
+    });
+
+    // This test case is unexpected, but occurring in production. See ARCH-948 for
+    // more information on a similar situation that was happening prior to this
+    // refactor in Oct 2019.
+    describe('Unexpected case where token refresh succeeds but no new cookie is found', () => {
+      beforeEach(() => {
+        setJwtCookieTo(null);
+        // The JWT cookie is null despite a 200 response.
+        setJwtTokenRefreshResponseTo(200, null);
+      });
+
+      ['get', 'options', 'post', 'put', 'patch', 'delete'].forEach((method) => {
+        it(`${method.toUpperCase()}: throws an error and calls logError`, () => {
+          expect.hasAssertions();
+          return client[method](mockApiEndpointPath).catch(() => {
+            expectSingleCallToJwtTokenRefresh();
+            expectNoCallToCsrfTokenFetch();
+            expectLogFunctionToHaveBeenCalledWithMessage(
+              mockLoggingService.logError.mock.calls[0],
+              '[frontend-auth] Access token is still null after successful refresh.',
+              { axiosResponse: expect.any(Object) },
+            );
+          });
+        });
+      });
+    });
+
+    // This test case is unexpected, but occurring in production. See ARCH-948 for
+    // more information on a similar situation that was happening prior to this
+    // refactor in Oct 2019.
+    describe('Unexpected case where token refresh succeeds but the cookie is malformed', () => {
+      beforeEach(() => {
+        setJwtCookieTo('malformed jwt');
+        // The JWT cookie is malformed despite a 200 response.
+        setJwtTokenRefreshResponseTo(200, 'malformed jwt');
+      });
+
+      ['get', 'options', 'post', 'put', 'patch', 'delete'].forEach((method) => {
+        it(`${method.toUpperCase()}: throws an error and calls logError`, () => {
+          expect.hasAssertions();
+          return client[method](mockApiEndpointPath).catch(() => {
+            expectSingleCallToJwtTokenRefresh();
+            expectNoCallToCsrfTokenFetch();
+            expectLogFunctionToHaveBeenCalledWithMessage(
+              mockLoggingService.logError.mock.calls[0],
+              '[frontend-auth] Error decoding JWT token',
+              { cookieValue: 'malformed jwt' },
+            );
+            expectLogFunctionToHaveBeenCalledWithMessage(
+              mockLoggingService.logError.mock.calls[1],
+              '[frontend-auth] Error decoding JWT token',
+              { cookieValue: 'malformed jwt' },
+            );
+          });
         });
       });
     });
   });
 
-  describe('An expired token is found on load', () => {
+  describe('User is logged out', () => {
     beforeEach(() => {
-      setJwtCookieTo(jwtTokens.expired.encoded);
-      setJwtTokenRefreshResponseTo(200, jwtTokens.valid.encoded);
+      setJwtCookieTo(null);
+      setJwtTokenRefreshResponseTo(401, null);
+    });
+
+    ['get', 'options', 'post', 'put', 'patch', 'delete'].forEach((method) => {
+      it(`${method.toUpperCase()}: does not redirect to login`, () => {
+        return client[method](mockApiEndpointPath).then(() => {
+          expectSingleCallToJwtTokenRefresh();
+          expect(window.location.assign).not.toHaveBeenCalled();
+        });
+      });
+    });
+  });
+
+  describe('JWT exempt requests using isPublic request configuration', () => {
+    beforeEach(() => {
+      setJwtCookieTo(null);
+      setJwtTokenRefreshResponseTo(401, null);
     });
 
     ['get', 'options'].forEach((method) => {
-      it(`${method.toUpperCase()}: refreshes the jwt token`, () => {
-        return client[method](mockApiEndpointPath).then(() => {
-          expectSingleCallToJwtTokenRefresh();
-          expectNoCallToCsrfTokenFetch();
-          expectRequestToHaveJwtAuth(axiosMock.history[method][0]);
-        });
-      });
-    });
-
-    ['post', 'put', 'patch', 'delete'].forEach((method) => {
-      it(`${method.toUpperCase()}: refreshes the csrf and jwt tokens`, () => {
-        return client[method](mockApiEndpointPath).then(() => {
-          expectSingleCallToJwtTokenRefresh();
-          expectSingleCallToCsrfTokenFetch();
-          expectRequestToHaveJwtAuth(axiosMock.history[method][0]);
-          expectRequestToHaveCsrfToken(axiosMock.history[method][0]);
-        });
-      });
-    });
-  });
-
-  describe('A valid token is found on load', () => {
-    beforeEach(() => {
-      setJwtCookieTo(jwtTokens.valid.encoded);
-      setJwtTokenRefreshResponseTo(200, jwtTokens.valid.encoded);
-    });
-
-    ['get', 'options'].forEach((method) => {
-      it(`${method.toUpperCase()}: does not attempt to refresh the jwt token`, () => {
-        setJwtCookieTo(jwtTokens.valid.encoded);
-        return client[method](mockApiEndpointPath).then(() => {
+      it(`${method.toUpperCase()}: does not refresh the JWT`, () => {
+        return client[method](mockApiEndpointPath, { isPublic: true }).then(() => {
           expectNoCallToJwtTokenRefresh();
           expectNoCallToCsrfTokenFetch();
-          expectRequestToHaveJwtAuth(axiosMock.history[method][0]);
         });
       });
     });
 
-    ['post', 'put', 'patch', 'delete'].forEach((method) => {
-      it(`${method.toUpperCase()}: refreshes the csrf token but does not attempt to refresh the jwt token`, () => {
-        setJwtCookieTo(jwtTokens.valid.encoded);
-        return client[method](mockApiEndpointPath).then(() => {
+    ['post', 'put', 'patch'].forEach((method) => {
+      it(`${method.toUpperCase()}: does not refresh the JWT`, () => {
+        return client[method](mockApiEndpointPath, {}, { isPublic: true }).then(() => {
           expectNoCallToJwtTokenRefresh();
           expectSingleCallToCsrfTokenFetch();
-          expectRequestToHaveJwtAuth(axiosMock.history[method][0]);
-          expectRequestToHaveCsrfToken(axiosMock.history[method][0]);
         });
       });
     });
-  });
-});
 
-describe('Token refresh failures', () => {
-  describe('The refresh request fails for an unknown reason', () => {
-    beforeEach(() => {
-      setJwtCookieTo(null);
-      setJwtTokenRefreshResponseTo(403, null);
-    });
-
-    ['get', 'options', 'post', 'put', 'patch', 'delete'].forEach((method) => {
-      it(`${method.toUpperCase()}: throws an error and calls logError`, () => {
-        expect.hasAssertions();
-        return client[method](mockApiEndpointPath).catch(() => {
-          expectSingleCallToJwtTokenRefresh();
-          expectNoCallToCsrfTokenFetch();
-          expectLogFunctionToHaveBeenCalledWithMessage(
-            mockLoggingService.logError.mock.calls[0],
-            '[frontend-auth] HTTP Client Error: 403 http://localhost:18000/login_refresh (empty response)',
-            {
-              httpErrorRequestMethod: 'post',
-              httpErrorResponseData: '(empty response)',
-              httpErrorStatus: 403,
-              httpErrorType: 'api-response-error',
-              httpErrorRequestUrl: 'http://localhost:18000/login_refresh',
-            },
-          );
-        });
-      });
-    });
-  });
-
-  describe('The refresh request fails due to a timeout', () => {
-    beforeEach(() => {
-      setJwtCookieTo(null);
-      accessTokenAxiosMock.onPost().timeout();
-    });
-
-    ['get', 'options', 'post', 'put', 'patch', 'delete'].forEach((method) => {
-      it(`${method.toUpperCase()}: throws an error and calls logError`, () => {
-        expect.hasAssertions();
-        return client[method](mockApiEndpointPath).catch(() => {
-          expectSingleCallToJwtTokenRefresh();
-          expectNoCallToCsrfTokenFetch();
-          expectLogFunctionToHaveBeenCalledWithMessage(
-            mockLoggingService.logError.mock.calls[0],
-            '[frontend-auth] HTTP Client Error: timeout of 0ms exceeded post http://localhost:18000/login_refresh',
-            {
-              httpErrorRequestMethod: 'post',
-              httpErrorMessage: 'timeout of 0ms exceeded',
-              httpErrorType: 'api-request-config-error',
-              httpErrorRequestUrl: 'http://localhost:18000/login_refresh',
-            },
-          );
-        });
-      });
-    });
-  });
-
-  // This test case is unexpected, but occurring in production. See ARCH-948 for
-  // more information on a similar situation that was happening prior to this
-  // refactor in Oct 2019.
-  describe('Unexpected case where token refresh succeeds but no new cookie is found', () => {
-    beforeEach(() => {
-      setJwtCookieTo(null);
-      // The JWT cookie is null despite a 200 response.
-      setJwtTokenRefreshResponseTo(200, null);
-    });
-
-    ['get', 'options', 'post', 'put', 'patch', 'delete'].forEach((method) => {
-      it(`${method.toUpperCase()}: throws an error and calls logError`, () => {
-        expect.hasAssertions();
-        return client[method](mockApiEndpointPath).catch(() => {
-          expectSingleCallToJwtTokenRefresh();
-          expectNoCallToCsrfTokenFetch();
-          expectLogFunctionToHaveBeenCalledWithMessage(
-            mockLoggingService.logError.mock.calls[0],
-            '[frontend-auth] Access token is still null after successful refresh.',
-            { axiosResponse: expect.any(Object) },
-          );
-        });
-      });
-    });
-  });
-
-  // This test case is unexpected, but occurring in production. See ARCH-948 for
-  // more information on a similar situation that was happening prior to this
-  // refactor in Oct 2019.
-  describe('Unexpected case where token refresh succeeds but the cookie is malformed', () => {
-    beforeEach(() => {
-      setJwtCookieTo('malformed jwt');
-      // The JWT cookie is malformed despite a 200 response.
-      setJwtTokenRefreshResponseTo(200, 'malformed jwt');
-    });
-
-    ['get', 'options', 'post', 'put', 'patch', 'delete'].forEach((method) => {
-      it(`${method.toUpperCase()}: throws an error and calls logError`, () => {
-        expect.hasAssertions();
-        return client[method](mockApiEndpointPath).catch(() => {
-          expectSingleCallToJwtTokenRefresh();
-          expectNoCallToCsrfTokenFetch();
-          expectLogFunctionToHaveBeenCalledWithMessage(
-            mockLoggingService.logError.mock.calls[0],
-            '[frontend-auth] Error decoding JWT token',
-            { cookieValue: 'malformed jwt' },
-          );
-          expectLogFunctionToHaveBeenCalledWithMessage(
-            mockLoggingService.logError.mock.calls[1],
-            '[frontend-auth] Error decoding JWT token',
-            { cookieValue: 'malformed jwt' },
-          );
-        });
-      });
-    });
-  });
-});
-
-describe('User is logged out', () => {
-  beforeEach(() => {
-    setJwtCookieTo(null);
-    setJwtTokenRefreshResponseTo(401, null);
-  });
-
-  ['get', 'options', 'post', 'put', 'patch', 'delete'].forEach((method) => {
-    it(`${method.toUpperCase()}: does not redirect to login`, () => {
-      return client[method](mockApiEndpointPath).then(() => {
-        expectSingleCallToJwtTokenRefresh();
-        expect(window.location.assign).not.toHaveBeenCalled();
-      });
-    });
-  });
-});
-
-describe('JWT exempt requests using isPublic request configuration', () => {
-  beforeEach(() => {
-    setJwtCookieTo(null);
-    setJwtTokenRefreshResponseTo(401, null);
-  });
-
-  ['get', 'options'].forEach((method) => {
-    it(`${method.toUpperCase()}: does not refresh the JWT`, () => {
-      return client[method](mockApiEndpointPath, { isPublic: true }).then(() => {
-        expectNoCallToJwtTokenRefresh();
-        expectNoCallToCsrfTokenFetch();
-      });
-    });
-  });
-
-  ['post', 'put', 'patch'].forEach((method) => {
-    it(`${method.toUpperCase()}: does not refresh the JWT`, () => {
-      return client[method](mockApiEndpointPath, {}, { isPublic: true }).then(() => {
+    it('DELETE: does not refresh the JWT', () => {
+      return client.delete(mockApiEndpointPath, { isPublic: true }).then(() => {
         expectNoCallToJwtTokenRefresh();
         expectSingleCallToCsrfTokenFetch();
       });
     });
   });
 
-  it('DELETE: does not refresh the JWT', () => {
-    return client.delete(mockApiEndpointPath, { isPublic: true }).then(() => {
-      expectNoCallToJwtTokenRefresh();
-      expectSingleCallToCsrfTokenFetch();
+  describe('CSRF exempt requests using isCsrfExempt request configuration', () => {
+    beforeEach(() => {
+      setJwtCookieTo(null);
+      setJwtTokenRefreshResponseTo(401, null);
     });
-  });
-});
 
-describe('CSRF exempt requests using isCsrfExempt request configuration', () => {
-  beforeEach(() => {
-    setJwtCookieTo(null);
-    setJwtTokenRefreshResponseTo(401, null);
-  });
+    ['get', 'options', 'delete'].forEach((method) => {
+      it(`${method.toUpperCase()}: does not fetch a Csrf token`, () => {
+        return client[method](mockApiEndpointPath, { isCsrfExempt: true }).then(() => {
+          expectSingleCallToJwtTokenRefresh();
+          expectNoCallToCsrfTokenFetch();
+        });
+      });
+    });
 
-  ['get', 'options', 'delete'].forEach((method) => {
-    it(`${method.toUpperCase()}: does not fetch a Csrf token`, () => {
-      return client[method](mockApiEndpointPath, { isCsrfExempt: true }).then(() => {
-        expectSingleCallToJwtTokenRefresh();
-        expectNoCallToCsrfTokenFetch();
+    ['post', 'put', 'patch'].forEach((method) => {
+      it(`${method.toUpperCase()}: does not fetch a Csrf token`, () => {
+        return client[method](mockApiEndpointPath, {}, { isCsrfExempt: true }).then(() => {
+          expectSingleCallToJwtTokenRefresh();
+          expectNoCallToCsrfTokenFetch();
+        });
       });
     });
   });
 
-  ['post', 'put', 'patch'].forEach((method) => {
-    it(`${method.toUpperCase()}: does not fetch a Csrf token`, () => {
-      return client[method](mockApiEndpointPath, {}, { isCsrfExempt: true }).then(() => {
-        expectSingleCallToJwtTokenRefresh();
-        expectNoCallToCsrfTokenFetch();
+  describe('Info logging for authorization errors from api requests with a valid token', () => {
+    beforeEach(() => {
+      setJwtCookieTo(null);
+      setJwtTokenRefreshResponseTo(200, jwtTokens.valid.encoded);
+    });
+
+    it('logs info for 401 unauthorized api responses', () => {
+      setJwtCookieTo(jwtTokens.valid.encoded);
+      expect.hasAssertions();
+      return client.get('/unauthorized').catch(() => {
+        expectLogFunctionToHaveBeenCalledWithMessage(
+          mockLoggingService.logInfo.mock.calls[0],
+          'HTTP Client Error: 401 /unauthorized (empty response)',
+          {
+            httpErrorRequestMethod: 'get',
+            httpErrorStatus: 401,
+            httpErrorType: 'api-response-error',
+            httpErrorRequestUrl: '/unauthorized',
+            httpErrorResponseData: '(empty response)',
+          },
+        );
+        expectRequestToHaveJwtAuth(axiosMock.history.get[0]);
+      });
+    });
+
+    it('logs info for 403 forbidden api responses', () => {
+      setJwtCookieTo(jwtTokens.valid.encoded);
+      expect.hasAssertions();
+      return client.get('/forbidden').catch(() => {
+        expectLogFunctionToHaveBeenCalledWithMessage(
+          mockLoggingService.logInfo.mock.calls[0],
+          'HTTP Client Error: 403 /forbidden (empty response)',
+          {
+            httpErrorRequestMethod: 'get',
+            httpErrorStatus: 403,
+            httpErrorType: 'api-response-error',
+            httpErrorRequestUrl: '/forbidden',
+            httpErrorResponseData: '(empty response)',
+          },
+        );
+        expectRequestToHaveJwtAuth(axiosMock.history.get[0]);
       });
     });
   });
 });
 
-beforeEach(() => {
-  setJwtCookieTo(null);
-  setJwtTokenRefreshResponseTo(200, jwtTokens.valid.encoded);
-});
-
-describe('Info logging for authorization errors from api requests with a valid token', () => {
-  it('logs info for 401 unauthorized api responses', () => {
-    setJwtCookieTo(jwtTokens.valid.encoded);
-    expect.hasAssertions();
-    return client.get('/unauthorized').catch(() => {
-      expectLogFunctionToHaveBeenCalledWithMessage(
-        mockLoggingService.logInfo.mock.calls[0],
-        'HTTP Client Error: 401 /unauthorized (empty response)',
-        {
-          httpErrorRequestMethod: 'get',
-          httpErrorStatus: 401,
-          httpErrorType: 'api-response-error',
-          httpErrorRequestUrl: '/unauthorized',
-          httpErrorResponseData: '(empty response)',
-        },
-      );
-      expectRequestToHaveJwtAuth(axiosMock.history.get[0]);
-    });
-  });
-
-  it('logs info for 403 forbidden api responses', () => {
-    setJwtCookieTo(jwtTokens.valid.encoded);
-    expect.hasAssertions();
-    return client.get('/forbidden').catch(() => {
-      expectLogFunctionToHaveBeenCalledWithMessage(
-        mockLoggingService.logInfo.mock.calls[0],
-        'HTTP Client Error: 403 /forbidden (empty response)',
-        {
-          httpErrorRequestMethod: 'get',
-          httpErrorStatus: 403,
-          httpErrorType: 'api-response-error',
-          httpErrorRequestUrl: '/forbidden',
-          httpErrorResponseData: '(empty response)',
-        },
-      );
-      expectRequestToHaveJwtAuth(axiosMock.history.get[0]);
-    });
-  });
-});
-
-describe('Redirect helper functions', () => {
+describe('redirectToLogin', () => {
   it('can redirect to login with different redirect url parameters', () => {
     redirectToLogin('http://edx.org/dashboard');
     expectLogin('http://edx.org/dashboard');
     redirectToLogin();
     expectLogin(process.env.BASE_URL);
   });
+});
 
+describe('redirectToLogout', () => {
   it('can redirect to logout with different redirect url parameters', () => {
     redirectToLogout('http://edx.org/');
     expectLogout('http://edx.org/');
     redirectToLogout();
     expectLogout(process.env.BASE_URL);
+  });
+});
+
+describe('hydrateAuthenticatedUser', () => {
+  beforeEach(() => {
+    axiosMock.reset();
+  });
+
+  it('should not change authenticated user if it is null', async () => {
+    await hydrateAuthenticatedUser();
+    expect(getAuthenticatedUser()).toBeNull();
+  });
+
+  it('should call the user accounts API and merge the result into authenticatedUser', async () => {
+    setJwtCookieTo(jwtTokens.valid.encoded);
+    setAuthenticatedUser({
+      userId: 'abc123',
+      username: 'the_user',
+      roles: [],
+      administrator: false,
+    });
+    axiosMock.onGet(`${authConfig.lmsBaseUrl}/api/user/v1/accounts/the_user`).reply(200, {
+      additional: 'data',
+    });
+    await hydrateAuthenticatedUser();
+    const authenticatedUser = getAuthenticatedUser();
+    expect(authenticatedUser).toEqual({
+      userId: 'abc123',
+      username: 'the_user',
+      roles: [],
+      administrator: false,
+      additional: 'data',
+    });
   });
 });
 
