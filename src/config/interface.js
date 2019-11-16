@@ -1,12 +1,12 @@
 import PropTypes from 'prop-types';
 
-let service = null;
+import { APP_CONFIG_LOADED } from '../base';
+import { publish, subscribe } from '../pubSub';
 
-const configShape = {
-  pubSubService: PropTypes.shape({
-    publish: PropTypes.func.isRequired,
-  }),
-};
+export const CONFIG_TOPIC = 'CONFIG';
+export const CONFIG_CHANGED = `${CONFIG_TOPIC}.CHANGED`;
+
+let service = null;
 
 const serviceShape = {
   getConfig: PropTypes.func.isRequired,
@@ -14,10 +14,10 @@ const serviceShape = {
   mergeConfig: PropTypes.func.isRequired,
 };
 
-export function configure(ConfigService, config) {
-  PropTypes.checkPropTypes(configShape, config, 'property', 'Config');
+export function configure(ConfigService) {
+  service = new ConfigService();
   PropTypes.checkPropTypes(serviceShape, service, 'property', 'ConfigService');
-  service = new ConfigService(config);
+  return service;
 }
 
 export function getConfig() {
@@ -25,11 +25,13 @@ export function getConfig() {
 }
 
 export function setConfig(config) {
-  return service.setConfig(config);
+  service.setConfig(config);
+  publish(CONFIG_CHANGED);
 }
 
 export function mergeConfig(config) {
-  return service.mergeConfig(config);
+  service.mergeConfig(config);
+  publish(CONFIG_CHANGED);
 }
 
 export function getConfigService() {
@@ -42,4 +44,14 @@ export function getConfigService() {
 
 export function resetConfigService() {
   service = null;
+}
+
+export function ensureConfig(keys, requester = 'unspecified application code') {
+  subscribe(APP_CONFIG_LOADED, () => {
+    keys.forEach((key) => {
+      if (service.getConfig()[key] === undefined) {
+        throw new Error(`App configuration error: ${key} is required by ${requester}.`);
+      }
+    });
+  });
 }

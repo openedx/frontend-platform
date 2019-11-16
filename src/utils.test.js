@@ -3,6 +3,7 @@ import {
   camelCaseObject,
   snakeCaseObject,
   convertKeyNames,
+  getQueryParameters,
 } from './utils';
 
 describe('modifyObjectKeys', () => {
@@ -85,6 +86,30 @@ describe('convertKeyNames', () => {
     expect(result).toEqual({
       one: { blue: { three: 'four' } },
       alive: 'six',
+    });
+  });
+});
+
+describe('getQueryParameters', () => {
+  it('should use window location by default', () => {
+    expect(global.location.search).toEqual('');
+    expect(getQueryParameters()).toEqual({});
+  });
+
+  it('should make an empty object with no query string', () => {
+    expect(getQueryParameters('')).toEqual({});
+  });
+
+  it('should make an object with one key value pair', () => {
+    expect(getQueryParameters('?foo=bar')).toEqual({
+      foo: 'bar',
+    });
+  });
+
+  it('should make an object with one key value pair', () => {
+    expect(getQueryParameters('?foo=bar&baz=1')).toEqual({
+      foo: 'bar',
+      baz: '1',
     });
   });
 });

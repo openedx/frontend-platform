@@ -3,10 +3,11 @@ import PropTypes from 'prop-types';
 import { logFrontendAuthError } from './utils';
 import addAuthenticationToHttpClient from './addAuthenticationToHttpClient';
 import getJwtToken from './getJwtToken';
-import { camelCaseObject } from '../base/api';
+import { camelCaseObject, ensureDefinedConfig } from '../utils';
+import { publish } from '../pubSub';
+import { AUTHENTICATED_USER_TOPIC, AUTHENTICATED_USER_CHANGED } from './interface';
 
-export const AUTHENTICATED_USER_TOPIC = 'AUTHENTICATED_USER';
-export const AUTHENTICATED_USER_CHANGED = `${AUTHENTICATED_USER_TOPIC}.CHANGED`;
+export { AUTHENTICATED_USER_TOPIC, AUTHENTICATED_USER_CHANGED };
 
 // Singletons
 let authenticatedHttpClient = null;
@@ -24,21 +25,6 @@ const configPropTypes = {
     logError: PropTypes.func.isRequired,
     logInfo: PropTypes.func.isRequired,
   }).isRequired,
-  pubSubService: PropTypes.shape({
-    publish: PropTypes.func.isRequired,
-  }),
-};
-
-const validateConfig = (configObj) => {
-  PropTypes.checkPropTypes(configPropTypes, configObj, 'config', 'Auth');
-
-  Object.keys(configPropTypes)
-    .filter(key => configObj[key] === undefined)
-    .forEach((key) => {
-      throw new Error(`Invalid configuration supplied to frontend auth. ${key} is required.`);
-    });
-
-  return configObj;
 };
 
 /**
@@ -54,7 +40,10 @@ const validateConfig = (configObj) => {
  * @param {string} [config.csrfTokenApiPath]
  */
 export const configure = (incomingConfig) => {
-  config = validateConfig(incomingConfig);
+  ensureDefinedConfig(incomingConfig, 'AuthService');
+
+  PropTypes.checkPropTypes(configPropTypes, incomingConfig, 'config', 'AuthService');
+  config = incomingConfig;
   authenticatedHttpClient = addAuthenticationToHttpClient(axios.create(), config);
 };
 
@@ -101,7 +90,7 @@ export const getAuthenticatedUser = () => authenticatedUser;
  */
 export const setAuthenticatedUser = (authUser) => {
   authenticatedUser = authUser;
-  config.pubSubService.publish(AUTHENTICATED_USER_CHANGED);
+  publish(AUTHENTICATED_USER_CHANGED);
 };
 
 /**

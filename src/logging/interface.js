@@ -15,8 +15,9 @@ let service = null;
 
 export function configure(LoggingService, config) {
   PropTypes.checkPropTypes(configShape, config, 'property', 'Logging');
-  PropTypes.checkPropTypes(serviceShape, service, 'property', 'LoggingService');
   service = new LoggingService(config);
+  PropTypes.checkPropTypes(serviceShape, service, 'property', 'LoggingService');
+  return service;
 }
 
 export function logInfo(message, customAttributes) {

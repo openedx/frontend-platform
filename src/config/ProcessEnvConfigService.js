@@ -1,13 +1,4 @@
-export const CONFIG_TOPIC = 'CONFIG';
-export const CONFIG_CHANGED = `${CONFIG_TOPIC}.CHANGED`;
-
-function validateConfig(config, requester) {
-  Object.keys(config).forEach((key) => {
-    if (config[key] === undefined) {
-      throw new Error(`Module configuration error: ${key} is required by ${requester}.`);
-    }
-  });
-}
+import { ensureDefinedConfig } from '../utils';
 
 function readProcessEnv() {
   const ENVIRONMENT = process.env.NODE_ENV;
@@ -33,8 +24,7 @@ function readProcessEnv() {
 }
 
 export default class ProcessEnvConfigService {
-  constructor({ pubSubService }) {
-    this.pubSubService = pubSubService;
+  constructor() {
     this.setConfig(readProcessEnv());
   }
 
@@ -43,14 +33,12 @@ export default class ProcessEnvConfigService {
   }
 
   setConfig(config) {
-    validateConfig(config);
+    ensureDefinedConfig(config, 'ProcessEnvConfigService');
     this.config = config;
-    this.pubSubService.publish(CONFIG_CHANGED);
   }
 
   mergeConfig(config) {
-    validateConfig(config);
+    ensureDefinedConfig(config, 'ProcessEnvConfigService');
     this.config = Object.assign(this.config, config);
-    this.pubSubService.publish(CONFIG_CHANGED);
   }
 }

@@ -1,13 +1,13 @@
 import { useEffect } from 'react';
-import App from '../App';
+import { subscribe, unsubscribe } from '../pubSub';
 
 // eslint-disable-next-line import/prefer-default-export
 export const useAppEvent = (type, callback) => {
   useEffect(() => {
-    const subscriptionToken = App.subscribe(type, callback);
+    const subscriptionToken = subscribe(type, callback);
 
     return function cleanup() {
-      App.unsubscribe(subscriptionToken);
+      unsubscribe(subscriptionToken);
     };
   }, []);
 };

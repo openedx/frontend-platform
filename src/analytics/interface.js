@@ -1,15 +1,15 @@
 import PropTypes from 'prop-types';
 
 const configShape = {
-  loggingService: PropTypes.shape({
-    logError: PropTypes.func.isRequired,
-    logInfo: PropTypes.func.isRequired,
+  configService: PropTypes.shape({
+    getConfig: PropTypes.func.isRequired,
   }).isRequired,
   httpClient: PropTypes.shape({
     post: PropTypes.func.isRequired,
   }).isRequired,
-  configService: PropTypes.shape({
-    getConfig: PropTypes.func.isRequired,
+  loggingService: PropTypes.shape({
+    logError: PropTypes.func.isRequired,
+    logInfo: PropTypes.func.isRequired,
   }).isRequired,
 };
 
@@ -25,8 +25,9 @@ let service;
 
 export function configure(AnalyticsService, config) {
   PropTypes.checkPropTypes(configShape, config, 'property', 'Analytics');
-  PropTypes.checkPropTypes(serviceShape, service, 'property', 'AnalyticsService');
   service = new AnalyticsService(config);
+  PropTypes.checkPropTypes(serviceShape, service, 'property', 'AnalyticsService');
+  return service;
 }
 
 export function sendTrackingLogEvent(eventName, properties) {

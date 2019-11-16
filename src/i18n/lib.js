@@ -15,6 +15,9 @@ import ruLocale from 'react-intl/locale-data/ru';
 import thLocale from 'react-intl/locale-data/th';
 import ukLocale from 'react-intl/locale-data/uk';
 import Cookies from 'universal-cookie';
+import merge from 'lodash.merge';
+
+import { ensureDefinedConfig } from '../utils';
 
 /**
  * For each locale we want to support, react-intl needs 1) the locale-data, which includes
@@ -69,14 +72,6 @@ export const getLoggingService = () => config.loggingService;
 
 export function getCookies() {
   return cookies;
-}
-
-function validateConfiguration(newConfig) {
-  Object.keys(config).forEach((key) => {
-    if (newConfig[key] === undefined) {
-      throw new Error(`Service configuration error: ${key} is required.`);
-    }
-  });
 }
 
 addLocaleData([
@@ -175,6 +170,23 @@ export const handleRtl = () => {
   }
 };
 
+const messagesShape = {
+  ar: PropTypes.objectOf(PropTypes.string), // Arabic
+  en: PropTypes.objectOf(PropTypes.string),
+  'es-419': PropTypes.objectOf(PropTypes.string), // Spanish, Latin American
+  fr: PropTypes.objectOf(PropTypes.string), // French
+  'zh-cn': PropTypes.objectOf(PropTypes.string), // Chinese, Simplified
+  ca: PropTypes.objectOf(PropTypes.string), // Catalan
+  he: PropTypes.objectOf(PropTypes.string), // Hebrew
+  id: PropTypes.objectOf(PropTypes.string), // Indonesian
+  'ko-kr': PropTypes.objectOf(PropTypes.string), // Korean (Korea)
+  pl: PropTypes.objectOf(PropTypes.string), // Polish
+  'pt-br': PropTypes.objectOf(PropTypes.string), // Portuguese (Brazil)
+  ru: PropTypes.objectOf(PropTypes.string), // Russian
+  th: PropTypes.objectOf(PropTypes.string), // Thai
+  uk: PropTypes.objectOf(PropTypes.string), // Ukrainian
+};
+
 const configShape = {
   configService: PropTypes.shape({
     getConfig: PropTypes.func.isRequired,
@@ -182,23 +194,15 @@ const configShape = {
   loggingService: PropTypes.shape({
     logError: PropTypes.func.isRequired,
   }).isRequired,
-  messages: PropTypes.shape({
-    ar: PropTypes.objectOf(PropTypes.string), // Arabic
-    en: PropTypes.objectOf(PropTypes.string),
-    'es-419': PropTypes.objectOf(PropTypes.string), // Spanish, Latin American
-    fr: PropTypes.objectOf(PropTypes.string), // French
-    'zh-cn': PropTypes.objectOf(PropTypes.string), // Chinese, Simplified
-    ca: PropTypes.objectOf(PropTypes.string), // Catalan
-    he: PropTypes.objectOf(PropTypes.string), // Hebrew
-    id: PropTypes.objectOf(PropTypes.string), // Indonesian
-    'ko-kr': PropTypes.objectOf(PropTypes.string), // Korean (Korea)
-    pl: PropTypes.objectOf(PropTypes.string), // Polish
-    'pt-br': PropTypes.objectOf(PropTypes.string), // Portuguese (Brazil)
-    ru: PropTypes.objectOf(PropTypes.string), // Russian
-    th: PropTypes.objectOf(PropTypes.string), // Thai
-    uk: PropTypes.objectOf(PropTypes.string), // Ukrainian
-  }).isRequired,
+  messages: PropTypes.oneOf(
+    PropTypes.shape(messagesShape),
+    PropTypes.arrayOf(PropTypes.shape(messagesShape)),
+  ).isRequired,
 };
+
+export function mergeMessages(messagesArray = []) {
+  return Array.isArray(messagesArray) ? merge({}, ...messagesArray) : {};
+}
 
 /**
  * Configures the i18n library with messages for your application.
@@ -224,10 +228,9 @@ const configShape = {
 export const configure = (newConfig) => {
   PropTypes.checkPropTypes(configShape, newConfig, 'property', 'Config');
 
-  validateConfiguration(newConfig);
+  ensureDefinedConfig(newConfig, 'I18nService');
   config = newConfig;
-  // eslint-disable-next-line prefer-destructuring
-  messages = config.messages;
+  messages = Array.isArray(config.messages) ? mergeMessages(config.messages) : config.messages;
 
   if (getConfigService().getConfig().ENVIRONMENT !== 'production') {
     Object.keys(messages).forEach((key) => {
