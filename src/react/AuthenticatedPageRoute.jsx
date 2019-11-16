@@ -3,11 +3,12 @@ import { Route } from 'react-router-dom';
 
 import AppContext from './AppContext';
 import LoginRedirect from './LoginRedirect';
+import PageRoute from './PageRoute';
 
 /**
  * Redirects to the login page when the route becomes active and the user is not authenticated.
  */
-export default function AuthenticatedRoute(props) {
+export default function AuthenticatedPageRoute(props) {
   const { authenticatedUser } = useContext(AppContext);
 
   // We need to let Route "render" the redirect - if we did it here in AuthenticatedRoute, it'd
@@ -16,6 +17,6 @@ export default function AuthenticatedRoute(props) {
     return <Route {...props} component={LoginRedirect} />;
   }
   return (
-    <Route {...props} />
+    <PageRoute {...props} />
   );
 }

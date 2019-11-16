@@ -1,26 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Router } from 'react-router-dom';
 import { getLocale, getMessages, IntlProvider } from '../i18n';
 
 import OptionalReduxProvider from './OptionalReduxProvider';
 
-import App, { AUTHENTICATED_USER_CHANGED, CONFIG_CHANGED } from './App';
 import ErrorBoundary from './ErrorBoundary';
 import AppContext from './AppContext';
 import { useAppEvent } from './hooks';
+import { getConfig, CONFIG_CHANGED } from '../config';
+import { getAuthenticatedUser, AUTHENTICATED_USER_CHANGED } from '../auth';
+import { history } from '../base/initialize';
+import { identifyAnonymousUser, identifyAuthenticatedUser } from '../analytics';
 
 const AppProvider = ({ store, children }) => {
-  const [config, setConfig] = useState(App.config);
-  const [authenticatedUser, setAuthenticatedUser] = useState(App.authenticatedUser);
+  const [config, setConfig] = useState(getConfig());
+  const [authenticatedUser, setAuthenticatedUser] = useState(getAuthenticatedUser());
 
   useAppEvent(AUTHENTICATED_USER_CHANGED, () => {
-    setAuthenticatedUser(App.authenticatedUser);
+    setAuthenticatedUser(getAuthenticatedUser());
   });
 
   useAppEvent(CONFIG_CHANGED, () => {
-    setConfig(App.config);
+    setConfig(getConfig());
   });
+
+  // Identify the user
+  useEffect(() => {
+    if (authenticatedUser === null) {
+      identifyAnonymousUser();
+    } else {
+      identifyAuthenticatedUser(authenticatedUser.userId);
+    }
+  }, [authenticatedUser && authenticatedUser.username]);
 
   return (
     <ErrorBoundary>
@@ -29,7 +41,7 @@ const AppProvider = ({ store, children }) => {
       >
         <IntlProvider locale={getLocale()} messages={getMessages()}>
           <OptionalReduxProvider store={store}>
-            <Router history={App.history}>
+            <Router history={history}>
               <React.Fragment>{children}</React.Fragment>
             </Router>
           </OptionalReduxProvider>
