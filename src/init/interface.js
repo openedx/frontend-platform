@@ -5,10 +5,9 @@ import {
   PubSubJsService,
 } from '../pubSub';
 import { configure as configureConfig, ProcessEnvConfigService, getConfigService } from '../config';
-import { configureLogging, getLoggingService, NewRelicLoggingService } from '../logging';
-import { auth, initError } from './handlers';
+import { configureLogging, getLoggingService, NewRelicLoggingService, logError } from '../logging';
 import { configure as configureAnalytics, SegmentAnalyticsService } from '../analytics';
-import { getAuthenticatedHttpClient, configure as configureAuth } from '../auth';
+import { getAuthenticatedHttpClient, configure as configureAuth, ensureAuthenticatedUser, fetchAuthenticatedUser, hydrateAuthenticatedUser } from '../auth';
 import { configure as configureI18n } from '../i18n';
 
 export const APP_TOPIC = 'APP';
@@ -23,7 +22,26 @@ export const APP_INIT_ERROR = `${APP_TOPIC}.INIT_ERROR`;
 
 export const history = createBrowserHistory();
 
-function applyHandlerOverrides(overrides) {
+export async function initError(error) {
+  logError(error);
+}
+
+export async function auth(requireUser, hydrateUser) {
+  if (requireUser) {
+    await ensureAuthenticatedUser();
+  } else {
+    await fetchAuthenticatedUser();
+  }
+
+  if (hydrateUser) {
+    // We intentionally do not await the promise returned by hydrateAuthenticatedUser. All the
+    // critical data is returned as part of fetch/ensureAuthenticatedUser above, and anything else
+    // is a nice-to-have for application code.
+    hydrateAuthenticatedUser();
+  }
+}
+
+function applyOverrideHandlers(overrides) {
   const noOp = async () => {};
   return {
     pubSub: noOp,
@@ -43,14 +61,12 @@ export default async function initialize({
   configService = ProcessEnvConfigService,
   loggingService = NewRelicLoggingService,
   analyticsService = SegmentAnalyticsService,
-  // authService = null,
-  // i18nService = null,
-  requireAuthenticatedUser = false,
-  hydrateAuthenticatedUser = false,
+  requireAuthenticatedUser: requireUser = false,
+  hydrateAuthenticatedUser: hydrateUser = false,
   messages,
   handlers = {},
 } = {}) {
-  const finalHandlers = applyHandlerOverrides(handlers);
+  const finalHandlers = applyOverrideHandlers(handlers);
   try {
     // Pub/Sub
     configurePubSub(pubSubService);
@@ -74,7 +90,7 @@ export default async function initialize({
       configService: getConfigService(),
       loggingService: getLoggingService(),
     });
-    await finalHandlers.auth(requireAuthenticatedUser, hydrateAuthenticatedUser);
+    await finalHandlers.auth(requireUser, hydrateUser);
     publish(APP_AUTH_INITIALIZED);
 
     // Analytics

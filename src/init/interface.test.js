@@ -6,17 +6,24 @@ import {
   APP_ANALYTICS_INITIALIZED,
   APP_I18N_INITIALIZED,
   APP_READY,
-} from './initialize';
+  initialize,
+} from './interface';
+import { subscribe } from '../pubSub';
+import { logError } from '../logging';
 
-import { auth, beforeReady, initError } from './handlers';
+jest.mock('../logging', () => ({
+  configureLogging: jest.fn(),
+  logError: jest.fn(),
+}));
+
+jest.mock('../auth', () => ({
+  configureAuth: jest.fn(),
+  ensureAuthenticatedUser: jest.fn(),
+  fetchAuthenticatedUser: jest.fn(),
+  hydrateAuthenticatedUser: jest.fn(),
+}));
 
 describe('initialize', () => {
-  beforeEach(() => {
-    auth.mockClear();
-    beforeReady.mockClear();
-    initError.mockClear();
-  });
-
   it('should call default handlers in the absence of overrides', async (done) => {
     const expectedEvents = [
       APP_PUBSUB_INITIALIZED,
@@ -38,16 +45,15 @@ describe('initialize', () => {
         throw new Error(`Unexpected event dispatched! ${eventName}`);
       }
     }
-    App.subscribe(APP_BEFORE_INIT, checkDispatchedDone);
-    App.subscribe(APP_CONFIG_LOADED, checkDispatchedDone);
-    App.subscribe(APP_AUTHENTICATED, checkDispatchedDone);
-    App.subscribe(APP_I18N_CONFIGURED, checkDispatchedDone);
-    App.subscribe(APP_LOGGING_CONFIGURED, checkDispatchedDone);
-    App.subscribe(APP_ANALYTICS_CONFIGURED, checkDispatchedDone);
-    App.subscribe(APP_BEFORE_READY, checkDispatchedDone);
-    App.subscribe(APP_READY, checkDispatchedDone);
+    subscribe(APP_PUBSUB_INITIALIZED, checkDispatchedDone);
+    subscribe(APP_CONFIG_INITIALIZED, checkDispatchedDone);
+    subscribe(APP_LOGGING_INITIALIZED, checkDispatchedDone);
+    subscribe(APP_AUTH_INITIALIZED, checkDispatchedDone);
+    subscribe(APP_ANALYTICS_INITIALIZED, checkDispatchedDone);
+    subscribe(APP_I18N_INITIALIZED, checkDispatchedDone);
+    subscribe(APP_READY, checkDispatchedDone);
 
-    await App.initialize();
+    await initialize();
 
     expect(analytics).toHaveBeenCalledWith(App);
     expect(auth).toHaveBeenCalledWith(App);
@@ -59,7 +65,7 @@ describe('initialize', () => {
     expect(ready).toHaveBeenCalledWith(App);
 
     // No error, though.
-    expect(initError).not.toHaveBeenCalled();
+    expect(logError).not.toHaveBeenCalled();
   });
 
   it('should call override handlers if they exist', async () => {
@@ -74,7 +80,7 @@ describe('initialize', () => {
       ready: jest.fn(),
       error: jest.fn(),
     };
-    await App.initialize({
+    await initialize({
       messages: null,
       loggingService: 'logging service',
       overrideHandlers,
@@ -100,7 +106,7 @@ describe('initialize', () => {
     expect(overrideHandlers.ready).toHaveBeenCalledWith(App);
 
     // Still no errors
-    expect(initError).not.toHaveBeenCalled();
+    expect(logError).not.toHaveBeenCalled();
     expect(overrideHandlers.error).not.toHaveBeenCalled();
   });
 
@@ -133,7 +139,7 @@ describe('initialize', () => {
   //   expect(App.error).toEqual(new Error('uhoh!'));
 
   //   expect((done) => {
-  //     App.subscribe(APP_ERROR, (e) => {
+  //     subscribe(APP_ERROR, (e) => {
   //       expect(e.message).toEqual('uhoh!');
   //       done();
   //     });
@@ -165,7 +171,7 @@ describe('initialize', () => {
     expect(i18n).not.toHaveBeenCalled();
     expect(ready).not.toHaveBeenCalled();
     // Not the default error handler.
-    expect(initError).not.toHaveBeenCalled();
+    expect(logError).not.toHaveBeenCalled();
 
     // But yes, the override error handler!
     expect(overrideHandlers.error).toHaveBeenCalledWith(App);
