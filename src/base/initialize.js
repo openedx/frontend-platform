@@ -2,14 +2,13 @@ import { createBrowserHistory } from 'history';
 import {
   configure as configurePubSub,
   publish,
-  getPubSubService,
   PubSubJsService,
 } from '../pubSub';
 import { configure as configureConfig, ProcessEnvConfigService, getConfigService } from '../config';
 import { configureLogging, getLoggingService, NewRelicLoggingService } from '../logging';
 import { auth, initError } from './handlers';
 import { configure as configureAnalytics, SegmentAnalyticsService } from '../analytics';
-import { getAuthenticatedHttpClient } from '../auth';
+import { getAuthenticatedHttpClient, configure as configureAuth } from '../auth';
 import { configure as configureI18n } from '../i18n';
 
 export const APP_TOPIC = 'APP';
@@ -19,7 +18,6 @@ export const APP_AUTH_INITIALIZED = `${APP_TOPIC}.AUTH_INITIALIZED`;
 export const APP_I18N_INITIALIZED = `${APP_TOPIC}.I18N_INITIALIZED`;
 export const APP_LOGGING_INITIALIZED = `${APP_TOPIC}.LOGGING_INITIALIZED`;
 export const APP_ANALYTICS_INITIALIZED = `${APP_TOPIC}.ANALYTICS_INITIALIZED`;
-export const APP_BEFORE_READY = `${APP_TOPIC}.BEFORE_READY`;
 export const APP_READY = `${APP_TOPIC}.READY`;
 export const APP_INIT_ERROR = `${APP_TOPIC}.INIT_ERROR`;
 
@@ -60,9 +58,7 @@ export default async function initialize({
     publish(APP_PUBSUB_INITIALIZED);
 
     // Configuration
-    configureConfig(configService, {
-      pubSubService: getPubSubService(),
-    });
+    configureConfig(configService);
     await finalHandlers.config();
     publish(APP_CONFIG_INITIALIZED);
 
@@ -74,11 +70,10 @@ export default async function initialize({
     publish(APP_LOGGING_INITIALIZED);
 
     // Authentication
-    // configureAuth(authService, {
-    //   configService: getConfigService(),
-    //   loggingService: getLoggingService(),
-    //   pubSubService: getPubSubService(),
-    // });
+    configureAuth({
+      configService: getConfigService(),
+      loggingService: getLoggingService(),
+    });
     await finalHandlers.auth(requireAuthenticatedUser, hydrateAuthenticatedUser);
     publish(APP_AUTH_INITIALIZED);
 

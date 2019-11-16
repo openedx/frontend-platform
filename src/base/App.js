@@ -4,7 +4,6 @@ import memoize from 'lodash.memoize';
 import getQueryParameters from './data/getQueryParameters';
 import * as handlers from './handlers';
 import validateConfig from './data/validateConfig';
-import env from './data/env';
 
 export const APP_TOPIC = 'APP';
 export const APP_BEFORE_INIT = `${APP_TOPIC}.BEFORE_INIT`;
