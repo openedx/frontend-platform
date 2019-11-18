@@ -1,8 +1,6 @@
-import { getLoggingService } from './index';
-
 // Lifted from here: https://regexr.com/3ok5o
 const urlRegex = /([a-z]{1,2}tps?):\/\/((?:(?!(?:\/|#|\?|&)).)+)(?:(\/(?:(?:(?:(?!(?:#|\?|&)).)+\/))?))?(?:((?:(?!(?:\.|$|\?|#)).)+))?(?:(\.(?:(?!(?:\?|$|#)).)+))?(?:(\?(?:(?!(?:$|#)).)+))?(?:(#.+))?/;
-const getUrlParts = (url) => {
+export const getUrlParts = (url) => {
   const found = url.match(urlRegex);
   try {
     const [
@@ -31,13 +29,9 @@ const getUrlParts = (url) => {
   }
 };
 
-const logFrontendAuthError = (error) => {
-  const prefixedMessageError = Object.create(error);
-  prefixedMessageError.message = `[frontend-auth] ${error.message}`;
-  getLoggingService().logError(prefixedMessageError, prefixedMessageError.customAttributes);
-};
 
-const processAxiosError = (axiosErrorObject) => {
+export const processAxiosError = (axiosErrorObject) => {
+  // console.log(axiosErrorObject);
   const error = Object.create(axiosErrorObject);
   const { request, response, config } = error;
 
@@ -85,13 +79,6 @@ const processAxiosError = (axiosErrorObject) => {
   return error;
 };
 
-const processAxiosErrorAndThrow = (axiosErrorObject) => {
+export const processAxiosErrorAndThrow = (axiosErrorObject) => {
   throw processAxiosError(axiosErrorObject);
-};
-
-export {
-  getUrlParts,
-  logFrontendAuthError,
-  processAxiosError,
-  processAxiosErrorAndThrow,
 };
