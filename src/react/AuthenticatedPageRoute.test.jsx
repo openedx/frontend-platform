@@ -4,7 +4,7 @@ import { Router, Route } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 import { redirectToLogin } from '../auth';
 
-import AuthenticatedRoute from './AuthenticatedRoute';
+import AuthenticatedPageRoute from './AuthenticatedPageRoute';
 import App from './App';
 import AppContext from './AppContext';
 
@@ -12,7 +12,7 @@ jest.mock('../auth', () => ({
   redirectToLogin: jest.fn(),
 }));
 
-describe('AuthenticatedRoute', () => {
+describe('AuthenticatedPageRoute', () => {
   beforeEach(() => {
     App.history = createBrowserHistory();
     redirectToLogin.mockReset();
@@ -25,7 +25,7 @@ describe('AuthenticatedRoute', () => {
       <AppContext.Provider value={{ authenticatedUser: App.authenticatedUser, config: App.config }}>
         <Router history={App.history}>
           <Route exact path="/" component={() => <p>Anonymous</p>} />
-          <AuthenticatedRoute path="/authenticated" component={() => <p>Authenticated</p>} />
+          <AuthenticatedPageRoute path="/authenticated" component={() => <p>Authenticated</p>} />
         </Router>
       </AppContext.Provider>
     );
@@ -42,7 +42,7 @@ describe('AuthenticatedRoute', () => {
       <AppContext.Provider value={{ authenticatedUser: App.authenticatedUser, config: App.config }}>
         <Router history={App.history}>
           <Route exact path="/" component={() => <p>Anonymous</p>} />
-          <AuthenticatedRoute path="/authenticated" component={() => <p>Authenticated</p>} />
+          <AuthenticatedPageRoute path="/authenticated" component={() => <p>Authenticated</p>} />
         </Router>
       </AppContext.Provider>
     );
@@ -61,7 +61,7 @@ describe('AuthenticatedRoute', () => {
       <AppContext.Provider value={{ authenticatedUser: App.authenticatedUser, config: App.config }}>
         <Router history={App.history}>
           <Route exact path="/" component={() => <p>Anonymous</p>} />
-          <AuthenticatedRoute path="/authenticated" component={() => <p>Authenticated</p>} />
+          <AuthenticatedPageRoute path="/authenticated" component={() => <p>Authenticated</p>} />
         </Router>
       </AppContext.Provider>
     );

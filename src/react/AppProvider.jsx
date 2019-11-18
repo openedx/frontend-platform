@@ -10,7 +10,7 @@ import AppContext from './AppContext';
 import { useAppEvent } from './hooks';
 import { getConfig, CONFIG_CHANGED } from '../config';
 import { getAuthenticatedUser, AUTHENTICATED_USER_CHANGED } from '../auth';
-import { history } from '../base/initialize';
+import { history } from '../init';
 import { identifyAnonymousUser, identifyAuthenticatedUser } from '../analytics';
 
 const AppProvider = ({ store, children }) => {

@@ -9,4 +9,8 @@ export default class PubSubJsService {
   unsubscribe(token) {
     PubSub.unsubscribe(token);
   }
+
+  publish(type, data) {
+    PubSub.publish(type, data);
+  }
 }

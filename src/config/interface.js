@@ -1,12 +1,13 @@
 import PropTypes from 'prop-types';
+import ProcessEnvConfigService from './ProcessEnvConfigService';
 
-import { APP_CONFIG_LOADED } from '../init';
+import { APP_CONFIG_INITIALIZED } from '../init';
 import { publish, subscribe } from '../pubSub';
 
 export const CONFIG_TOPIC = 'CONFIG';
 export const CONFIG_CHANGED = `${CONFIG_TOPIC}.CHANGED`;
 
-let service = null;
+let service = new ProcessEnvConfigService();
 
 const serviceShape = {
   getConfig: PropTypes.func.isRequired,
@@ -47,7 +48,7 @@ export function resetConfigService() {
 }
 
 export function ensureConfig(keys, requester = 'unspecified application code') {
-  subscribe(APP_CONFIG_LOADED, () => {
+  subscribe(APP_CONFIG_INITIALIZED, () => {
     keys.forEach((key) => {
       if (service.getConfig()[key] === undefined) {
         throw new Error(`App configuration error: ${key} is required by ${requester}.`);
