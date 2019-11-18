@@ -194,10 +194,10 @@ const configShape = {
   loggingService: PropTypes.shape({
     logError: PropTypes.func.isRequired,
   }).isRequired,
-  messages: PropTypes.oneOf(
+  messages: PropTypes.oneOfType([
     PropTypes.shape(messagesShape),
     PropTypes.arrayOf(PropTypes.shape(messagesShape)),
-  ).isRequired,
+  ]).isRequired,
 };
 
 export function mergeMessages(messagesArray = []) {
@@ -226,7 +226,7 @@ export function mergeMessages(messagesArray = []) {
  * above), or if an expected locale is not provided.
  */
 export const configure = (newConfig) => {
-  PropTypes.checkPropTypes(configShape, newConfig, 'property', 'Config');
+  PropTypes.checkPropTypes(configShape, newConfig, 'property', 'i18n');
 
   ensureDefinedConfig(newConfig, 'I18nService');
   config = newConfig;

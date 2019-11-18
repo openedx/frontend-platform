@@ -2,8 +2,8 @@ export { configure, logInfo, logError } from './interface';
 export { default as NewRelicLoggingService } from './NewRelicLoggingService';
 
 const getLoggingService = () => ({
-  logInfo,
-  logError,
+  logInfo: (...args) => logInfo(...args),
+  logError: (...args) => logError(...arguments),
 });
 
 export { getLoggingService };

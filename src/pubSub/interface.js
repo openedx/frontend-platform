@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import PubSubJsService from './PubSubJsService';
 
 const serviceShape = {
   subscribe: PropTypes.func.isRequired,
@@ -6,7 +7,7 @@ const serviceShape = {
   publish: PropTypes.func.isRequired,
 };
 
-let service = null;
+let service = new PubSubJsService();
 
 export function configure(PubSubService) {
   PropTypes.checkPropTypes(serviceShape, service, 'property', 'PubSubService');

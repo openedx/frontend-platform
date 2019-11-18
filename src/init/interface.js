@@ -9,6 +9,7 @@ import { configure as configureLogging, getLoggingService, NewRelicLoggingServic
 import { configure as configureAnalytics, SegmentAnalyticsService } from '../analytics';
 import { getAuthenticatedHttpClient, configure as configureAuth, ensureAuthenticatedUser, fetchAuthenticatedUser, hydrateAuthenticatedUser } from '../auth';
 import { configure as configureI18n } from '../i18n';
+import { getPubSubService } from '../pubSub';
 
 export const APP_TOPIC = 'APP';
 export const APP_PUBSUB_INITIALIZED = `${APP_TOPIC}.PUBSUB_INITIALIZED`;
@@ -69,12 +70,12 @@ export default async function initialize({
   const finalHandlers = applyOverrideHandlers(handlers);
   try {
     // Pub/Sub
-    configurePubSub(pubSubService);
+    // configurePubSub(pubSubService);
     await finalHandlers.pubSub();
     publish(APP_PUBSUB_INITIALIZED);
 
     // Configuration
-    configureConfig(configService);
+    // configureConfig(configService);
     await finalHandlers.config();
     publish(APP_CONFIG_INITIALIZED);
 
@@ -89,7 +90,13 @@ export default async function initialize({
     configureAuth({
       configService: getConfigService(),
       loggingService: getLoggingService(),
-      pubSubService,
+      pubSubService: getPubSubService(),
+      appBaseUrl: getConfigService().getConfig().LMS_BASE_URL,
+      loginUrl: getConfigService().getConfig().LOGIN_URL,
+      logoutUrl: getConfigService().getConfig().LOGIN_URL,
+      refreshAccessTokenEndpoint: getConfigService().getConfig().REFRESH_ACCESS_TOKEN_ENDPOINT,
+      accessTokenCookieName: getConfigService().getConfig().ACCESS_TOKEN_COOKIE_NAME,
+      csrfTokenApiPath: getConfigService().getConfig().CSRF_TOKEN_API_PATH,
     });
     await finalHandlers.auth(requireUser, hydrateUser);
     publish(APP_AUTH_INITIALIZED);

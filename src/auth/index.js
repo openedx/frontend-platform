@@ -172,7 +172,7 @@ export const hydrateAuthenticatedUser = async () => {
   const user = getAuthenticatedUser();
   if (user !== null) {
     const response = await authenticatedHttpClient
-      .get(`${config.lmsBaseUrl}/api/user/v1/accounts/${user.username}`);
+      .get(`${config.appBaseUrl}/api/user/v1/accounts/${user.username}`);
     setAuthenticatedUser({ ...user, ...camelCaseObject(response.data) });
   }
 };
