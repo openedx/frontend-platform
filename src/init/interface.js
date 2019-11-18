@@ -1,15 +1,19 @@
 import { createBrowserHistory } from 'history';
 import {
-  configure as configurePubSub,
+  // configure as configurePubSub,
   publish,
-  PubSubJsService,
+  // PubSubJsService,
+  getPubSubService,
 } from '../pubSub';
-import { configure as configureConfig, ProcessEnvConfigService, getConfigService } from '../config';
+import {
+  // configure as configureConfig,
+  // ProcessEnvConfigService,
+  getConfigService,
+} from '../config';
 import { configure as configureLogging, getLoggingService, NewRelicLoggingService, logError } from '../logging';
 import { configure as configureAnalytics, SegmentAnalyticsService } from '../analytics';
 import { getAuthenticatedHttpClient, configure as configureAuth, ensureAuthenticatedUser, fetchAuthenticatedUser, hydrateAuthenticatedUser } from '../auth';
 import { configure as configureI18n } from '../i18n';
-import { getPubSubService } from '../pubSub';
 
 export const APP_TOPIC = 'APP';
 export const APP_PUBSUB_INITIALIZED = `${APP_TOPIC}.PUBSUB_INITIALIZED`;
@@ -58,8 +62,8 @@ function applyOverrideHandlers(overrides) {
 }
 
 export default async function initialize({
-  pubSubService = PubSubJsService,
-  configService = ProcessEnvConfigService,
+  // pubSubService = PubSubJsService,
+  // configService = ProcessEnvConfigService,
   loggingService = NewRelicLoggingService,
   analyticsService = SegmentAnalyticsService,
   requireAuthenticatedUser: requireUser = false,

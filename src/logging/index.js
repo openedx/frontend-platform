@@ -1,9 +1,9 @@
-export { configure, logInfo, logError } from './interface';
-export { default as NewRelicLoggingService } from './NewRelicLoggingService';
+import { configure, logInfo, logError } from './interface';
 
 const getLoggingService = () => ({
   logInfo: (...args) => logInfo(...args),
-  logError: (...args) => logError(...arguments),
+  logError: (...args) => logError(...args),
 });
 
-export { getLoggingService };
+export { getLoggingService, configure, logInfo, logError };
+export { default as NewRelicLoggingService } from './NewRelicLoggingService';
