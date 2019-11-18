@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 
-import { APP_CONFIG_LOADED } from '../base';
+import { APP_CONFIG_LOADED } from '../init';
 import { publish, subscribe } from '../pubSub';
 
 export const CONFIG_TOPIC = 'CONFIG';
