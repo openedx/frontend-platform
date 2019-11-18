@@ -5,7 +5,7 @@ import {
   PubSubJsService,
 } from '../pubSub';
 import { configure as configureConfig, ProcessEnvConfigService, getConfigService } from '../config';
-import { configureLogging, getLoggingService, NewRelicLoggingService, logError } from '../logging';
+import { configure as configureLogging, getLoggingService, NewRelicLoggingService, logError } from '../logging';
 import { configure as configureAnalytics, SegmentAnalyticsService } from '../analytics';
 import { getAuthenticatedHttpClient, configure as configureAuth, ensureAuthenticatedUser, fetchAuthenticatedUser, hydrateAuthenticatedUser } from '../auth';
 import { configure as configureI18n } from '../i18n';

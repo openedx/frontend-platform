@@ -4,7 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Route } from 'react-router-dom';
 import { AppProvider, ErrorPage, AuthenticatedPageRoute } from '@edx/frontend-platform/react';
-import { APP_ERROR, APP_READY, initialize } from '@edx/frontend-platform/init';
+import { APP_INIT_ERROR, APP_READY, initialize } from '@edx/frontend-platform/init';
 import { subscribe } from '@edx/frontend-platform/pubSub';
 
 import './index.scss';
@@ -21,7 +21,7 @@ subscribe(APP_READY, () => {
   );
 });
 
-subscribe(APP_ERROR, (error) => {
+subscribe(APP_INIT_ERROR, (error) => {
   ReactDOM.render(<ErrorPage message={error.message} />, document.getElementById('root'));
 });
 
