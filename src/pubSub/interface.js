@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 const serviceShape = {
   subscribe: PropTypes.func.isRequired,
   unsubscribe: PropTypes.func.isRequired,
+  publish: PropTypes.func.isRequired,
 };
 
 let service = null;
@@ -18,6 +19,10 @@ export function subscribe(type, callback) {
 
 export function unsubscribe(token) {
   return service.unsubscribe(token);
+}
+
+export function publish(type, data) {
+  return service.publish(type, data);
 }
 
 export function getPubSubService() {
