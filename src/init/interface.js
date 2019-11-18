@@ -89,6 +89,7 @@ export default async function initialize({
     configureAuth({
       configService: getConfigService(),
       loggingService: getLoggingService(),
+      pubSubService,
     });
     await finalHandlers.auth(requireUser, hydrateUser);
     publish(APP_AUTH_INITIALIZED);
