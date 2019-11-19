@@ -1,35 +1,48 @@
 import React from 'react';
 import { createStore } from 'redux';
 import { mount } from 'enzyme';
-import { configure as configureI18n } from '../i18n';
 import AppProvider from './AppProvider';
+import { initialize } from '../init';
 
-configureI18n({
-  messages: {
-    ar: {},
-    'es-419': {},
-    fr: {},
-    'zh-cn': {},
-    ca: {},
-    he: {},
-    id: {},
-    'ko-kr': {},
-    pl: {},
-    'pt-br': {},
-    ru: {},
-    th: {},
-    uk: {},
-  },
-  configService: {
-    getConfig: () => ({
-      LANGUAGE_PREFERENCE_COOKIE_NAME: process.env.LANGUAGE_PREFERENCE_COOKIE_NAME,
-      ENVIRONMENT: process.env.NODE_ENV,
-    }),
-  },
-  loggingService: { logError: jest.fn() },
-});
+jest.mock('../auth', () => ({
+  configure: () => {},
+  getAuthenticatedUser: () => null,
+  fetchAuthenticatedUser: () => null,
+  getAuthenticatedHttpClient: () => ({}),
+  AUTHENTICATED_USER_CHANGED: 'user_changed',
+}));
+
+jest.mock('../analytics', () => ({
+  configure: () => {},
+  identifyAnonymousUser: jest.fn(),
+  identifyAuthenticatedUser: jest.fn(),
+}));
 
 describe('AppProvider', () => {
+  beforeEach(async () => {
+    await initialize({
+      loggingService: jest.fn(() => ({
+        logError: jest.fn(),
+        logInfo: jest.fn(),
+      })),
+      messages: {
+        ar: {},
+        'es-419': {},
+        fr: {},
+        'zh-cn': {},
+        ca: {},
+        he: {},
+        id: {},
+        'ko-kr': {},
+        pl: {},
+        'pt-br': {},
+        ru: {},
+        th: {},
+        uk: {},
+      },
+    });
+  });
+
   it('should render its children', () => {
     const component = (
       <AppProvider store={createStore(state => state)}>
