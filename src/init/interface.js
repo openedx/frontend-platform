@@ -94,8 +94,8 @@ export default async function initialize({
     configureAuth({
       configService: getConfigService(),
       loggingService: getLoggingService(),
-      pubSubService: getPubSubService(),
-      appBaseUrl: getConfigService().getConfig().LMS_BASE_URL,
+      appBaseUrl: getConfigService().getConfig().BASE_URL,
+      lmsBaseUrl: getConfigService().getConfig().LMS_BASE_URL,
       loginUrl: getConfigService().getConfig().LOGIN_URL,
       logoutUrl: getConfigService().getConfig().LOGIN_URL,
       refreshAccessTokenEndpoint: getConfigService().getConfig().REFRESH_ACCESS_TOKEN_ENDPOINT,
