@@ -5,13 +5,14 @@ import addAuthenticationToHttpClient from './addAuthenticationToHttpClient';
 import getJwtToken from './getJwtToken';
 import { camelCaseObject, ensureDefinedConfig } from '../utils';
 
+import { publish } from '../pubSub';
+
 export const AUTHENTICATED_USER_TOPIC = 'AUTHENTICATED_USER';
 export const AUTHENTICATED_USER_CHANGED = `${AUTHENTICATED_USER_TOPIC}.CHANGED`;
 
 // Singletons
 let authenticatedHttpClient = null;
 let config = null;
-let pubSubService = null;
 let authenticatedUser = null;
 
 const configPropTypes = {
@@ -25,9 +26,6 @@ const configPropTypes = {
   loggingService: PropTypes.shape({
     logError: PropTypes.func.isRequired,
     logInfo: PropTypes.func.isRequired,
-  }).isRequired,
-  pubSubService: PropTypes.shape({
-    publish: PropTypes.func.isRequired,
   }).isRequired,
 };
 
@@ -49,8 +47,6 @@ export const configure = (incomingConfig) => {
 
   PropTypes.checkPropTypes(configPropTypes, incomingConfig, 'config', 'AuthService');
   config = incomingConfig;
-  // eslint-disable-next-line prefer-destructuring
-  pubSubService = incomingConfig.pubSubService;
   authenticatedHttpClient = addAuthenticationToHttpClient(axios.create(), config);
 };
 
@@ -97,7 +93,7 @@ export const getAuthenticatedUser = () => authenticatedUser;
  */
 export const setAuthenticatedUser = (authUser) => {
   authenticatedUser = authUser;
-  pubSubService.publish(AUTHENTICATED_USER_CHANGED);
+  publish(AUTHENTICATED_USER_CHANGED);
 };
 
 /**
