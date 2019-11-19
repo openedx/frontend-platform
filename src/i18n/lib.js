@@ -17,8 +17,6 @@ import ukLocale from 'react-intl/locale-data/uk';
 import Cookies from 'universal-cookie';
 import merge from 'lodash.merge';
 
-import { ensureDefinedConfig } from '../utils';
-
 /**
  * For each locale we want to support, react-intl needs 1) the locale-data, which includes
  * information about how to format numbers, handle plurals, etc., and 2) the translations, as an
@@ -228,7 +226,6 @@ export function mergeMessages(messagesArray = []) {
 export const configure = (newConfig) => {
   PropTypes.checkPropTypes(configShape, newConfig, 'property', 'i18n');
 
-  ensureDefinedConfig(newConfig, 'I18nService');
   config = newConfig;
   messages = Array.isArray(config.messages) ? mergeMessages(config.messages) : config.messages;
 

@@ -1,5 +1,4 @@
 import {
-  // eslint-disable-line import/first
   configure,
   getPrimaryLanguageSubtag,
   getLocale,
@@ -21,30 +20,34 @@ describe('lib', () => {
     });
 
     it('should not call console.warn in production', () => {
-      configure(
-        {
-          ENVIRONMENT: 'production',
-          LANGUAGE_PREFERENCE_COOKIE_NAME: 'yum',
-          loggingService: { logError: jest.fn() },
+      configure({
+        loggingService: { logError: jest.fn() },
+        configService: {
+          getConfig: () => ({
+            ENVIRONMENT: 'production',
+            LANGUAGE_PREFERENCE_COOKIE_NAME: 'yum',
+          }),
         },
-        {
+        messages: {
           'es-419': {},
           de: {},
           'en-us': {},
         },
-      );
+      });
 
       expect(warnSpy).not.toHaveBeenCalled();
     });
 
     it('should warn about unexpected locales', () => {
-      configure(
-        {
-          ENVIRONMENT: 'development', // turn on warnings!
-          LANGUAGE_PREFERENCE_COOKIE_NAME: 'yum',
-          loggingService: { logError: jest.fn() },
+      configure({
+        loggingService: { logError: jest.fn() },
+        configService: {
+          getConfig: () => ({
+            ENVIRONMENT: 'development', // turn on warnings!
+            LANGUAGE_PREFERENCE_COOKIE_NAME: 'yum',
+          }),
         },
-        {
+        messages: {
           ar: {},
           'es-419': {},
           fr: {},
@@ -60,20 +63,22 @@ describe('lib', () => {
           uk: {},
           uhoh: {}, // invalid locale
         },
-      );
+      });
 
       expect(warnSpy).toHaveBeenCalledWith('Unexpected locale: uhoh');
     });
 
     it('should warn about missing locales', () => {
-      configure(
-        {
-          ENVIRONMENT: 'development', // turn on warnings!
-          LANGUAGE_PREFERENCE_COOKIE_NAME: 'yum',
-          loggingService: { logError: jest.fn() },
+      configure({
+        loggingService: { logError: jest.fn() },
+        configService: {
+          getConfig: () => ({
+            ENVIRONMENT: 'development', // turn on warnings!
+            LANGUAGE_PREFERENCE_COOKIE_NAME: 'yum',
+          }),
         },
-        {},
-      );
+        messages: {},
+      });
 
       expect(warnSpy).toHaveBeenCalledTimes(13);
       expect(warnSpy).toHaveBeenCalledWith('Missing locale: ar');
@@ -108,18 +113,20 @@ describe('lib', () => {
 
   describe('getLocale', () => {
     beforeEach(() => {
-      configure(
-        {
-          ENVIRONMENT: 'production',
-          LANGUAGE_PREFERENCE_COOKIE_NAME: 'yum',
-          loggingService: { logError: jest.fn() },
+      configure({
+        loggingService: { logError: jest.fn() },
+        configService: {
+          getConfig: () => ({
+            ENVIRONMENT: 'production',
+            LANGUAGE_PREFERENCE_COOKIE_NAME: 'yum',
+          }),
         },
-        {
+        messages: {
           'es-419': {},
           de: {},
           'en-us': {},
         },
-      );
+      });
     });
 
     it('should return a supported locale as supplied', () => {
@@ -153,18 +160,20 @@ describe('lib', () => {
 
   describe('getMessages', () => {
     beforeEach(() => {
-      configure(
-        {
-          ENVIRONMENT: 'production',
-          LANGUAGE_PREFERENCE_COOKIE_NAME: 'yum',
-          loggingService: { logError: jest.fn() },
+      configure({
+        loggingService: { logError: jest.fn() },
+        configService: {
+          getConfig: () => ({
+            ENVIRONMENT: 'production',
+            LANGUAGE_PREFERENCE_COOKIE_NAME: 'yum',
+          }),
         },
-        {
+        messages: {
           'es-419': { message: 'es-hah' },
           de: { message: 'de-hah' },
           'en-us': { message: 'en-us-hah' },
         },
-      );
+      });
 
       getCookies().get = jest.fn(() => 'es-419'); // Means the cookie will be set to es-419
     });
@@ -209,16 +218,18 @@ describe('lib', () => {
 
     it('should do the right thing for non-RTL languages', () => {
       getCookies().get = jest.fn(() => 'es-419');
-      configure(
-        {
-          ENVIRONMENT: 'production',
-          LANGUAGE_PREFERENCE_COOKIE_NAME: 'yum',
-          loggingService: { logError: jest.fn() },
+      configure({
+        loggingService: { logError: jest.fn() },
+        configService: {
+          getConfig: () => ({
+            ENVIRONMENT: 'production',
+            LANGUAGE_PREFERENCE_COOKIE_NAME: 'yum',
+          }),
         },
-        {
+        messages: {
           'es-419': { message: 'es-hah' },
         },
-      );
+      });
 
       handleRtl();
       expect(setAttribute).toHaveBeenCalledWith('dir', 'ltr');
@@ -226,16 +237,18 @@ describe('lib', () => {
 
     it('should do the right thing for RTL languages', () => {
       getCookies().get = jest.fn(() => 'ar');
-      configure(
-        {
-          ENVIRONMENT: 'production',
-          LANGUAGE_PREFERENCE_COOKIE_NAME: 'yum',
-          loggingService: { logError: jest.fn() },
+      configure({
+        loggingService: { logError: jest.fn() },
+        configService: {
+          getConfig: () => ({
+            ENVIRONMENT: 'production',
+            LANGUAGE_PREFERENCE_COOKIE_NAME: 'yum',
+          }),
         },
-        {
+        messages: {
           ar: { message: 'ar-hah' },
         },
-      );
+      });
 
       handleRtl();
       expect(setAttribute).toHaveBeenCalledWith('dir', 'rtl');
