@@ -4,7 +4,7 @@ import {
   snakeCaseObject,
   convertKeyNames,
   getQueryParameters,
-} from './utils';
+} from './';
 
 describe('modifyObjectKeys', () => {
   it('should use the provided modify function to change all keys in and object and its children', () => {
