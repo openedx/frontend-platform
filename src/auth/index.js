@@ -5,13 +5,8 @@ import addAuthenticationToHttpClient from './addAuthenticationToHttpClient';
 import getJwtToken from './getJwtToken';
 import { camelCaseObject, ensureDefinedConfig } from '../utils';
 
-const AUTHENTICATED_USER_TOPIC = 'AUTHENTICATED_USER_TOPIC';
-const AUTHENTICATED_USER_CHANGED = 'AUTHENTICATED_USER_CHANGED';
-
-export {
-  AUTHENTICATED_USER_TOPIC,
-  AUTHENTICATED_USER_CHANGED,
-};
+export const AUTHENTICATED_USER_TOPIC = 'AUTHENTICATED_USER';
+export const AUTHENTICATED_USER_CHANGED = `${AUTHENTICATED_USER_TOPIC}.CHANGED`;
 
 // Singletons
 let authenticatedHttpClient = null;
