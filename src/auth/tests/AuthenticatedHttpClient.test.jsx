@@ -20,6 +20,11 @@ const mockLoggingService = {
   logError: jest.fn(),
 };
 
+const mockPubSubService = {
+  publish: jest.fn(),
+  subscribe: jest.fn(),
+};
+
 const authConfig = {
   appBaseUrl: process.env.BASE_URL,
   accessTokenCookieName: process.env.ACCESS_TOKEN_COOKIE_NAME,
@@ -29,6 +34,7 @@ const authConfig = {
   logoutUrl: process.env.LOGOUT_URL,
   refreshAccessTokenEndpoint: process.env.REFRESH_ACCESS_TOKEN_ENDPOINT,
   loggingService: mockLoggingService,
+  pubSubService: mockPubSubService,
 };
 
 // Set up mocks
@@ -204,16 +210,6 @@ describe('getAuthenticatedHttpClient', () => {
     const client1 = getAuthenticatedHttpClient(authConfig);
     const client2 = getAuthenticatedHttpClient(authConfig);
     expect(client2).toBe(client1);
-  });
-
-  it('throws an error if supplied an incomplete config', () => {
-    expect.hasAssertions();
-    try {
-      configure({ notwhatitneeds: 'yup' });
-    } catch (e) {
-      expect(console.error).toHaveBeenCalled();
-      expect(e.message).toEqual('Invalid configuration supplied to frontend auth. appBaseUrl is required.');
-    }
   });
 });
 

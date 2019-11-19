@@ -7,8 +7,8 @@ export default class SegmentAnalyticsService {
   constructor({ httpClient, loggingService, configService }) {
     this.loggingService = loggingService;
     this.httpClient = httpClient;
-    this.trackingLogApiUrl = `${configService.getConfig('LMS_BASE_URL')}/event`;
-    this.segmentKey = configService.getConfig('SEGMENT_KEY');
+    this.trackingLogApiUrl = `${configService.getConfig().LMS_BASE_URL}/event`;
+    this.segmentKey = configService.getConfig().SEGMENT_KEY;
     this.initialize();
   }
 

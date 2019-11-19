@@ -16,6 +16,7 @@ let authenticatedUser = null;
 
 const configPropTypes = {
   appBaseUrl: PropTypes.string.isRequired,
+  lmsBaseUrl: PropTypes.string.isRequired,
   loginUrl: PropTypes.string.isRequired,
   logoutUrl: PropTypes.string.isRequired,
   refreshAccessTokenEndpoint: PropTypes.string.isRequired,
@@ -35,6 +36,7 @@ const configPropTypes = {
  *
  * @param {object} config
  * @param {string} [config.appBaseUrl]
+ * @param {string} [config.lmsBaseUrl]
  * @param {string} [config.loginUrl]
  * @param {string} [config.logoutUrl]
  * @param {object} [config.loggingService] requires logError and logInfo methods
@@ -167,7 +169,7 @@ export const hydrateAuthenticatedUser = async () => {
   const user = getAuthenticatedUser();
   if (user !== null) {
     const response = await authenticatedHttpClient
-      .get(`${config.appBaseUrl}/api/user/v1/accounts/${user.username}`);
+      .get(`${config.lmsBaseUrl}/api/user/v1/accounts/${user.username}`);
     setAuthenticatedUser({ ...user, ...camelCaseObject(response.data) });
   }
 };
