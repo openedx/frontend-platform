@@ -9,7 +9,7 @@ module.exports = createConfig('webpack-dev', {
   },
   resolve: {
     alias: {
-      '@edx/frontend-platform': path.resolve(__dirname, 'src'),
+      '@edx/frontend-platform': path.resolve(__dirname),
     },
   },
 });

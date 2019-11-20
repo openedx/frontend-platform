@@ -8,15 +8,15 @@ import {
   APP_READY,
   initialize,
 } from './interface';
-import { subscribe } from '../pubSub';
-import { logError } from '../logging';
+import { subscribe } from '../../pubSub';
+import { logError } from '../../logging';
 
-jest.mock('../logging', () => ({
+jest.mock('../../logging', () => ({
   configureLogging: jest.fn(),
   logError: jest.fn(),
 }));
 
-jest.mock('../auth', () => ({
+jest.mock('../../auth', () => ({
   configureAuth: jest.fn(),
   ensureAuthenticatedUser: jest.fn(),
   fetchAuthenticatedUser: jest.fn(),
