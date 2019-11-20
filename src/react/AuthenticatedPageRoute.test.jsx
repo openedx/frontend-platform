@@ -2,13 +2,13 @@ import React from 'react';
 import { mount } from 'enzyme';
 import { Router, Route } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
-import { redirectToLogin } from '../auth';
+import { redirectToLogin } from '../../auth';
 
 import AuthenticatedPageRoute from './AuthenticatedPageRoute';
 import App from './App';
 import AppContext from './AppContext';
 
-jest.mock('../auth', () => ({
+jest.mock('../../auth', () => ({
   redirectToLogin: jest.fn(),
 }));
 
