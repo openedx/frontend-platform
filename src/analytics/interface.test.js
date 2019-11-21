@@ -24,13 +24,10 @@ const mockAuthApiClient = {
   post: jest.fn().mockResolvedValue(undefined),
 };
 const mockConfigService = {
-  getConfig: (key) => {
-    const config = {
-      LMS_BASE_URL: 'https://example.com',
-      SEGMENT_KEY: 'test-key',
-    };
-    return config[key];
-  },
+  getConfig: () => ({
+    LMS_BASE_URL: 'https://example.com',
+    SEGMENT_KEY: 'test-key',
+  }),
 };
 
 // SegmentAnalyticsService inserts a script before the first script element

@@ -17,8 +17,8 @@ export default class SegmentAnalyticsService {
   // https://segment.com/docs/sources/website/analytics.js/quickstart/
   initialize() {
     // Create a queue, but don't obliterate an existing one!
-    window.analytics = window.analytics || [];
-    const { analytics } = window;
+    global.analytics = global.analytics || [];
+    const { analytics } = global;
 
     // If the real analytics.js is already on the page return.
     if (analytics.initialize) return;
@@ -112,7 +112,7 @@ export default class SegmentAnalyticsService {
     const serverData = {
       event_type: eventName,
       event: JSON.stringify(snakeEventData),
-      page: window.location.href,
+      page: global.location.href,
     };
     return this.httpClient.post(
       this.trackingLogApiUrl,
@@ -136,7 +136,7 @@ export default class SegmentAnalyticsService {
     if (!userId) {
       throw new Error('UserId is required for identifyAuthenticatedUser.');
     }
-    window.analytics.identify(userId, traits);
+    global.analytics.identify(userId, traits);
     this.hasIdentifyBeenCalled = true;
   }
 
@@ -145,7 +145,7 @@ export default class SegmentAnalyticsService {
    * @param traits (optional)
    */
   identifyAnonymousUser(traits) {
-    window.analytics.identify(traits);
+    global.analytics.identify(traits);
     this.hasIdentifyBeenCalled = true;
   }
 
@@ -157,7 +157,7 @@ export default class SegmentAnalyticsService {
    */
   sendTrackEvent(eventName, properties) {
     this.checkIdentifyCalled();
-    window.analytics.track(eventName, properties);
+    global.analytics.track(eventName, properties);
   }
 
   /**
@@ -168,6 +168,6 @@ export default class SegmentAnalyticsService {
    */
   sendPageEvent(category, name, properties) {
     this.checkIdentifyCalled();
-    window.analytics.page(category, name, properties);
+    global.analytics.page(category, name, properties);
   }
 }
