@@ -17,6 +17,8 @@ export {
   getMessages,
   isRtl,
   handleRtl,
+  LOCALE_CHANGED,
+  LOCALE_TOPIC,
 } from './lib';
 
 export {

@@ -11,11 +11,12 @@ import { identifyAnonymousUser, identifyAuthenticatedUser } from '../../analytic
 import { getAuthenticatedUser, AUTHENTICATED_USER_CHANGED } from '../../auth';
 import { getConfig, CONFIG_CHANGED } from '../../config';
 import { history } from '../../init';
-import { getLocale, getMessages, IntlProvider } from '../../i18n';
+import { getLocale, getMessages, IntlProvider, LOCALE_CHANGED } from '../../i18n';
 
 const AppProvider = ({ store, children }) => {
   const [config, setConfig] = useState(getConfig());
   const [authenticatedUser, setAuthenticatedUser] = useState(getAuthenticatedUser());
+  const [locale, setLocale] = useState(getLocale());
 
   useAppEvent(AUTHENTICATED_USER_CHANGED, () => {
     setAuthenticatedUser(getAuthenticatedUser());
@@ -23,6 +24,10 @@ const AppProvider = ({ store, children }) => {
 
   useAppEvent(CONFIG_CHANGED, () => {
     setConfig(getConfig());
+  });
+
+  useAppEvent(LOCALE_CHANGED, () => {
+    setLocale(getLocale());
   });
 
   // Identify the user
@@ -37,9 +42,9 @@ const AppProvider = ({ store, children }) => {
   return (
     <ErrorBoundary>
       <AppContext.Provider
-        value={{ authenticatedUser, config }}
+        value={{ authenticatedUser, config, locale }}
       >
-        <IntlProvider locale={getLocale()} messages={getMessages()}>
+        <IntlProvider locale={locale} messages={getMessages()}>
           <OptionalReduxProvider store={store}>
             <Router history={history}>
               <React.Fragment>{children}</React.Fragment>

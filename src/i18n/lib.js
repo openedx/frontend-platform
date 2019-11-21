@@ -68,6 +68,9 @@ let config = {
 export const getConfigService = () => config.configService;
 export const getLoggingService = () => config.loggingService;
 
+export const LOCALE_TOPIC = 'LOCALE';
+export const LOCALE_CHANGED = `${LOCALE_TOPIC}.CHANGED`;
+
 export function getCookies() {
   return cookies;
 }
