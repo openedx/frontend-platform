@@ -22,4 +22,6 @@ export {
   setLocale,
   reducer,
   localeSelector,
+  LOCALE_CHANGED,
+  LOCALE_TOPIC,
 } from './src/i18n';
