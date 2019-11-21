@@ -1,3 +1,4 @@
+import PubSub from 'pubsub-js';
 import {
   APP_PUBSUB_INITIALIZED,
   APP_CONFIG_INITIALIZED,
@@ -7,23 +8,33 @@ import {
   APP_I18N_INITIALIZED,
   APP_READY,
   initialize,
+  APP_INIT_ERROR,
 } from './interface';
 import { subscribe } from '../../pubSub';
-import { logError } from '../../logging';
 
-jest.mock('../../logging', () => ({
-  configureLogging: jest.fn(),
-  logError: jest.fn(),
-}));
+import { configure as configureLogging, NewRelicLoggingService, getLoggingService, logError } from '../../logging';
+import { configure as configureAuth, getAuthenticatedHttpClient, ensureAuthenticatedUser, fetchAuthenticatedUser, hydrateAuthenticatedUser, getAuthenticatedUser } from '../../auth';
+import { configure as configureAnalytics, SegmentAnalyticsService } from '../../analytics';
+import { configure as configureI18n } from '../../i18n';
+import { getConfigService } from '../../config';
 
-jest.mock('../../auth', () => ({
-  configureAuth: jest.fn(),
-  ensureAuthenticatedUser: jest.fn(),
-  fetchAuthenticatedUser: jest.fn(),
-  hydrateAuthenticatedUser: jest.fn(),
-}));
 
+jest.mock('../../logging');
+jest.mock('../../auth');
+jest.mock('../../analytics');
+jest.mock('../../i18n');
+
+let configService = null;
 describe('initialize', () => {
+  beforeEach(() => {
+    configService = getConfigService();
+    fetchAuthenticatedUser.mockReset();
+    ensureAuthenticatedUser.mockReset();
+    hydrateAuthenticatedUser.mockReset();
+    logError.mockReset();
+    PubSub.clearAllSubscriptions();
+  });
+
   it('should call default handlers in the absence of overrides', async (done) => {
     const expectedEvents = [
       APP_PUBSUB_INITIALIZED,
@@ -34,6 +45,7 @@ describe('initialize', () => {
       APP_I18N_INITIALIZED,
       APP_READY,
     ];
+
     function checkDispatchedDone(eventName) {
       const index = expectedEvents.indexOf(eventName);
       if (index > -1) {
@@ -45,6 +57,7 @@ describe('initialize', () => {
         throw new Error(`Unexpected event dispatched! ${eventName}`);
       }
     }
+
     subscribe(APP_PUBSUB_INITIALIZED, checkDispatchedDone);
     subscribe(APP_CONFIG_INITIALIZED, checkDispatchedDone);
     subscribe(APP_LOGGING_INITIALIZED, checkDispatchedDone);
@@ -53,127 +66,172 @@ describe('initialize', () => {
     subscribe(APP_I18N_INITIALIZED, checkDispatchedDone);
     subscribe(APP_READY, checkDispatchedDone);
 
-    await initialize();
+    const messages = { i_am: 'a message' };
+    await initialize({ messages });
 
-    expect(analytics).toHaveBeenCalledWith(App);
-    expect(auth).toHaveBeenCalledWith(App);
-    expect(beforeInit).toHaveBeenCalledWith(App);
-    expect(beforeReady).toHaveBeenCalledWith(App);
-    expect(loadConfig).toHaveBeenCalledWith(App);
-    expect(i18n).toHaveBeenCalledWith(App);
-    expect(logging).toHaveBeenCalledWith(App);
-    expect(ready).toHaveBeenCalledWith(App);
+    expect(configureLogging).toHaveBeenCalledWith(NewRelicLoggingService, { configService });
+    expect(configureAuth).toHaveBeenCalledWith({
+      configService,
+      loggingService: getLoggingService(),
+      appBaseUrl: process.env.BASE_URL,
+      lmsBaseUrl: process.env.LMS_BASE_URL,
+      loginUrl: process.env.LOGIN_URL,
+      logoutUrl: process.env.LOGIN_URL,
+      refreshAccessTokenEndpoint: process.env.REFRESH_ACCESS_TOKEN_ENDPOINT,
+      accessTokenCookieName: process.env.ACCESS_TOKEN_COOKIE_NAME,
+      csrfTokenApiPath: process.env.CSRF_TOKEN_API_PATH,
+    });
+    expect(configureAnalytics).toHaveBeenCalledWith(SegmentAnalyticsService, {
+      configService,
+      loggingService: getLoggingService(),
+      httpClient: getAuthenticatedHttpClient(),
+    });
+    expect(configureI18n).toHaveBeenCalledWith({
+      messages,
+      configService,
+      loggingService: getLoggingService(),
+    });
+    expect(fetchAuthenticatedUser).toHaveBeenCalled();
+    expect(ensureAuthenticatedUser).not.toHaveBeenCalled();
+    expect(hydrateAuthenticatedUser).not.toHaveBeenCalled();
+    expect(logError).not.toHaveBeenCalled();
+  });
 
-    // No error, though.
+  it('should call ensureAuthenticatedUser', async () => {
+    const messages = { i_am: 'a message' };
+    await initialize({ messages, requireAuthenticatedUser: true });
+
+    expect(fetchAuthenticatedUser).not.toHaveBeenCalled();
+    expect(ensureAuthenticatedUser).toHaveBeenCalled();
+    expect(hydrateAuthenticatedUser).not.toHaveBeenCalled();
+    expect(logError).not.toHaveBeenCalled();
+  });
+
+  it('should call hydrateAuthenticatedUser if option is set and authenticated', async () => {
+    getAuthenticatedUser.mockReturnValue({ userId: 'abc123', username: 'Barry' });
+
+    const messages = { i_am: 'a message' };
+    await initialize({ messages, hydrateAuthenticatedUser: true });
+
+    expect(fetchAuthenticatedUser).toHaveBeenCalled();
+    expect(ensureAuthenticatedUser).not.toHaveBeenCalled();
+    expect(hydrateAuthenticatedUser).toHaveBeenCalled();
+    expect(logError).not.toHaveBeenCalled();
+  });
+
+  it('should not call hydrateAuthenticatedUser if option is set but anonymous', async () => {
+    getAuthenticatedUser.mockReturnValue(null);
+
+    const messages = { i_am: 'a message' };
+    await initialize({ messages, hydrateAuthenticatedUser: true });
+
+    expect(fetchAuthenticatedUser).toHaveBeenCalled();
+    expect(ensureAuthenticatedUser).not.toHaveBeenCalled();
+    expect(hydrateAuthenticatedUser).not.toHaveBeenCalled();
     expect(logError).not.toHaveBeenCalled();
   });
 
   it('should call override handlers if they exist', async () => {
     const overrideHandlers = {
-      analytics: jest.fn(),
-      auth: jest.fn(),
-      beforeInit: jest.fn(),
-      beforeReady: jest.fn(),
-      loadConfig: jest.fn(),
-      i18n: jest.fn(),
+      pubSub: jest.fn(),
+      config: jest.fn(),
       logging: jest.fn(),
+      auth: jest.fn(),
+      analytics: jest.fn(),
+      i18n: jest.fn(),
       ready: jest.fn(),
-      error: jest.fn(),
+      initError: jest.fn(),
     };
+
     await initialize({
       messages: null,
-      loggingService: 'logging service',
-      overrideHandlers,
+      handlers: overrideHandlers,
     });
-    // None of these.
-    expect(analytics).not.toHaveBeenCalled();
-    expect(auth).not.toHaveBeenCalled();
-    expect(beforeInit).not.toHaveBeenCalled();
-    expect(beforeReady).not.toHaveBeenCalled();
-    expect(loadConfig).not.toHaveBeenCalled();
-    expect(i18n).not.toHaveBeenCalled();
-    expect(logging).not.toHaveBeenCalled();
-    expect(ready).not.toHaveBeenCalled();
 
-    // All of these.
-    expect(overrideHandlers.analytics).toHaveBeenCalledWith(App);
-    expect(overrideHandlers.auth).toHaveBeenCalledWith(App);
-    expect(overrideHandlers.beforeInit).toHaveBeenCalledWith(App);
-    expect(overrideHandlers.beforeReady).toHaveBeenCalledWith(App);
-    expect(overrideHandlers.loadConfig).toHaveBeenCalledWith(App);
-    expect(overrideHandlers.i18n).toHaveBeenCalledWith(App);
-    expect(overrideHandlers.logging).toHaveBeenCalledWith(App);
-    expect(overrideHandlers.ready).toHaveBeenCalledWith(App);
-
-    // Still no errors
+    expect(overrideHandlers.pubSub).toHaveBeenCalled();
+    expect(overrideHandlers.config).toHaveBeenCalled();
+    expect(overrideHandlers.logging).toHaveBeenCalled();
+    expect(overrideHandlers.auth).toHaveBeenCalled();
+    expect(overrideHandlers.analytics).toHaveBeenCalled();
+    expect(overrideHandlers.i18n).toHaveBeenCalled();
+    expect(overrideHandlers.ready).toHaveBeenCalled();
+    expect(overrideHandlers.initError).not.toHaveBeenCalled();
+    expect(fetchAuthenticatedUser).not.toHaveBeenCalled();
+    expect(ensureAuthenticatedUser).not.toHaveBeenCalled();
+    expect(hydrateAuthenticatedUser).not.toHaveBeenCalled();
     expect(logError).not.toHaveBeenCalled();
-    expect(overrideHandlers.error).not.toHaveBeenCalled();
   });
 
-  // it('should call the error handler if something throws', async () => {
-  //   const overrideHandlers = {
-  //     auth: jest.fn(() => {
-  //       throw new Error('uhoh!');
-  //     }),
-  //   };
-  //   await App.initialize({
-  //     messages: null,
-  //     loggingService: 'logging service',
-  //     overrideHandlers,
-  //   });
-  //   // All of these.
-  //   expect(beforeInit).toHaveBeenCalledWith(App);
-  //   expect(loadConfig).toHaveBeenCalledWith(App);
-  //   expect(logging).toHaveBeenCalledWith(App);
-  //   expect(overrideHandlers.auth).toHaveBeenCalledWith(App);
-
-  //   // None of these.
-  //   expect(analytics).not.toHaveBeenCalled();
-  //   expect(auth).not.toHaveBeenCalled();
-  //   expect(beforeReady).not.toHaveBeenCalled();
-  //   expect(i18n).not.toHaveBeenCalled();
-  //   expect(ready).not.toHaveBeenCalled();
-
-  //   // Hey, an error!
-  //   expect(initError).toHaveBeenCalledWith(App);
-  //   expect(App.error).toEqual(new Error('uhoh!'));
-
-  //   expect((done) => {
-  //     subscribe(APP_ERROR, (e) => {
-  //       expect(e.message).toEqual('uhoh!');
-  //       done();
-  //     });
-  //   });
-  // });
-
-  it('should call the override error handler if something throws', async () => {
+  it('should call the default initError handler if something throws', async (done) => {
     const overrideHandlers = {
-      auth: jest.fn(() => {
+      pubSub: jest.fn(() => {
         throw new Error('uhoh!');
       }),
-      error: jest.fn(),
+      config: jest.fn(),
+      logging: jest.fn(),
+      auth: jest.fn(),
+      analytics: jest.fn(),
+      i18n: jest.fn(),
+      ready: jest.fn(),
     };
-    await App.initialize({
+
+    function errorHandler(eventName, data) {
+      expect(eventName).toEqual(APP_INIT_ERROR);
+      expect(data).toEqual(new Error('uhoh!'));
+      done();
+    }
+
+    subscribe(APP_INIT_ERROR, errorHandler);
+
+    await initialize({
       messages: null,
-      loggingService: 'logging service',
-      overrideHandlers,
+      handlers: overrideHandlers,
     });
-    // All of these.
-    expect(beforeInit).toHaveBeenCalledWith(App);
-    expect(loadConfig).toHaveBeenCalledWith(App);
-    expect(logging).toHaveBeenCalledWith(App);
-    expect(overrideHandlers.auth).toHaveBeenCalledWith(App);
 
-    // None of these.
-    expect(analytics).not.toHaveBeenCalled();
-    expect(auth).not.toHaveBeenCalled();
-    expect(beforeReady).not.toHaveBeenCalled();
-    expect(i18n).not.toHaveBeenCalled();
-    expect(ready).not.toHaveBeenCalled();
-    // Not the default error handler.
-    expect(logError).not.toHaveBeenCalled();
+    expect(overrideHandlers.pubSub).toHaveBeenCalled();
+    expect(overrideHandlers.config).not.toHaveBeenCalled();
+    expect(overrideHandlers.logging).not.toHaveBeenCalled();
+    expect(overrideHandlers.auth).not.toHaveBeenCalled();
+    expect(overrideHandlers.analytics).not.toHaveBeenCalled();
+    expect(overrideHandlers.i18n).not.toHaveBeenCalled();
+    expect(overrideHandlers.ready).not.toHaveBeenCalled();
+    expect(logError).toHaveBeenCalledWith(new Error('uhoh!'));
+  });
 
-    // But yes, the override error handler!
-    expect(overrideHandlers.error).toHaveBeenCalledWith(App);
+  it('should call the override initError handler if something throws', async (done) => {
+    const overrideHandlers = {
+      pubSub: jest.fn(() => {
+        throw new Error('uhoh!');
+      }),
+      config: jest.fn(),
+      logging: jest.fn(),
+      auth: jest.fn(),
+      analytics: jest.fn(),
+      i18n: jest.fn(),
+      ready: jest.fn(),
+      initError: jest.fn(),
+    };
+
+    function errorHandler(eventName, data) {
+      expect(eventName).toEqual(APP_INIT_ERROR);
+      expect(data).toEqual(new Error('uhoh!'));
+      done();
+    }
+
+    subscribe(APP_INIT_ERROR, errorHandler);
+
+    await initialize({
+      messages: null,
+      handlers: overrideHandlers,
+    });
+
+    expect(overrideHandlers.pubSub).toHaveBeenCalled();
+    expect(overrideHandlers.config).not.toHaveBeenCalled();
+    expect(overrideHandlers.logging).not.toHaveBeenCalled();
+    expect(overrideHandlers.auth).not.toHaveBeenCalled();
+    expect(overrideHandlers.analytics).not.toHaveBeenCalled();
+    expect(overrideHandlers.i18n).not.toHaveBeenCalled();
+    expect(overrideHandlers.ready).not.toHaveBeenCalled();
+    expect(overrideHandlers.initError).toHaveBeenCalledWith(new Error('uhoh!'));
   });
 });

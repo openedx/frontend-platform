@@ -11,5 +11,5 @@ export {
   history,
   initError,
   auth,
-  default as initialize,
+  initialize,
 } from './interface';

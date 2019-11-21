@@ -1,19 +1,15 @@
 import { createBrowserHistory } from 'history';
 import {
-  // configure as configurePubSub,
   publish,
-  // PubSubJsService,
-  getPubSubService,
 } from '../../pubSub';
 import {
-  // configure as configureConfig,
-  // ProcessEnvConfigService,
   getConfigService,
 } from '../../config';
 import { configure as configureLogging, getLoggingService, NewRelicLoggingService, logError } from '../../logging';
 import { configure as configureAnalytics, SegmentAnalyticsService } from '../../analytics';
-import { getAuthenticatedHttpClient, configure as configureAuth, ensureAuthenticatedUser, fetchAuthenticatedUser, hydrateAuthenticatedUser } from '../../auth';
+import { getAuthenticatedHttpClient, configure as configureAuth, ensureAuthenticatedUser, fetchAuthenticatedUser, hydrateAuthenticatedUser, getAuthenticatedUser } from '../../auth';
 import { configure as configureI18n } from '../../i18n';
+
 
 export const APP_TOPIC = 'APP';
 export const APP_PUBSUB_INITIALIZED = `${APP_TOPIC}.PUBSUB_INITIALIZED`;
@@ -38,7 +34,7 @@ export async function auth(requireUser, hydrateUser) {
     await fetchAuthenticatedUser();
   }
 
-  if (hydrateUser) {
+  if (hydrateUser && getAuthenticatedUser() !== null) {
     // We intentionally do not await the promise returned by hydrateAuthenticatedUser. All the
     // critical data is returned as part of fetch/ensureAuthenticatedUser above, and anything else
     // is a nice-to-have for application code.
@@ -61,33 +57,29 @@ function applyOverrideHandlers(overrides) {
   };
 }
 
-export default async function initialize({
-  // pubSubService = PubSubJsService,
-  // configService = ProcessEnvConfigService,
+export async function initialize({
   loggingService = NewRelicLoggingService,
   analyticsService = SegmentAnalyticsService,
   requireAuthenticatedUser: requireUser = false,
   hydrateAuthenticatedUser: hydrateUser = false,
   messages,
-  handlers = {},
-} = {}) {
-  const finalHandlers = applyOverrideHandlers(handlers);
+  handlers: overrideHandlers = {},
+}) {
+  const handlers = applyOverrideHandlers(overrideHandlers);
   try {
     // Pub/Sub
-    // configurePubSub(pubSubService);
-    await finalHandlers.pubSub();
+    await handlers.pubSub();
     publish(APP_PUBSUB_INITIALIZED);
 
     // Configuration
-    // configureConfig(configService);
-    await finalHandlers.config();
+    await handlers.config();
     publish(APP_CONFIG_INITIALIZED);
 
     // Logging
     configureLogging(loggingService, {
       configService: getConfigService(),
     });
-    await finalHandlers.logging();
+    await handlers.logging();
     publish(APP_LOGGING_INITIALIZED);
 
     // Authentication
@@ -102,7 +94,7 @@ export default async function initialize({
       accessTokenCookieName: getConfigService().getConfig().ACCESS_TOKEN_COOKIE_NAME,
       csrfTokenApiPath: getConfigService().getConfig().CSRF_TOKEN_API_PATH,
     });
-    await finalHandlers.auth(requireUser, hydrateUser);
+    await handlers.auth(requireUser, hydrateUser);
     publish(APP_AUTH_INITIALIZED);
 
     // Analytics
@@ -111,7 +103,7 @@ export default async function initialize({
       loggingService: getLoggingService(),
       httpClient: getAuthenticatedHttpClient(),
     });
-    await finalHandlers.analytics();
+    await handlers.analytics();
     publish(APP_ANALYTICS_INITIALIZED);
 
     // Internationalization
@@ -120,15 +112,15 @@ export default async function initialize({
       configService: getConfigService(),
       loggingService: getLoggingService(),
     });
-    await finalHandlers.i18n();
+    await handlers.i18n();
     publish(APP_I18N_INITIALIZED);
 
     // Application Ready
-    await finalHandlers.ready();
+    await handlers.ready();
     publish(APP_READY);
   } catch (error) {
     // Initialization Error
-    await finalHandlers.initError(error);
+    await handlers.initError(error);
     publish(APP_INIT_ERROR, error);
   }
 }
