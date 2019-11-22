@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import { logError } from '../../logging';
+import { logError } from '../logging';
 
 import ErrorPage from './ErrorPage';
 
