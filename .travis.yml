@@ -5,7 +5,6 @@ script:
   - npm run test
   - npm run build
 after_success:
-  - npm unpublish @edx/frontend-platform@1.0.3
   - npx semantic-release
   - codecov
 env:
