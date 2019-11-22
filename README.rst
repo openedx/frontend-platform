@@ -7,8 +7,6 @@ frontend-platform
 Overview
 --------
 
-Frontend framework.
-
 .. |Build Status| image:: https://api.travis-ci.org/edx/frontend-platform.svg?branch=master
    :target: https://travis-ci.org/edx/frontend-platform
 .. |Codecov| image:: https://img.shields.io/codecov/c/github/edx/frontend-platform
