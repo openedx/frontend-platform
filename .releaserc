@@ -1,5 +1,5 @@
 {
-  "branch": "djoy/dist_magic",
+  "branch": "master",
   "tagFormat": "v${version}",
   "verifyConditions": [
     "@semantic-release/npm",

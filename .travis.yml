@@ -5,9 +5,8 @@ script:
   - npm run test
   - npm run build
 after_success:
-  - npx -p semantic-release -p @semantic-release/git -p @semantic-release/npm -p @semantic-release/commit-analyzer -p @semantic-release/release-notes-generator semantic-release -d --debug
-  - ls -al
-  - ls -al dist
+  # Without explicitly installing all these packages (that's what -p does) first, the "plugins" config above causes semantic-release to fail saying it can't find the packages. ... This is odd because they're all supposedly shipped with semantic-release.
+  - npx -p semantic-release -p @semantic-release/git -p @semantic-release/npm -p @semantic-release/commit-analyzer -p @semantic-release/release-notes-generator semantic-release
   - codecov
 env:
   global:
