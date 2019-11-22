@@ -19,7 +19,6 @@
   },
   "sideEffects": false,
   "scripts": {
-    "build": "make build",
     "docs": "npx jsdoc2md --global-index-format none ./src/**/* > ./docs/api.md",
     "lint": "fedx-scripts eslint --ext .js --ext .jsx .",
     "snapshot": "fedx-scripts jest --updateSnapshot",

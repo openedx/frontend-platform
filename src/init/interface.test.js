@@ -10,19 +10,19 @@ import {
   initialize,
   APP_INIT_ERROR,
 } from './interface';
-import { subscribe } from '../pubSub';
+import { subscribe } from '../../pubSub';
 
-import { configure as configureLogging, NewRelicLoggingService, getLoggingService, logError } from '../logging';
-import { configure as configureAuth, getAuthenticatedHttpClient, ensureAuthenticatedUser, fetchAuthenticatedUser, hydrateAuthenticatedUser, getAuthenticatedUser } from '../auth';
-import { configure as configureAnalytics, SegmentAnalyticsService } from '../analytics';
-import { configure as configureI18n } from '../i18n';
-import { getConfigService } from '../config';
+import { configure as configureLogging, NewRelicLoggingService, getLoggingService, logError } from '../../logging';
+import { configure as configureAuth, getAuthenticatedHttpClient, ensureAuthenticatedUser, fetchAuthenticatedUser, hydrateAuthenticatedUser, getAuthenticatedUser } from '../../auth';
+import { configure as configureAnalytics, SegmentAnalyticsService } from '../../analytics';
+import { configure as configureI18n } from '../../i18n';
+import { getConfigService } from '../../config';
 
 
-jest.mock('../logging');
-jest.mock('../auth');
-jest.mock('../analytics');
-jest.mock('../i18n');
+jest.mock('../../logging');
+jest.mock('../../auth');
+jest.mock('../../analytics');
+jest.mock('../../i18n');
 
 let configService = null;
 describe('initialize', () => {

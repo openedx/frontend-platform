@@ -4,6 +4,3 @@ build:
 	@# --copy-files will bring in everything else that wasn't processed by babel. Remove what we don't want.
 	@find dist -name '*.test.js*' -delete
 	rm ./dist/setupTest.js
-	cp ./package.json ./dist/package.json
-	cp ./LICENSE ./dist/LICENSE
-	cp ./README.rst ./dist/README.rst

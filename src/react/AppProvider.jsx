@@ -7,11 +7,11 @@ import OptionalReduxProvider from './OptionalReduxProvider';
 import ErrorBoundary from './ErrorBoundary';
 import AppContext from './AppContext';
 import { useAppEvent } from './hooks';
-import { identifyAnonymousUser, identifyAuthenticatedUser } from '../analytics';
-import { getAuthenticatedUser, AUTHENTICATED_USER_CHANGED } from '../auth';
-import { getConfig, CONFIG_CHANGED } from '../config';
-import { history } from '../init';
-import { getLocale, getMessages, IntlProvider, LOCALE_CHANGED } from '../i18n';
+import { identifyAnonymousUser, identifyAuthenticatedUser } from '../../analytics';
+import { getAuthenticatedUser, AUTHENTICATED_USER_CHANGED } from '../../auth';
+import { getConfig, CONFIG_CHANGED } from '../../config';
+import { history } from '../../init';
+import { getLocale, getMessages, IntlProvider, LOCALE_CHANGED } from '../../i18n';
 
 const AppProvider = ({ store, children }) => {
   const [config, setConfig] = useState(getConfig());
