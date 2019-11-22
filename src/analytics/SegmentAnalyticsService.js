@@ -4,11 +4,11 @@ import { snakeCaseObject } from '../utils';
 export default class SegmentAnalyticsService {
   static hasIdentifyBeenCalled = false;
 
-  constructor({ httpClient, loggingService, configService }) {
+  constructor({ httpClient, loggingService, config }) {
     this.loggingService = loggingService;
     this.httpClient = httpClient;
-    this.trackingLogApiUrl = `${configService.getConfig().LMS_BASE_URL}/event`;
-    this.segmentKey = configService.getConfig().SEGMENT_KEY;
+    this.trackingLogApiUrl = `${config.LMS_BASE_URL}/event`;
+    this.segmentKey = config.SEGMENT_KEY;
     this.initialize();
   }
 

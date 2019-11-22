@@ -1,14 +1,14 @@
 import { createBrowserHistory } from 'history';
 import {
   publish,
-} from '../pubSub';
+} from './pubSub';
 import {
-  getConfigService,
-} from '../config';
-import { configure as configureLogging, getLoggingService, NewRelicLoggingService, logError } from '../logging';
-import { configure as configureAnalytics, SegmentAnalyticsService } from '../analytics';
-import { getAuthenticatedHttpClient, configure as configureAuth, ensureAuthenticatedUser, fetchAuthenticatedUser, hydrateAuthenticatedUser, getAuthenticatedUser } from '../auth';
-import { configure as configureI18n } from '../i18n';
+  getConfig,
+} from './config';
+import { configure as configureLogging, getLoggingService, NewRelicLoggingService, logError } from './logging';
+import { configure as configureAnalytics, SegmentAnalyticsService } from './analytics';
+import { getAuthenticatedHttpClient, configure as configureAuth, ensureAuthenticatedUser, fetchAuthenticatedUser, hydrateAuthenticatedUser, getAuthenticatedUser } from './auth';
+import { configure as configureI18n } from './i18n';
 
 
 export const APP_TOPIC = 'APP';
@@ -77,29 +77,28 @@ export async function initialize({
 
     // Logging
     configureLogging(loggingService, {
-      configService: getConfigService(),
+      config: getConfig(),
     });
     await handlers.logging();
     publish(APP_LOGGING_INITIALIZED);
 
     // Authentication
     configureAuth({
-      configService: getConfigService(),
       loggingService: getLoggingService(),
-      appBaseUrl: getConfigService().getConfig().BASE_URL,
-      lmsBaseUrl: getConfigService().getConfig().LMS_BASE_URL,
-      loginUrl: getConfigService().getConfig().LOGIN_URL,
-      logoutUrl: getConfigService().getConfig().LOGIN_URL,
-      refreshAccessTokenEndpoint: getConfigService().getConfig().REFRESH_ACCESS_TOKEN_ENDPOINT,
-      accessTokenCookieName: getConfigService().getConfig().ACCESS_TOKEN_COOKIE_NAME,
-      csrfTokenApiPath: getConfigService().getConfig().CSRF_TOKEN_API_PATH,
+      appBaseUrl: getConfig().BASE_URL,
+      lmsBaseUrl: getConfig().LMS_BASE_URL,
+      loginUrl: getConfig().LOGIN_URL,
+      logoutUrl: getConfig().LOGIN_URL,
+      refreshAccessTokenEndpoint: getConfig().REFRESH_ACCESS_TOKEN_ENDPOINT,
+      accessTokenCookieName: getConfig().ACCESS_TOKEN_COOKIE_NAME,
+      csrfTokenApiPath: getConfig().CSRF_TOKEN_API_PATH,
     });
     await handlers.auth(requireUser, hydrateUser);
     publish(APP_AUTH_INITIALIZED);
 
     // Analytics
     configureAnalytics(analyticsService, {
-      configService: getConfigService(),
+      config: getConfig(),
       loggingService: getLoggingService(),
       httpClient: getAuthenticatedHttpClient(),
     });
@@ -109,7 +108,7 @@ export async function initialize({
     // Internationalization
     configureI18n({
       messages,
-      configService: getConfigService(),
+      config: getConfig(),
       loggingService: getLoggingService(),
     });
     await handlers.i18n();

@@ -23,12 +23,6 @@ const mockLoggingService = {
 const mockAuthApiClient = {
   post: jest.fn().mockResolvedValue(undefined),
 };
-const mockConfigService = {
-  getConfig: () => ({
-    LMS_BASE_URL: 'https://example.com',
-    SEGMENT_KEY: 'test-key',
-  }),
-};
 
 // SegmentAnalyticsService inserts a script before the first script element
 // in the document. Add one here.
@@ -38,7 +32,10 @@ beforeEach(() => {
   configure(SegmentAnalyticsService, {
     loggingService: mockLoggingService,
     httpClient: mockAuthApiClient,
-    configService: mockConfigService,
+    config: {
+      LMS_BASE_URL: 'https://example.com',
+      SEGMENT_KEY: 'test-key',
+    },
   });
   mockLoggingService.logError.mockReset();
   mockAuthApiClient.post.mockReset();

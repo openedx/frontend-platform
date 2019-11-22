@@ -22,11 +22,9 @@ describe('lib', () => {
     it('should not call console.warn in production', () => {
       configure({
         loggingService: { logError: jest.fn() },
-        configService: {
-          getConfig: () => ({
-            ENVIRONMENT: 'production',
-            LANGUAGE_PREFERENCE_COOKIE_NAME: 'yum',
-          }),
+        config: {
+          ENVIRONMENT: 'production',
+          LANGUAGE_PREFERENCE_COOKIE_NAME: 'yum',
         },
         messages: {
           'es-419': {},
@@ -41,11 +39,9 @@ describe('lib', () => {
     it('should warn about unexpected locales', () => {
       configure({
         loggingService: { logError: jest.fn() },
-        configService: {
-          getConfig: () => ({
-            ENVIRONMENT: 'development', // turn on warnings!
-            LANGUAGE_PREFERENCE_COOKIE_NAME: 'yum',
-          }),
+        config: {
+          ENVIRONMENT: 'development', // turn on warnings!
+          LANGUAGE_PREFERENCE_COOKIE_NAME: 'yum',
         },
         messages: {
           ar: {},
@@ -71,11 +67,9 @@ describe('lib', () => {
     it('should warn about missing locales', () => {
       configure({
         loggingService: { logError: jest.fn() },
-        configService: {
-          getConfig: () => ({
-            ENVIRONMENT: 'development', // turn on warnings!
-            LANGUAGE_PREFERENCE_COOKIE_NAME: 'yum',
-          }),
+        config: {
+          ENVIRONMENT: 'development', // turn on warnings!
+          LANGUAGE_PREFERENCE_COOKIE_NAME: 'yum',
         },
         messages: {},
       });
@@ -115,11 +109,9 @@ describe('lib', () => {
     beforeEach(() => {
       configure({
         loggingService: { logError: jest.fn() },
-        configService: {
-          getConfig: () => ({
-            ENVIRONMENT: 'production',
-            LANGUAGE_PREFERENCE_COOKIE_NAME: 'yum',
-          }),
+        config: {
+          ENVIRONMENT: 'production',
+          LANGUAGE_PREFERENCE_COOKIE_NAME: 'yum',
         },
         messages: {
           'es-419': {},
@@ -162,11 +154,9 @@ describe('lib', () => {
     beforeEach(() => {
       configure({
         loggingService: { logError: jest.fn() },
-        configService: {
-          getConfig: () => ({
-            ENVIRONMENT: 'production',
-            LANGUAGE_PREFERENCE_COOKIE_NAME: 'yum',
-          }),
+        config: {
+          ENVIRONMENT: 'production',
+          LANGUAGE_PREFERENCE_COOKIE_NAME: 'yum',
         },
         messages: {
           'es-419': { message: 'es-hah' },
@@ -220,11 +210,9 @@ describe('lib', () => {
       getCookies().get = jest.fn(() => 'es-419');
       configure({
         loggingService: { logError: jest.fn() },
-        configService: {
-          getConfig: () => ({
-            ENVIRONMENT: 'production',
-            LANGUAGE_PREFERENCE_COOKIE_NAME: 'yum',
-          }),
+        config: {
+          ENVIRONMENT: 'production',
+          LANGUAGE_PREFERENCE_COOKIE_NAME: 'yum',
         },
         messages: {
           'es-419': { message: 'es-hah' },
@@ -239,11 +227,9 @@ describe('lib', () => {
       getCookies().get = jest.fn(() => 'ar');
       configure({
         loggingService: { logError: jest.fn() },
-        configService: {
-          getConfig: () => ({
-            ENVIRONMENT: 'production',
-            LANGUAGE_PREFERENCE_COOKIE_NAME: 'yum',
-          }),
+        config: {
+          ENVIRONMENT: 'production',
+          LANGUAGE_PREFERENCE_COOKIE_NAME: 'yum',
         },
         messages: {
           ar: { message: 'ar-hah' },

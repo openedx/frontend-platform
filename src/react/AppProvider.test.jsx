@@ -2,7 +2,7 @@ import React from 'react';
 import { createStore } from 'redux';
 import { mount } from 'enzyme';
 import AppProvider from './AppProvider';
-import { initialize } from '../init';
+import { initialize } from '../initialize';
 
 jest.mock('../auth', () => ({
   configure: () => {},

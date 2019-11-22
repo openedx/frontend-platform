@@ -4,7 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Route } from 'react-router-dom';
 import { AppProvider, ErrorPage, AuthenticatedPageRoute } from '@edx/frontend-platform/react';
-import { APP_INIT_ERROR, APP_READY, initialize } from '@edx/frontend-platform/init';
+import { APP_INIT_ERROR, APP_READY, initialize } from '@edx/frontend-platform';
 import { subscribe } from '@edx/frontend-platform/pubSub';
 
 import './index.scss';

@@ -57,16 +57,11 @@ const rtlLocales = [
   'ur', // Urdu (not currently supported)
 ];
 
+let config = null;
+let loggingService = null;
 let messages = null;
-let config = {
-  ENVIRONMENT: null,
-  LANGUAGE_PREFERENCE_COOKIE_NAME: null,
-  loggingService: null,
-};
 
-
-export const getConfigService = () => config.configService;
-export const getLoggingService = () => config.loggingService;
+export const getLoggingService = () => loggingService;
 
 export const LOCALE_TOPIC = 'LOCALE';
 export const LOCALE_CHANGED = `${LOCALE_TOPIC}.CHANGED`;
@@ -137,7 +132,7 @@ export const getLocale = (locale) => {
   }
   // 2. User setting in cookie
   const cookieLangPref = cookies
-    .get(getConfigService().getConfig().LANGUAGE_PREFERENCE_COOKIE_NAME);
+    .get(config.LANGUAGE_PREFERENCE_COOKIE_NAME);
   if (cookieLangPref) {
     return findSupportedLocale(cookieLangPref.toLowerCase());
   }
@@ -188,10 +183,8 @@ const messagesShape = {
   uk: PropTypes.objectOf(PropTypes.string), // Ukrainian
 };
 
-const configShape = {
-  configService: PropTypes.shape({
-    getConfig: PropTypes.func.isRequired,
-  }).isRequired,
+const optionsShape = {
+  config: PropTypes.object.isRequired,
   loggingService: PropTypes.shape({
     logError: PropTypes.func.isRequired,
   }).isRequired,
@@ -226,13 +219,15 @@ export function mergeMessages(messagesArray = []) {
  * Logs a warning if it detects a locale it doesn't expect (as defined by the supportedLocales list
  * above), or if an expected locale is not provided.
  */
-export const configure = (newConfig) => {
-  PropTypes.checkPropTypes(configShape, newConfig, 'property', 'i18n');
+export const configure = (options) => {
+  PropTypes.checkPropTypes(optionsShape, options, 'property', 'i18n');
+  // eslint-disable-next-line prefer-destructuring
+  loggingService = options.loggingService;
+  // eslint-disable-next-line prefer-destructuring
+  config = options.config;
+  messages = Array.isArray(options.messages) ? mergeMessages(options.messages) : options.messages;
 
-  config = newConfig;
-  messages = Array.isArray(config.messages) ? mergeMessages(config.messages) : config.messages;
-
-  if (getConfigService().getConfig().ENVIRONMENT !== 'production') {
+  if (config.ENVIRONMENT !== 'production') {
     Object.keys(messages).forEach((key) => {
       if (supportedLocales.indexOf(key) < 0) {
         console.warn(`Unexpected locale: ${key}`); // eslint-disable-line no-console
