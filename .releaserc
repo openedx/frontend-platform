@@ -1,12 +1,12 @@
 {
-  "branch": "master",
+  "branch": "djoy/dist_magic",
   "tagFormat": "v${version}",
   "verifyConditions": [
     "@semantic-release/npm",
     {
       "path": "@semantic-release/github",
       "assets": {
-        "path": "dist/*"
+        "path": "*"
       }
     }
   ],
@@ -18,7 +18,7 @@
     {
       "path": "@semantic-release/github",
       "assets": {
-        "path": "dist/*"
+        "path": "*"
       }
     }
   ],
@@ -30,8 +30,6 @@
     ["@semantic-release/npm", {
       "pkgRoot": "dist",
     }],
-    ["@semantic-release/git", {
-      "assets": ["package.json", "npm-shrinkwrap.json"]
-    }]
+    "@semantic-release/git"
   ]
 }

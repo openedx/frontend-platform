@@ -5,7 +5,9 @@ script:
   - npm run test
   - npm run build
 after_success:
-  - npx semantic-release -d
+  - npx -p semantic-release -p @semantic-release/git -p @semantic-release/npm -p @semantic-release/commit-analyzer -p @semantic-release/release-notes-generator semantic-release -d --debug
+  - ls -al
+  - ls -al dist
   - codecov
 env:
   global:
