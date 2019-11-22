@@ -1,9 +1,7 @@
 import PropTypes from 'prop-types';
 
 const configShape = {
-  configService: PropTypes.shape({
-    getConfig: PropTypes.func.isRequired,
-  }).isRequired,
+  config: PropTypes.object.isRequired,
 };
 
 const serviceShape = {

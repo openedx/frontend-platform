@@ -65,7 +65,6 @@ let config = {
 };
 
 
-export const getConfigService = () => config.configService;
 export const getLoggingService = () => config.loggingService;
 
 export const LOCALE_TOPIC = 'LOCALE';
@@ -137,7 +136,7 @@ export const getLocale = (locale) => {
   }
   // 2. User setting in cookie
   const cookieLangPref = cookies
-    .get(getConfigService().getConfig().LANGUAGE_PREFERENCE_COOKIE_NAME);
+    .get(config.config.LANGUAGE_PREFERENCE_COOKIE_NAME);
   if (cookieLangPref) {
     return findSupportedLocale(cookieLangPref.toLowerCase());
   }
@@ -189,9 +188,7 @@ const messagesShape = {
 };
 
 const configShape = {
-  configService: PropTypes.shape({
-    getConfig: PropTypes.func.isRequired,
-  }).isRequired,
+  config: PropTypes.object.isRequired,
   loggingService: PropTypes.shape({
     logError: PropTypes.func.isRequired,
   }).isRequired,
@@ -232,7 +229,7 @@ export const configure = (newConfig) => {
   config = newConfig;
   messages = Array.isArray(config.messages) ? mergeMessages(config.messages) : config.messages;
 
-  if (getConfigService().getConfig().ENVIRONMENT !== 'production') {
+  if (config.config.ENVIRONMENT !== 'production') {
     Object.keys(messages).forEach((key) => {
       if (supportedLocales.indexOf(key) < 0) {
         console.warn(`Unexpected locale: ${key}`); // eslint-disable-line no-console

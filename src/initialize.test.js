@@ -9,25 +9,25 @@ import {
   APP_READY,
   initialize,
   APP_INIT_ERROR,
-} from './interface';
-import { subscribe } from '../pubSub';
+} from './initialize';
+import { subscribe } from './pubSub';
 
-import { configure as configureLogging, NewRelicLoggingService, getLoggingService, logError } from '../logging';
-import { configure as configureAuth, getAuthenticatedHttpClient, ensureAuthenticatedUser, fetchAuthenticatedUser, hydrateAuthenticatedUser, getAuthenticatedUser } from '../auth';
-import { configure as configureAnalytics, SegmentAnalyticsService } from '../analytics';
-import { configure as configureI18n } from '../i18n';
-import { getConfigService } from '../config';
+import { configure as configureLogging, NewRelicLoggingService, getLoggingService, logError } from './logging';
+import { configure as configureAuth, getAuthenticatedHttpClient, ensureAuthenticatedUser, fetchAuthenticatedUser, hydrateAuthenticatedUser, getAuthenticatedUser } from './auth';
+import { configure as configureAnalytics, SegmentAnalyticsService } from './analytics';
+import { configure as configureI18n } from './i18n';
+import { getConfig } from './config';
 
 
-jest.mock('../logging');
-jest.mock('../auth');
-jest.mock('../analytics');
-jest.mock('../i18n');
+jest.mock('./logging');
+jest.mock('./auth');
+jest.mock('./analytics');
+jest.mock('./i18n');
 
-let configService = null;
+let config = null;
 describe('initialize', () => {
   beforeEach(() => {
-    configService = getConfigService();
+    config = getConfig();
     fetchAuthenticatedUser.mockReset();
     ensureAuthenticatedUser.mockReset();
     hydrateAuthenticatedUser.mockReset();
@@ -69,9 +69,8 @@ describe('initialize', () => {
     const messages = { i_am: 'a message' };
     await initialize({ messages });
 
-    expect(configureLogging).toHaveBeenCalledWith(NewRelicLoggingService, { configService });
+    expect(configureLogging).toHaveBeenCalledWith(NewRelicLoggingService, { config });
     expect(configureAuth).toHaveBeenCalledWith({
-      configService,
       loggingService: getLoggingService(),
       appBaseUrl: process.env.BASE_URL,
       lmsBaseUrl: process.env.LMS_BASE_URL,
@@ -82,13 +81,13 @@ describe('initialize', () => {
       csrfTokenApiPath: process.env.CSRF_TOKEN_API_PATH,
     });
     expect(configureAnalytics).toHaveBeenCalledWith(SegmentAnalyticsService, {
-      configService,
+      config,
       loggingService: getLoggingService(),
       httpClient: getAuthenticatedHttpClient(),
     });
     expect(configureI18n).toHaveBeenCalledWith({
       messages,
-      configService,
+      config,
       loggingService: getLoggingService(),
     });
     expect(fetchAuthenticatedUser).toHaveBeenCalled();

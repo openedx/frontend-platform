@@ -23,7 +23,7 @@ Add the following configuration code to your app::
     configureAnalytics(SegmentAnalyticsService, {
       loggingService: getLoggingService(),
       httpClient: getAuthenticatedHttpClient(),
-      configService: getConfigService(),
+      config: { ... },
     });
 
 .. |Build Status| image:: https://api.travis-ci.org/edx/frontend-analytics.svg?branch=master
