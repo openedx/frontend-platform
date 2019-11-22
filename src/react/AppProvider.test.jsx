@@ -2,9 +2,9 @@ import React from 'react';
 import { createStore } from 'redux';
 import { mount } from 'enzyme';
 import AppProvider from './AppProvider';
-import { initialize } from '../../init';
+import { initialize } from '../init';
 
-jest.mock('../../auth', () => ({
+jest.mock('../auth', () => ({
   configure: () => {},
   getAuthenticatedUser: () => null,
   fetchAuthenticatedUser: () => null,
@@ -12,7 +12,7 @@ jest.mock('../../auth', () => ({
   AUTHENTICATED_USER_CHANGED: 'user_changed',
 }));
 
-jest.mock('../../analytics', () => ({
+jest.mock('../analytics', () => ({
   configure: () => {},
   identifyAnonymousUser: jest.fn(),
   identifyAuthenticatedUser: jest.fn(),

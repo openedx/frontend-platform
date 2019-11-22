@@ -3,9 +3,9 @@ import { mount } from 'enzyme';
 
 import ErrorBoundary from './ErrorBoundary';
 
-import { logError } from '../../logging';
+import { logError } from '../logging';
 
-jest.mock('../../logging');
+jest.mock('../logging');
 
 describe('ErrorBoundary', () => {
   beforeEach(() => {
