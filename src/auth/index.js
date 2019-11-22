@@ -5,7 +5,7 @@ import addAuthenticationToHttpClient from './addAuthenticationToHttpClient';
 import getJwtToken from './getJwtToken';
 import { camelCaseObject, ensureDefinedConfig } from '../utils';
 
-import { publish } from '../pubSub';
+import { publish } from '../../pubSub';
 
 export const AUTHENTICATED_USER_TOPIC = 'AUTHENTICATED_USER';
 export const AUTHENTICATED_USER_CHANGED = `${AUTHENTICATED_USER_TOPIC}.CHANGED`;

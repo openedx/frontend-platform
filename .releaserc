@@ -6,7 +6,7 @@
     {
       "path": "@semantic-release/github",
       "assets": {
-        "path": "*"
+        "path": "dist/*"
       }
     }
   ],
@@ -18,18 +18,10 @@
     {
       "path": "@semantic-release/github",
       "assets": {
-        "path": "*"
+        "path": "dist/*"
       }
     }
   ],
   "success": [],
-  "fail": [],
-  "plugins": [
-    "@semantic-release/commit-analyzer",
-    "@semantic-release/release-notes-generator",
-    ["@semantic-release/npm", {
-      "pkgRoot": "dist",
-    }],
-    "@semantic-release/git"
-  ]
+  "fail": []
 }
