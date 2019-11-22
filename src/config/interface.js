@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import ProcessEnvConfigService from './ProcessEnvConfigService';
 
-import { APP_CONFIG_INITIALIZED } from '../../init';
-import { publish, subscribe } from '../../pubSub';
+import { APP_CONFIG_INITIALIZED } from '../init';
+import { publish, subscribe } from '../pubSub';
 
 export const CONFIG_TOPIC = 'CONFIG';
 export const CONFIG_CHANGED = `${CONFIG_TOPIC}.CHANGED`;

@@ -2,14 +2,14 @@ import React from 'react';
 import { mount } from 'enzyme';
 import { Router, Route } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
-import { getAuthenticatedUser, redirectToLogin } from '../../auth';
+import { getAuthenticatedUser, redirectToLogin } from '../auth';
 import AuthenticatedPageRoute from './AuthenticatedPageRoute';
 import AppContext from './AppContext';
-import { getConfig } from '../../config';
-import { sendPageEvent } from '../../analytics';
+import { getConfig } from '../config';
+import { sendPageEvent } from '../analytics';
 
-jest.mock('../../analytics');
-jest.mock('../../auth');
+jest.mock('../analytics');
+jest.mock('../auth');
 
 describe('AuthenticatedPageRoute', () => {
   let history;
