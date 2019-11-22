@@ -16,8 +16,8 @@
     "test": "fedx-scripts jest --coverage"
   },
   "bin": {
-    "transifex-utils.js": "src/i18n/scripts/transifex-utils.js",
-    "transifex-Makefile": "src/i18n/scripts/Makefile"
+    "transifex-utils.js": "i18n/scripts/transifex-utils.js",
+    "transifex-Makefile": "i18n/scripts/Makefile"
   },
   "repository": {
     "type": "git",
