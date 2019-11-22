@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
-import { sendPageEvent } from '../../analytics';
+import { sendPageEvent } from '../analytics';
 
 // eslint-disable-next-line react/prop-types
 export default function PageRoute({ component: Component, ...props }) {

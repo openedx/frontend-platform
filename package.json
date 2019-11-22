@@ -2,23 +2,13 @@
   "name": "@edx/frontend-platform",
   "version": "1.0.0-semantically-released",
   "description": "Foundational application framework for Open edX micro-frontend applications.",
-  "main": "src/index.js",
-  "exports": {
-    "./analytics": "./src/analytics",
-    "./auth": "./src/auth",
-    "./config": "./src/config",
-    "./i18n": "./src/i18n",
-    "./init": "./src/init",
-    "./logging": "./src/logging",
-    "./pubSub": "./src/pubSub",
-    "./react": "./src/react",
-    "./utils": "./src/utils"
-  },
+  "main": "index.js",
   "publishConfig": {
     "access": "public"
   },
   "sideEffects": false,
   "scripts": {
+    "build": "make build",
     "docs": "npx jsdoc2md --global-index-format none ./src/**/* > ./docs/api.md",
     "lint": "fedx-scripts eslint --ext .js --ext .jsx .",
     "snapshot": "fedx-scripts jest --updateSnapshot",
