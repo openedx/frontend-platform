@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 
-const configShape = {
+const optionsShape = {
   config: PropTypes.object.isRequired,
 };
 
@@ -11,9 +11,9 @@ const serviceShape = {
 
 let service = null;
 
-export function configure(LoggingService, config) {
-  PropTypes.checkPropTypes(configShape, config, 'property', 'Logging');
-  service = new LoggingService(config);
+export function configure(LoggingService, options) {
+  PropTypes.checkPropTypes(optionsShape, options, 'property', 'Logging');
+  service = new LoggingService(options);
   PropTypes.checkPropTypes(serviceShape, service, 'property', 'LoggingService');
   return service;
 }

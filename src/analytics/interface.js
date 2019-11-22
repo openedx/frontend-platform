@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 
-const configShape = {
+const optionsShape = {
   config: PropTypes.object.isRequired,
   httpClient: PropTypes.shape({
     post: PropTypes.func.isRequired,
@@ -21,9 +21,9 @@ const serviceShape = {
 
 let service;
 
-export function configure(AnalyticsService, config) {
-  PropTypes.checkPropTypes(configShape, config, 'property', 'Analytics');
-  service = new AnalyticsService(config);
+export function configure(AnalyticsService, options) {
+  PropTypes.checkPropTypes(optionsShape, options, 'property', 'Analytics');
+  service = new AnalyticsService(options);
   PropTypes.checkPropTypes(serviceShape, service, 'property', 'AnalyticsService');
   return service;
 }
