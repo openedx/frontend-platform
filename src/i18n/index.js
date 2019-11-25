@@ -1,6 +1,7 @@
 export {
   intlShape,
   FormattedDate,
+  FormattedHTMLMessage,
   FormattedTime,
   FormattedRelative,
   FormattedNumber,
