@@ -7,6 +7,22 @@ frontend-platform
 Overview
 --------
 
+frontend-platform is a modest application framework for Open edX micro-frontend applications and their supporting libraries. It provides a number of foundational services that all Open edX micro-frontends should have:
+
+- Analytics
+- Authentication
+- Internationalization (i18n)
+- Logging
+
+In addition, frontend-platform provides an extensible application initialization lifecycle to help manage the configuration of the above services, freeing application developers to focus on feature development.  
+
+Architecture
+------------
+
+The four foundational services listed above (analytics, auth, i18n, and logging) are provided as imports to applications via frontend-platform's API layer.  The initialization sequence creates an instance of each service and exposes its methods as functional exports, creating a layer of abstraction between service implementations and their usage in application code.
+
+Each type of service has a documented API contract which service implementations must fulfill. This allows different service implementations to be used as necessary without updates to consuming applications.
+
 .. |Build Status| image:: https://api.travis-ci.org/edx/frontend-platform.svg?branch=master
    :target: https://travis-ci.org/edx/frontend-platform
 .. |Codecov| image:: https://img.shields.io/codecov/c/github/edx/frontend-platform
