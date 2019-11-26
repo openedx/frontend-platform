@@ -54,7 +54,6 @@
   "dependencies": {
     "@cospired/i18n-iso-languages": "2.0.2",
     "axios": "^0.18.1",
-    "camelcase-keys": "^6.1.0",
     "form-urlencoded": "^4.1.0",
     "glob": "^7.1.6",
     "history": "^4.10.1",
@@ -66,7 +65,6 @@
     "lodash.snakecase": "^4.1.1",
     "pubsub-js": "^1.7.0",
     "react-intl": "^2.9.0",
-    "snakecase-keys": "^3.1.0",
     "universal-cookie": "^4.0.2"
   },
   "peerDependencies": {
