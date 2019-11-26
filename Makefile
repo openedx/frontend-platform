@@ -6,4 +6,4 @@ build:
 	rm ./dist/setupTest.js
 	cp ./package.json ./dist/package.json
 	cp ./LICENSE ./dist/LICENSE
-	cp ./README.rst ./dist/README.rst
+	cp ./README.md ./dist/README.md
