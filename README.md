@@ -24,7 +24,24 @@ The four foundational services listed above (analytics, auth, i18n, and logging)
 
 Each type of service has a documented API contract which service implementations must fulfill. This allows different service implementations to be used as necessary without updates to consuming applications.
 
-# Service interfaces
+### Application Initialization
+
+frontend-platform provides an `initialize()` function which bootstraps and configures an application.  The `initialize()` function uses a set of [sensible defaults](https://en.wikipedia.org/wiki/Convention_over_configuration) unless otherwise specified, bootstrapping the application with services reflecting Open edX's best practices around analytics, authentication, internationalization, and logging.
+
+The initialization process proceeds in a series of phases, giving the initializing application code opportunities to hook into the process and do custom setup as desired:
+
+- Before initialization
+- Pub/Sub initialized
+- Environment config document loaded
+- Logging service initialized
+- Authentication service initialized
+- Analytics service initialized
+- Internationalization service initialized
+- Application ready 
+
+Most applications won't need to do anything special at all.
+
+### Service interfaces
 
 Each service (analytics, auth, i18n, logging) provided by frontend-platform has a API contract which all implementations of that service are guaranteed to fulfill.  Applications that use frontend-platform can use its configured services via a convenient set of exported functions.  An application that wants to use the service interfaces need only initialize them via the initialize() function, optionally providing custom service interfaces as desired (you probably won't need to).  
 
