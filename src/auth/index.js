@@ -128,7 +128,7 @@ export const fetchAuthenticatedUser = async () => {
  * @param {string} route to return user after login when not authenticated.
  * @returns {Promise<UserData>}
  */
-export const ensureAuthenticatedUser = async (route) => {
+export const ensureAuthenticatedUser = async (redirectUrl = config.appBaseUrl) => {
   await fetchAuthenticatedUser();
 
   if (getAuthenticatedUser() === null) {
@@ -142,7 +142,7 @@ export const ensureAuthenticatedUser = async (route) => {
     }
 
     // The user is not authenticated, send them to the login page.
-    redirectToLogin(config.appBaseUrl + route);
+    redirectToLogin(redirectUrl);
   }
 
   return getAuthenticatedUser();

@@ -711,7 +711,7 @@ describe('ensureAuthenticatedUser', () => {
 
     it('attempts to refresh a missing jwt token and redirects user to login', () => {
       setJwtCookieTo(null);
-      return ensureAuthenticatedUser('/route').then((authenticatedUserAccessToken) => {
+      return ensureAuthenticatedUser(`${process.env.BASE_URL}/route`).then((authenticatedUserAccessToken) => {
         expect(authenticatedUserAccessToken).toBeNull();
         expectSingleCallToJwtTokenRefresh();
         expectLogin(`${process.env.BASE_URL}/route`);
