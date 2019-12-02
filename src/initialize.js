@@ -6,7 +6,7 @@ import {
   getConfig,
 } from './config';
 import { configure as configureLogging, getLoggingService, NewRelicLoggingService, logError } from './logging';
-import { configure as configureAnalytics, SegmentAnalyticsService } from './analytics';
+import { configure as configureAnalytics, SegmentAnalyticsService, identifyAnonymousUser, identifyAuthenticatedUser } from './analytics';
 import { getAuthenticatedHttpClient, configure as configureAuth, ensureAuthenticatedUser, fetchAuthenticatedUser, hydrateAuthenticatedUser, getAuthenticatedUser } from './auth';
 import { configure as configureI18n } from './i18n';
 
