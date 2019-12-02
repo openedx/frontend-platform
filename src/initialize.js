@@ -29,7 +29,7 @@ export async function initError(error) {
 
 export async function auth(requireUser, hydrateUser) {
   if (requireUser) {
-    await ensureAuthenticatedUser();
+    await ensureAuthenticatedUser(global.location.href);
   } else {
     await fetchAuthenticatedUser();
   }
