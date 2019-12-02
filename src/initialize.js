@@ -44,10 +44,10 @@ export async function auth(requireUser, hydrateUser) {
 
 export async function analytics() {
   const authenticatedUser = getAuthenticatedUser();
-  if (authenticatedUser === null) {
-    identifyAnonymousUser();
-  } else {
+  if (authenticatedUser && authenticatedUser.userId) {
     identifyAuthenticatedUser(authenticatedUser.userId);
+  } else {
+    identifyAnonymousUser();
   }
 }
 
