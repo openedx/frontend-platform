@@ -6,7 +6,7 @@ import {
   getConfig,
 } from './config';
 import { configure as configureLogging, getLoggingService, NewRelicLoggingService, logError } from './logging';
-import { configure as configureAnalytics, SegmentAnalyticsService } from './analytics';
+import { configure as configureAnalytics, SegmentAnalyticsService, identifyAnonymousUser, identifyAuthenticatedUser } from './analytics';
 import { getAuthenticatedHttpClient, configure as configureAuth, ensureAuthenticatedUser, fetchAuthenticatedUser, hydrateAuthenticatedUser, getAuthenticatedUser } from './auth';
 import { configure as configureI18n } from './i18n';
 
@@ -42,6 +42,15 @@ export async function auth(requireUser, hydrateUser) {
   }
 }
 
+export async function analytics() {
+  const authenticatedUser = getAuthenticatedUser();
+  if (authenticatedUser && authenticatedUser.userId) {
+    identifyAuthenticatedUser(authenticatedUser.userId);
+  } else {
+    identifyAnonymousUser();
+  }
+}
+
 function applyOverrideHandlers(overrides) {
   const noOp = async () => {};
   return {
@@ -49,7 +58,7 @@ function applyOverrideHandlers(overrides) {
     config: noOp,
     logging: noOp,
     auth,
-    analytics: noOp,
+    analytics,
     i18n: noOp,
     ready: noOp,
     initError,
