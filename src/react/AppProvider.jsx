@@ -7,7 +7,6 @@ import OptionalReduxProvider from './OptionalReduxProvider';
 import ErrorBoundary from './ErrorBoundary';
 import AppContext from './AppContext';
 import { useAppEvent } from './hooks';
-import { identifyAnonymousUser, identifyAuthenticatedUser } from '../analytics';
 import { getAuthenticatedUser, AUTHENTICATED_USER_CHANGED } from '../auth';
 import { getConfig, CONFIG_CHANGED } from '../config';
 import { history } from '../initialize';
@@ -29,15 +28,6 @@ const AppProvider = ({ store, children }) => {
   useAppEvent(LOCALE_CHANGED, () => {
     setLocale(getLocale());
   });
-
-  // Identify the user
-  useEffect(() => {
-    if (authenticatedUser === null) {
-      identifyAnonymousUser();
-    } else {
-      identifyAuthenticatedUser(authenticatedUser.userId);
-    }
-  }, [authenticatedUser && authenticatedUser.username]);
 
   return (
     <ErrorBoundary>

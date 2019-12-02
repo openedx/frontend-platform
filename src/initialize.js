@@ -42,6 +42,15 @@ export async function auth(requireUser, hydrateUser) {
   }
 }
 
+export async function analytics() {
+  const authenticatedUser = getAuthenticatedUser();
+  if (authenticatedUser === null) {
+    identifyAnonymousUser();
+  } else {
+    identifyAuthenticatedUser(authenticatedUser.userId);
+  }
+}
+
 function applyOverrideHandlers(overrides) {
   const noOp = async () => {};
   return {
@@ -49,7 +58,7 @@ function applyOverrideHandlers(overrides) {
     config: noOp,
     logging: noOp,
     auth,
-    analytics: noOp,
+    analytics,
     i18n: noOp,
     ready: noOp,
     initError,
