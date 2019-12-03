@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { injectIntl, intlShape } from '@edx/frontend-platform/i18n';
 import { logInfo } from '@edx/frontend-platform/logging';
 import { AppContext } from '@edx/frontend-platform/react';
-import { ensureConfig, mergeConfig, getConfig } from '@edx/frontend-platform/config';
+import { ensureConfig, mergeConfig, getConfig } from '@edx/frontend-platform';
 import messages from './messages';
 
 ensureConfig([

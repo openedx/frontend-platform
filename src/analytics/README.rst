@@ -18,7 +18,7 @@ Add the following configuration code to your app::
     import { configure as configureAnalytics, SegmentAnalyticsService } from '@edx/frontend-platform/analytics';
     import { getLoggingService } from '@edx/frontend-platform/logging';
     import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
-    import { getConfigService } from '@edx/frontend-platform/config';
+    import { getConfigService } from '@edx/frontend-platform';
 
     configureAnalytics(SegmentAnalyticsService, {
       loggingService: getLoggingService(),
