@@ -41,6 +41,14 @@ const processAxiosError = (axiosErrorObject) => {
   const error = Object.create(axiosErrorObject);
   const { request, response, config } = error;
 
+  if (!config) {
+    error.customAttributes = {
+      ...error.customAttributes,
+      httpErrorType: 'unknown-api-request-error',
+    };
+    return error;
+  }
+
   const {
     url: httpErrorRequestUrl,
     method: httpErrorRequestMethod,
