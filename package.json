@@ -32,7 +32,7 @@
   "devDependencies": {
     "@commitlint/cli": "8.2.0",
     "@commitlint/config-angular": "8.2.0",
-    "@edx/frontend-build": "2.0.0",
+    "@edx/frontend-build": "2.0.4",
     "@edx/paragon": "7.1.5",
     "axios-mock-adapter": "1.17.0",
     "babel-plugin-rewire": "1.2.0",
