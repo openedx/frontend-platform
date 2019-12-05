@@ -127,8 +127,10 @@ export async function initialize({
     await handlers.ready();
     publish(APP_READY);
   } catch (error) {
-    // Initialization Error
-    await handlers.initError(error);
-    publish(APP_INIT_ERROR, error);
+    if (!error.isRedirecting) {
+      // Initialization Error
+      await handlers.initError(error);
+      publish(APP_INIT_ERROR, error);
+    }
   }
 }
