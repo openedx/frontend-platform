@@ -69,7 +69,7 @@ const processAxiosError = (axiosErrorObject) => {
       httpErrorRequestUrl,
       httpErrorRequestMethod,
     };
-    error.message = `HTTP Client Error: ${status} ${httpErrorRequestUrl} ${httpErrorResponseData}`;
+    error.message = `Axios Error (Response): ${status} ${httpErrorRequestUrl} ${httpErrorResponseData}`;
   } else if (request) {
     error.customAttributes = {
       ...error.customAttributes,
@@ -78,7 +78,9 @@ const processAxiosError = (axiosErrorObject) => {
       httpErrorRequestUrl,
       httpErrorRequestMethod,
     };
-    error.message = `HTTP Client Error: ${error.message} ${httpErrorRequestMethod} ${httpErrorRequestUrl}`;
+    // This case occurs most likely because of intermittent internet connection issues
+    // but it also, though less often, catches CORS or server configuration problems.
+    error.message = `Axios Error (Request): ${error.message} (possible local connectivity issue) ${httpErrorRequestMethod} ${httpErrorRequestUrl}`;
   } else {
     error.customAttributes = {
       ...error.customAttributes,
@@ -87,7 +89,7 @@ const processAxiosError = (axiosErrorObject) => {
       httpErrorRequestUrl,
       httpErrorRequestMethod,
     };
-    error.message = `HTTP Client Error: ${error.message} ${httpErrorRequestMethod} ${httpErrorRequestUrl}`;
+    error.message = `Axios Error (Config): ${error.message} ${httpErrorRequestMethod} ${httpErrorRequestUrl}`;
   }
 
   return error;
