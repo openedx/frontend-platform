@@ -2,7 +2,6 @@
 
 transifex_langs = "ar,fr,es_419,zh_CN"
 transifex_utils = ./node_modules/.bin/transifex-utils.js
-transifex_ensure_input_has_content = ./node_modules/.bin/transifex-ensure-input-has-content.js
 transifex_input = ./src/i18n/transifex_input.json
 tx_url1 = https://www.transifex.com/api/2/project/edx-platform/resource/$(transifex_resource)/translation/en/strings/
 tx_url2 = https://www.transifex.com/api/2/project/edx-platform/resource/$(transifex_resource)/source/
@@ -26,8 +25,6 @@ validate-no-uncommitted-package-lock-changes:
 
 # Push translations to Transifex.  Run make extract_translations first.
 push_translations:
-	# Prevent pushing empty input file to avoid deleting all translations
-	$(transifex_ensure_input_has_content) $(transifex_input)
 	# Pushing strings to Transifex...
 	tx push -s
 	# Fetching hashes from Transifex...
