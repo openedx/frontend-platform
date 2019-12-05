@@ -17,6 +17,7 @@
   },
   "bin": {
     "transifex-utils.js": "i18n/scripts/transifex-utils.js",
+    "transifex-ensure-input-has-content.js": "i18n/scripts/transifex-ensure-input-has-content.js",
     "transifex-Makefile": "i18n/scripts/Makefile"
   },
   "repository": {
