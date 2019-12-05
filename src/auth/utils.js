@@ -69,7 +69,7 @@ const processAxiosError = (axiosErrorObject) => {
       httpErrorRequestUrl,
       httpErrorRequestMethod,
     };
-    error.message = `HTTP Client Error: ${status} ${httpErrorRequestUrl} ${httpErrorResponseData}`;
+    error.message = `Axios Error (Response): ${status} ${httpErrorRequestUrl} ${httpErrorResponseData}`;
   } else if (request) {
     error.customAttributes = {
       ...error.customAttributes,
@@ -78,7 +78,7 @@ const processAxiosError = (axiosErrorObject) => {
       httpErrorRequestUrl,
       httpErrorRequestMethod,
     };
-    error.message = `HTTP Client Error: ${error.message} ${httpErrorRequestMethod} ${httpErrorRequestUrl}`;
+    error.message = `Axios Error (Request): ${error.message} ${httpErrorRequestMethod} ${httpErrorRequestUrl}`;
   } else {
     error.customAttributes = {
       ...error.customAttributes,
@@ -87,7 +87,7 @@ const processAxiosError = (axiosErrorObject) => {
       httpErrorRequestUrl,
       httpErrorRequestMethod,
     };
-    error.message = `HTTP Client Error: ${error.message} ${httpErrorRequestMethod} ${httpErrorRequestUrl}`;
+    error.message = `Axios Error (Config): ${error.message} ${httpErrorRequestMethod} ${httpErrorRequestUrl}`;
   }
 
   return error;

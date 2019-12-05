@@ -396,7 +396,7 @@ describe('authenticatedHttpClient usage', () => {
             expectNoCallToCsrfTokenFetch();
             expectLogFunctionToHaveBeenCalledWithMessage(
               mockLoggingService.logError.mock.calls[0],
-              '[frontend-auth] HTTP Client Error: 403 http://localhost:18000/login_refresh (empty response)',
+              '[frontend-auth] Axios Error (Response): 403 http://localhost:18000/login_refresh (empty response)',
               {
                 httpErrorRequestMethod: 'post',
                 httpErrorResponseData: '(empty response)',
@@ -424,7 +424,7 @@ describe('authenticatedHttpClient usage', () => {
             expectNoCallToCsrfTokenFetch();
             expectLogFunctionToHaveBeenCalledWithMessage(
               mockLoggingService.logError.mock.calls[0],
-              '[frontend-auth] HTTP Client Error: timeout of 0ms exceeded post http://localhost:18000/login_refresh',
+              '[frontend-auth] Axios Error (Config): timeout of 0ms exceeded post http://localhost:18000/login_refresh',
               {
                 httpErrorRequestMethod: 'post',
                 httpErrorMessage: 'timeout of 0ms exceeded',
@@ -580,7 +580,7 @@ describe('authenticatedHttpClient usage', () => {
       return client.get('/unauthorized').catch(() => {
         expectLogFunctionToHaveBeenCalledWithMessage(
           mockLoggingService.logInfo.mock.calls[0],
-          'HTTP Client Error: 401 /unauthorized (empty response)',
+          'Axios Error (Response): 401 /unauthorized (empty response)',
           {
             httpErrorRequestMethod: 'get',
             httpErrorStatus: 401,
@@ -599,7 +599,7 @@ describe('authenticatedHttpClient usage', () => {
       return client.get('/forbidden').catch(() => {
         expectLogFunctionToHaveBeenCalledWithMessage(
           mockLoggingService.logInfo.mock.calls[0],
-          'HTTP Client Error: 403 /forbidden (empty response)',
+          'Axios Error (Response): 403 /forbidden (empty response)',
           {
             httpErrorRequestMethod: 'get',
             httpErrorStatus: 403,
