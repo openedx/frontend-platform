@@ -78,6 +78,8 @@ const processAxiosError = (axiosErrorObject) => {
       httpErrorRequestUrl,
       httpErrorRequestMethod,
     };
+    // This case occurs most likely because of intermittent internet connection issues
+    // but it also, though less often, catches CORS or server configuration problems.
     error.message = `Axios Error (Request): ${error.message} (possible local connectivity issue) ${httpErrorRequestMethod} ${httpErrorRequestUrl}`;
   } else {
     error.customAttributes = {
