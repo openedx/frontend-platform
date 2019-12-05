@@ -5,4 +5,7 @@ const AppContext = React.createContext({
   config: {},
 });
 
+/**
+ *
+ */
 export default AppContext;

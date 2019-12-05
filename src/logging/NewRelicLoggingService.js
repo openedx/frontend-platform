@@ -1,9 +1,6 @@
 /**
- * Logs info and errors to NewRelic and console.
- *
- * Requires the NewRelic Browser JavaScript snippet.
+ * NewRelic will not log an error if it is too long.
  */
-// NewRelic will not log an error if it is too long.
 export const MAX_ERROR_LENGTH = 4000;
 
 function fixErrorLength(error) {
@@ -17,7 +14,22 @@ function fixErrorLength(error) {
   return error;
 }
 
+/**
+ * Logs info and errors to NewRelic and console.
+ *
+ * Requires the NewRelic Browser JavaScript snippet.
+ *
+ * @implements {LoggingService}
+ * @class NewRelicLoggingService
+ */
 export default class NewRelicLoggingService {
+  /**
+   *
+   *
+   * @param {*} message
+   * @param {*} [customAttributes={}]
+   * @memberof NewRelicLoggingService
+   */
   logInfo(message, customAttributes = {}) {
     /* istanbul ignore next */
     if (process.env.NODE_ENV === 'development') {
@@ -29,6 +41,13 @@ export default class NewRelicLoggingService {
     }
   }
 
+  /**
+   *
+   *
+   * @param {*} error
+   * @param {*} [customAttributes={}]
+   * @memberof NewRelicLoggingService
+   */
   logError(error, customAttributes = {}) {
     const errorCustomAttributes = error.customAttributes || {};
     let allCustomAttributes = { ...errorCustomAttributes, ...customAttributes };

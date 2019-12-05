@@ -7,15 +7,15 @@ import {
 /**
  * Adds authentication defaults and interceptors to an http client instance.
  *
- * @param {HttpClient} httpClient
- * @param {object} config
+ * @param {HttpClient} newHttpClient
+ * @param {Object} config
  * @param {string} [config.refreshAccessTokenEndpoint]
  * @param {string} [config.accessTokenCookieName]
  * @param {string} [config.csrfTokenApiPath]
  * @returns {HttpClient} Singleton. A configured axios http client
  */
-function addAuthenticationToHttpClient(_httpClient, config) {
-  const httpClient = Object.create(_httpClient);
+function addAuthenticationToHttpClient(newHttpClient, config) {
+  const httpClient = Object.create(newHttpClient);
   // Set withCredentials to true. Enables cross-site Access-Control requests
   // to be made using cookies, authorization headers or TLS client
   // certificates. More on MDN:

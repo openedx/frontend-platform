@@ -1,3 +1,6 @@
+/**
+ * @module Auth
+ */
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import { logFrontendAuthError } from './utils';
@@ -32,15 +35,15 @@ const configPropTypes = {
 /**
  * Configures an httpClient to make authenticated http requests.
  *
- * @param {object} config
- * @param {string} [config.appBaseUrl]
- * @param {string} [config.lmsBaseUrl]
- * @param {string} [config.loginUrl]
- * @param {string} [config.logoutUrl]
- * @param {object} [config.loggingService] requires logError and logInfo methods
- * @param {string} [config.refreshAccessTokenEndpoint]
- * @param {string} [config.accessTokenCookieName]
- * @param {string} [config.csrfTokenApiPath]
+ * @param {Object} incomingConfig
+ * @param {string} [incomingConfig.appBaseUrl]
+ * @param {string} [incomingConfig.lmsBaseUrl]
+ * @param {string} [incomingConfig.loginUrl]
+ * @param {string} [incomingConfig.logoutUrl]
+ * @param {Object} [incomingConfig.loggingService] requires logError and logInfo methods
+ * @param {string} [incomingConfig.refreshAccessTokenEndpoint]
+ * @param {string} [incomingConfig.accessTokenCookieName]
+ * @param {string} [incomingConfig.csrfTokenApiPath]
  */
 export const configure = (incomingConfig) => {
   ensureDefinedConfig(incomingConfig, 'AuthService');
@@ -50,6 +53,11 @@ export const configure = (incomingConfig) => {
   authenticatedHttpClient = addAuthenticationToHttpClient(axios.create(), config);
 };
 
+
+/**
+ *
+ * @returns {LoggingService}
+ */
 export const getLoggingService = () => config.loggingService;
 
 /**
@@ -88,7 +96,7 @@ export const getAuthenticatedUser = () => authenticatedUser;
 /**
  * Sets the authenticated user to the provided value.
  *
- * @param {UserData|null}
+ * @param {UserData} authUser
  * @emits AUTHENTICATED_USER_CHANGED
  */
 export const setAuthenticatedUser = (authUser) => {
@@ -125,7 +133,7 @@ export const fetchAuthenticatedUser = async () => {
  * Ensures a user is authenticated. It will redirect to login when not
  * authenticated.
  *
- * @param {string} route to return user after login when not authenticated.
+ * @param {string} [redirectUrl=config.appBaseUrl] to return user after login when not authenticated.
  * @returns {Promise<UserData>}
  */
 export const ensureAuthenticatedUser = async (redirectUrl = config.appBaseUrl) => {
@@ -192,7 +200,7 @@ export const hydrateAuthenticatedUser = async () => {
  *  apiClient.post('/path/to/endpoint', { data }, { isCsrfExempt: true });
  * ```
  *
- * @typedef HttpClient
+ * @name HttpClient
  * @property {function} get
  * @property {function} head
  * @property {function} options
@@ -203,9 +211,9 @@ export const hydrateAuthenticatedUser = async () => {
   */
 
 /**
- * @typedef UserData
+ * @name UserData
  * @property {string} userId
  * @property {string} username
- * @property {array} roles
- * @property {bool} administrator
+ * @property {Array} roles
+ * @property {boolean} administrator
  */

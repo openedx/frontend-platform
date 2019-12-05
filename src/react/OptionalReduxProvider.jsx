@@ -2,7 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
 
-const OptionalReduxProvider = ({ store, children }) => {
+/**
+ *
+ * @param {*} { store, children }
+ */
+export default function OptionalReduxProvider({ store, children }) {
   if (store === null) {
     return (
       <React.Fragment>{children}</React.Fragment>
@@ -14,7 +18,7 @@ const OptionalReduxProvider = ({ store, children }) => {
       {children}
     </Provider>
   );
-};
+}
 
 OptionalReduxProvider.propTypes = {
   store: PropTypes.object, // eslint-disable-line
@@ -24,5 +28,3 @@ OptionalReduxProvider.propTypes = {
 OptionalReduxProvider.defaultProps = {
   store: null,
 };
-
-export default OptionalReduxProvider;

@@ -27,6 +27,12 @@ export async function initError(error) {
   logError(error);
 }
 
+/**
+ *
+ *
+ * @param {boolean} requireUser
+ * @param {boolean} hydrateUser
+ */
 export async function auth(requireUser, hydrateUser) {
   if (requireUser) {
     await ensureAuthenticatedUser(global.location.href);
@@ -42,6 +48,11 @@ export async function auth(requireUser, hydrateUser) {
   }
 }
 
+
+/**
+ *
+ *
+ */
 export async function analytics() {
   const authenticatedUser = getAuthenticatedUser();
   if (authenticatedUser && authenticatedUser.userId) {
@@ -66,6 +77,16 @@ function applyOverrideHandlers(overrides) {
   };
 }
 
+/**
+ *
+ * @param {Object} [options]
+ * @param {*} [options.loggingService=NewRelicLoggingService]
+ * @param {*} [options.analyticsService=SegmentAnalyticsService]
+ * @param {*} [options.requireAuthenticatedUser=false]
+ * @param {*} [options.hydrateAuthenticatedUser=false]
+ * @param {*} [options.messages]
+ * @param {*} [options.handlers={}]
+ */
 export async function initialize({
   loggingService = NewRelicLoggingService,
   analyticsService = SegmentAnalyticsService,

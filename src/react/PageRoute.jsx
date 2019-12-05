@@ -1,8 +1,13 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import { Route } from 'react-router-dom';
 import { sendPageEvent } from '../analytics';
 
-// eslint-disable-next-line react/prop-types
+/**
+ *
+ *
+ * @param {*} { component: Component, ...props }
+ */
 export default function PageRoute({ component: Component, ...props }) {
   return (
     <Route

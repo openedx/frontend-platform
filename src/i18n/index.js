@@ -1,3 +1,7 @@
+/**
+ * @module: I18n
+ */
+
 export {
   intlShape,
   FormattedDate,

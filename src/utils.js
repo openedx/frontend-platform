@@ -1,7 +1,14 @@
 import camelCase from 'lodash.camelcase';
 import snakeCase from 'lodash.snakecase';
 
-export const modifyObjectKeys = (object, modify) => {
+/**
+ *
+ *
+ * @param {Object} object
+ * @param {function} modify
+ * @returns {Object}
+ */
+export function modifyObjectKeys(object, modify) {
   // If the passed in object is not an Object, return it.
   if (
     object === undefined ||
@@ -21,20 +28,49 @@ export const modifyObjectKeys = (object, modify) => {
     result[modify(key)] = modifyObjectKeys(value, modify);
   });
   return result;
-};
+}
 
-export const camelCaseObject = object => modifyObjectKeys(object, camelCase);
+/**
+ *
+ *
+ * @param {*} object
+ * @returns {Object}
+ */
+export function camelCaseObject(object) {
+  modifyObjectKeys(object, camelCase);
+}
 
-export const snakeCaseObject = object => modifyObjectKeys(object, snakeCase);
+/**
+ *
+ *
+ * @param {*} object
+ * @returns {Object}
+ */
+export function snakeCaseObject(object) {
+  modifyObjectKeys(object, snakeCase);
+}
 
-export const convertKeyNames = (object, nameMap) => {
+/**
+ *
+ *
+ * @param {*} object
+ * @param {*} nameMap
+ * @returns {Object}
+ */
+export function convertKeyNames(object, nameMap) {
   const transformer = key =>
     (nameMap[key] === undefined ? key : nameMap[key]);
 
   return modifyObjectKeys(object, transformer);
-};
+}
 
-export const getQueryParameters = (search = global.location.search) => {
+/**
+ *
+ *
+ * @param {string} [search=global.location.search]
+ * @returns {Object}
+ */
+export function getQueryParameters(search = global.location.search) {
   const keyValueFragments = search
     .slice(search.indexOf('?') + 1)
     .split('&')
@@ -46,7 +82,7 @@ export const getQueryParameters = (search = global.location.search) => {
     const value = keyValueFragment.slice(split + 1);
     return Object.assign(params, { [key]: decodeURIComponent(value) });
   }, {});
-};
+}
 
 /**
  * This function helps catch a certain class of misconfiguration in which configuration variables
@@ -56,7 +92,7 @@ export const getQueryParameters = (search = global.location.search) => {
  *
  * Keys that are intended to be falsy should be defined using null, 0, false, etc.
  *
- * @param {object} objectToTest
+ * @param {Object} object
  * @param {string} requester A human-readable identifier for the code which called this function.
  * Used when throwing errors to aid in debugging.
  *

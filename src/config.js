@@ -26,22 +26,43 @@ let config = {
   USER_INFO_COOKIE_NAME: process.env.USER_INFO_COOKIE_NAME,
 };
 
+/**
+ *
+ *
+ * @returns {Object}
+ */
 export function getConfig() {
   return config;
 }
 
+/**
+ *
+ *
+ * @param {Object} newConfig
+ */
 export function setConfig(newConfig) {
   ensureDefinedConfig(config, 'config');
   config = newConfig;
   publish(CONFIG_CHANGED);
 }
 
+/**
+ *
+ *
+ * @param {Object} newConfig
+ */
 export function mergeConfig(newConfig) {
   ensureDefinedConfig(newConfig, 'ProcessEnvConfigService');
   config = Object.assign(config, newConfig);
   publish(CONFIG_CHANGED);
 }
 
+/**
+ *
+ *
+ * @param {Array} keys
+ * @param {string} [requester='unspecified application code']
+ */
 export function ensureConfig(keys, requester = 'unspecified application code') {
   subscribe(APP_CONFIG_INITIALIZED, () => {
     keys.forEach((key) => {
