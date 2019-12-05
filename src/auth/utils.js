@@ -78,7 +78,7 @@ const processAxiosError = (axiosErrorObject) => {
       httpErrorRequestUrl,
       httpErrorRequestMethod,
     };
-    error.message = `Axios Error (Request): ${error.message} ${httpErrorRequestMethod} ${httpErrorRequestUrl}`;
+    error.message = `Axios Error (Request): ${error.message} (possible local connectivity issue) ${httpErrorRequestMethod} ${httpErrorRequestUrl}`;
   } else {
     error.customAttributes = {
       ...error.customAttributes,
