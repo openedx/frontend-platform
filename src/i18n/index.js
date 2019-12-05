@@ -34,7 +34,3 @@ export {
   getLanguageList,
   getLanguageMessages,
 } from './languages';
-
-export { setLocale } from './actions';
-export { default as reducer } from './reducers';
-export { localeSelector } from './selectors';
