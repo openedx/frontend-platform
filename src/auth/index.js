@@ -143,6 +143,10 @@ export const ensureAuthenticatedUser = async (redirectUrl = config.appBaseUrl) =
 
     // The user is not authenticated, send them to the login page.
     redirectToLogin(redirectUrl);
+
+    const unauthorizedError = new Error('Failed to ensure the user is authenticated');
+    unauthorizedError.isRedirecting = true;
+    throw unauthorizedError;
   }
 
   return getAuthenticatedUser();
