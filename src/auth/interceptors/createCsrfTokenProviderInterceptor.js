@@ -1,6 +1,6 @@
 import getCsrfToken from '../getCsrfToken';
 
-const csrfTokenProviderInterceptor = (options) => {
+const createCsrfTokenProviderInterceptor = (options) => {
   const { csrfTokenApiPath, shouldSkip } = options;
 
   // Creating the interceptor inside this closure to
@@ -36,4 +36,4 @@ const csrfTokenProviderInterceptor = (options) => {
   return interceptor;
 };
 
-export default csrfTokenProviderInterceptor;
+export default createCsrfTokenProviderInterceptor;
