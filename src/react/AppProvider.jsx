@@ -14,9 +14,10 @@ import { getLocale, getMessages, IntlProvider, LOCALE_CHANGED } from '../i18n';
 
 /**
  *
- *
+ * @param {Object} props
+ * @memberof React
  */
-function AppProvider({ store, children }) {
+export default function AppProvider({ store, children }) {
   const [config, setConfig] = useState(getConfig());
   const [authenticatedUser, setAuthenticatedUser] = useState(getAuthenticatedUser());
   const [locale, setLocale] = useState(getLocale());
@@ -58,5 +59,3 @@ AppProvider.propTypes = {
 AppProvider.defaultProps = {
   store: null,
 };
-
-export default AppProvider;

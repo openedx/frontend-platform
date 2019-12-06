@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
 
 /**
- *
- * @param {*} { store, children }
+ * @memberof React
+ * @param {Object} props
  */
 export default function OptionalReduxProvider({ store, children }) {
   if (store === null) {

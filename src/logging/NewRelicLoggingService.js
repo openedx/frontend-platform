@@ -1,5 +1,7 @@
 /**
  * NewRelic will not log an error if it is too long.
+ *
+ * @private
  */
 export const MAX_ERROR_LENGTH = 4000;
 
@@ -20,7 +22,6 @@ function fixErrorLength(error) {
  * Requires the NewRelic Browser JavaScript snippet.
  *
  * @implements {LoggingService}
- * @class NewRelicLoggingService
  */
 export default class NewRelicLoggingService {
   /**

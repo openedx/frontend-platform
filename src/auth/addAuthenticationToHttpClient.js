@@ -13,8 +13,9 @@ import {
  * @param {string} [config.accessTokenCookieName]
  * @param {string} [config.csrfTokenApiPath]
  * @returns {HttpClient} Singleton. A configured axios http client
+ * @private
  */
-function addAuthenticationToHttpClient(newHttpClient, config) {
+export default function addAuthenticationToHttpClient(newHttpClient, config) {
   const httpClient = Object.create(newHttpClient);
   // Set withCredentials to true. Enables cross-site Access-Control requests
   // to be made using cookies, authorization headers or TLS client
@@ -59,5 +60,3 @@ function addAuthenticationToHttpClient(newHttpClient, config) {
 
   return httpClient;
 }
-
-export default addAuthenticationToHttpClient;

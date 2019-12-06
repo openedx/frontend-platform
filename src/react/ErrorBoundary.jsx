@@ -9,7 +9,7 @@ import ErrorPage from './ErrorPage';
 /**
  * Error boundary component used to log caught errors and display the error page.
  *
- * @name ErrorBoundary
+ * @memberof React
  * @extends {Component}
  */
 export default class ErrorBoundary extends Component {

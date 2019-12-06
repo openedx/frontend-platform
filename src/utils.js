@@ -41,7 +41,7 @@ export function modifyObjectKeys(object, modify) {
  * @returns {Object}
  */
 export function camelCaseObject(object) {
-  modifyObjectKeys(object, camelCase);
+  return modifyObjectKeys(object, camelCase);
 }
 
 /**
@@ -51,7 +51,7 @@ export function camelCaseObject(object) {
  * @returns {Object}
  */
 export function snakeCaseObject(object) {
-  modifyObjectKeys(object, snakeCase);
+  return modifyObjectKeys(object, snakeCase);
 }
 
 /**

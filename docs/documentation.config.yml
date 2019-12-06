@@ -6,6 +6,8 @@ toc:
   - name: Platform APIs
     children:
       - Initialization
+      - Config
+      - PubSub
       - React
       - Utilities
   - name: Service Module APIs
@@ -14,3 +16,7 @@ toc:
       - Auth
       - Logging
       - I18n
+  - name: Service Implementations
+    children:
+      - NewRelicLoggingService
+      - SegmentAnalyticsService

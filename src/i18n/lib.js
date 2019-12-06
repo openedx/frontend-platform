@@ -65,15 +65,24 @@ let messages = null;
 /**
  *
  * @returns {LoggingService}
+ *
+ * @memberof I18n
  */
 export const getLoggingService = () => loggingService;
 
+/**
+ * @memberof I18n
+ */
 export const LOCALE_TOPIC = 'LOCALE';
+
+/**
+ * @memberof I18n
+ */
 export const LOCALE_CHANGED = `${LOCALE_TOPIC}.CHANGED`;
 
 /**
  *
- *
+ * @memberof I18n
  * @returns {Cookies}
  */
 export function getCookies() {
@@ -103,6 +112,7 @@ addLocaleData([
  * may be 2 or more characters.
  *
  * @param {string} code
+ * @memberof I18n
  */
 export const getPrimaryLanguageSubtag = code => code.split('-')[0];
 
@@ -116,6 +126,7 @@ export const getPrimaryLanguageSubtag = code => code.split('-')[0];
  *
  * @param {string} locale
  * @returns {string}
+ * @memberof I18n
  */
 export const findSupportedLocale = (locale) => {
   if (messages[locale] !== undefined) {
@@ -137,6 +148,7 @@ export const findSupportedLocale = (locale) => {
  * @param {string} locale If a locale is provided, returns the closest supported locale. Optional.
  * @throws An error if i18n has not yet been configured.
  * @returns {string}
+ * @memberof I18n
  */
 export const getLocale = (locale) => {
   if (messages === null) {
@@ -164,6 +176,7 @@ export const getLocale = (locale) => {
  * provided.
  *
  * @param {string} [locale=getLocale()]
+ * @memberof I18n
  */
 export const getMessages = (locale = getLocale()) => messages[locale];
 
@@ -171,12 +184,15 @@ export const getMessages = (locale = getLocale()) => messages[locale];
  * Determines if the provided locale is a right-to-left language.
  *
  * @param {string} locale
+ * @memberof I18n
  */
 export const isRtl = locale => rtlLocales.includes(locale);
 
 /**
  * Handles applying the RTL stylesheet and "dir=rtl" attribute to the html tag if the current locale
  * is a RTL language.
+ *
+ * @memberof I18n
  */
 export const handleRtl = () => {
   if (isRtl(getLocale())) {
@@ -219,6 +235,7 @@ const optionsShape = {
  *
  * @param {Array} [messagesArray=[]]
  * @returns {Object}
+ * @memberof I18n
  */
 export function mergeMessages(messagesArray = []) {
   return Array.isArray(messagesArray) ? merge({}, ...messagesArray) : {};
@@ -234,6 +251,7 @@ export function mergeMessages(messagesArray = []) {
  * @param {LoggingService} options.loggingService
  * @param {Object} options.config
  * @param {Object} options.messages
+ * @memberof I18n
  */
 export const configure = (options) => {
   PropTypes.checkPropTypes(optionsShape, options, 'property', 'i18n');

@@ -5,6 +5,8 @@ import { getLoggingService } from './lib';
 /**
  * This function wraps react-intl's injectIntl function in order to add error logging to the intl
  * property's formatMessage function.
+ *
+ * @memberof I18n
  */
 const injectIntlWithShim = (WrappedComponent) => {
   class ShimmedIntlComponent extends React.Component {

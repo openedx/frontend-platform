@@ -5,8 +5,8 @@ import { sendPageEvent } from '../analytics';
 
 /**
  *
- *
- * @param {*} { component: Component, ...props }
+ * @memberof React
+ * @param {Object} props
  */
 export default function PageRoute({ component: Component, ...props }) {
   return (

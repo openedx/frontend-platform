@@ -4,9 +4,9 @@ import { subscribe, unsubscribe } from '../pubSub';
 
 /**
  *
- *
- * @param {*} type
- * @param {*} callback
+ * @memberof React
+ * @param {string} type
+ * @param {function} callback
  */
 export const useAppEvent = (type, callback) => {
   useEffect(() => {

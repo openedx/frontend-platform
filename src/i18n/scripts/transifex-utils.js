@@ -1,15 +1,19 @@
 #!/usr/bin/env node
 
-/**
- * See the Makefile for how the required hash file is downloaded from Transifex.
- */
-
 const fs = require('fs');
 const glob = require('glob');
 const path = require('path');
 
-// Expected input: a directory, possibly containing subdirectories, with .json files.  Each .json
-// file is an array of translation triplets (id, description, defaultMessage).
+/*
+ * See the Makefile for how the required hash file is downloaded from Transifex.
+ */
+
+/*
+ * Expected input: a directory, possibly containing subdirectories, with .json files.  Each .json
+ * file is an array of translation triplets (id, description, defaultMessage).
+ *
+ *
+ */
 function gatherJson(dir) {
   const ret = [];
   const files = glob.sync(`${dir}/**/*.json`);

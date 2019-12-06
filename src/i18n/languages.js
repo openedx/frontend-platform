@@ -1,4 +1,8 @@
-/**
+import LANGUAGES, { langs as languageLangs } from '@cospired/i18n-iso-languages';
+
+import { getPrimaryLanguageSubtag } from './lib';
+
+/*
  * LANGUAGE LISTS
  *
  * Lists of language names localized in supported languages.
@@ -8,10 +12,6 @@
  * for reference. That's because they're not implemented in this library.  If you read this and it's
  * been a while, go check and see if that's changed!
  */
-
-import LANGUAGES, { langs as languageLangs } from '@cospired/i18n-iso-languages';
-
-import { getPrimaryLanguageSubtag } from './lib';
 
 // LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/ar.json'));
 LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/en.json'));
@@ -30,6 +30,8 @@ LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/pt.json'));
 
 /**
  * Provides a lookup table of language IDs to language names for the current locale.
+ *
+ * @memberof I18n
  */
 export const getLanguageMessages = (locale) => {
   const primaryLanguageSubtag = getPrimaryLanguageSubtag(locale);
@@ -48,6 +50,8 @@ export const getLanguageMessages = (locale) => {
  *
  * TODO: ARCH-878: The list should be sorted alphabetically in the current locale.
  * This is useful for populating dropdowns.
+ *
+ * @memberof I18n
  */
 export const getLanguageList = (locale) => {
   const languageMessages = getLanguageMessages(locale);

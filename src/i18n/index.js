@@ -1,5 +1,9 @@
 /**
+ * The i18n module relies on react-intl and re-exports all of that package's exports.
+ *
  * @module I18n
+ *
+ *
  */
 
 export {

@@ -3,7 +3,7 @@ import { snakeCaseObject } from '../utils';
 
 /**
  *
- *
+ * @implements {AnalyticsService}
  */
 export default class SegmentAnalyticsService {
   static hasIdentifyBeenCalled = false;

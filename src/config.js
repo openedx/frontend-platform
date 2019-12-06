@@ -1,3 +1,6 @@
+/**
+ * @module Config
+ */
 import { APP_CONFIG_INITIALIZED } from './initialize';
 import { publish, subscribe } from './pubSub';
 import { ensureDefinedConfig } from './utils';
@@ -28,7 +31,7 @@ let config = {
 
 /**
  *
- *
+ * @memberof Config
  * @returns {Object}
  */
 export function getConfig() {
@@ -37,7 +40,7 @@ export function getConfig() {
 
 /**
  *
- *
+ * @memberof Config
  * @param {Object} newConfig
  */
 export function setConfig(newConfig) {
@@ -48,7 +51,7 @@ export function setConfig(newConfig) {
 
 /**
  *
- *
+ * @memberof Config
  * @param {Object} newConfig
  */
 export function mergeConfig(newConfig) {
@@ -59,7 +62,7 @@ export function mergeConfig(newConfig) {
 
 /**
  *
- *
+ * @memberof Config
  * @param {Array} keys
  * @param {string} [requester='unspecified application code']
  */

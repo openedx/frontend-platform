@@ -1,14 +1,14 @@
-/**
- *  COUNTRY LISTS
- *
- *  Lists of country names localized in supported languages.
- *
- * TODO: When we start dynamically loading translations only for the current locale, change this.
- * */
-
 import COUNTRIES, { langs as countryLangs } from 'i18n-iso-countries';
 
 import { getPrimaryLanguageSubtag } from './lib';
+
+/*
+ * COUNTRY LISTS
+ *
+ * Lists of country names localized in supported languages.
+ *
+ * TODO: When we start dynamically loading translations only for the current locale, change this.
+ */
 
 COUNTRIES.registerLocale(require('i18n-iso-countries/langs/ar.json'));
 COUNTRIES.registerLocale(require('i18n-iso-countries/langs/en.json'));
@@ -27,6 +27,8 @@ COUNTRIES.registerLocale(require('i18n-iso-countries/langs/uk.json'));
 
 /**
  * Provides a lookup table of country IDs to country names for the current locale.
+ *
+ * @memberof I18n
  */
 export const getCountryMessages = (locale) => {
   const primaryLanguageSubtag = getPrimaryLanguageSubtag(locale);
@@ -45,6 +47,8 @@ export const getCountryMessages = (locale) => {
  *
  * TODO: ARCH-878: The list should be sorted alphabetically in the current locale.
  * This is useful for populating dropdowns.
+ *
+ * @memberof I18n
  */
 export const getCountryList = (locale) => {
   const countryMessages = getCountryMessages(locale);

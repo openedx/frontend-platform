@@ -8,7 +8,8 @@ import PageRoute from './PageRoute';
 /**
  * Redirects to the login page when the route becomes active and the user is not authenticated.
  *
- * @param {*} props
+ * @memberof React
+ * @param {Object} props
  */
 export default function AuthenticatedPageRoute(props) {
   const { authenticatedUser } = useContext(AppContext);
