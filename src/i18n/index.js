@@ -1,5 +1,5 @@
 /**
- * @module: I18n
+ * @module I18n
  */
 
 export {

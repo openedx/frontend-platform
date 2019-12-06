@@ -1,7 +1,3 @@
-/**
- * @module I18n
- */
-
 import PropTypes from 'prop-types';
 import { addLocaleData } from 'react-intl';
 import arLocale from 'react-intl/locale-data/ar';

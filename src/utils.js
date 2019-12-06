@@ -1,9 +1,13 @@
+/**
+ * @module Utilities
+ */
+
 import camelCase from 'lodash.camelcase';
 import snakeCase from 'lodash.snakecase';
 
 /**
  *
- *
+ * @memberof Utilities
  * @param {Object} object
  * @param {function} modify
  * @returns {Object}
@@ -32,7 +36,7 @@ export function modifyObjectKeys(object, modify) {
 
 /**
  *
- *
+ * @memberof Utilities
  * @param {*} object
  * @returns {Object}
  */
@@ -42,7 +46,7 @@ export function camelCaseObject(object) {
 
 /**
  *
- *
+ * @memberof Utilities
  * @param {*} object
  * @returns {Object}
  */
@@ -52,7 +56,7 @@ export function snakeCaseObject(object) {
 
 /**
  *
- *
+ * @memberof Utilities
  * @param {*} object
  * @param {*} nameMap
  * @returns {Object}
@@ -66,7 +70,7 @@ export function convertKeyNames(object, nameMap) {
 
 /**
  *
- *
+ * @memberof Utilities
  * @param {string} [search=global.location.search]
  * @returns {Object}
  */
@@ -92,6 +96,7 @@ export function getQueryParameters(search = global.location.search) {
  *
  * Keys that are intended to be falsy should be defined using null, 0, false, etc.
  *
+ * @memberof Utilities
  * @param {Object} object
  * @param {string} requester A human-readable identifier for the code which called this function.
  * Used when throwing errors to aid in debugging.

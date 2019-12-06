@@ -21,13 +21,7 @@ export function configure(LoggingService, options) {
   return service;
 }
 
-/**
- * Logs a message to the 'info' log level.
- *
- * @memberof Logging
- * @param {string} message
- * @param {Object} [customAttributes={}]
- */
+
 export function logInfo(message, customAttributes) {
   return service.logInfo(message, customAttributes);
 }
