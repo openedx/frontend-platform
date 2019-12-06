@@ -2,8 +2,8 @@
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 import MockAdapter from 'axios-mock-adapter';
-import getJwtToken from '../getJwtToken';
-import getCsrfToken from '../getCsrfToken';
+import { httpClient as accessTokenAxios } from '../getJwtToken';
+import { httpClient as csrfTokensAxios, clearCsrfTokenCache } from '../getCsrfToken';
 import {
   configure,
   getAuthenticatedHttpClient,
@@ -98,12 +98,11 @@ const mockCookies = new Cookies();
 
 // This sets the mock adapter on the default instance
 const axiosMock = new MockAdapter(axios);
-const accessTokenAxios = axios.create();
 const accessTokenAxiosMock = new MockAdapter(accessTokenAxios);
-getJwtToken.__Rewire__('httpClient', accessTokenAxios); // eslint-disable-line no-underscore-dangle
-const csrfTokensAxios = axios.create();
 const csrfTokensAxiosMock = new MockAdapter(csrfTokensAxios);
-getCsrfToken.__Rewire__('httpClient', csrfTokensAxios); // eslint-disable-line no-underscore-dangle
+axios.defaults.maxRetries = 0;
+csrfTokensAxios.defaults.maxRetries = 0;
+accessTokenAxios.defaults.maxRetries = 0;
 
 
 configure(authConfig);
@@ -187,7 +186,7 @@ beforeEach(() => {
   window.location.assign.mockReset();
   mockLoggingService.logInfo.mockReset();
   mockLoggingService.logError.mockReset();
-  getCsrfToken.__Rewire__('csrfTokenCache', {}); // eslint-disable-line no-underscore-dangle
+  clearCsrfTokenCache();
   axiosMock.onGet('/unauthorized').reply(401);
   axiosMock.onGet('/forbidden').reply(403);
   axiosMock.onAny().reply(200);
@@ -416,24 +415,39 @@ describe('authenticatedHttpClient usage', () => {
         accessTokenAxiosMock.onPost().timeout();
       });
 
-      ['get', 'options', 'post', 'put', 'patch', 'delete'].forEach((method) => {
-        it(`${method.toUpperCase()}: throws an error and calls logError`, () => {
-          expect.hasAssertions();
-          return client[method](mockApiEndpointPath).catch(() => {
-            expectSingleCallToJwtTokenRefresh();
-            expectNoCallToCsrfTokenFetch();
-            expectLogFunctionToHaveBeenCalledWithMessage(
-              mockLoggingService.logError.mock.calls[0],
-              '[frontend-auth] Axios Error (Config): timeout of 0ms exceeded post http://localhost:18000/login_refresh',
-              {
-                httpErrorRequestMethod: 'post',
-                httpErrorMessage: 'timeout of 0ms exceeded',
-                httpErrorType: 'api-request-config-error',
-                httpErrorRequestUrl: 'http://localhost:18000/login_refresh',
-              },
-            );
-          });
+      it('throws an error and calls logError', async () => {
+        expect.hasAssertions();
+        try {
+          await client.get(mockApiEndpointPath);
+        } catch (e) {
+          expectSingleCallToJwtTokenRefresh();
+          expectNoCallToCsrfTokenFetch();
+          expectLogFunctionToHaveBeenCalledWithMessage(
+            mockLoggingService.logError.mock.calls[0],
+            '[frontend-auth] Axios Error (Config): timeout of 0ms exceeded post http://localhost:18000/login_refresh',
+            {
+              httpErrorRequestMethod: 'post',
+              httpErrorMessage: 'timeout of 0ms exceeded',
+              httpErrorType: 'api-request-config-error',
+              httpErrorRequestUrl: 'http://localhost:18000/login_refresh',
+            },
+          );
+        }
+      });
+
+      it('retries the refresh request and succeeds', async () => {
+        accessTokenAxiosMock.reset();
+        accessTokenAxiosMock.onPost().timeoutOnce();
+        accessTokenAxiosMock.onPost().replyOnce(() => {
+          setJwtCookieTo(jwtTokens.valid.encoded);
+          return [200];
         });
+        accessTokenAxios.defaults.maxRetries = 1;
+
+        await client.get(mockApiEndpointPath);
+        expect(accessTokenAxiosMock.history.post.length).toBe(2);
+        expectNoCallToCsrfTokenFetch();
+        accessTokenAxios.defaults.maxRetries = 0;
       });
     });
 

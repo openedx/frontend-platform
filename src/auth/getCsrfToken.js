@@ -9,7 +9,7 @@ const httpClient = axios.create();
 httpClient.defaults.withCredentials = true;
 httpClient.defaults.headers.common['USE-JWT-COOKIE'] = true;
 
-const csrfTokenCache = {};
+let csrfTokenCache = {};
 const csrfTokenRequestPromises = {};
 
 const getCsrfToken = async (url, csrfTokenApiPath) => {
@@ -46,4 +46,9 @@ const getCsrfToken = async (url, csrfTokenApiPath) => {
   return csrfTokenRequestPromises[domain];
 };
 
+const clearCsrfTokenCache = () => {
+  csrfTokenCache = {};
+};
+
 export default getCsrfToken;
+export { httpClient, clearCsrfTokenCache };
