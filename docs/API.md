@@ -7,10 +7,10 @@
     -   [Initialization][2]
         -   [analytics][3]
         -   [auth][4]
-        -   [history][5]
-        -   [initError][6]
-        -   [initialize][7]
-    -   [Config][8]
+        -   [initError][5]
+        -   [initialize][6]
+    -   [Config][7]
+        -   [ConfigDocument][8]
         -   [ensureConfig][9]
         -   [getConfig][10]
         -   [mergeConfig][11]
@@ -34,70 +34,71 @@
         -   [convertKeyNames][29]
         -   [ensureDefinedConfig][30]
         -   [getQueryParameters][31]
-        -   [modifyObjectKeys][32]
-        -   [snakeCaseObject][33]
--   [Service Module APIs][34]
-    -   [Analytics][35]
-        -   [configure][36]
-        -   [getAnalyticsService][37]
-        -   [identifyAnonymousUser][38]
-        -   [identifyAuthenticatedUser][39]
-        -   [resetAnalyticsService][40]
-        -   [sendPageEvent][41]
-        -   [sendTrackEvent][42]
-        -   [sendTrackingLogEvent][43]
-    -   [Auth][44]
-        -   [AUTHENTICATED_USER_CHANGED][45]
-        -   [AUTHENTICATED_USER_TOPIC][46]
-        -   [configure][47]
-        -   [ensureAuthenticatedUser][48]
-        -   [fetchAuthenticatedUser][49]
-        -   [getAuthenticatedHttpClient][50]
-        -   [getAuthenticatedUser][51]
-        -   [getLoggingService][52]
-        -   [HttpClient][53]
-        -   [hydrateAuthenticatedUser][54]
-        -   [redirectToLogin][55]
-        -   [redirectToLogout][56]
-        -   [setAuthenticatedUser][57]
-        -   [UserData][58]
-    -   [Logging][59]
-        -   [configure][60]
-        -   [getLoggingService][61]
-        -   [logError][62]
-        -   [LoggingService][63]
-        -   [logInfo][64]
-        -   [resetLoggingService][65]
-    -   [I18n][66]
-        -   [configure][67]
-        -   [findSupportedLocale][68]
-        -   [getCookies][69]
-        -   [getCountryList][70]
-        -   [getCountryMessages][71]
-        -   [getLanguageList][72]
-        -   [getLanguageMessages][73]
-        -   [getLocale][74]
-        -   [getLoggingService][75]
-        -   [getMessages][76]
-        -   [getPrimaryLanguageSubtag][77]
-        -   [handleRtl][78]
-        -   [injectIntlWithShim][79]
-        -   [isRtl][80]
-        -   [LOCALE_CHANGED][81]
-        -   [LOCALE_TOPIC][82]
-        -   [mergeMessages][83]
--   [Service Implementations][84]
-    -   [NewRelicLoggingService][85]
-        -   [logError][86]
-        -   [logInfo][87]
-    -   [SegmentAnalyticsService][88]
-        -   [Parameters][89]
-        -   [checkIdentifyCalled][90]
-        -   [identifyAnonymousUser][91]
-        -   [identifyAuthenticatedUser][92]
-        -   [sendPageEvent][93]
-        -   [sendTrackEvent][94]
-        -   [sendTrackingLogEvent][95]
+        -   [history][32]
+        -   [modifyObjectKeys][33]
+        -   [snakeCaseObject][34]
+-   [Service Module APIs][35]
+    -   [Analytics][36]
+        -   [configure][37]
+        -   [getAnalyticsService][38]
+        -   [identifyAnonymousUser][39]
+        -   [identifyAuthenticatedUser][40]
+        -   [resetAnalyticsService][41]
+        -   [sendPageEvent][42]
+        -   [sendTrackEvent][43]
+        -   [sendTrackingLogEvent][44]
+    -   [Auth][45]
+        -   [AUTHENTICATED_USER_CHANGED][46]
+        -   [AUTHENTICATED_USER_TOPIC][47]
+        -   [configure][48]
+        -   [ensureAuthenticatedUser][49]
+        -   [fetchAuthenticatedUser][50]
+        -   [getAuthenticatedHttpClient][51]
+        -   [getAuthenticatedUser][52]
+        -   [getLoggingService][53]
+        -   [HttpClient][54]
+        -   [hydrateAuthenticatedUser][55]
+        -   [redirectToLogin][56]
+        -   [redirectToLogout][57]
+        -   [setAuthenticatedUser][58]
+        -   [UserData][59]
+    -   [Logging][60]
+        -   [configure][61]
+        -   [getLoggingService][62]
+        -   [logError][63]
+        -   [LoggingService][64]
+        -   [logInfo][65]
+        -   [resetLoggingService][66]
+    -   [I18n][67]
+        -   [configure][68]
+        -   [findSupportedLocale][69]
+        -   [getCookies][70]
+        -   [getCountryList][71]
+        -   [getCountryMessages][72]
+        -   [getLanguageList][73]
+        -   [getLanguageMessages][74]
+        -   [getLocale][75]
+        -   [getLoggingService][76]
+        -   [getMessages][77]
+        -   [getPrimaryLanguageSubtag][78]
+        -   [handleRtl][79]
+        -   [injectIntlWithShim][80]
+        -   [isRtl][81]
+        -   [LOCALE_CHANGED][82]
+        -   [LOCALE_TOPIC][83]
+        -   [mergeMessages][84]
+-   [Service Implementations][85]
+    -   [NewRelicLoggingService][86]
+        -   [logError][87]
+        -   [logInfo][88]
+    -   [SegmentAnalyticsService][89]
+        -   [Parameters][90]
+        -   [checkIdentifyCalled][91]
+        -   [identifyAnonymousUser][92]
+        -   [identifyAuthenticatedUser][93]
+        -   [sendPageEvent][94]
+        -   [sendTrackEvent][95]
+        -   [sendTrackingLogEvent][96]
 
 ## Platform APIs
 
@@ -106,28 +107,38 @@
 
 ### Initialization
 
-[src/initialize.js:5-5][96]
+[src/initialize.js:7-7][97]
+
+The initialization module provides a function for managing an application's initialization lifecycle.  It also provides constants and default handler implementations.
 
 #### analytics
 
-[src/initialize.js:68-75][97]
+[src/initialize.js:80-87][98]
+
+The default handler for the initialization lifecycle's `analytics` phase.
+
+The handler is responsible for identifying authenticated and anonymous users with the analytics service.  This is a pre-requisite for sending analytics events, thus, we do it during the initialization sequence so that analytics is ready once the application's UI code starts to load.
 
 #### auth
 
-[src/initialize.js:48-61][98]
+[src/initialize.js:57-70][99]
+
+The default handler for the initialization lifecycle's `auth` phase.
+
+The handler has several responsibilities:
+
+-   Determining the user's authentication state (authenticated or anonymous)
+-   Optionally redirecting to login if the application requires an authenticated user.
+-   Optionally loading additional user information via the application's user account data endpoint.
 
 ##### Parameters
 
--   `requireUser` **[boolean][99]** 
--   `hydrateUser` **[boolean][99]** 
-
-#### history
-
-[src/initialize.js:31-31][100]
+-   `requireUser` **[boolean][100]** Whether or not we should redirect to login if a user is not authenticated.
+-   `hydrateUser` **[boolean][100]** Whether or not we should fetch additional user account data.
 
 #### initError
 
-[src/initialize.js:38-40][101]
+[src/initialize.js:41-43][101]
 
 ##### Parameters
 
@@ -135,40 +146,100 @@
 
 #### initialize
 
-[src/initialize.js:103-168][102]
+[src/initialize.js:117-184][102]
+
+Invokes the application initialization sequence.
 
 ##### Parameters
 
 -   `options` **[Object][103]?** 
-    -   `options.loggingService` **any**  (optional, default `NewRelicLoggingService`)
-    -   `options.analyticsService` **any**  (optional, default `SegmentAnalyticsService`)
-    -   `options.requireAuthenticatedUser` **any**  (optional, default `false`)
-    -   `options.hydrateAuthenticatedUser` **any**  (optional, default `false`)
-    -   `options.messages` **any?** 
-    -   `options.handlers` **any**  (optional, default `{}`)
+    -   `options.loggingService` **any** The `LoggingService` implementation to use. (optional, default `NewRelicLoggingService`)
+    -   `options.analyticsService` **any** The `AnalyticsService` implementation to use. (optional, default `SegmentAnalyticsService`)
+    -   `options.requireAuthenticatedUser` **any** If true, turns on automatic login redirection for unauthenticated users.  Defaults to false, meaning that by default the application will allow anonymous/unauthenticated sessions. (optional, default `false`)
+    -   `options.hydrateAuthenticatedUser` **any** If true, makes an API call to the user account endpoint (`${App.config.LMS_BASE_URL}/api/user/v1/accounts/${username}`) to fetch detailed account information for the authenticated user. This data is merged into the return value of `getAuthenticatedUser`, overriding any duplicate keys that already exist. Defaults to false, meaning that no additional account information will be loaded. (optional, default `false`)
+    -   `options.messages` **any?** A i18n-compatible messages object, or an array of such objects. If an array is provided, duplicate keys are resolved with the last-one-in winning.
+    -   `options.handlers` **any** An optional object of handlers which can be used to replace the default behavior of any part of the startup sequence. It can also be used to add additional  initialization behavior before or after the rest of the sequence. (optional, default `{}`)
 
 ### Config
 
-[src/config.js:4-4][104]
+[src/config.js:6-6][104]
+
+The configuration module provides utilities for working with an application's configuration document (ConfigDocument).  This module uses `process.env` to import configuration variables from the command-line build process.  It can be dynamically extended at run-time using a `config` initialization handler.  Please see the Initialization documentation for more information on handlers and initialization phases.
+
+#### ConfigDocument
+
+[src/config.js:95-103][105]
+
+An object describing the current application configuration.
+
+The implementation loads this document via `process.env` variables.
+
+    {
+      BASE_URL: process.env.BASE_URL,
+      // ... other vars
+    }
+
+When using Webpack (i.e., normal usage), the build process is responsible for supplying these variables via command-line environment variables.  That means they must be supplied at build time.
+
+##### Properties
+
+-   `ACCESS_TOKEN_COOKIE_NAME` **[string][106]** 
+-   `BASE_URL` **[string][106]** The URL of the current application.
+-   `CREDENTIALS_BASE_URL` **[string][106]** 
+-   `CSRF_TOKEN_API_PATH` **[string][106]** 
+-   `ECOMMERCE_BASE_URL` **[string][106]** 
+-   `ENVIRONMENT` **[string][106]** This is one of: development, production, or test.
+-   `LANGUAGE_PREFERENCE_COOKIE_NAME` **[string][106]** 
+-   `LMS_BASE_URL` **[string][106]** 
+-   `LOGIN_URL` **[string][106]** 
+-   `LOGOUT_URL` **[string][106]** 
+-   `MARKETING_SITE_BASE_URL` **[string][106]** 
+-   `ORDER_HISTORY_URL` **[string][106]** 
+-   `REFRESH_ACCESS_TOKEN_ENDPOINT` **[string][106]** 
+-   `SECURE_COOKIES` **[boolean][100]** 
+-   `SEGMENT_KEY` **[string][106]** 
+-   `SITE_NAME` **[string][106]** 
+-   `USER_INFO_COOKIE_NAME` **[string][106]** 
 
 #### ensureConfig
 
-[src/config.js:69-77][105]
+[src/config.js:95-103][105]
+
+A method allowing application code to indicate that particular ConfigDocument keys are required for them to function.  This is useful for diagnosing development/deployment issues, primarily, by surfacing misconfigurations early.  For instance, if the build process fails to supply an environment variable on the command-line, it's possible that one of the `process.env` variables will be undefined.  Should be used in conjunction with `mergeConfig` for custom `ConfigDocument` properties.  Requester is for informational/error reporting purposes only.
+
+    ensureConfig(['LMS_BASE_URL', 'LOGIN_URL'], 'MySpecialComponent');
+
+    // Will throw an error with:
+    // "App configuration error: LOGIN_URL is required by MySpecialComponent."
+    // if LOGIN_URL is undefined, for example.
+
+_NOTE_: `ensureConfig` waits until `APP_CONFIG_INITIALIZED` is published to verify the existence of the specified properties.  This means that this function is compatible with custom `config` phase handlers responsible for loading additional configuration data in the initialization sequence.
 
 ##### Parameters
 
--   `keys` **[Array][106]** 
--   `requester` **[string][107]**  (optional, default `'unspecified application code'`)
+-   `keys` **[Array][107]** 
+-   `requester` **[string][106]**  (optional, default `'unspecified application code'`)
 
 #### getConfig
 
-[src/config.js:37-39][108]
+[src/config.js:40-42][108]
 
-Returns **[Object][103]** 
+Getter for the application configuration document.  This is synchronous and merely returns a reference to an existing object, and is thus safe to call as often as desired.  The document should have the following keys at a minimum:
+
+Returns **ConfigDocument** 
 
 #### mergeConfig
 
-[src/config.js:57-61][109]
+[src/config.js:72-76][109]
+
+Merges additional configuration values into the ConfigDocument returned by `getConfig`.  Will override any values that exist with the same keys.
+
+    mergeConfig({
+      NEW_KEY: 'new value',
+      OTHER_NEW_KEY: 'other new value',
+    });
+
+    If any of the key values are `undefined`, an error will be thrown.
 
 ##### Parameters
 
@@ -176,55 +247,65 @@ Returns **[Object][103]**
 
 #### setConfig
 
-[src/config.js:46-50][110]
+[src/config.js:52-56][110]
+
+Replaces the existing ConfigDocument.  This is not commonly used, but can be helpful for tests.
+
+The supplied config document will be tested with `ensureDefinedConfig` to ensure it does not have any `undefined` keys.
 
 ##### Parameters
 
--   `newConfig` **[Object][103]** 
+-   `newConfig` **ConfigDocument** 
 
 ### PubSub
 
-[src/pubSub.js:5-5][111]
+[src/pubSub.js:11-11][111]
+
+The PubSub module is a thin wrapper around the base functionality of [PubSubJS][112].  For the sake of simplicity and not relying too heavily on implementation-specific features, it maintains a fairly simple API (subscribe, unsubscribe, and publish).
+
+Publish/Subscribe events should be used mindfully, especially in relation to application UI frameworks like React.  Given React's unidirectional data flow and prop/state management capabilities, using a pub/sub mechanism is at odds with that framework's best practices.
+
+That said, we use pub/sub in our application initialization sequence to allow applications to hook into the initialization lifecycle, and we also use them to publish when the application state has changed, i.e., when the config document or user's authentication state have changed.
 
 #### publish
 
-[src/pubSub.js:34-36][112]
+[src/pubSub.js:40-42][113]
 
 ##### Parameters
 
--   `type` **any** 
--   `data` **any** 
+-   `type` **[string][106]** 
+-   `data` **[Object][103]** 
 
 #### subscribe
 
-[src/pubSub.js:15-17][113]
+[src/pubSub.js:21-23][114]
 
 ##### Parameters
 
--   `type` **any** 
--   `callback` **any** 
+-   `type` **[string][106]** 
+-   `callback` **[function][115]** 
 
-Returns **[string][107]** A subscription token that can be passed to unsubscribe
+Returns **[string][106]** A subscription token that can be passed to `unsubscribe`
 
 #### unsubscribe
 
-[src/pubSub.js:24-26][114]
+[src/pubSub.js:30-32][116]
 
 ##### Parameters
 
--   `token` **any** 
+-   `token` **[string][106]** A subscription token provided by `subscribe`
 
 ### React
 
-[src/react/index.js:5-5][115]
+[src/react/index.js:5-5][117]
 
 #### AppContext
 
-[src/react/AppContext.jsx:6-9][116]
+[src/react/AppContext.jsx:6-9][118]
 
 #### AppProvider
 
-[src/react/AppProvider.jsx:20-52][117]
+[src/react/AppProvider.jsx:20-52][119]
 
 ##### Parameters
 
@@ -234,7 +315,7 @@ Returns **[string][107]** A subscription token that can be passed to unsubscribe
 
 #### AuthenticatedPageRoute
 
-[src/react/AuthenticatedPageRoute.jsx:14-25][118]
+[src/react/AuthenticatedPageRoute.jsx:14-25][120]
 
 Redirects to the login page when the route becomes active and the user is not authenticated.
 
@@ -244,7 +325,7 @@ Redirects to the login page when the route becomes active and the user is not au
 
 #### ErrorBoundary
 
-[src/react/ErrorBoundary.jsx:15-37][119]
+[src/react/ErrorBoundary.jsx:15-37][121]
 
 **Extends Component**
 
@@ -256,7 +337,7 @@ Error boundary component used to log caught errors and display the error page.
 
 #### ErrorPage
 
-[src/react/ErrorPage.jsx:12-50][120]
+[src/react/ErrorPage.jsx:12-50][122]
 
 **Extends Component**
 
@@ -264,13 +345,13 @@ This is the doc for ErrorPage.
 
 #### LoginRedirect
 
-[src/react/LoginRedirect.jsx:9-14][121]
+[src/react/LoginRedirect.jsx:9-14][123]
 
 Wraps the call to redirectToLogin in a Component.
 
 #### OptionalReduxProvider
 
-[src/react/OptionalReduxProvider.jsx:9-21][122]
+[src/react/OptionalReduxProvider.jsx:9-21][124]
 
 ##### Parameters
 
@@ -280,7 +361,7 @@ Wraps the call to redirectToLogin in a Component.
 
 #### PageRoute
 
-[src/react/PageRoute.jsx:11-21][123]
+[src/react/PageRoute.jsx:11-21][125]
 
 ##### Parameters
 
@@ -290,41 +371,60 @@ Wraps the call to redirectToLogin in a Component.
 
 #### useAppEvent
 
-[src/react/hooks.js:11-19][124]
+[src/react/hooks.js:11-19][126]
 
 ##### Parameters
 
--   `type` **[string][107]** 
--   `callback` **[function][125]** 
+-   `type` **[string][106]** 
+-   `callback` **[function][115]** 
 
 ### Utilities
 
-[src/utils.js:5-5][126]
+[src/utils.js:5-5][127]
 
 #### camelCaseObject
 
-[src/utils.js:43-45][127]
+[src/utils.js:66-68][128]
+
+Performs a deep conversion to camelCase on all keys in the provided object and its tree of  children.  Uses [lodash.camelcase][129] on each key.  This is commonly used to convert snake_case keys in models from a backend server into camelCase keys for use in the JavaScript client.
+
+Can accept arrays as well as objects, and will perform its conversion on any objects it finds in the array.
 
 ##### Parameters
 
--   `object` **any** 
+-   `object` **([Array][107] \| [Object][103])** 
 
-Returns **[Object][103]** 
+Returns **([Array][107] \| [Object][103])** 
 
 #### convertKeyNames
 
-[src/utils.js:64-69][128]
+[src/utils.js:106-111][130]
+
+Given a map of key-value pairs, performs a deep conversion key names in the specified object _from_ the key _to_ the value.  This is useful for updating names in an API request to the names used throughout a client application if they happen to differ.  It can also be used in the reverse - formatting names from the client application to names expected by an API.
+
+    import { convertKeyNames } from '@edx/frontend-base';
+
+    // This object can be of any shape or depth with subobjects/arrays.
+    const myObject = {
+      myKey: 'my value',
+    }
+
+    const result = convertKeyNames(myObject, { myKey: 'their_key' });
+
+    console.log(result) // { their_key: 'my value' }
+
+Can accept arrays as well as objects, and will perform its conversion on any objects it finds in the array.
 
 ##### Parameters
 
--   `object` **any** 
--   `nameMap` **any** 
+-   `object` **([Array][107] \| [Object][103])** 
+-   `nameMap` **[Object][103]** 
 
-Returns **[Object][103]** 
+Returns **([Array][107] \| [Object][103])** 
 
 #### ensureDefinedConfig
 
-[src/utils.js:106-112][129]
+[src/utils.js:151-157][131]
 
 This function helps catch a certain class of misconfiguration in which configuration variables
 are not properly defined and/or supplied to a consumer that requires them.  Any key that exists
@@ -336,7 +436,7 @@ Keys that are intended to be falsy should be defined using null, 0, false, etc.
 ##### Parameters
 
 -   `object` **[Object][103]** 
--   `requester` **[string][107]** A human-readable identifier for the code which called this function.
+-   `requester` **[string][106]** A human-readable identifier for the code which called this function.
     Used when throwing errors to aid in debugging.
 
 
@@ -344,34 +444,71 @@ Keys that are intended to be falsy should be defined using null, 0, false, etc.
 
 #### getQueryParameters
 
-[src/utils.js:77-89][130]
+[src/utils.js:122-134][132]
+
+_Deprecated_: A method which converts the supplied query string into an object of
+key-value pairs and returns it.  Defaults to the current query string - should perform like [window.searchParams][133]
 
 ##### Parameters
 
--   `search` **[string][107]**  (optional, default `global.location.search`)
+-   `search` **[string][106]**  (optional, default `global.location.search`)
 
 Returns **[Object][103]** 
 
+**Meta**
+
+-   **deprecated**: This is deprecated.
+
+
+#### history
+
+[src/initialize.js:34-34][134]
+
+A browser history object created by the [history][135] package.  Applications are encouraged to use this history object, rather than creating their own, as behavior may be undefined when managing history via multiple mechanisms/instances.
+
 #### modifyObjectKeys
 
-[src/utils.js:15-35][131]
+[src/utils.js:35-55][136]
+
+This is the underlying function used by camelCaseObject, snakeCaseObject, and convertKeyNames above.
+
+Given an object (or array) and a modification function, will perform the function on each key it encounters on the object and its tree of children.
+
+The modification function must take a string as an argument and returns a string.
+
+Example:
+
+    (key) => {
+      if (key === 'edX') {
+        return 'Open edX';
+      }
+      return key;
+    }
+
+This function will turn any key that matches 'edX' into 'Open edX'.  All other keys will be passed through unmodified.
+
+Can accept arrays as well as objects, and will perform its conversion on any objects it finds in the array.
 
 ##### Parameters
 
 -   `object` **[Object][103]** 
--   `modify` **[function][125]** 
+-   `modify` **[function][115]** 
 
 Returns **[Object][103]** 
 
 #### snakeCaseObject
 
-[src/utils.js:53-55][132]
+[src/utils.js:79-81][137]
+
+Performs a deep conversion to snake_case on all keys in the provided object and its tree of children.  Uses [lodash.snakecase][138] on each key.  This is commonly used to convert camelCase keys from the JavaScript app into snake_case keys expected by backend servers.
+
+Can accept arrays as well as objects, and will perform its conversion on any objects it finds in the array.
 
 ##### Parameters
 
--   `object` **any** 
+-   `object` **([Array][107] \| [Object][103])** 
 
-Returns **[Object][103]** 
+Returns **([Array][107] \| [Object][103])** 
 
 ## Service Module APIs
 
@@ -380,11 +517,11 @@ Returns **[Object][103]**
 
 ### Analytics
 
-[src/analytics/index.js:5-14][133]
+[src/analytics/index.js:5-14][139]
 
 #### configure
 
-[src/analytics/interface.js:31-36][134]
+[src/analytics/interface.js:31-36][140]
 
 ##### Parameters
 
@@ -395,13 +532,13 @@ Returns **AnalyticsService**
 
 #### getAnalyticsService
 
-[src/analytics/interface.js:99-105][135]
+[src/analytics/interface.js:99-105][141]
 
 Returns **AnalyticsService** 
 
 #### identifyAnonymousUser
 
-[src/analytics/interface.js:66-68][136]
+[src/analytics/interface.js:66-68][142]
 
 ##### Parameters
 
@@ -409,7 +546,7 @@ Returns **AnalyticsService**
 
 #### identifyAuthenticatedUser
 
-[src/analytics/interface.js:56-58][137]
+[src/analytics/interface.js:56-58][143]
 
 ##### Parameters
 
@@ -418,11 +555,11 @@ Returns **AnalyticsService**
 
 #### resetAnalyticsService
 
-[src/analytics/interface.js:111-113][138]
+[src/analytics/interface.js:111-113][144]
 
 #### sendPageEvent
 
-[src/analytics/interface.js:89-91][139]
+[src/analytics/interface.js:89-91][145]
 
 ##### Parameters
 
@@ -432,7 +569,7 @@ Returns **AnalyticsService**
 
 #### sendTrackEvent
 
-[src/analytics/interface.js:77-79][140]
+[src/analytics/interface.js:77-79][146]
 
 ##### Parameters
 
@@ -441,73 +578,74 @@ Returns **AnalyticsService**
 
 #### sendTrackingLogEvent
 
-[src/analytics/interface.js:45-47][141]
+[src/analytics/interface.js:45-47][147]
 
 ##### Parameters
 
 -   `eventName` **any** 
 -   `properties` **any** 
 
-Returns **[Promise][142]** 
+Returns **[Promise][148]** 
 
 ### Auth
 
-[src/auth/index.js:5-5][143]
+[src/auth/index.js:5-5][149]
 
 #### AUTHENTICATED_USER_CHANGED
 
-[src/auth/index.js:22-22][144]
+[src/auth/index.js:22-22][150]
 
 #### AUTHENTICATED_USER_TOPIC
 
-[src/auth/index.js:17-17][145]
+[src/auth/index.js:17-17][151]
 
-Type: [string][107]
+Type: [string][106]
 
 #### configure
 
-[src/auth/index.js:57-63][146]
+[src/auth/index.js:57-63][152]
 
 Configures an httpClient to make authenticated http requests.
 
 ##### Parameters
 
 -   `incomingConfig` **[Object][103]** 
-    -   `incomingConfig.appBaseUrl` **[string][107]?** 
-    -   `incomingConfig.lmsBaseUrl` **[string][107]?** 
-    -   `incomingConfig.loginUrl` **[string][107]?** 
-    -   `incomingConfig.logoutUrl` **[string][107]?** 
+    -   `incomingConfig.appBaseUrl` **[string][106]?** 
+    -   `incomingConfig.lmsBaseUrl` **[string][106]?** 
+    -   `incomingConfig.loginUrl` **[string][106]?** 
+    -   `incomingConfig.logoutUrl` **[string][106]?** 
     -   `incomingConfig.loggingService` **[Object][103]?** requires logError and logInfo methods
-    -   `incomingConfig.refreshAccessTokenEndpoint` **[string][107]?** 
-    -   `incomingConfig.accessTokenCookieName` **[string][107]?** 
-    -   `incomingConfig.csrfTokenApiPath` **[string][107]?** 
+    -   `incomingConfig.refreshAccessTokenEndpoint` **[string][106]?** 
+    -   `incomingConfig.accessTokenCookieName` **[string][106]?** 
+    -   `incomingConfig.csrfTokenApiPath` **[string][106]?** 
 
 #### ensureAuthenticatedUser
 
-[src/auth/index.js:156-174][147]
+[src/auth/index.js:157-179][153]
 
 Ensures a user is authenticated. It will redirect to login when not
 authenticated.
 
 ##### Parameters
 
--   `redirectUrl` **[string][107]** to return user after login when not authenticated. (optional, default `config.appBaseUrl`)
+-   `redirectUrl` **[string][106]** to return user after login when not
+    authenticated. (optional, default `config.appBaseUrl`)
 
-Returns **[Promise][142]&lt;UserData>** 
+Returns **[Promise][148]&lt;UserData>** 
 
 #### fetchAuthenticatedUser
 
-[src/auth/index.js:130-146][148]
+[src/auth/index.js:130-146][154]
 
 Reads the authenticated user's access token. Resolves to null if the user is
 unauthenticated.
 
-Returns **([Promise][142]&lt;UserData> | [Promise][142]&lt;null>)** Resolves to the user's access token if they are
+Returns **([Promise][148]&lt;UserData> | [Promise][148]&lt;null>)** Resolves to the user's access token if they are
 logged in.
 
 #### getAuthenticatedHttpClient
 
-[src/auth/index.js:79-79][149]
+[src/auth/index.js:79-79][155]
 
 Gets the apiClient singleton which is an axios instance.
 
@@ -515,7 +653,7 @@ Returns **HttpClient** Singleton. A configured axios http client
 
 #### getAuthenticatedUser
 
-[src/auth/index.js:108-108][150]
+[src/auth/index.js:108-108][156]
 
 If it exists, returns the user data representing the currently authenticated user. If the user is
 anonymous, returns null.
@@ -524,16 +662,16 @@ Returns **(UserData | null)**
 
 #### getLoggingService
 
-[src/auth/index.js:71-71][151]
+[src/auth/index.js:71-71][157]
 
 Returns **LoggingService** 
 
 #### HttpClient
 
-[src/auth/index.js:190-197][152]
+[src/auth/index.js:195-202][158]
 
 A configured axios client. See axios docs for more
-info [https://github.com/axios/axios][153]. All the functions
+info [https://github.com/axios/axios][159]. All the functions
 below accept isPublic and isCsrfExempt in the request
 config options. Setting these to true will prevent this
 client from attempting to refresh the jwt access token
@@ -547,17 +685,17 @@ or a csrf token respectively.
 
 ##### Properties
 
--   `get` **[function][125]** 
--   `head` **[function][125]** 
--   `options` **[function][125]** 
--   `delete` **[function][125]** (csrf protected)
--   `post` **[function][125]** (csrf protected)
--   `put` **[function][125]** (csrf protected)
--   `patch` **[function][125]** (csrf protected)
+-   `get` **[function][115]** 
+-   `head` **[function][115]** 
+-   `options` **[function][115]** 
+-   `delete` **[function][115]** (csrf protected)
+-   `post` **[function][115]** (csrf protected)
+-   `put` **[function][115]** (csrf protected)
+-   `patch` **[function][115]** (csrf protected)
 
 #### hydrateAuthenticatedUser
 
-[src/auth/index.js:190-197][152]
+[src/auth/index.js:195-202][158]
 
 Fetches additional user account information for the authenticated user and merges it into the
 existing authenticatedUser object, available via getAuthenticatedUser().
@@ -567,31 +705,31 @@ existing authenticatedUser object, available via getAuthenticatedUser().
      const authenticatedUser = getAuthenticatedUser();
      console.log(authenticatedUser); // Will contain additional user information
 
-Returns **[Promise][142]&lt;null>** 
+Returns **[Promise][148]&lt;null>** 
 
 #### redirectToLogin
 
-[src/auth/index.js:87-89][154]
+[src/auth/index.js:87-89][160]
 
 Redirect the user to login
 
 ##### Parameters
 
--   `redirectUrl` **[string][107]** the url to redirect to after login (optional, default `config.appBaseUrl`)
+-   `redirectUrl` **[string][106]** the url to redirect to after login (optional, default `config.appBaseUrl`)
 
 #### redirectToLogout
 
-[src/auth/index.js:97-99][155]
+[src/auth/index.js:97-99][161]
 
 Redirect the user to logout
 
 ##### Parameters
 
--   `redirectUrl` **[string][107]** the url to redirect to after logout (optional, default `config.appBaseUrl`)
+-   `redirectUrl` **[string][106]** the url to redirect to after logout (optional, default `config.appBaseUrl`)
 
 #### setAuthenticatedUser
 
-[src/auth/index.js:117-120][156]
+[src/auth/index.js:117-120][162]
 
 Sets the authenticated user to the provided value.
 
@@ -601,22 +739,22 @@ Sets the authenticated user to the provided value.
 
 #### UserData
 
-[src/auth/index.js:190-197][152]
+[src/auth/index.js:195-202][158]
 
 ##### Properties
 
--   `userId` **[string][107]** 
--   `username` **[string][107]** 
--   `roles` **[Array][106]** 
--   `administrator` **[boolean][99]** 
+-   `userId` **[string][106]** 
+-   `username` **[string][106]** 
+-   `roles` **[Array][107]** 
+-   `administrator` **[boolean][100]** 
 
 ### Logging
 
-[src/logging/index.js:4-4][157]
+[src/logging/index.js:4-4][163]
 
 #### configure
 
-[src/logging/interface.js:17-22][158]
+[src/logging/interface.js:17-22][164]
 
 ##### Parameters
 
@@ -625,60 +763,60 @@ Sets the authenticated user to the provided value.
 
 #### getLoggingService
 
-[src/logging/interface.js:54-59][159]
+[src/logging/interface.js:54-59][165]
 
--   Throws **[Error][160]** Thrown if the logging service has not yet been configured via [configure][161].
+-   Throws **[Error][166]** Thrown if the logging service has not yet been configured via [configure][167].
 
 Returns **LoggingService** 
 
 #### logError
 
-[src/logging/interface.js:44-46][162]
+[src/logging/interface.js:44-46][168]
 
 Logs a message to the 'error' log level.  Can accept custom attributes as a property of the error
 object, or as an optional second parameter.
 
 ##### Parameters
 
--   `error` **([string][107] \| [Error][160])** 
+-   `error` **([string][106] \| [Error][166])** 
     -   `error.customAttributes` **[Object][103]**  (optional, default `{}`)
 -   `customAttributes` **[Object][103]**  (optional, default `{}`)
 
 #### LoggingService
 
-[src/logging/interface.js:66-68][163]
+[src/logging/interface.js:66-68][169]
 
 ##### Properties
 
--   `logError` **[function][125]** 
--   `logInfo` **[function][125]** 
+-   `logError` **[function][115]** 
+-   `logInfo` **[function][115]** 
 
 #### logInfo
 
-[src/logging/interface.js:31-33][164]
+[src/logging/interface.js:31-33][170]
 
 Logs a message to the 'info' log level.
 
 ##### Parameters
 
--   `message` **[string][107]** 
+-   `message` **[string][106]** 
 -   `customAttributes` **[Object][103]**  (optional, default `{}`)
 
 #### resetLoggingService
 
-[src/logging/interface.js:66-68][163]
+[src/logging/interface.js:66-68][169]
 
 Sets the configured logging service back to null.
 
 ### I18n
 
-[src/i18n/index.js:9-19][165]
+[src/i18n/index.js:9-19][171]
 
 The i18n module relies on react-intl and re-exports all of that package's exports.
 
 #### configure
 
-[src/i18n/lib.js:256-279][166]
+[src/i18n/lib.js:256-279][172]
 
 Configures the i18n library with messages for your application.
 
@@ -694,7 +832,7 @@ above), or if an expected locale is not provided.
 
 #### findSupportedLocale
 
-[src/i18n/lib.js:131-141][167]
+[src/i18n/lib.js:131-141][173]
 
 Finds the closest supported locale to the one provided.  This is done in three steps:
 
@@ -705,19 +843,19 @@ Finds the closest supported locale to the one provided.  This is done in three s
 
 ##### Parameters
 
--   `locale` **[string][107]** 
+-   `locale` **[string][106]** 
 
-Returns **[string][107]** 
+Returns **[string][106]** 
 
 #### getCookies
 
-[src/i18n/lib.js:88-90][168]
+[src/i18n/lib.js:88-90][174]
 
 Returns **Cookies** 
 
 #### getCountryList
 
-[src/i18n/countries.js:53-56][169]
+[src/i18n/countries.js:53-56][175]
 
 Provides a list of countries represented as objects of the following shape:
 
@@ -735,7 +873,7 @@ This is useful for populating dropdowns.
 
 #### getCountryMessages
 
-[src/i18n/countries.js:33-38][170]
+[src/i18n/countries.js:33-38][176]
 
 Provides a lookup table of country IDs to country names for the current locale.
 
@@ -745,7 +883,7 @@ Provides a lookup table of country IDs to country names for the current locale.
 
 #### getLanguageList
 
-[src/i18n/languages.js:56-59][171]
+[src/i18n/languages.js:56-59][177]
 
 Provides a list of languages represented as objects of the following shape:
 
@@ -763,7 +901,7 @@ This is useful for populating dropdowns.
 
 #### getLanguageMessages
 
-[src/i18n/languages.js:36-41][172]
+[src/i18n/languages.js:36-41][178]
 
 Provides a lookup table of language IDs to language names for the current locale.
 
@@ -773,7 +911,7 @@ Provides a lookup table of language IDs to language names for the current locale
 
 #### getLocale
 
-[src/i18n/lib.js:153-172][173]
+[src/i18n/lib.js:153-172][179]
 
 Get the locale from the cookie or, failing that, the browser setting.
 Gracefully fall back to a more general primary language subtag or to English (en)
@@ -781,33 +919,33 @@ if we don't support that language.
 
 ##### Parameters
 
--   `locale` **[string][107]** If a locale is provided, returns the closest supported locale. Optional.
+-   `locale` **[string][106]** If a locale is provided, returns the closest supported locale. Optional.
 
 
 -   Throws **any** An error if i18n has not yet been configured.
 
-Returns **[string][107]** 
+Returns **[string][106]** 
 
 #### getLoggingService
 
-[src/i18n/lib.js:71-71][174]
+[src/i18n/lib.js:71-71][180]
 
 Returns **LoggingService** 
 
 #### getMessages
 
-[src/i18n/lib.js:181-181][175]
+[src/i18n/lib.js:181-181][181]
 
 Returns messages for the provided locale, or the user's preferred locale if no argument is
 provided.
 
 ##### Parameters
 
--   `locale` **[string][107]**  (optional, default `getLocale()`)
+-   `locale` **[string][106]**  (optional, default `getLocale()`)
 
 #### getPrimaryLanguageSubtag
 
-[src/i18n/lib.js:117-117][176]
+[src/i18n/lib.js:117-117][182]
 
 Some of our dependencies function on primary language subtags, rather than full locales.
 This function strips a locale down to that first subtag.  Depending on the code, this
@@ -815,18 +953,18 @@ may be 2 or more characters.
 
 ##### Parameters
 
--   `code` **[string][107]** 
+-   `code` **[string][106]** 
 
 #### handleRtl
 
-[src/i18n/lib.js:197-203][177]
+[src/i18n/lib.js:197-203][183]
 
 Handles applying the RTL stylesheet and "dir=rtl" attribute to the html tag if the current locale
 is a RTL language.
 
 #### injectIntlWithShim
 
-[src/i18n/injectIntlWithShim.jsx:11-43][178]
+[src/i18n/injectIntlWithShim.jsx:11-43][184]
 
 This function wraps react-intl's injectIntl function in order to add error logging to the intl
 property's formatMessage function.
@@ -837,31 +975,31 @@ property's formatMessage function.
 
 #### isRtl
 
-[src/i18n/lib.js:189-189][179]
+[src/i18n/lib.js:189-189][185]
 
 Determines if the provided locale is a right-to-left language.
 
 ##### Parameters
 
--   `locale` **[string][107]** 
+-   `locale` **[string][106]** 
 
 #### LOCALE_CHANGED
 
-[src/i18n/lib.js:81-81][180]
+[src/i18n/lib.js:81-81][186]
 
 #### LOCALE_TOPIC
 
-[src/i18n/lib.js:76-76][181]
+[src/i18n/lib.js:76-76][187]
 
-Type: [string][107]
+Type: [string][106]
 
 #### mergeMessages
 
-[src/i18n/lib.js:240-242][182]
+[src/i18n/lib.js:240-242][188]
 
 ##### Parameters
 
--   `messagesArray` **[Array][106]**  (optional, default `[]`)
+-   `messagesArray` **[Array][107]**  (optional, default `[]`)
 
 Returns **[Object][103]** 
 
@@ -872,7 +1010,7 @@ Returns **[Object][103]**
 
 ### NewRelicLoggingService
 
-[src/logging/NewRelicLoggingService.js:26-69][183]
+[src/logging/NewRelicLoggingService.js:26-69][189]
 
 Logs info and errors to NewRelic and console.
 
@@ -880,7 +1018,7 @@ Requires the NewRelic Browser JavaScript snippet.
 
 #### logError
 
-[src/logging/NewRelicLoggingService.js:52-68][184]
+[src/logging/NewRelicLoggingService.js:52-68][190]
 
 ##### Parameters
 
@@ -889,7 +1027,7 @@ Requires the NewRelic Browser JavaScript snippet.
 
 #### logInfo
 
-[src/logging/NewRelicLoggingService.js:34-43][185]
+[src/logging/NewRelicLoggingService.js:34-43][191]
 
 ##### Parameters
 
@@ -898,7 +1036,7 @@ Requires the NewRelic Browser JavaScript snippet.
 
 ### SegmentAnalyticsService
 
-[src/analytics/SegmentAnalyticsService.js:8-189][186]
+[src/analytics/SegmentAnalyticsService.js:8-189][192]
 
 #### Parameters
 
@@ -909,13 +1047,13 @@ Requires the NewRelic Browser JavaScript snippet.
 
 #### checkIdentifyCalled
 
-[src/analytics/SegmentAnalyticsService.js:102-106][187]
+[src/analytics/SegmentAnalyticsService.js:102-106][193]
 
 Checks that identify was first called.  Otherwise, logs error.
 
 #### identifyAnonymousUser
 
-[src/analytics/SegmentAnalyticsService.js:159-162][188]
+[src/analytics/SegmentAnalyticsService.js:159-162][194]
 
 Send anonymous identify call to Segment's identify.
 
@@ -925,18 +1063,18 @@ Send anonymous identify call to Segment's identify.
 
 #### identifyAuthenticatedUser
 
-[src/analytics/SegmentAnalyticsService.js:145-151][189]
+[src/analytics/SegmentAnalyticsService.js:145-151][195]
 
 -   Send identify call to Segment.
 
 ##### Parameters
 
--   `userId` **[string][107]** 
+-   `userId` **[string][106]** 
 -   `traits` **any?** 
 
 #### sendPageEvent
 
-[src/analytics/SegmentAnalyticsService.js:185-188][190]
+[src/analytics/SegmentAnalyticsService.js:185-188][196]
 
 Sends a page event to Segment and downstream.
 
@@ -948,7 +1086,7 @@ Sends a page event to Segment and downstream.
 
 #### sendTrackEvent
 
-[src/analytics/SegmentAnalyticsService.js:172-175][191]
+[src/analytics/SegmentAnalyticsService.js:172-175][197]
 
 Sends a track event to Segment and downstream.
 Note: For links and forms, you should use trackLink and trackForm instead.
@@ -960,18 +1098,18 @@ Note: For links and forms, you should use trackLink and trackForm instead.
 
 #### sendTrackingLogEvent
 
-[src/analytics/SegmentAnalyticsService.js:118-136][192]
+[src/analytics/SegmentAnalyticsService.js:118-136][198]
 
 Logs events to tracking log and downstream.
 For tracking log event documentation, see
-[https://openedx.atlassian.net/wiki/spaces/AN/pages/13205895/Event+Design+and+Review+Process][193]
+[https://openedx.atlassian.net/wiki/spaces/AN/pages/13205895/Event+Design+and+Review+Process][199]
 
 ##### Parameters
 
--   `eventName` **[string][107]** (event_type on backend, but named to match Segment api)
+-   `eventName` **[string][106]** (event_type on backend, but named to match Segment api)
 -   `properties` **[Object][103]** (event on backend, but named properties to match Segment api)
 
-Returns **[Promise][142]** The promise returned by HttpClient.post.
+Returns **[Promise][148]** The promise returned by HttpClient.post.
 
 [1]: #platform-apis
 
@@ -981,13 +1119,13 @@ Returns **[Promise][142]** The promise returned by HttpClient.post.
 
 [4]: #auth
 
-[5]: #history
+[5]: #initerror
 
-[6]: #initerror
+[6]: #initialize
 
-[7]: #initialize
+[7]: #config
 
-[8]: #config
+[8]: #configdocument
 
 [9]: #ensureconfig
 
@@ -1035,326 +1173,338 @@ Returns **[Promise][142]** The promise returned by HttpClient.post.
 
 [31]: #getqueryparameters
 
-[32]: #modifyobjectkeys
+[32]: #history
 
-[33]: #snakecaseobject
+[33]: #modifyobjectkeys
 
-[34]: #service-module-apis
+[34]: #snakecaseobject
 
-[35]: #analytics-1
+[35]: #service-module-apis
 
-[36]: #configure
+[36]: #analytics-1
 
-[37]: #getanalyticsservice
+[37]: #configure
 
-[38]: #identifyanonymoususer
+[38]: #getanalyticsservice
 
-[39]: #identifyauthenticateduser
+[39]: #identifyanonymoususer
 
-[40]: #resetanalyticsservice
+[40]: #identifyauthenticateduser
 
-[41]: #sendpageevent
+[41]: #resetanalyticsservice
 
-[42]: #sendtrackevent
+[42]: #sendpageevent
 
-[43]: #sendtrackinglogevent
+[43]: #sendtrackevent
 
-[44]: #auth-1
+[44]: #sendtrackinglogevent
 
-[45]: #authenticated_user_changed
+[45]: #auth-1
 
-[46]: #authenticated_user_topic
+[46]: #authenticated_user_changed
 
-[47]: #configure-1
+[47]: #authenticated_user_topic
 
-[48]: #ensureauthenticateduser
+[48]: #configure-1
 
-[49]: #fetchauthenticateduser
+[49]: #ensureauthenticateduser
 
-[50]: #getauthenticatedhttpclient
+[50]: #fetchauthenticateduser
 
-[51]: #getauthenticateduser
+[51]: #getauthenticatedhttpclient
 
-[52]: #getloggingservice
+[52]: #getauthenticateduser
 
-[53]: #httpclient
+[53]: #getloggingservice
 
-[54]: #hydrateauthenticateduser
+[54]: #httpclient
 
-[55]: #redirecttologin
+[55]: #hydrateauthenticateduser
 
-[56]: #redirecttologout
+[56]: #redirecttologin
 
-[57]: #setauthenticateduser
+[57]: #redirecttologout
 
-[58]: #userdata
+[58]: #setauthenticateduser
 
-[59]: #logging
+[59]: #userdata
 
-[60]: #configure-2
+[60]: #logging
 
-[61]: #getloggingservice-1
+[61]: #configure-2
 
-[62]: #logerror
+[62]: #getloggingservice-1
 
-[63]: #loggingservice
+[63]: #logerror
 
-[64]: #loginfo
+[64]: #loggingservice
 
-[65]: #resetloggingservice
+[65]: #loginfo
 
-[66]: #i18n
+[66]: #resetloggingservice
 
-[67]: #configure-3
+[67]: #i18n
 
-[68]: #findsupportedlocale
+[68]: #configure-3
 
-[69]: #getcookies
+[69]: #findsupportedlocale
 
-[70]: #getcountrylist
+[70]: #getcookies
 
-[71]: #getcountrymessages
+[71]: #getcountrylist
 
-[72]: #getlanguagelist
+[72]: #getcountrymessages
 
-[73]: #getlanguagemessages
+[73]: #getlanguagelist
 
-[74]: #getlocale
+[74]: #getlanguagemessages
 
-[75]: #getloggingservice-2
+[75]: #getlocale
 
-[76]: #getmessages
+[76]: #getloggingservice-2
 
-[77]: #getprimarylanguagesubtag
+[77]: #getmessages
 
-[78]: #handlertl
+[78]: #getprimarylanguagesubtag
 
-[79]: #injectintlwithshim
+[79]: #handlertl
 
-[80]: #isrtl
+[80]: #injectintlwithshim
 
-[81]: #locale_changed
+[81]: #isrtl
 
-[82]: #locale_topic
+[82]: #locale_changed
 
-[83]: #mergemessages
+[83]: #locale_topic
 
-[84]: #service-implementations
+[84]: #mergemessages
 
-[85]: #newrelicloggingservice
+[85]: #service-implementations
 
-[86]: #logerror-1
+[86]: #newrelicloggingservice
 
-[87]: #loginfo-1
+[87]: #logerror-1
 
-[88]: #segmentanalyticsservice
+[88]: #loginfo-1
 
-[89]: #parameters
+[89]: #segmentanalyticsservice
 
-[90]: #checkidentifycalled
+[90]: #parameters
 
-[91]: #identifyanonymoususer-1
+[91]: #checkidentifycalled
 
-[92]: #identifyauthenticateduser-1
+[92]: #identifyanonymoususer-1
 
-[93]: #sendpageevent-1
+[93]: #identifyauthenticateduser-1
 
-[94]: #sendtrackevent-1
+[94]: #sendpageevent-1
 
-[95]: #sendtrackinglogevent-1
+[95]: #sendtrackevent-1
 
-[96]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/initialize.js#L5-L5 "Source code on GitHub"
+[96]: #sendtrackinglogevent-1
 
-[97]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/initialize.js#L68-L75 "Source code on GitHub"
+[97]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/initialize.js#L7-L7 "Source code on GitHub"
 
-[98]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/initialize.js#L48-L61 "Source code on GitHub"
+[98]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/initialize.js#L80-L87 "Source code on GitHub"
 
-[99]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
+[99]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/initialize.js#L57-L70 "Source code on GitHub"
 
-[100]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/initialize.js#L31-L31 "Source code on GitHub"
+[100]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
 
-[101]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/initialize.js#L38-L40 "Source code on GitHub"
+[101]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/initialize.js#L41-L43 "Source code on GitHub"
 
-[102]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/initialize.js#L103-L168 "Source code on GitHub"
+[102]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/initialize.js#L117-L184 "Source code on GitHub"
 
 [103]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
 
-[104]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/config.js#L4-L4 "Source code on GitHub"
+[104]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/config.js#L6-L6 "Source code on GitHub"
 
-[105]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/config.js#L69-L77 "Source code on GitHub"
+[105]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/config.js#L95-L103 "Source code on GitHub"
 
-[106]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array
+[106]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
 
-[107]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
+[107]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array
 
-[108]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/config.js#L37-L39 "Source code on GitHub"
+[108]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/config.js#L40-L42 "Source code on GitHub"
 
-[109]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/config.js#L57-L61 "Source code on GitHub"
+[109]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/config.js#L72-L76 "Source code on GitHub"
 
-[110]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/config.js#L46-L50 "Source code on GitHub"
+[110]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/config.js#L52-L56 "Source code on GitHub"
 
-[111]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/pubSub.js#L5-L5 "Source code on GitHub"
+[111]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/pubSub.js#L11-L11 "Source code on GitHub"
 
-[112]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/pubSub.js#L34-L36 "Source code on GitHub"
+[112]: https://github.com/mroderick/PubSubJS
 
-[113]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/pubSub.js#L15-L17 "Source code on GitHub"
+[113]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/pubSub.js#L40-L42 "Source code on GitHub"
 
-[114]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/pubSub.js#L24-L26 "Source code on GitHub"
+[114]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/pubSub.js#L21-L23 "Source code on GitHub"
 
-[115]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/react/index.js#L5-L5 "Source code on GitHub"
+[115]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function
 
-[116]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/react/AppContext.jsx#L6-L9 "Source code on GitHub"
+[116]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/pubSub.js#L30-L32 "Source code on GitHub"
 
-[117]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/react/AppProvider.jsx#L20-L52 "Source code on GitHub"
+[117]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/react/index.js#L5-L5 "Source code on GitHub"
 
-[118]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/react/AuthenticatedPageRoute.jsx#L14-L25 "Source code on GitHub"
+[118]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/react/AppContext.jsx#L6-L9 "Source code on GitHub"
 
-[119]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/react/ErrorBoundary.jsx#L15-L37 "Source code on GitHub"
+[119]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/react/AppProvider.jsx#L20-L52 "Source code on GitHub"
 
-[120]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/react/ErrorPage.jsx#L12-L50 "Source code on GitHub"
+[120]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/react/AuthenticatedPageRoute.jsx#L14-L25 "Source code on GitHub"
 
-[121]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/react/LoginRedirect.jsx#L9-L14 "Source code on GitHub"
+[121]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/react/ErrorBoundary.jsx#L15-L37 "Source code on GitHub"
 
-[122]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/react/OptionalReduxProvider.jsx#L9-L21 "Source code on GitHub"
+[122]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/react/ErrorPage.jsx#L12-L50 "Source code on GitHub"
 
-[123]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/react/PageRoute.jsx#L11-L21 "Source code on GitHub"
+[123]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/react/LoginRedirect.jsx#L9-L14 "Source code on GitHub"
 
-[124]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/react/hooks.js#L11-L19 "Source code on GitHub"
+[124]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/react/OptionalReduxProvider.jsx#L9-L21 "Source code on GitHub"
 
-[125]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function
+[125]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/react/PageRoute.jsx#L11-L21 "Source code on GitHub"
 
-[126]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/utils.js#L5-L5 "Source code on GitHub"
+[126]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/react/hooks.js#L11-L19 "Source code on GitHub"
 
-[127]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/utils.js#L43-L45 "Source code on GitHub"
+[127]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/utils.js#L5-L5 "Source code on GitHub"
 
-[128]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/utils.js#L64-L69 "Source code on GitHub"
+[128]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/utils.js#L66-L68 "Source code on GitHub"
 
-[129]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/utils.js#L106-L112 "Source code on GitHub"
+[129]: https://lodash.com/docs/4.17.15#camelCase
 
-[130]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/utils.js#L77-L89 "Source code on GitHub"
+[130]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/utils.js#L106-L111 "Source code on GitHub"
 
-[131]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/utils.js#L15-L35 "Source code on GitHub"
+[131]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/utils.js#L151-L157 "Source code on GitHub"
 
-[132]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/utils.js#L53-L55 "Source code on GitHub"
+[132]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/utils.js#L122-L134 "Source code on GitHub"
 
-[133]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/analytics/index.js#L5-L14 "Source code on GitHub"
+[133]: https://developer.mozilla.org/en-US/docs/Web/API/URL/searchParams
 
-[134]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/analytics/interface.js#L31-L36 "Source code on GitHub"
+[134]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/initialize.js#L34-L34 "Source code on GitHub"
 
-[135]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/analytics/interface.js#L99-L105 "Source code on GitHub"
+[135]: https://github.com/ReactTraining/history
 
-[136]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/analytics/interface.js#L66-L68 "Source code on GitHub"
+[136]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/utils.js#L35-L55 "Source code on GitHub"
 
-[137]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/analytics/interface.js#L56-L58 "Source code on GitHub"
+[137]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/utils.js#L79-L81 "Source code on GitHub"
 
-[138]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/analytics/interface.js#L111-L113 "Source code on GitHub"
+[138]: https://lodash.com/docs/4.17.15#snakeCase
 
-[139]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/analytics/interface.js#L89-L91 "Source code on GitHub"
+[139]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/analytics/index.js#L5-L14 "Source code on GitHub"
 
-[140]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/analytics/interface.js#L77-L79 "Source code on GitHub"
+[140]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/analytics/interface.js#L31-L36 "Source code on GitHub"
 
-[141]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/analytics/interface.js#L45-L47 "Source code on GitHub"
+[141]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/analytics/interface.js#L99-L105 "Source code on GitHub"
 
-[142]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise
+[142]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/analytics/interface.js#L66-L68 "Source code on GitHub"
 
-[143]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/auth/index.js#L5-L5 "Source code on GitHub"
+[143]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/analytics/interface.js#L56-L58 "Source code on GitHub"
 
-[144]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/auth/index.js#L22-L22 "Source code on GitHub"
+[144]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/analytics/interface.js#L111-L113 "Source code on GitHub"
 
-[145]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/auth/index.js#L17-L17 "Source code on GitHub"
+[145]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/analytics/interface.js#L89-L91 "Source code on GitHub"
 
-[146]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/auth/index.js#L57-L63 "Source code on GitHub"
+[146]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/analytics/interface.js#L77-L79 "Source code on GitHub"
 
-[147]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/auth/index.js#L156-L174 "Source code on GitHub"
+[147]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/analytics/interface.js#L45-L47 "Source code on GitHub"
 
-[148]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/auth/index.js#L130-L146 "Source code on GitHub"
+[148]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise
 
-[149]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/auth/index.js#L79-L79 "Source code on GitHub"
+[149]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/auth/index.js#L5-L5 "Source code on GitHub"
 
-[150]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/auth/index.js#L108-L108 "Source code on GitHub"
+[150]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/auth/index.js#L22-L22 "Source code on GitHub"
 
-[151]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/auth/index.js#L71-L71 "Source code on GitHub"
+[151]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/auth/index.js#L17-L17 "Source code on GitHub"
 
-[152]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/auth/index.js#L190-L197 "Source code on GitHub"
+[152]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/auth/index.js#L57-L63 "Source code on GitHub"
 
-[153]: https://github.com/axios/axios
+[153]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/auth/index.js#L157-L179 "Source code on GitHub"
 
-[154]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/auth/index.js#L87-L89 "Source code on GitHub"
+[154]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/auth/index.js#L130-L146 "Source code on GitHub"
 
-[155]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/auth/index.js#L97-L99 "Source code on GitHub"
+[155]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/auth/index.js#L79-L79 "Source code on GitHub"
 
-[156]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/auth/index.js#L117-L120 "Source code on GitHub"
+[156]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/auth/index.js#L108-L108 "Source code on GitHub"
 
-[157]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/logging/index.js#L4-L4 "Source code on GitHub"
+[157]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/auth/index.js#L71-L71 "Source code on GitHub"
 
-[158]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/logging/interface.js#L17-L22 "Source code on GitHub"
+[158]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/auth/index.js#L195-L202 "Source code on GitHub"
 
-[159]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/logging/interface.js#L54-L59 "Source code on GitHub"
+[159]: https://github.com/axios/axios
 
-[160]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error
+[160]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/auth/index.js#L87-L89 "Source code on GitHub"
 
-[161]: configure
+[161]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/auth/index.js#L97-L99 "Source code on GitHub"
 
-[162]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/logging/interface.js#L44-L46 "Source code on GitHub"
+[162]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/auth/index.js#L117-L120 "Source code on GitHub"
 
-[163]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/logging/interface.js#L66-L68 "Source code on GitHub"
+[163]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/logging/index.js#L4-L4 "Source code on GitHub"
 
-[164]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/logging/interface.js#L31-L33 "Source code on GitHub"
+[164]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/logging/interface.js#L17-L22 "Source code on GitHub"
 
-[165]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/i18n/index.js#L9-L19 "Source code on GitHub"
+[165]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/logging/interface.js#L54-L59 "Source code on GitHub"
 
-[166]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/i18n/lib.js#L256-L279 "Source code on GitHub"
+[166]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error
 
-[167]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/i18n/lib.js#L131-L141 "Source code on GitHub"
+[167]: configure
 
-[168]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/i18n/lib.js#L88-L90 "Source code on GitHub"
+[168]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/logging/interface.js#L44-L46 "Source code on GitHub"
 
-[169]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/i18n/countries.js#L53-L56 "Source code on GitHub"
+[169]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/logging/interface.js#L66-L68 "Source code on GitHub"
 
-[170]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/i18n/countries.js#L33-L38 "Source code on GitHub"
+[170]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/logging/interface.js#L31-L33 "Source code on GitHub"
 
-[171]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/i18n/languages.js#L56-L59 "Source code on GitHub"
+[171]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/i18n/index.js#L9-L19 "Source code on GitHub"
 
-[172]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/i18n/languages.js#L36-L41 "Source code on GitHub"
+[172]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/i18n/lib.js#L256-L279 "Source code on GitHub"
 
-[173]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/i18n/lib.js#L153-L172 "Source code on GitHub"
+[173]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/i18n/lib.js#L131-L141 "Source code on GitHub"
 
-[174]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/i18n/lib.js#L71-L71 "Source code on GitHub"
+[174]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/i18n/lib.js#L88-L90 "Source code on GitHub"
 
-[175]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/i18n/lib.js#L181-L181 "Source code on GitHub"
+[175]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/i18n/countries.js#L53-L56 "Source code on GitHub"
 
-[176]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/i18n/lib.js#L117-L117 "Source code on GitHub"
+[176]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/i18n/countries.js#L33-L38 "Source code on GitHub"
 
-[177]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/i18n/lib.js#L197-L203 "Source code on GitHub"
+[177]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/i18n/languages.js#L56-L59 "Source code on GitHub"
 
-[178]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/i18n/injectIntlWithShim.jsx#L11-L43 "Source code on GitHub"
+[178]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/i18n/languages.js#L36-L41 "Source code on GitHub"
 
-[179]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/i18n/lib.js#L189-L189 "Source code on GitHub"
+[179]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/i18n/lib.js#L153-L172 "Source code on GitHub"
 
-[180]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/i18n/lib.js#L81-L81 "Source code on GitHub"
+[180]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/i18n/lib.js#L71-L71 "Source code on GitHub"
 
-[181]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/i18n/lib.js#L76-L76 "Source code on GitHub"
+[181]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/i18n/lib.js#L181-L181 "Source code on GitHub"
 
-[182]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/i18n/lib.js#L240-L242 "Source code on GitHub"
+[182]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/i18n/lib.js#L117-L117 "Source code on GitHub"
 
-[183]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/logging/NewRelicLoggingService.js#L26-L69 "Source code on GitHub"
+[183]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/i18n/lib.js#L197-L203 "Source code on GitHub"
 
-[184]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/logging/NewRelicLoggingService.js#L52-L68 "Source code on GitHub"
+[184]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/i18n/injectIntlWithShim.jsx#L11-L43 "Source code on GitHub"
 
-[185]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/logging/NewRelicLoggingService.js#L34-L43 "Source code on GitHub"
+[185]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/i18n/lib.js#L189-L189 "Source code on GitHub"
 
-[186]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/analytics/SegmentAnalyticsService.js#L8-L189 "Source code on GitHub"
+[186]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/i18n/lib.js#L81-L81 "Source code on GitHub"
 
-[187]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/analytics/SegmentAnalyticsService.js#L102-L106 "Source code on GitHub"
+[187]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/i18n/lib.js#L76-L76 "Source code on GitHub"
 
-[188]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/analytics/SegmentAnalyticsService.js#L159-L162 "Source code on GitHub"
+[188]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/i18n/lib.js#L240-L242 "Source code on GitHub"
 
-[189]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/analytics/SegmentAnalyticsService.js#L145-L151 "Source code on GitHub"
+[189]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/logging/NewRelicLoggingService.js#L26-L69 "Source code on GitHub"
 
-[190]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/analytics/SegmentAnalyticsService.js#L185-L188 "Source code on GitHub"
+[190]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/logging/NewRelicLoggingService.js#L52-L68 "Source code on GitHub"
 
-[191]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/analytics/SegmentAnalyticsService.js#L172-L175 "Source code on GitHub"
+[191]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/logging/NewRelicLoggingService.js#L34-L43 "Source code on GitHub"
 
-[192]: https://github.com/davidjoy/frontend-platform/blob/aeabd30b798e9d7f5bc96515774f56e8e5d6987c/src/analytics/SegmentAnalyticsService.js#L118-L136 "Source code on GitHub"
+[192]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/analytics/SegmentAnalyticsService.js#L8-L189 "Source code on GitHub"
 
-[193]: https://openedx.atlassian.net/wiki/spaces/AN/pages/13205895/Event+Design+and+Review+Process
+[193]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/analytics/SegmentAnalyticsService.js#L102-L106 "Source code on GitHub"
+
+[194]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/analytics/SegmentAnalyticsService.js#L159-L162 "Source code on GitHub"
+
+[195]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/analytics/SegmentAnalyticsService.js#L145-L151 "Source code on GitHub"
+
+[196]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/analytics/SegmentAnalyticsService.js#L185-L188 "Source code on GitHub"
+
+[197]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/analytics/SegmentAnalyticsService.js#L172-L175 "Source code on GitHub"
+
+[198]: https://github.com/davidjoy/frontend-platform/blob/38b7a4d4b67cfded270543a193e3204c7311cd3a/src/analytics/SegmentAnalyticsService.js#L118-L136 "Source code on GitHub"
+
+[199]: https://openedx.atlassian.net/wiki/spaces/AN/pages/13205895/Event+Design+and+Review+Process

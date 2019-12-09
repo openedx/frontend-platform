@@ -1,4 +1,6 @@
 /**
+ * The configuration module provides utilities for working with an application's configuration document (ConfigDocument).  This module uses `process.env` to import configuration variables from the command-line build process.  It can be dynamically extended at run-time using a `config` initialization handler.  Please see the Initialization documentation for more information on handlers and initialization phases.
+ *
  * @module Config
  */
 import { APP_CONFIG_INITIALIZED } from './initialize';
@@ -30,18 +32,22 @@ let config = {
 };
 
 /**
+ * Getter for the application configuration document.  This is synchronous and merely returns a reference to an existing object, and is thus safe to call as often as desired.  The document should have the following keys at a minimum:
  *
  * @memberof Config
- * @returns {Object}
- */
+ * @returns {ConfigDocument}
+  */
 export function getConfig() {
   return config;
 }
 
 /**
+ * Replaces the existing ConfigDocument.  This is not commonly used, but can be helpful for tests.
+ *
+ * The supplied config document will be tested with `ensureDefinedConfig` to ensure it does not have any `undefined` keys.
  *
  * @memberof Config
- * @param {Object} newConfig
+ * @param {ConfigDocument} newConfig
  */
 export function setConfig(newConfig) {
   ensureDefinedConfig(config, 'config');
@@ -50,6 +56,15 @@ export function setConfig(newConfig) {
 }
 
 /**
+ * Merges additional configuration values into the ConfigDocument returned by `getConfig`.  Will override any values that exist with the same keys.
+ *
+ * ```
+ * mergeConfig({
+ *   NEW_KEY: 'new value',
+ *   OTHER_NEW_KEY: 'other new value',
+ * });
+ *
+ * If any of the key values are `undefined`, an error will be thrown.
  *
  * @memberof Config
  * @param {Object} newConfig
@@ -61,6 +76,17 @@ export function mergeConfig(newConfig) {
 }
 
 /**
+ * A method allowing application code to indicate that particular ConfigDocument keys are required for them to function.  This is useful for diagnosing development/deployment issues, primarily, by surfacing misconfigurations early.  For instance, if the build process fails to supply an environment variable on the command-line, it's possible that one of the `process.env` variables will be undefined.  Should be used in conjunction with `mergeConfig` for custom `ConfigDocument` properties.  Requester is for informational/error reporting purposes only.
+ *
+ * ```
+ * ensureConfig(['LMS_BASE_URL', 'LOGIN_URL'], 'MySpecialComponent');
+ *
+ * // Will throw an error with:
+ * // "App configuration error: LOGIN_URL is required by MySpecialComponent."
+ * // if LOGIN_URL is undefined, for example.
+ * ```
+ *
+ * *NOTE*: `ensureConfig` waits until `APP_CONFIG_INITIALIZED` is published to verify the existence of the specified properties.  This means that this function is compatible with custom `config` phase handlers responsible for loading additional configuration data in the initialization sequence.
  *
  * @memberof Config
  * @param {Array} keys
@@ -75,3 +101,38 @@ export function ensureConfig(keys, requester = 'unspecified application code') {
     });
   });
 }
+
+/**
+ * An object describing the current application configuration.
+ *
+ * The implementation loads this document via `process.env` variables.
+ *
+ * ```
+ * {
+ *   BASE_URL: process.env.BASE_URL,
+ *   // ... other vars
+ * }
+ * ```
+ *
+ * When using Webpack (i.e., normal usage), the build process is responsible for supplying these variables via command-line environment variables.  That means they must be supplied at build time.
+ *
+ * @name ConfigDocument
+ * @property {string} ACCESS_TOKEN_COOKIE_NAME
+ * @property {string} BASE_URL The URL of the current application.
+ * @property {string} CREDENTIALS_BASE_URL
+ * @property {string} CSRF_TOKEN_API_PATH
+ * @property {string} ECOMMERCE_BASE_URL
+ * @property {string} ENVIRONMENT This is one of: development, production, or test.
+ * @property {string} LANGUAGE_PREFERENCE_COOKIE_NAME
+ * @property {string} LMS_BASE_URL
+ * @property {string} LOGIN_URL
+ * @property {string} LOGOUT_URL
+ * @property {string} MARKETING_SITE_BASE_URL
+ * @property {string} ORDER_HISTORY_URL
+ * @property {string} REFRESH_ACCESS_TOKEN_ENDPOINT
+ * @property {boolean} SECURE_COOKIES
+ * @property {string} SEGMENT_KEY
+ * @property {string} SITE_NAME
+ * @property {string} USER_INFO_COOKIE_NAME
+ * @memberof Config
+ */

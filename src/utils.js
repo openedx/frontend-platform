@@ -6,6 +6,26 @@ import camelCase from 'lodash.camelcase';
 import snakeCase from 'lodash.snakecase';
 
 /**
+ * This is the underlying function used by camelCaseObject, snakeCaseObject, and convertKeyNames above.
+ *
+ * Given an object (or array) and a modification function, will perform the function on each key it encounters on the object and its tree of children.
+ *
+ * The modification function must take a string as an argument and returns a string.
+ *
+ * Example:
+ *
+ * ```
+ * (key) => {
+ *   if (key === 'edX') {
+ *     return 'Open edX';
+ *   }
+ *   return key;
+ * }
+ * ```
+ *
+ * This function will turn any key that matches 'edX' into 'Open edX'.  All other keys will be passed through unmodified.
+ *
+ * Can accept arrays as well as objects, and will perform its conversion on any objects it finds in the array.
  *
  * @memberof Utilities
  * @param {Object} object
@@ -35,31 +55,53 @@ export function modifyObjectKeys(object, modify) {
 }
 
 /**
+ * Performs a deep conversion to camelCase on all keys in the provided object and its tree of  children.  Uses [lodash.camelcase](https://lodash.com/docs/4.17.15#camelCase) on each key.  This is commonly used to convert snake_case keys in models from a backend server into camelCase keys for use in the JavaScript client.
+ *
+ * Can accept arrays as well as objects, and will perform its conversion on any objects it finds in the array.
  *
  * @memberof Utilities
- * @param {*} object
- * @returns {Object}
+ * @param {Array|Object} object
+ * @returns {Array|Object}
  */
 export function camelCaseObject(object) {
   return modifyObjectKeys(object, camelCase);
 }
 
 /**
+ * Performs a deep conversion to snake_case on all keys in the provided object and its tree of children.  Uses [lodash.snakecase](https://lodash.com/docs/4.17.15#snakeCase) on each key.  This is commonly used to convert camelCase keys from the JavaScript app into snake_case keys expected by backend servers.
+ *
+ * Can accept arrays as well as objects, and will perform its conversion on any objects it finds in the array.
  *
  * @memberof Utilities
- * @param {*} object
- * @returns {Object}
+ * @param {Array|Object} object
+ * @returns {Array|Object}
  */
 export function snakeCaseObject(object) {
   return modifyObjectKeys(object, snakeCase);
 }
 
 /**
+ * Given a map of key-value pairs, performs a deep conversion key names in the specified object _from_ the key _to_ the value.  This is useful for updating names in an API request to the names used throughout a client application if they happen to differ.  It can also be used in the reverse - formatting names from the client application to names expected by an API.
+ *
+ * ```
+ * import { convertKeyNames } from '@edx/frontend-base';
+ *
+ * // This object can be of any shape or depth with subobjects/arrays.
+ * const myObject = {
+ *   myKey: 'my value',
+ * }
+ *
+ * const result = convertKeyNames(myObject, { myKey: 'their_key' });
+ *
+ * console.log(result) // { their_key: 'my value' }
+ * ```
+ *
+ * Can accept arrays as well as objects, and will perform its conversion on any objects it finds in the array.
  *
  * @memberof Utilities
- * @param {*} object
- * @param {*} nameMap
- * @returns {Object}
+ * @param {Array|Object} object
+ * @param {Object} nameMap
+ * @returns {Array|Object}
  */
 export function convertKeyNames(object, nameMap) {
   const transformer = key =>
@@ -69,7 +111,10 @@ export function convertKeyNames(object, nameMap) {
 }
 
 /**
+ * *Deprecated*: A method which converts the supplied query string into an object of
+key-value pairs and returns it.  Defaults to the current query string - should perform like [window.searchParams](https://developer.mozilla.org/en-US/docs/Web/API/URL/searchParams)
  *
+ * @deprecated
  * @memberof Utilities
  * @param {string} [search=global.location.search]
  * @returns {Object}
