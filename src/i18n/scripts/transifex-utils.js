@@ -31,6 +31,11 @@ function escapeDots(messageId) {
 const jsonDir = process.argv[2];
 const messageObjects = gatherJson(jsonDir);
 
+if (messageObjects.length === 0) {
+  process.exitCode = 1;
+  throw new Error('Found no messages');
+}
+
 if (process.argv[3] === '--comments') { // prepare to handle the translator notes
   const loggingPrefix = path.basename(`${__filename}`); // the name of this JS file
   const bashScriptsPath = './node_modules/reactifex/bash_scripts';
