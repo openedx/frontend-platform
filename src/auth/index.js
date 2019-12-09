@@ -216,7 +216,6 @@ export async function hydrateAuthenticatedUser() {
  * ```
  *
  * @name HttpClient
- * @
  * @property {function} get
  * @property {function} head
  * @property {function} options

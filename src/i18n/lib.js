@@ -1,11 +1,3 @@
-/**
- * The i18n module relies on react-intl and re-exports all of that package's exports.
- *
- * @module I18n
- *
- *
- */
-
 import PropTypes from 'prop-types';
 import { addLocaleData } from 'react-intl';
 import arLocale from 'react-intl/locale-data/ar';
@@ -72,6 +64,7 @@ let messages = null;
 
 /**
  *
+ * @ignore
  * @returns {LoggingService}
  *
  */
@@ -83,13 +76,13 @@ export const getLoggingService = () => loggingService;
 export const LOCALE_TOPIC = 'LOCALE';
 
 /**
- * @memberof I18n
+ * @memberof module:I18n
  */
 export const LOCALE_CHANGED = `${LOCALE_TOPIC}.CHANGED`;
 
 /**
  *
- * @memberof I18n
+ * @memberof module:I18n
  * @returns {Cookies}
  */
 export function getCookies() {
@@ -119,9 +112,11 @@ addLocaleData([
  * may be 2 or more characters.
  *
  * @param {string} code
- * @memberof I18n
+ * @memberof module:I18n
  */
-export const getPrimaryLanguageSubtag = code => code.split('-')[0];
+export function getPrimaryLanguageSubtag(code) {
+  return code.split('-')[0];
+}
 
 /**
  * Finds the closest supported locale to the one provided.  This is done in three steps:
@@ -133,9 +128,9 @@ export const getPrimaryLanguageSubtag = code => code.split('-')[0];
  *
  * @param {string} locale
  * @returns {string}
- * @memberof I18n
+ * @memberof module:I18n
  */
-export const findSupportedLocale = (locale) => {
+export function findSupportedLocale(locale) {
   if (messages[locale] !== undefined) {
     return locale;
   }
@@ -145,7 +140,7 @@ export const findSupportedLocale = (locale) => {
   }
 
   return 'en';
-};
+}
 
 /**
  * Get the locale from the cookie or, failing that, the browser setting.
@@ -155,9 +150,9 @@ export const findSupportedLocale = (locale) => {
  * @param {string} locale If a locale is provided, returns the closest supported locale. Optional.
  * @throws An error if i18n has not yet been configured.
  * @returns {string}
- * @memberof I18n
+ * @memberof module:I18n
  */
-export const getLocale = (locale) => {
+export function getLocale(locale) {
   if (messages === null) {
     throw new Error('getLocale called before configuring i18n. Call configure with messages first.');
   }
@@ -176,38 +171,42 @@ export const getLocale = (locale) => {
   // Thus the toLowerCase, for consistency.
   // https://developer.mozilla.org/en-US/docs/Web/API/NavigatorLanguage/language
   return findSupportedLocale(global.navigator.language.toLowerCase());
-};
+}
 
 /**
  * Returns messages for the provided locale, or the user's preferred locale if no argument is
  * provided.
  *
  * @param {string} [locale=getLocale()]
- * @memberof I18n
+ * @memberof module:I18n
  */
-export const getMessages = (locale = getLocale()) => messages[locale];
+export function getMessages(locale = getLocale()) {
+  return messages[locale];
+}
 
 /**
  * Determines if the provided locale is a right-to-left language.
  *
  * @param {string} locale
- * @memberof I18n
+ * @memberof module:I18n
  */
-export const isRtl = locale => rtlLocales.includes(locale);
+export function isRtl(locale) {
+  return rtlLocales.includes(locale);
+}
 
 /**
  * Handles applying the RTL stylesheet and "dir=rtl" attribute to the html tag if the current locale
  * is a RTL language.
  *
- * @memberof I18n
+ * @memberof module:I18n
  */
-export const handleRtl = () => {
+export function handleRtl() {
   if (isRtl(getLocale())) {
     global.document.getElementsByTagName('html')[0].setAttribute('dir', 'rtl');
   } else {
     global.document.getElementsByTagName('html')[0].setAttribute('dir', 'ltr');
   }
-};
+}
 
 const messagesShape = {
   ar: PropTypes.objectOf(PropTypes.string), // Arabic
@@ -242,7 +241,7 @@ const optionsShape = {
  *
  * @param {Array} [messagesArray=[]]
  * @returns {Object}
- * @memberof I18n
+ * @memberof module:I18n
  */
 export function mergeMessages(messagesArray = []) {
   return Array.isArray(messagesArray) ? merge({}, ...messagesArray) : {};
@@ -258,9 +257,9 @@ export function mergeMessages(messagesArray = []) {
  * @param {LoggingService} options.loggingService
  * @param {Object} options.config
  * @param {Object} options.messages
- * @memberof I18n
+ * @memberof module:I18n
  */
-export const configure = (options) => {
+export function configure(options) {
   PropTypes.checkPropTypes(optionsShape, options, 'property', 'i18n');
   // eslint-disable-next-line prefer-destructuring
   loggingService = options.loggingService;
@@ -283,4 +282,4 @@ export const configure = (options) => {
   }
 
   handleRtl();
-};
+}
