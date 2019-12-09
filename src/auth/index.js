@@ -12,12 +12,12 @@ import { camelCaseObject, ensureDefinedConfig } from '../utils';
 import { publish } from '../pubSub';
 
 /**
- * @memberof Auth
+ *
  */
 export const AUTHENTICATED_USER_TOPIC = 'AUTHENTICATED_USER';
 
 /**
- * @memberof Auth
+ *
  */
 export const AUTHENTICATED_USER_CHANGED = `${AUTHENTICATED_USER_TOPIC}.CHANGED`;
 
@@ -52,72 +52,71 @@ const configPropTypes = {
  * @param {string} [incomingConfig.refreshAccessTokenEndpoint]
  * @param {string} [incomingConfig.accessTokenCookieName]
  * @param {string} [incomingConfig.csrfTokenApiPath]
- * @memberof Auth
  */
-export const configure = (incomingConfig) => {
+export function configure(incomingConfig) {
   ensureDefinedConfig(incomingConfig, 'AuthService');
 
   PropTypes.checkPropTypes(configPropTypes, incomingConfig, 'config', 'AuthService');
   config = incomingConfig;
   authenticatedHttpClient = addAuthenticationToHttpClient(axios.create(), config);
-};
+}
 
 
 /**
- *
+ * @ignore
  * @returns {LoggingService}
- * @memberof Auth
  */
-export const getLoggingService = () => config.loggingService;
+export function getLoggingService() {
+  return config.loggingService;
+}
 
 /**
  * Gets the apiClient singleton which is an axios instance.
  *
  * @returns {HttpClient} Singleton. A configured axios http client
- * @memberof Auth
  */
-export const getAuthenticatedHttpClient = () => authenticatedHttpClient;
+export function getAuthenticatedHttpClient() {
+  return authenticatedHttpClient;
+}
 
 /**
  * Redirect the user to login
  *
  * @param {string} redirectUrl the url to redirect to after login
- * @memberof Auth
  */
-export const redirectToLogin = (redirectUrl = config.appBaseUrl) => {
+export function redirectToLogin(redirectUrl = config.appBaseUrl) {
   global.location.assign(`${config.loginUrl}?next=${encodeURIComponent(redirectUrl)}`);
-};
+}
 
 /**
  * Redirect the user to logout
  *
  * @param {string} redirectUrl the url to redirect to after logout
- * @memberof Auth
  */
-export const redirectToLogout = (redirectUrl = config.appBaseUrl) => {
+export function redirectToLogout(redirectUrl = config.appBaseUrl) {
   global.location.assign(`${config.logoutUrl}?redirect_url=${encodeURIComponent(redirectUrl)}`);
-};
+}
 
 /**
  * If it exists, returns the user data representing the currently authenticated user. If the user is
  * anonymous, returns null.
  *
  * @returns {UserData|null}
- * @memberof Auth
  */
-export const getAuthenticatedUser = () => authenticatedUser;
+export function getAuthenticatedUser() {
+  return authenticatedUser;
+}
 
 /**
  * Sets the authenticated user to the provided value.
  *
  * @param {UserData} authUser
  * @emits AUTHENTICATED_USER_CHANGED
- * @memberof Auth
  */
-export const setAuthenticatedUser = (authUser) => {
+export function setAuthenticatedUser(authUser) {
   authenticatedUser = authUser;
   publish(AUTHENTICATED_USER_CHANGED);
-};
+}
 
 /**
  * Reads the authenticated user's access token. Resolves to null if the user is
@@ -125,9 +124,8 @@ export const setAuthenticatedUser = (authUser) => {
  *
  * @returns {Promise<UserData>|Promise<null>} Resolves to the user's access token if they are
  * logged in.
- * @memberof Auth
  */
-export const fetchAuthenticatedUser = async () => {
+export async function fetchAuthenticatedUser() {
   const decodedAccessToken = await getJwtToken(
     config.accessTokenCookieName,
     config.refreshAccessTokenEndpoint,
@@ -143,7 +141,7 @@ export const fetchAuthenticatedUser = async () => {
   }
 
   return getAuthenticatedUser();
-};
+}
 
 /**
  * Ensures a user is authenticated. It will redirect to login when not
@@ -152,9 +150,8 @@ export const fetchAuthenticatedUser = async () => {
  * @param {string} [redirectUrl=config.appBaseUrl] to return user after login when not
  * authenticated.
  * @returns {Promise<UserData>}
- * @memberof Auth
  */
-export const ensureAuthenticatedUser = async (redirectUrl = config.appBaseUrl) => {
+export async function ensureAuthenticatedUser(redirectUrl = config.appBaseUrl) {
   await fetchAuthenticatedUser();
 
   if (getAuthenticatedUser() === null) {
@@ -176,7 +173,7 @@ export const ensureAuthenticatedUser = async (redirectUrl = config.appBaseUrl) =
   }
 
   return getAuthenticatedUser();
-};
+}
 
 /**
  * Fetches additional user account information for the authenticated user and merges it into the
@@ -190,16 +187,15 @@ export const ensureAuthenticatedUser = async (redirectUrl = config.appBaseUrl) =
  * ```
  *
  * @returns {Promise<null>}
- * @memberof Auth
  */
-export const hydrateAuthenticatedUser = async () => {
+export async function hydrateAuthenticatedUser() {
   const user = getAuthenticatedUser();
   if (user !== null) {
     const response = await authenticatedHttpClient
       .get(`${config.lmsBaseUrl}/api/user/v1/accounts/${user.username}`);
     setAuthenticatedUser({ ...user, ...camelCaseObject(response.data) });
   }
-};
+}
 
 /**
  * A configured axios client. See axios docs for more
@@ -220,6 +216,7 @@ export const hydrateAuthenticatedUser = async () => {
  * ```
  *
  * @name HttpClient
+ * @
  * @property {function} get
  * @property {function} head
  * @property {function} options
@@ -227,7 +224,6 @@ export const hydrateAuthenticatedUser = async () => {
  * @property {function} post (csrf protected)
  * @property {function} put (csrf protected)
  * @property {function} patch (csrf protected)
- * @memberof Auth
  */
 
 /**
@@ -236,5 +232,4 @@ export const hydrateAuthenticatedUser = async () => {
  * @property {string} username
  * @property {Array} roles
  * @property {boolean} administrator
- * @memberof Auth
  */

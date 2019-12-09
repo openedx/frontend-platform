@@ -1,3 +1,11 @@
+/**
+ * The i18n module relies on react-intl and re-exports all of that package's exports.
+ *
+ * @module I18n
+ *
+ *
+ */
+
 import PropTypes from 'prop-types';
 import { addLocaleData } from 'react-intl';
 import arLocale from 'react-intl/locale-data/ar';
@@ -66,12 +74,11 @@ let messages = null;
  *
  * @returns {LoggingService}
  *
- * @memberof I18n
  */
 export const getLoggingService = () => loggingService;
 
 /**
- * @memberof I18n
+ *
  */
 export const LOCALE_TOPIC = 'LOCALE';
 

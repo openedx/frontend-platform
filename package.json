@@ -9,9 +9,7 @@
   "sideEffects": false,
   "scripts": {
     "build": "make build",
-    "docs-build": "make docs-build",
-    "docs-watch": "make docs-watch",
-    "docs-lint": "make docs-lint",
+    "docs": "jsdoc -c jsdoc.json",
     "lint": "fedx-scripts eslint --ext .js --ext .jsx .",
     "snapshot": "fedx-scripts jest --updateSnapshot",
     "start": "fedx-scripts webpack-dev-server --progress",
@@ -44,6 +42,7 @@
     "enzyme": "3.10.0",
     "enzyme-adapter-react-16": "1.15.1",
     "husky": "3.0.9",
+    "minami": "^1.2.3",
     "prop-types": "15.7.2",
     "react": "16.11.0",
     "react-dom": "16.11.0",

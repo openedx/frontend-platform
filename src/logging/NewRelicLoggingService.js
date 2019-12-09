@@ -1,7 +1,7 @@
 /**
  * NewRelic will not log an error if it is too long.
  *
- * @private
+ * @ignore
  */
 export const MAX_ERROR_LENGTH = 4000;
 

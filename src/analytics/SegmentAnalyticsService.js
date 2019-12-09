@@ -2,10 +2,9 @@ import formurlencoded from 'form-urlencoded';
 import { snakeCaseObject } from '../utils';
 
 /**
- *
  * @implements {AnalyticsService}
  */
-export default class SegmentAnalyticsService {
+class SegmentAnalyticsService {
   static hasIdentifyBeenCalled = false;
 
   constructor({ httpClient, loggingService, config }) {
@@ -97,7 +96,6 @@ export default class SegmentAnalyticsService {
   /**
    * Checks that identify was first called.  Otherwise, logs error.
    *
-   * @memberof SegmentAnalyticsService
    */
   checkIdentifyCalled() {
     if (!this.hasIdentifyBeenCalled) {
@@ -113,7 +111,6 @@ export default class SegmentAnalyticsService {
    * @param {string} eventName (event_type on backend, but named to match Segment api)
    * @param {Object} properties (event on backend, but named properties to match Segment api)
    * @returns {Promise} The promise returned by HttpClient.post.
-   * @memberof SegmentAnalyticsService
    */
   sendTrackingLogEvent(eventName, properties) {
     const snakeEventData = snakeCaseObject(properties, { deep: true });
@@ -140,7 +137,6 @@ export default class SegmentAnalyticsService {
    *
    * @param {string} userId
    * @param {*} [traits]
-   * @memberof SegmentAnalyticsService
    */
   identifyAuthenticatedUser(userId, traits) {
     if (!userId) {
@@ -154,7 +150,6 @@ export default class SegmentAnalyticsService {
    * Send anonymous identify call to Segment's identify.
    *
    * @param {*} [traits]
-   * @memberof SegmentAnalyticsService
    */
   identifyAnonymousUser(traits) {
     global.analytics.identify(traits);
@@ -167,7 +162,6 @@ export default class SegmentAnalyticsService {
    *
    * @param {*} eventName
    * @param {*} [properties]
-   * @memberof SegmentAnalyticsService
    */
   sendTrackEvent(eventName, properties) {
     this.checkIdentifyCalled();
@@ -180,10 +174,11 @@ export default class SegmentAnalyticsService {
    * @param {*} [name] If only one string arg provided, assumed to be name.
    * @param {*} [category] Name is required to pass a category.
    * @param {*} [properties]
-   * @memberof SegmentAnalyticsService
    */
   sendPageEvent(category, name, properties) {
     this.checkIdentifyCalled();
     global.analytics.page(category, name, properties);
   }
 }
+
+export default SegmentAnalyticsService;

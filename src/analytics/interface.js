@@ -1,3 +1,6 @@
+/**
+ * @module Analytics
+ */
 import PropTypes from 'prop-types';
 
 const optionsShape = {
@@ -23,7 +26,6 @@ let service;
 
 /**
  *
- * @memberof Analytics
  * @param {class} AnalyticsService
  * @param {*} options
  * @returns {AnalyticsService}
@@ -37,7 +39,6 @@ export function configure(AnalyticsService, options) {
 
 /**
  *
- * @memberof Analytics
  * @param {*} eventName
  * @param {*} properties
  * @returns {Promise}
@@ -51,7 +52,6 @@ export function sendTrackingLogEvent(eventName, properties) {
  *
  * @param {*} userId
  * @param {*} traits
- * @memberof Analytics
  */
 export function identifyAuthenticatedUser(userId, traits) {
   service.identifyAuthenticatedUser(userId, traits);
@@ -61,7 +61,6 @@ export function identifyAuthenticatedUser(userId, traits) {
  *
  *
  * @param {*} traits
- * @memberof Analytics
  */
 export function identifyAnonymousUser(traits) {
   service.identifyAnonymousUser(traits);
@@ -72,7 +71,6 @@ export function identifyAnonymousUser(traits) {
  *
  * @param {*} eventName
  * @param {*} properties
- * @memberof Analytics
  */
 export function sendTrackEvent(eventName, properties) {
   service.sendTrackEvent(eventName, properties);
@@ -84,7 +82,6 @@ export function sendTrackEvent(eventName, properties) {
  * @param {*} category
  * @param {*} name
  * @param {*} properties
- * @memberof Analytics
  */
 export function sendPageEvent(category, name, properties) {
   service.sendPageEvent(category, name, properties);
@@ -94,7 +91,6 @@ export function sendPageEvent(category, name, properties) {
  *
  *
  * @returns {AnalyticsService}
- * @memberof Analytics
  */
 export function getAnalyticsService() {
   if (!service) {
@@ -106,8 +102,17 @@ export function getAnalyticsService() {
 
 /**
  *
- * @memberof Analytics
  */
 export function resetAnalyticsService() {
   service = null;
 }
+
+/**
+ * @name AnalyticsService
+ * @interface
+ * @borrows identifyAnonymousUser as identifyAnonymousUser
+ * @borrows identifyAuthenticatedUser as identifyAuthenticatedUser
+ * @borrows sendPageEvent as sendPageEvent
+ * @borrows sendTrackEvent as sendTrackEvent
+ * @borrows sendTrackingLogEvent as sendTrackingLogEvent
+ */

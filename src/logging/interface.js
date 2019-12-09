@@ -1,3 +1,7 @@
+/**
+ * @module Logging
+ */
+
 import PropTypes from 'prop-types';
 
 const optionsShape = {
@@ -12,7 +16,7 @@ const serviceShape = {
 let service = null;
 
 /**
- * @memberof Logging
+ *
  */
 export function configure(LoggingService, options) {
   PropTypes.checkPropTypes(optionsShape, options, 'property', 'Logging');
@@ -24,7 +28,6 @@ export function configure(LoggingService, options) {
 /**
  * Logs a message to the 'info' log level.
  *
- * @memberof Logging
  * @param {string} message
  * @param {Object} [customAttributes={}]
  */
@@ -36,7 +39,6 @@ export function logInfo(message, customAttributes) {
  * Logs a message to the 'error' log level.  Can accept custom attributes as a property of the error
  * object, or as an optional second parameter.
  *
- * @memberof Logging
  * @param {string|Error} error
  * @param {Object} [error.customAttributes={}]
  * @param {Object} [customAttributes={}]
@@ -47,7 +49,6 @@ export function logError(error, customAttributes) {
 
 /**
  *
- * @memberof Logging
  * @throws {Error} Thrown if the logging service has not yet been configured via {@link configure}.
  * @returns {LoggingService}
  */
@@ -61,7 +62,6 @@ export function getLoggingService() {
 /**
  * Sets the configured logging service back to null.
  *
- * @memberof Logging
  */
 export function resetLoggingService() {
   service = null;
@@ -70,7 +70,6 @@ export function resetLoggingService() {
 /**
  * @name LoggingService
  * @interface
- * @property {function} logError
- * @property {function} logInfo
- * @memberof Logging
+ * @borrows logError as logError
+ * @borrows logInfo as logInfo
  */
