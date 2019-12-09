@@ -4,4 +4,5 @@
 coverage
 dist
 node_modules
-/docs/_API-body.md
+/docs/api
+
