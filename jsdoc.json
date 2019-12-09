@@ -29,6 +29,7 @@
       "destination": "./docs/api",
       "encoding": "utf8",
       "private": true,
-      "recurse": true
+      "recurse": true,
+      "template": "docs/template/edx"
   }
 }
