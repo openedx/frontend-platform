@@ -14,7 +14,7 @@ const createRetryInterceptor = (options = {}) => {
     shouldRetry = error => !error.response && error.config,
     // By default only retry 4 times, a per-request maxRetries can be
     // specified in request config.
-    defaultMaxRetries = 4,
+    defaultMaxRetries = 2,
   } = options;
 
   const interceptor = async (error) => {
