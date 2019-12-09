@@ -20,7 +20,7 @@ import PubSub from 'pubsub-js';
 
 /**
  *
- * @memberof PubSub
+ * @memberof module:PubSub
  * @param {string} type
  * @param {function} callback
  * @returns {string} A subscription token that can be passed to `unsubscribe`
@@ -31,7 +31,7 @@ export function subscribe(type, callback) {
 
 /**
  *
- * @memberof PubSub
+ * @memberof module:PubSub
  * @param {string} token A subscription token provided by `subscribe`
  */
 export function unsubscribe(token) {
@@ -40,7 +40,7 @@ export function unsubscribe(token) {
 
 /**
  *
- * @memberof PubSub
+ * @memberof module:PubSub
  * @param {string} type
  * @param {Object} data
  */

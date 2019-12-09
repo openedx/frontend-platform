@@ -31,7 +31,7 @@ import snakeCase from 'lodash.snakecase';
  * Can accept arrays as well as objects, and will perform its conversion on any objects it finds in
  * the array.
  *
- * @memberof Utilities
+ * @memberof module:Utilities
  * @param {Object} object
  * @param {function} modify
  * @returns {Object}
@@ -67,7 +67,7 @@ export function modifyObjectKeys(object, modify) {
  * Can accept arrays as well as objects, and will perform its conversion on any objects it finds in
  * the array.
  *
- * @memberof Utilities
+ * @memberof module:Utilities
  * @param {Array|Object} object
  * @returns {Array|Object}
  */
@@ -84,7 +84,7 @@ export function camelCaseObject(object) {
  * Can accept arrays as well as objects, and will perform its conversion on any objects it finds in
  * the array.
  *
- * @memberof Utilities
+ * @memberof module:Utilities
  * @param {Array|Object} object
  * @returns {Array|Object}
  */
@@ -114,7 +114,7 @@ export function snakeCaseObject(object) {
  * Can accept arrays as well as objects, and will perform its conversion on any objects it finds in
  * the array.
  *
- * @memberof Utilities
+ * @memberof module:Utilities
  * @param {Array|Object} object
  * @param {Object} nameMap
  * @returns {Array|Object}
@@ -132,7 +132,7 @@ export function convertKeyNames(object, nameMap) {
  * [window.searchParams](https://developer.mozilla.org/en-US/docs/Web/API/URL/searchParams)
  *
  * @deprecated
- * @memberof Utilities
+ * @memberof module:Utilities
  * @param {string} [search=global.location.search]
  * @returns {Object}
  */
@@ -158,7 +158,7 @@ export function getQueryParameters(search = global.location.search) {
  *
  * Keys that are intended to be falsy should be defined using null, 0, false, etc.
  *
- * @memberof Utilities
+ * @memberof module:Utilities
  * @param {Object} object
  * @param {string} requester A human-readable identifier for the code which called this function.
  * Used when throwing errors to aid in debugging.

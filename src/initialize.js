@@ -32,13 +32,12 @@ export const APP_INIT_ERROR = `${APP_TOPIC}.INIT_ERROR`;
  * package.  Applications are encouraged to use this history object, rather than creating their own,
  * as behavior may be undefined when managing history via multiple mechanisms/instances.
  *
- * @memberof Utilities
+ * @memberof module:Utilities
  */
 export const history = createBrowserHistory();
 
 /**
- * @memberof Initialization
- * @exports
+ * @memberof module:Initialization
  * @param {*} error
  */
 export async function initError(error) {
@@ -54,7 +53,7 @@ export async function initError(error) {
  * - Optionally loading additional user information via the application's user account data
  * endpoint.
  *
- * @memberof Initialization
+ * @memberof module:Initialization
  * @param {boolean} requireUser Whether or not we should redirect to login if a user is not
  * authenticated.
  * @param {boolean} hydrateUser Whether or not we should fetch additional user account data.
@@ -82,7 +81,7 @@ export async function auth(requireUser, hydrateUser) {
  * service.  This is a pre-requisite for sending analytics events, thus, we do it during the
  * initialization sequence so that analytics is ready once the application's UI code starts to load.
  *
- * @memberof Initialization
+ * @memberof module:Initialization
  */
 export async function analytics() {
   const authenticatedUser = getAuthenticatedUser();
@@ -112,7 +111,7 @@ function applyOverrideHandlers(overrides) {
  * Invokes the application initialization sequence.
  *
  *
- * @memberof Initialization
+ * @memberof module:Initialization
  * @param {Object} [options]
  * @param {*} [options.loggingService=NewRelicLoggingService] The `LoggingService` implementation
  * to use.
