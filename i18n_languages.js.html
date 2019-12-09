@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: i18n/languages.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: i18n/languages.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import LANGUAGES, { langs as languageLangs } from '@cospired/i18n-iso-languages';
+
+import { getPrimaryLanguageSubtag } from './lib';
+
+/*
+ * LANGUAGE LISTS
+ *
+ * Lists of language names localized in supported languages.
+ *
+ * TODO: When we start dynamically loading translations only for the current locale, change this.
+ * TODO: Also note that a bunch of languages are missing here. They're present but commented out
+ * for reference. That's because they're not implemented in this library.  If you read this and it's
+ * been a while, go check and see if that's changed!
+ */
+
+// LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/ar.json'));
+LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/en.json'));
+LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/es.json'));
+LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/fr.json'));
+// LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/zh.json'));
+// LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/ca.json'));
+// LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/he.json'));
+// LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/id.json'));
+// LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/ko.json'));
+LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/pl.json'));
+LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/pt.json'));
+// LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/ru.json'));
+// LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/th.json'));
+// LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/uk.json'));
+
+/**
+ * Provides a lookup table of language IDs to language names for the current locale.
+ *
+ * @memberof I18n
+ */
+export const getLanguageMessages = (locale) => {
+  const primaryLanguageSubtag = getPrimaryLanguageSubtag(locale);
+  const languageCode = languageLangs().includes(primaryLanguageSubtag) ? primaryLanguageSubtag : 'en';
+
+  return LANGUAGES.getNames(languageCode);
+};
+
+/**
+ * Provides a list of languages represented as objects of the following shape:
+ *
+ * {
+ *   key, // The ID of the language
+ *   name // The localized name of the language
+ * }
+ *
+ * TODO: ARCH-878: The list should be sorted alphabetically in the current locale.
+ * This is useful for populating dropdowns.
+ *
+ * @memberof I18n
+ */
+export const getLanguageList = (locale) => {
+  const languageMessages = getLanguageMessages(locale);
+  return Object.entries(languageMessages).map(([code, name]) => ({ code, name }));
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Analytics.html">Analytics</a></li><li><a href="module-Auth.html">Auth</a></li><li><a href="module-Config.html">Config</a></li><li><a href="module-I18n.html">I18n</a></li><li><a href="module-Initialization.html">Initialization</a></li><li><a href="module-Logging.html">Logging</a></li><li><a href="module-PubSub.html">PubSub</a></li><li><a href="module-React.html">React</a></li><li><a href="module-Utilities.html">Utilities</a></li></ul><h3>Classes</h3><ul><li><a href="module-I18n-FormattedDate.html">FormattedDate</a></li><li><a href="module-I18n-FormattedMessage.html">FormattedMessage</a></li><li><a href="module-I18n-FormattedNumber.html">FormattedNumber</a></li><li><a href="module-I18n-FormattedPlural.html">FormattedPlural</a></li><li><a href="module-I18n-FormattedRelative.html">FormattedRelative</a></li><li><a href="module-I18n-FormattedTime.html">FormattedTime</a></li><li><a href="module-I18n-IntlProvider.html">IntlProvider</a></li><li><a href="NewRelicLoggingService.html">NewRelicLoggingService</a></li><li><a href="SegmentAnalyticsService.html">SegmentAnalyticsService</a></li></ul><h3>Interfaces</h3><ul><li><a href="AnalyticsService.html">AnalyticsService</a></li><li><a href="LoggingService.html">LoggingService</a></li></ul><h3>Global</h3><ul><li><a href="global.html#HttpClient">HttpClient</a></li><li><a href="global.html#UserData">UserData</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Mon Dec 09 2019 21:31:16 GMT+0000 (Coordinated Universal Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

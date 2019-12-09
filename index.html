@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Home</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Home</h1>
+
+    
+
+
+
+    
+
+
+    <h3>@edx/frontend-platform 1.0.0-semantically-released</h3>
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+    <section>
+        <article><h1>frontend-platform</h1>
+<p><a href="https://travis-ci.org/edx/frontend-platform"><img src="https://api.travis-ci.org/edx/frontend-platform.svg?branch=master" alt="Build Status"></a>
+<a href="https://codecov.io/gh/edx/frontend-platform"><img src="https://img.shields.io/codecov/c/github/edx/frontend-platform" alt="Codecov"></a>
+<a href="https://www.npmjs.com/package/@edx/frontend-platform"><img src="https://img.shields.io/npm/v/@edx/frontend-platform.svg" alt="NPM Version"></a>
+<a href="https://www.npmjs.com/package/@edx/frontend-platform"><img src="https://img.shields.io/npm/dt/@edx/frontend-platform.svg" alt="npm_downloads"></a>
+<a href="https://github.com/edx/frontend-platform/blob/master/LICENSE"><img src="https://img.shields.io/npm/l/@edx/frontend-platform.svg" alt="license"></a>
+<a href="https://github.com/semantic-release/semantic-release"><img src="https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg" alt="semantic release"></a></p>
+<h2>Overview</h2>
+<p>frontend-platform is a modest application framework for Open edX micro-frontend applications and their supporting libraries. It provides a number of foundational services that all Open edX micro-frontends should have:</p>
+<ul>
+<li>Analytics</li>
+<li>Logging</li>
+<li>Authenticated API client (auth)</li>
+<li>Internationalization (i18n)</li>
+</ul>
+<p>In addition, frontend-platform provides an extensible application initialization lifecycle to help manage the configuration of the above services, freeing application developers to focus on feature development.</p>
+<h2>Architecture</h2>
+<p>The four foundational services listed above (analytics, auth, i18n, and logging) are provided as imports to applications via frontend-platform's API layer.  The initialization sequence creates an instance of each service and exposes its methods as functional exports, creating a layer of abstraction between service implementations and their usage in application code.</p>
+<p>Each type of service has a documented API contract which service implementations must fulfill. This allows different service implementations to be used as necessary without updates to consuming applications.</p>
+<h3>Application Initialization</h3>
+<p>frontend-platform provides an <code>initialize()</code> function which bootstraps and configures an application.  The <code>initialize()</code> function uses a set of <a href="https://en.wikipedia.org/wiki/Convention_over_configuration">sensible defaults</a> unless otherwise specified, bootstrapping the application with services reflecting Open edX's best practices around analytics, authentication, internationalization, and logging.</p>
+<p>The initialization process proceeds in a series of phases, giving the initializing application code opportunities to hook into the process and do custom setup as desired:</p>
+<ul>
+<li>Before initialization</li>
+<li>Pub/Sub initialized</li>
+<li>Environment config document loaded</li>
+<li>Logging service initialized</li>
+<li>Authentication service initialized</li>
+<li>Analytics service initialized</li>
+<li>Internationalization service initialized</li>
+<li>Application ready</li>
+</ul>
+<p>Most applications won't need to do anything special at all.</p>
+<h3>Service interfaces</h3>
+<p>Each service (analytics, auth, i18n, logging) provided by frontend-platform has a API contract which all implementations of that service are guaranteed to fulfill.  Applications that use frontend-platform can use its configured services via a convenient set of exported functions.  An application that wants to use the service interfaces need only initialize them via the initialize() function, optionally providing custom service interfaces as desired (you probably won't need to).</p>
+<p><img src="https://github.com/edx/frontend-platform/blob/master/docs/service-interface.png" alt="Service interface"></p>
+<h3>Service implementations</h3>
+<p>This repository contains default service implementations for convenience.  These implementations are co-located with their consuming service interfaces for ease of development, though the two should remain <em>strictly</em> modular and separate.</p>
+<p>The included service implementations are:</p>
+<ul>
+<li>New Relic (logging)</li>
+<li>Segment (analytics)</li>
+<li>Axios/JWT (auth)</li>
+<li>React Intl (i18n)</li>
+</ul>
+<p>NOTE: As of this writing, both authentication and i18n are <em>not</em> configurable.  The <code>initialize()</code> function does not allow applications to supply alternate auth/i18n implementations; this is because the interface and implementations for auth and i18n have not yet been separated and modularized.</p></article>
+    </section>
+
+
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Analytics.html">Analytics</a></li><li><a href="module-Auth.html">Auth</a></li><li><a href="module-Config.html">Config</a></li><li><a href="module-I18n.html">I18n</a></li><li><a href="module-Initialization.html">Initialization</a></li><li><a href="module-Logging.html">Logging</a></li><li><a href="module-PubSub.html">PubSub</a></li><li><a href="module-React.html">React</a></li><li><a href="module-Utilities.html">Utilities</a></li></ul><h3>Classes</h3><ul><li><a href="module-I18n-FormattedDate.html">FormattedDate</a></li><li><a href="module-I18n-FormattedMessage.html">FormattedMessage</a></li><li><a href="module-I18n-FormattedNumber.html">FormattedNumber</a></li><li><a href="module-I18n-FormattedPlural.html">FormattedPlural</a></li><li><a href="module-I18n-FormattedRelative.html">FormattedRelative</a></li><li><a href="module-I18n-FormattedTime.html">FormattedTime</a></li><li><a href="module-I18n-IntlProvider.html">IntlProvider</a></li><li><a href="NewRelicLoggingService.html">NewRelicLoggingService</a></li><li><a href="SegmentAnalyticsService.html">SegmentAnalyticsService</a></li></ul><h3>Interfaces</h3><ul><li><a href="AnalyticsService.html">AnalyticsService</a></li><li><a href="LoggingService.html">LoggingService</a></li></ul><h3>Global</h3><ul><li><a href="global.html#HttpClient">HttpClient</a></li><li><a href="global.html#UserData">UserData</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Mon Dec 09 2019 21:31:16 GMT+0000 (Coordinated Universal Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

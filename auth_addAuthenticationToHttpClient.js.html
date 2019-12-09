@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: auth/addAuthenticationToHttpClient.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: auth/addAuthenticationToHttpClient.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import {
+  csrfTokenProviderInterceptor,
+  jwtTokenProviderInterceptor,
+  processAxiosRequestErrorInterceptor,
+} from './axiosInterceptors';
+
+/**
+ * Adds authentication defaults and interceptors to an http client instance.
+ *
+ * @param {HttpClient} newHttpClient
+ * @param {Object} config
+ * @param {string} [config.refreshAccessTokenEndpoint]
+ * @param {string} [config.accessTokenCookieName]
+ * @param {string} [config.csrfTokenApiPath]
+ * @returns {HttpClient} Singleton. A configured axios http client
+ * @memberof module:Auth
+ */
+export default function addAuthenticationToHttpClient(newHttpClient, config) {
+  const httpClient = Object.create(newHttpClient);
+  // Set withCredentials to true. Enables cross-site Access-Control requests
+  // to be made using cookies, authorization headers or TLS client
+  // certificates. More on MDN:
+  // https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/withCredentials
+  httpClient.defaults.withCredentials = true;
+
+  // Axios interceptors
+
+  // The JWT access token interceptor attempts to refresh the user's jwt token
+  // before any request unless the isPublic flag is set on the request config.
+  const refreshAccessTokenInterceptor = jwtTokenProviderInterceptor({
+    tokenCookieName: config.accessTokenCookieName,
+    tokenRefreshEndpoint: config.refreshAccessTokenEndpoint,
+    shouldSkip: axiosRequestConfig => axiosRequestConfig.isPublic,
+  });
+  // The CSRF token intercepter fetches and caches a csrf token for any post,
+  // put, patch, or delete request. That token is then added to the request
+  // headers.
+  const attachCsrfTokenInterceptor = csrfTokenProviderInterceptor({
+    csrfTokenApiPath: config.csrfTokenApiPath,
+    shouldSkip: (axiosRequestConfig) => {
+      const { method, isCsrfExempt } = axiosRequestConfig;
+      const CSRF_PROTECTED_METHODS = ['post', 'put', 'patch', 'delete'];
+      return isCsrfExempt || !CSRF_PROTECTED_METHODS.includes(method);
+    },
+  });
+
+  // Request interceptors: Axios runs the interceptors in reverse order from
+  // how they are listed. After fetching csrf tokens no longer require jwt
+  // authentication, it won't matter which happens first. This change is
+  // coming soon in edx-platform. Nov. 2019
+  httpClient.interceptors.request.use(attachCsrfTokenInterceptor);
+  httpClient.interceptors.request.use(refreshAccessTokenInterceptor);
+
+  // Response interceptor: moves axios response error data into the error
+  // object at error.customAttributes
+  httpClient.interceptors.response.use(
+    response => response,
+    processAxiosRequestErrorInterceptor,
+  );
+
+  return httpClient;
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Analytics.html">Analytics</a></li><li><a href="module-Auth.html">Auth</a></li><li><a href="module-Config.html">Config</a></li><li><a href="module-I18n.html">I18n</a></li><li><a href="module-Initialization.html">Initialization</a></li><li><a href="module-Logging.html">Logging</a></li><li><a href="module-PubSub.html">PubSub</a></li><li><a href="module-React.html">React</a></li><li><a href="module-Utilities.html">Utilities</a></li></ul><h3>Classes</h3><ul><li><a href="module-I18n-FormattedDate.html">FormattedDate</a></li><li><a href="module-I18n-FormattedMessage.html">FormattedMessage</a></li><li><a href="module-I18n-FormattedNumber.html">FormattedNumber</a></li><li><a href="module-I18n-FormattedPlural.html">FormattedPlural</a></li><li><a href="module-I18n-FormattedRelative.html">FormattedRelative</a></li><li><a href="module-I18n-FormattedTime.html">FormattedTime</a></li><li><a href="module-I18n-IntlProvider.html">IntlProvider</a></li><li><a href="NewRelicLoggingService.html">NewRelicLoggingService</a></li><li><a href="SegmentAnalyticsService.html">SegmentAnalyticsService</a></li></ul><h3>Interfaces</h3><ul><li><a href="AnalyticsService.html">AnalyticsService</a></li><li><a href="LoggingService.html">LoggingService</a></li></ul><h3>Global</h3><ul><li><a href="global.html#HttpClient">HttpClient</a></li><li><a href="global.html#UserData">UserData</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Mon Dec 09 2019 21:31:16 GMT+0000 (Coordinated Universal Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

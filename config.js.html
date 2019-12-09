@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: config.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: config.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * The configuration module provides utilities for working with an application's configuration
+ * document (ConfigDocument).  This module uses `process.env` to import configuration variables
+ * from the command-line build process.  It can be dynamically extended at run-time using a
+ * `config` initialization handler.  Please see the Initialization documentation for more
+ * information on handlers and initialization phases.
+ *
+ * @module Config
+ */
+import { APP_CONFIG_INITIALIZED } from './initialize';
+import { publish, subscribe } from './pubSub';
+import { ensureDefinedConfig } from './utils';
+
+export const CONFIG_TOPIC = 'CONFIG';
+export const CONFIG_CHANGED = `${CONFIG_TOPIC}.CHANGED`;
+
+const ENVIRONMENT = process.env.NODE_ENV;
+let config = {
+  ACCESS_TOKEN_COOKIE_NAME: process.env.ACCESS_TOKEN_COOKIE_NAME,
+  BASE_URL: process.env.BASE_URL,
+  CREDENTIALS_BASE_URL: process.env.CREDENTIALS_BASE_URL,
+  CSRF_TOKEN_API_PATH: process.env.CSRF_TOKEN_API_PATH,
+  ECOMMERCE_BASE_URL: process.env.ECOMMERCE_BASE_URL,
+  ENVIRONMENT,
+  LANGUAGE_PREFERENCE_COOKIE_NAME: process.env.LANGUAGE_PREFERENCE_COOKIE_NAME,
+  LMS_BASE_URL: process.env.LMS_BASE_URL,
+  LOGIN_URL: process.env.LOGIN_URL,
+  LOGOUT_URL: process.env.LOGOUT_URL,
+  MARKETING_SITE_BASE_URL: process.env.MARKETING_SITE_BASE_URL,
+  ORDER_HISTORY_URL: process.env.ORDER_HISTORY_URL,
+  REFRESH_ACCESS_TOKEN_ENDPOINT: process.env.REFRESH_ACCESS_TOKEN_ENDPOINT,
+  SECURE_COOKIES: ENVIRONMENT !== 'development',
+  SEGMENT_KEY: process.env.SEGMENT_KEY,
+  SITE_NAME: process.env.SITE_NAME,
+  USER_INFO_COOKIE_NAME: process.env.USER_INFO_COOKIE_NAME,
+};
+
+/**
+ * Getter for the application configuration document.  This is synchronous and merely returns a
+ * reference to an existing object, and is thus safe to call as often as desired.  The document
+ * should have the following keys at a minimum:
+ *
+ * @memberof module:Config
+ * @returns {ConfigDocument}
+  */
+export function getConfig() {
+  return config;
+}
+
+/**
+ * Replaces the existing ConfigDocument.  This is not commonly used, but can be helpful for tests.
+ *
+ * The supplied config document will be tested with `ensureDefinedConfig` to ensure it does not
+ * have any `undefined` keys.
+ *
+ * @memberof module:Config
+ * @param {ConfigDocument} newConfig
+ */
+export function setConfig(newConfig) {
+  ensureDefinedConfig(config, 'config');
+  config = newConfig;
+  publish(CONFIG_CHANGED);
+}
+
+/**
+ * Merges additional configuration values into the ConfigDocument returned by `getConfig`.  Will
+ * override any values that exist with the same keys.
+ *
+ * ```
+ * mergeConfig({
+ *   NEW_KEY: 'new value',
+ *   OTHER_NEW_KEY: 'other new value',
+ * });
+ *
+ * If any of the key values are `undefined`, an error will be thrown.
+ *
+ * @memberof module:Config
+ * @param {Object} newConfig
+ */
+export function mergeConfig(newConfig) {
+  ensureDefinedConfig(newConfig, 'ProcessEnvConfigService');
+  config = Object.assign(config, newConfig);
+  publish(CONFIG_CHANGED);
+}
+
+/**
+ * A method allowing application code to indicate that particular ConfigDocument keys are required
+ * for them to function.  This is useful for diagnosing development/deployment issues, primarily,
+ * by surfacing misconfigurations early.  For instance, if the build process fails to supply an
+ * environment variable on the command-line, it's possible that one of the `process.env` variables
+ * will be undefined.  Should be used in conjunction with `mergeConfig` for custom `ConfigDocument`
+ * properties.  Requester is for informational/error reporting purposes only.
+ *
+ * ```
+ * ensureConfig(['LMS_BASE_URL', 'LOGIN_URL'], 'MySpecialComponent');
+ *
+ * // Will throw an error with:
+ * // "App configuration error: LOGIN_URL is required by MySpecialComponent."
+ * // if LOGIN_URL is undefined, for example.
+ * ```
+ *
+ * *NOTE*: `ensureConfig` waits until `APP_CONFIG_INITIALIZED` is published to verify the existence
+ * of the specified properties.  This means that this function is compatible with custom `config`
+ * phase handlers responsible for loading additional configuration data in the initialization
+ * sequence.
+ *
+ * @memberof module:Config
+ * @param {Array} keys
+ * @param {string} [requester='unspecified application code']
+ */
+export function ensureConfig(keys, requester = 'unspecified application code') {
+  subscribe(APP_CONFIG_INITIALIZED, () => {
+    keys.forEach((key) => {
+      if (config[key] === undefined) {
+        throw new Error(`App configuration error: ${key} is required by ${requester}.`);
+      }
+    });
+  });
+}
+
+/**
+ * An object describing the current application configuration.
+ *
+ * The implementation loads this document via `process.env` variables.
+ *
+ * ```
+ * {
+ *   BASE_URL: process.env.BASE_URL,
+ *   // ... other vars
+ * }
+ * ```
+ *
+ * When using Webpack (i.e., normal usage), the build process is responsible for supplying these
+ * variables via command-line environment variables.  That means they must be supplied at build
+ * time.
+ *
+ * @name ConfigDocument
+ * @property {string} ACCESS_TOKEN_COOKIE_NAME
+ * @property {string} BASE_URL The URL of the current application.
+ * @property {string} CREDENTIALS_BASE_URL
+ * @property {string} CSRF_TOKEN_API_PATH
+ * @property {string} ECOMMERCE_BASE_URL
+ * @property {string} ENVIRONMENT This is one of: development, production, or test.
+ * @property {string} LANGUAGE_PREFERENCE_COOKIE_NAME
+ * @property {string} LMS_BASE_URL
+ * @property {string} LOGIN_URL
+ * @property {string} LOGOUT_URL
+ * @property {string} MARKETING_SITE_BASE_URL
+ * @property {string} ORDER_HISTORY_URL
+ * @property {string} REFRESH_ACCESS_TOKEN_ENDPOINT
+ * @property {boolean} SECURE_COOKIES
+ * @property {string} SEGMENT_KEY
+ * @property {string} SITE_NAME
+ * @property {string} USER_INFO_COOKIE_NAME
+ * @memberof module:Config
+ */
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Analytics.html">Analytics</a></li><li><a href="module-Auth.html">Auth</a></li><li><a href="module-Config.html">Config</a></li><li><a href="module-I18n.html">I18n</a></li><li><a href="module-Initialization.html">Initialization</a></li><li><a href="module-Logging.html">Logging</a></li><li><a href="module-PubSub.html">PubSub</a></li><li><a href="module-React.html">React</a></li><li><a href="module-Utilities.html">Utilities</a></li></ul><h3>Classes</h3><ul><li><a href="module-I18n-FormattedDate.html">FormattedDate</a></li><li><a href="module-I18n-FormattedMessage.html">FormattedMessage</a></li><li><a href="module-I18n-FormattedNumber.html">FormattedNumber</a></li><li><a href="module-I18n-FormattedPlural.html">FormattedPlural</a></li><li><a href="module-I18n-FormattedRelative.html">FormattedRelative</a></li><li><a href="module-I18n-FormattedTime.html">FormattedTime</a></li><li><a href="module-I18n-IntlProvider.html">IntlProvider</a></li><li><a href="NewRelicLoggingService.html">NewRelicLoggingService</a></li><li><a href="SegmentAnalyticsService.html">SegmentAnalyticsService</a></li></ul><h3>Interfaces</h3><ul><li><a href="AnalyticsService.html">AnalyticsService</a></li><li><a href="LoggingService.html">LoggingService</a></li></ul><h3>Global</h3><ul><li><a href="global.html#HttpClient">HttpClient</a></li><li><a href="global.html#UserData">UserData</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Mon Dec 09 2019 21:31:16 GMT+0000 (Coordinated Universal Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
