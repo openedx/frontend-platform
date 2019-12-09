@@ -16,7 +16,14 @@
       "cleverLinks": false,
       "monospaceLinks": true,
       "useLongnameInNav": false,
-      "showInheritedInNav": true
+      "showInheritedInNav": true,
+      "default": {
+        "staticFiles": {
+          "include": [
+              "./service-interface.png"
+          ]
+        }
+      }
   },
   "opts": {
       "destination": "./docs/api",

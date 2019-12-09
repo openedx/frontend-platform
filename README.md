@@ -11,12 +11,12 @@
 
 frontend-platform is a modest application framework for Open edX micro-frontend applications and their supporting libraries. It provides a number of foundational services that all Open edX micro-frontends should have:
 
-- Analytics 
+- Analytics
 - Logging
 - Authenticated API client (auth)
 - Internationalization (i18n)
 
-In addition, frontend-platform provides an extensible application initialization lifecycle to help manage the configuration of the above services, freeing application developers to focus on feature development.  
+In addition, frontend-platform provides an extensible application initialization lifecycle to help manage the configuration of the above services, freeing application developers to focus on feature development.
 
 ## Architecture
 
@@ -37,19 +37,19 @@ The initialization process proceeds in a series of phases, giving the initializi
 - Authentication service initialized
 - Analytics service initialized
 - Internationalization service initialized
-- Application ready 
+- Application ready
 
 Most applications won't need to do anything special at all.
 
 ### Service interfaces
 
-Each service (analytics, auth, i18n, logging) provided by frontend-platform has a API contract which all implementations of that service are guaranteed to fulfill.  Applications that use frontend-platform can use its configured services via a convenient set of exported functions.  An application that wants to use the service interfaces need only initialize them via the initialize() function, optionally providing custom service interfaces as desired (you probably won't need to).  
+Each service (analytics, auth, i18n, logging) provided by frontend-platform has a API contract which all implementations of that service are guaranteed to fulfill.  Applications that use frontend-platform can use its configured services via a convenient set of exported functions.  An application that wants to use the service interfaces need only initialize them via the initialize() function, optionally providing custom service interfaces as desired (you probably won't need to).
 
-![Service interface](https://github.com/edx/frontend-platform/blob/master/docs/service-interface.png)
+![Service interface](service-interface.png)
 
 ### Service implementations
 
-This repository contains default service implementations for convenience.  These implementations are co-located with their consuming service interfaces for ease of development, though the two should remain _strictly_ modular and separate.  
+This repository contains default service implementations for convenience.  These implementations are co-located with their consuming service interfaces for ease of development, though the two should remain _strictly_ modular and separate.
 
 The included service implementations are:
 
