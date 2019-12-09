@@ -1,3 +1,7 @@
+/**
+ * @module Initialization
+ */
+
 import { createBrowserHistory } from 'history';
 import {
   publish,
@@ -21,12 +25,26 @@ export const APP_ANALYTICS_INITIALIZED = `${APP_TOPIC}.ANALYTICS_INITIALIZED`;
 export const APP_READY = `${APP_TOPIC}.READY`;
 export const APP_INIT_ERROR = `${APP_TOPIC}.INIT_ERROR`;
 
+/**
+ * @memberof Initialization
+ */
 export const history = createBrowserHistory();
 
+/**
+ * @memberof Initialization
+ * @exports
+ * @param {*} error
+ */
 export async function initError(error) {
   logError(error);
 }
 
+/**
+ *
+ * @memberof Initialization
+ * @param {boolean} requireUser
+ * @param {boolean} hydrateUser
+ */
 export async function auth(requireUser, hydrateUser) {
   if (requireUser) {
     await ensureAuthenticatedUser(global.location.href);
@@ -42,6 +60,11 @@ export async function auth(requireUser, hydrateUser) {
   }
 }
 
+
+/**
+ *
+ * @memberof Initialization
+ */
 export async function analytics() {
   const authenticatedUser = getAuthenticatedUser();
   if (authenticatedUser && authenticatedUser.userId) {
@@ -66,6 +89,17 @@ function applyOverrideHandlers(overrides) {
   };
 }
 
+/**
+ *
+ * @memberof Initialization
+ * @param {Object} [options]
+ * @param {*} [options.loggingService=NewRelicLoggingService]
+ * @param {*} [options.analyticsService=SegmentAnalyticsService]
+ * @param {*} [options.requireAuthenticatedUser=false]
+ * @param {*} [options.hydrateAuthenticatedUser=false]
+ * @param {*} [options.messages]
+ * @param {*} [options.handlers={}]
+ */
 export async function initialize({
   loggingService = NewRelicLoggingService,
   analyticsService = SegmentAnalyticsService,

@@ -31,8 +31,9 @@ import merge from 'lodash.merge';
  * locale*.
  *
  * Messages are provided to this module via the configure() function below.
+ *
+ * @private
  */
-
 const cookies = new Cookies();
 const supportedLocales = [
   'ar', // Arabic
@@ -61,11 +62,29 @@ let config = null;
 let loggingService = null;
 let messages = null;
 
+/**
+ *
+ * @returns {LoggingService}
+ *
+ * @memberof I18n
+ */
 export const getLoggingService = () => loggingService;
 
+/**
+ * @memberof I18n
+ */
 export const LOCALE_TOPIC = 'LOCALE';
+
+/**
+ * @memberof I18n
+ */
 export const LOCALE_CHANGED = `${LOCALE_TOPIC}.CHANGED`;
 
+/**
+ *
+ * @memberof I18n
+ * @returns {Cookies}
+ */
 export function getCookies() {
   return cookies;
 }
@@ -91,6 +110,9 @@ addLocaleData([
  * Some of our dependencies function on primary language subtags, rather than full locales.
  * This function strips a locale down to that first subtag.  Depending on the code, this
  * may be 2 or more characters.
+ *
+ * @param {string} code
+ * @memberof I18n
  */
 export const getPrimaryLanguageSubtag = code => code.split('-')[0];
 
@@ -101,6 +123,10 @@ export const getPrimaryLanguageSubtag = code => code.split('-')[0];
  * 2. Returning the primary language subtag of the language code if it is supported (ar for ar-eg,
  * for instance).
  * 3. Returning 'en' if neither of the above produce a supported locale.
+ *
+ * @param {string} locale
+ * @returns {string}
+ * @memberof I18n
  */
 export const findSupportedLocale = (locale) => {
   if (messages[locale] !== undefined) {
@@ -119,8 +145,10 @@ export const findSupportedLocale = (locale) => {
  * Gracefully fall back to a more general primary language subtag or to English (en)
  * if we don't support that language.
  *
- * @param locale If a locale is provided, returns the closest supported locale. Optional.
+ * @param {string} locale If a locale is provided, returns the closest supported locale. Optional.
  * @throws An error if i18n has not yet been configured.
+ * @returns {string}
+ * @memberof I18n
  */
 export const getLocale = (locale) => {
   if (messages === null) {
@@ -146,17 +174,25 @@ export const getLocale = (locale) => {
 /**
  * Returns messages for the provided locale, or the user's preferred locale if no argument is
  * provided.
+ *
+ * @param {string} [locale=getLocale()]
+ * @memberof I18n
  */
 export const getMessages = (locale = getLocale()) => messages[locale];
 
 /**
  * Determines if the provided locale is a right-to-left language.
+ *
+ * @param {string} locale
+ * @memberof I18n
  */
 export const isRtl = locale => rtlLocales.includes(locale);
 
 /**
  * Handles applying the RTL stylesheet and "dir=rtl" attribute to the html tag if the current locale
  * is a RTL language.
+ *
+ * @memberof I18n
  */
 export const handleRtl = () => {
   if (isRtl(getLocale())) {
@@ -194,6 +230,13 @@ const optionsShape = {
   ]).isRequired,
 };
 
+/**
+ *
+ *
+ * @param {Array} [messagesArray=[]]
+ * @returns {Object}
+ * @memberof I18n
+ */
 export function mergeMessages(messagesArray = []) {
   return Array.isArray(messagesArray) ? merge({}, ...messagesArray) : {};
 }
@@ -201,23 +244,14 @@ export function mergeMessages(messagesArray = []) {
 /**
  * Configures the i18n library with messages for your application.
  *
- * The first is the application configuration object. The second parameter is an
- * object containing messages for each supported locale, indexed by locale name.
- *
- * Example of second parameter:
- *
- * {
- *   en: {
- *     "message.key": "Message Value"
- *   },
- *   'es-419': {
- *     "message.key": "Valor del mensaje"
- *   }
- *   ...
- * }
- *
  * Logs a warning if it detects a locale it doesn't expect (as defined by the supportedLocales list
  * above), or if an expected locale is not provided.
+ *
+ * @param {Object} options
+ * @param {LoggingService} options.loggingService
+ * @param {Object} options.config
+ * @param {Object} options.messages
+ * @memberof I18n
  */
 export const configure = (options) => {
   PropTypes.checkPropTypes(optionsShape, options, 'property', 'i18n');

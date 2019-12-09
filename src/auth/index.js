@@ -1,3 +1,7 @@
+/**
+ * @module Auth
+ */
+
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import { logFrontendAuthError } from './utils';
@@ -7,7 +11,14 @@ import { camelCaseObject, ensureDefinedConfig } from '../utils';
 
 import { publish } from '../pubSub';
 
+/**
+ * @memberof Auth
+ */
 export const AUTHENTICATED_USER_TOPIC = 'AUTHENTICATED_USER';
+
+/**
+ * @memberof Auth
+ */
 export const AUTHENTICATED_USER_CHANGED = `${AUTHENTICATED_USER_TOPIC}.CHANGED`;
 
 // Singletons
@@ -32,15 +43,16 @@ const configPropTypes = {
 /**
  * Configures an httpClient to make authenticated http requests.
  *
- * @param {object} config
- * @param {string} [config.appBaseUrl]
- * @param {string} [config.lmsBaseUrl]
- * @param {string} [config.loginUrl]
- * @param {string} [config.logoutUrl]
- * @param {object} [config.loggingService] requires logError and logInfo methods
- * @param {string} [config.refreshAccessTokenEndpoint]
- * @param {string} [config.accessTokenCookieName]
- * @param {string} [config.csrfTokenApiPath]
+ * @param {Object} incomingConfig
+ * @param {string} [incomingConfig.appBaseUrl]
+ * @param {string} [incomingConfig.lmsBaseUrl]
+ * @param {string} [incomingConfig.loginUrl]
+ * @param {string} [incomingConfig.logoutUrl]
+ * @param {Object} [incomingConfig.loggingService] requires logError and logInfo methods
+ * @param {string} [incomingConfig.refreshAccessTokenEndpoint]
+ * @param {string} [incomingConfig.accessTokenCookieName]
+ * @param {string} [incomingConfig.csrfTokenApiPath]
+ * @memberof Auth
  */
 export const configure = (incomingConfig) => {
   ensureDefinedConfig(incomingConfig, 'AuthService');
@@ -50,12 +62,19 @@ export const configure = (incomingConfig) => {
   authenticatedHttpClient = addAuthenticationToHttpClient(axios.create(), config);
 };
 
+
+/**
+ *
+ * @returns {LoggingService}
+ * @memberof Auth
+ */
 export const getLoggingService = () => config.loggingService;
 
 /**
  * Gets the apiClient singleton which is an axios instance.
  *
  * @returns {HttpClient} Singleton. A configured axios http client
+ * @memberof Auth
  */
 export const getAuthenticatedHttpClient = () => authenticatedHttpClient;
 
@@ -63,6 +82,7 @@ export const getAuthenticatedHttpClient = () => authenticatedHttpClient;
  * Redirect the user to login
  *
  * @param {string} redirectUrl the url to redirect to after login
+ * @memberof Auth
  */
 export const redirectToLogin = (redirectUrl = config.appBaseUrl) => {
   global.location.assign(`${config.loginUrl}?next=${encodeURIComponent(redirectUrl)}`);
@@ -72,6 +92,7 @@ export const redirectToLogin = (redirectUrl = config.appBaseUrl) => {
  * Redirect the user to logout
  *
  * @param {string} redirectUrl the url to redirect to after logout
+ * @memberof Auth
  */
 export const redirectToLogout = (redirectUrl = config.appBaseUrl) => {
   global.location.assign(`${config.logoutUrl}?redirect_url=${encodeURIComponent(redirectUrl)}`);
@@ -82,14 +103,16 @@ export const redirectToLogout = (redirectUrl = config.appBaseUrl) => {
  * anonymous, returns null.
  *
  * @returns {UserData|null}
+ * @memberof Auth
  */
 export const getAuthenticatedUser = () => authenticatedUser;
 
 /**
  * Sets the authenticated user to the provided value.
  *
- * @param {UserData|null}
+ * @param {UserData} authUser
  * @emits AUTHENTICATED_USER_CHANGED
+ * @memberof Auth
  */
 export const setAuthenticatedUser = (authUser) => {
   authenticatedUser = authUser;
@@ -102,6 +125,7 @@ export const setAuthenticatedUser = (authUser) => {
  *
  * @returns {Promise<UserData>|Promise<null>} Resolves to the user's access token if they are
  * logged in.
+ * @memberof Auth
  */
 export const fetchAuthenticatedUser = async () => {
   const decodedAccessToken = await getJwtToken(
@@ -125,8 +149,10 @@ export const fetchAuthenticatedUser = async () => {
  * Ensures a user is authenticated. It will redirect to login when not
  * authenticated.
  *
- * @param {string} route to return user after login when not authenticated.
+ * @param {string} [redirectUrl=config.appBaseUrl] to return user after login when not
+ * authenticated.
  * @returns {Promise<UserData>}
+ * @memberof Auth
  */
 export const ensureAuthenticatedUser = async (redirectUrl = config.appBaseUrl) => {
   await fetchAuthenticatedUser();
@@ -164,6 +190,7 @@ export const ensureAuthenticatedUser = async (redirectUrl = config.appBaseUrl) =
  * ```
  *
  * @returns {Promise<null>}
+ * @memberof Auth
  */
 export const hydrateAuthenticatedUser = async () => {
   const user = getAuthenticatedUser();
@@ -192,7 +219,7 @@ export const hydrateAuthenticatedUser = async () => {
  *  apiClient.post('/path/to/endpoint', { data }, { isCsrfExempt: true });
  * ```
  *
- * @typedef HttpClient
+ * @name HttpClient
  * @property {function} get
  * @property {function} head
  * @property {function} options
@@ -200,12 +227,14 @@ export const hydrateAuthenticatedUser = async () => {
  * @property {function} post (csrf protected)
  * @property {function} put (csrf protected)
  * @property {function} patch (csrf protected)
-  */
+ * @memberof Auth
+ */
 
 /**
- * @typedef UserData
+ * @name UserData
  * @property {string} userId
  * @property {string} username
- * @property {array} roles
- * @property {bool} administrator
+ * @property {Array} roles
+ * @property {boolean} administrator
+ * @memberof Auth
  */

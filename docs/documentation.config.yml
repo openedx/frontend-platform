@@ -1,0 +1,22 @@
+# This file is read by documentationjs to help format generated API docs.
+# More info on the format: https://github.com/documentationjs/documentation/blob/master/declarations/comment.js
+markdownToc: true
+markdownTocMaxDepth: 4
+toc:
+  - name: Platform APIs
+    children:
+      - Initialization
+      - Config
+      - PubSub
+      - React
+      - Utilities
+  - name: Service Module APIs
+    children:
+      - Analytics
+      - Auth
+      - Logging
+      - I18n
+  - name: Service Implementations
+    children:
+      - NewRelicLoggingService
+      - SegmentAnalyticsService

@@ -1,7 +1,13 @@
+/* eslint-disable import/prefer-default-export */
 import { useEffect } from 'react';
 import { subscribe, unsubscribe } from '../pubSub';
 
-// eslint-disable-next-line import/prefer-default-export
+/**
+ *
+ * @memberof React
+ * @param {string} type
+ * @param {function} callback
+ */
 export const useAppEvent = (type, callback) => {
   useEffect(() => {
     const subscriptionToken = subscribe(type, callback);

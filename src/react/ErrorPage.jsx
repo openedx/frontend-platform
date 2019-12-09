@@ -3,7 +3,13 @@ import { Button } from '@edx/paragon';
 
 import { FormattedMessage } from '../i18n';
 
-export default class ErrorPage extends Component {
+/**
+ * This is the doc for ErrorPage.
+ *
+ * @memberof React
+ * @extends {Component}
+ */
+class ErrorPage extends Component {
   /* istanbul ignore next */
   reload() {
     global.location.reload();
@@ -42,3 +48,5 @@ export default class ErrorPage extends Component {
     );
   }
 }
+
+export default ErrorPage;

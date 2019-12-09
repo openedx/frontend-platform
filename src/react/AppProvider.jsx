@@ -12,7 +12,12 @@ import { getConfig, CONFIG_CHANGED } from '../config';
 import { history } from '../initialize';
 import { getLocale, getMessages, IntlProvider, LOCALE_CHANGED } from '../i18n';
 
-const AppProvider = ({ store, children }) => {
+/**
+ *
+ * @param {Object} props
+ * @memberof React
+ */
+export default function AppProvider({ store, children }) {
   const [config, setConfig] = useState(getConfig());
   const [authenticatedUser, setAuthenticatedUser] = useState(getAuthenticatedUser());
   const [locale, setLocale] = useState(getLocale());
@@ -44,7 +49,7 @@ const AppProvider = ({ store, children }) => {
       </AppContext.Provider>
     </ErrorBoundary>
   );
-};
+}
 
 AppProvider.propTypes = {
   store: PropTypes.object, // eslint-disable-line
@@ -54,5 +59,3 @@ AppProvider.propTypes = {
 AppProvider.defaultProps = {
   store: null,
 };
-
-export default AppProvider;

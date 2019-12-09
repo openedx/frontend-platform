@@ -1,6 +1,10 @@
 import formurlencoded from 'form-urlencoded';
 import { snakeCaseObject } from '../utils';
 
+/**
+ *
+ * @implements {AnalyticsService}
+ */
 export default class SegmentAnalyticsService {
   static hasIdentifyBeenCalled = false;
 
@@ -92,6 +96,8 @@ export default class SegmentAnalyticsService {
 
   /**
    * Checks that identify was first called.  Otherwise, logs error.
+   *
+   * @memberof SegmentAnalyticsService
    */
   checkIdentifyCalled() {
     if (!this.hasIdentifyBeenCalled) {
@@ -103,9 +109,11 @@ export default class SegmentAnalyticsService {
    * Logs events to tracking log and downstream.
    * For tracking log event documentation, see
    * https://openedx.atlassian.net/wiki/spaces/AN/pages/13205895/Event+Design+and+Review+Process
-   * @param eventName (event_type on backend, but named to match Segment api)
-   * @param properties (event on backend, but named properties to match Segment api)
-   * @returns The promise returned by apiClient.post.
+   *
+   * @param {string} eventName (event_type on backend, but named to match Segment api)
+   * @param {Object} properties (event on backend, but named properties to match Segment api)
+   * @returns {Promise} The promise returned by HttpClient.post.
+   * @memberof SegmentAnalyticsService
    */
   sendTrackingLogEvent(eventName, properties) {
     const snakeEventData = snakeCaseObject(properties, { deep: true });
@@ -128,9 +136,11 @@ export default class SegmentAnalyticsService {
   }
 
   /**
-   * Send identify call to Segment.
-   * @param userId
-   * @param traits (optional)
+   * * Send identify call to Segment.
+   *
+   * @param {string} userId
+   * @param {*} [traits]
+   * @memberof SegmentAnalyticsService
    */
   identifyAuthenticatedUser(userId, traits) {
     if (!userId) {
@@ -142,7 +152,9 @@ export default class SegmentAnalyticsService {
 
   /**
    * Send anonymous identify call to Segment's identify.
-   * @param traits (optional)
+   *
+   * @param {*} [traits]
+   * @memberof SegmentAnalyticsService
    */
   identifyAnonymousUser(traits) {
     global.analytics.identify(traits);
@@ -152,8 +164,10 @@ export default class SegmentAnalyticsService {
   /**
    * Sends a track event to Segment and downstream.
    * Note: For links and forms, you should use trackLink and trackForm instead.
-   * @param eventName
-   * @param properties (optional)
+   *
+   * @param {*} eventName
+   * @param {*} [properties]
+   * @memberof SegmentAnalyticsService
    */
   sendTrackEvent(eventName, properties) {
     this.checkIdentifyCalled();
@@ -162,9 +176,11 @@ export default class SegmentAnalyticsService {
 
   /**
    * Sends a page event to Segment and downstream.
-   * @param category (optional) Name is required to pass a category.
-   * @param name (optional) If only one string arg provided, assumed to be name.
-   * @param properties (optional)
+   *
+   * @param {*} [name] If only one string arg provided, assumed to be name.
+   * @param {*} [category] Name is required to pass a category.
+   * @param {*} [properties]
+   * @memberof SegmentAnalyticsService
    */
   sendPageEvent(category, name, properties) {
     this.checkIdentifyCalled();

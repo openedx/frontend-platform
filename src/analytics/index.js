@@ -1,3 +1,7 @@
+/**
+ * @module Analytics
+ */
+
 export {
   configure,
   identifyAnonymousUser,

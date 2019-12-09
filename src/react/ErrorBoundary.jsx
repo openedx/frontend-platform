@@ -5,9 +5,13 @@ import { logError } from '../logging';
 
 import ErrorPage from './ErrorPage';
 
-/*
-  Error boundary component used to log caught errors and display the error page.
-*/
+
+/**
+ * Error boundary component used to log caught errors and display the error page.
+ *
+ * @memberof React
+ * @extends {Component}
+ */
 export default class ErrorBoundary extends Component {
   constructor(props) {
     super(props);

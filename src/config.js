@@ -1,3 +1,6 @@
+/**
+ * @module Config
+ */
 import { APP_CONFIG_INITIALIZED } from './initialize';
 import { publish, subscribe } from './pubSub';
 import { ensureDefinedConfig } from './utils';
@@ -26,22 +29,43 @@ let config = {
   USER_INFO_COOKIE_NAME: process.env.USER_INFO_COOKIE_NAME,
 };
 
+/**
+ *
+ * @memberof Config
+ * @returns {Object}
+ */
 export function getConfig() {
   return config;
 }
 
+/**
+ *
+ * @memberof Config
+ * @param {Object} newConfig
+ */
 export function setConfig(newConfig) {
   ensureDefinedConfig(config, 'config');
   config = newConfig;
   publish(CONFIG_CHANGED);
 }
 
+/**
+ *
+ * @memberof Config
+ * @param {Object} newConfig
+ */
 export function mergeConfig(newConfig) {
   ensureDefinedConfig(newConfig, 'ProcessEnvConfigService');
   config = Object.assign(config, newConfig);
   publish(CONFIG_CHANGED);
 }
 
+/**
+ *
+ * @memberof Config
+ * @param {Array} keys
+ * @param {string} [requester='unspecified application code']
+ */
 export function ensureConfig(keys, requester = 'unspecified application code') {
   subscribe(APP_CONFIG_INITIALIZED, () => {
     keys.forEach((key) => {
