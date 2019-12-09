@@ -1,5 +1,6 @@
 /**
- * The initialization module provides a function for managing an application's initialization lifecycle.  It also provides constants and default handler implementations.
+ * The initialization module provides a function for managing an application's initialization
+ * lifecycle.  It also provides constants and default handler implementations.
  *
  * @module Initialization
  */
@@ -27,7 +28,9 @@ export const APP_READY = `${APP_TOPIC}.READY`;
 export const APP_INIT_ERROR = `${APP_TOPIC}.INIT_ERROR`;
 
 /**
- * A browser history object created by the [history](https://github.com/ReactTraining/history) package.  Applications are encouraged to use this history object, rather than creating their own, as behavior may be undefined when managing history via multiple mechanisms/instances.
+ * A browser history object created by the [history](https://github.com/ReactTraining/history)
+ * package.  Applications are encouraged to use this history object, rather than creating their own,
+ * as behavior may be undefined when managing history via multiple mechanisms/instances.
  *
  * @memberof Utilities
  */
@@ -48,10 +51,12 @@ export async function initError(error) {
  * The handler has several responsibilities:
  * - Determining the user's authentication state (authenticated or anonymous)
  * - Optionally redirecting to login if the application requires an authenticated user.
- * - Optionally loading additional user information via the application's user account data endpoint.
+ * - Optionally loading additional user information via the application's user account data
+ * endpoint.
  *
  * @memberof Initialization
- * @param {boolean} requireUser Whether or not we should redirect to login if a user is not authenticated.
+ * @param {boolean} requireUser Whether or not we should redirect to login if a user is not
+ * authenticated.
  * @param {boolean} hydrateUser Whether or not we should fetch additional user account data.
  */
 export async function auth(requireUser, hydrateUser) {
@@ -73,7 +78,9 @@ export async function auth(requireUser, hydrateUser) {
 /**
  * The default handler for the initialization lifecycle's `analytics` phase.
  *
- * The handler is responsible for identifying authenticated and anonymous users with the analytics service.  This is a pre-requisite for sending analytics events, thus, we do it during the initialization sequence so that analytics is ready once the application's UI code starts to load.
+ * The handler is responsible for identifying authenticated and anonymous users with the analytics
+ * service.  This is a pre-requisite for sending analytics events, thus, we do it during the
+ * initialization sequence so that analytics is ready once the application's UI code starts to load.
  *
  * @memberof Initialization
  */
@@ -107,12 +114,23 @@ function applyOverrideHandlers(overrides) {
  *
  * @memberof Initialization
  * @param {Object} [options]
- * @param {*} [options.loggingService=NewRelicLoggingService] The `LoggingService` implementation to use.
- * @param {*} [options.analyticsService=SegmentAnalyticsService] The `AnalyticsService` implementation to use.
- * @param {*} [options.requireAuthenticatedUser=false] If true, turns on automatic login redirection for unauthenticated users.  Defaults to false, meaning that by default the application will allow anonymous/unauthenticated sessions.
- * @param {*} [options.hydrateAuthenticatedUser=false] If true, makes an API call to the user account endpoint (`${App.config.LMS_BASE_URL}/api/user/v1/accounts/${username}`) to fetch detailed account information for the authenticated user. This data is merged into the return value of `getAuthenticatedUser`, overriding any duplicate keys that already exist. Defaults to false, meaning that no additional account information will be loaded.
- * @param {*} [options.messages] A i18n-compatible messages object, or an array of such objects. If an array is provided, duplicate keys are resolved with the last-one-in winning.
- * @param {*} [options.handlers={}] An optional object of handlers which can be used to replace the default behavior of any part of the startup sequence. It can also be used to add additional  initialization behavior before or after the rest of the sequence.
+ * @param {*} [options.loggingService=NewRelicLoggingService] The `LoggingService` implementation
+ * to use.
+ * @param {*} [options.analyticsService=SegmentAnalyticsService] The `AnalyticsService`
+ * implementation to use.
+ * @param {*} [options.requireAuthenticatedUser=false] If true, turns on automatic login
+ * redirection for unauthenticated users.  Defaults to false, meaning that by default the
+ * application will allow anonymous/unauthenticated sessions.
+ * @param {*} [options.hydrateAuthenticatedUser=false] If true, makes an API call to the user
+ * account endpoint (`${App.config.LMS_BASE_URL}/api/user/v1/accounts/${username}`) to fetch
+ * detailed account information for the authenticated user. This data is merged into the return
+ * value of `getAuthenticatedUser`, overriding any duplicate keys that already exist. Defaults to
+ * false, meaning that no additional account information will be loaded.
+ * @param {*} [options.messages] A i18n-compatible messages object, or an array of such objects. If
+ * an array is provided, duplicate keys are resolved with the last-one-in winning.
+ * @param {*} [options.handlers={}] An optional object of handlers which can be used to replace the
+ * default behavior of any part of the startup sequence. It can also be used to add additional
+ * initialization behavior before or after the rest of the sequence.
  */
 export async function initialize({
   loggingService = NewRelicLoggingService,

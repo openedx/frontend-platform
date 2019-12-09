@@ -1,5 +1,9 @@
 /**
- * The configuration module provides utilities for working with an application's configuration document (ConfigDocument).  This module uses `process.env` to import configuration variables from the command-line build process.  It can be dynamically extended at run-time using a `config` initialization handler.  Please see the Initialization documentation for more information on handlers and initialization phases.
+ * The configuration module provides utilities for working with an application's configuration
+ * document (ConfigDocument).  This module uses `process.env` to import configuration variables
+ * from the command-line build process.  It can be dynamically extended at run-time using a
+ * `config` initialization handler.  Please see the Initialization documentation for more
+ * information on handlers and initialization phases.
  *
  * @module Config
  */
@@ -32,7 +36,9 @@ let config = {
 };
 
 /**
- * Getter for the application configuration document.  This is synchronous and merely returns a reference to an existing object, and is thus safe to call as often as desired.  The document should have the following keys at a minimum:
+ * Getter for the application configuration document.  This is synchronous and merely returns a
+ * reference to an existing object, and is thus safe to call as often as desired.  The document
+ * should have the following keys at a minimum:
  *
  * @memberof Config
  * @returns {ConfigDocument}
@@ -44,7 +50,8 @@ export function getConfig() {
 /**
  * Replaces the existing ConfigDocument.  This is not commonly used, but can be helpful for tests.
  *
- * The supplied config document will be tested with `ensureDefinedConfig` to ensure it does not have any `undefined` keys.
+ * The supplied config document will be tested with `ensureDefinedConfig` to ensure it does not
+ * have any `undefined` keys.
  *
  * @memberof Config
  * @param {ConfigDocument} newConfig
@@ -56,7 +63,8 @@ export function setConfig(newConfig) {
 }
 
 /**
- * Merges additional configuration values into the ConfigDocument returned by `getConfig`.  Will override any values that exist with the same keys.
+ * Merges additional configuration values into the ConfigDocument returned by `getConfig`.  Will
+ * override any values that exist with the same keys.
  *
  * ```
  * mergeConfig({
@@ -76,7 +84,12 @@ export function mergeConfig(newConfig) {
 }
 
 /**
- * A method allowing application code to indicate that particular ConfigDocument keys are required for them to function.  This is useful for diagnosing development/deployment issues, primarily, by surfacing misconfigurations early.  For instance, if the build process fails to supply an environment variable on the command-line, it's possible that one of the `process.env` variables will be undefined.  Should be used in conjunction with `mergeConfig` for custom `ConfigDocument` properties.  Requester is for informational/error reporting purposes only.
+ * A method allowing application code to indicate that particular ConfigDocument keys are required
+ * for them to function.  This is useful for diagnosing development/deployment issues, primarily,
+ * by surfacing misconfigurations early.  For instance, if the build process fails to supply an
+ * environment variable on the command-line, it's possible that one of the `process.env` variables
+ * will be undefined.  Should be used in conjunction with `mergeConfig` for custom `ConfigDocument`
+ * properties.  Requester is for informational/error reporting purposes only.
  *
  * ```
  * ensureConfig(['LMS_BASE_URL', 'LOGIN_URL'], 'MySpecialComponent');
@@ -86,7 +99,10 @@ export function mergeConfig(newConfig) {
  * // if LOGIN_URL is undefined, for example.
  * ```
  *
- * *NOTE*: `ensureConfig` waits until `APP_CONFIG_INITIALIZED` is published to verify the existence of the specified properties.  This means that this function is compatible with custom `config` phase handlers responsible for loading additional configuration data in the initialization sequence.
+ * *NOTE*: `ensureConfig` waits until `APP_CONFIG_INITIALIZED` is published to verify the existence
+ * of the specified properties.  This means that this function is compatible with custom `config`
+ * phase handlers responsible for loading additional configuration data in the initialization
+ * sequence.
  *
  * @memberof Config
  * @param {Array} keys
@@ -114,7 +130,9 @@ export function ensureConfig(keys, requester = 'unspecified application code') {
  * }
  * ```
  *
- * When using Webpack (i.e., normal usage), the build process is responsible for supplying these variables via command-line environment variables.  That means they must be supplied at build time.
+ * When using Webpack (i.e., normal usage), the build process is responsible for supplying these
+ * variables via command-line environment variables.  That means they must be supplied at build
+ * time.
  *
  * @name ConfigDocument
  * @property {string} ACCESS_TOKEN_COOKIE_NAME
