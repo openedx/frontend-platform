@@ -13,7 +13,7 @@ import {
  * @param {string} [config.accessTokenCookieName]
  * @param {string} [config.csrfTokenApiPath]
  * @returns {HttpClient} Singleton. A configured axios http client
- * @private
+ * @memberof module:Auth
  */
 export default function addAuthenticationToHttpClient(newHttpClient, config) {
   const httpClient = Object.create(newHttpClient);
