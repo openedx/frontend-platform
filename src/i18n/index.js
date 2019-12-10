@@ -16,7 +16,7 @@
  * Messages are provided to this module via the configure() function below.
  *
  *
- * @module I18n
+ * @module frontend-platform/i18n
  * @see {@link https://github.com/formatjs/react-intl/blob/master/docs/Components.md|React Intl} for components exported from this module.
  *
  */

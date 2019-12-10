@@ -1,5 +1,5 @@
 /**
- * @module React
+ * @module frontend-platform/react
  */
 
 export { default as AppContext } from './AppContext';

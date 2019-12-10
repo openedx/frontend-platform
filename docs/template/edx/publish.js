@@ -302,6 +302,32 @@ function attachModuleSymbols(doclets, modules) {
 function buildMemberNav(items, itemHeading, itemsSeen, linktoFn) {
     let nav = '';
 
+    const renderSubNav = (moduleChildren) => {
+        if (!moduleChildren) return '';
+
+        return `<ul class="list-unstyled pl-3 mt-2 mb-4">
+            ${Object.entries(moduleChildren).map(renderSubNavSection).join('')}
+        </ul>`;
+    }
+
+    const renderSubNavSection = ([ childrenSectionName, doclets ]) => {
+        if (!doclets || !doclets.length) return '';
+
+        const renderChild = (doclet) => {
+            return `<li>${linktoFn(doclet.longname, doclet.name)}</li>`;
+        }
+        const renderSectionTitle = () => {
+            if (childrenSectionName === 'global') return '';
+            return `<h6>${childrenSectionName}</h6>`;
+        }
+        return `<li class="mt-2 mb-4">
+            ${renderSectionTitle()}
+            <ul class="list-unstyled">
+                ${doclets.map(renderChild).join('')}
+            </ul>
+        </li>`;
+    }
+
     if (items.length) {
         let itemsNav = '';
 
@@ -317,14 +343,15 @@ function buildMemberNav(items, itemHeading, itemsSeen, linktoFn) {
                 } else {
                     displayName = item.name;
                 }
-                itemsNav += `<li>${linktoFn(item.longname, displayName.replace(/\b(module|event):/g, ''))}</li>`;
+
+                itemsNav += `<li>${linktoFn(item.longname, displayName.replace(/\b(module|event):/g, ''))} ${renderSubNav(item.children)}</li>`;
 
                 itemsSeen[item.longname] = true;
             }
         });
 
         if (itemsNav !== '') {
-            nav += `<h3>${itemHeading}</h3><ul>${itemsNav}</ul>`;
+            nav += `<ul class="list-unstyled">${itemsNav}</ul>`;
         }
     }
 
@@ -360,32 +387,32 @@ function buildNav(members) {
     const seenTutorials = {};
 
     nav += buildMemberNav(members.modules, 'Modules', {}, linkto);
-    nav += buildMemberNav(members.externals, 'Externals', seen, linktoExternal);
-    nav += buildMemberNav(members.namespaces, 'Namespaces', seen, linkto);
-    nav += buildMemberNav(members.classes, 'Classes', seen, linkto);
-    nav += buildMemberNav(members.interfaces, 'Interfaces', seen, linkto);
-    nav += buildMemberNav(members.events, 'Events', seen, linkto);
-    nav += buildMemberNav(members.mixins, 'Mixins', seen, linkto);
-    nav += buildMemberNav(members.tutorials, 'Tutorials', seenTutorials, linktoTutorial);
+    // nav += buildMemberNav(members.externals, 'Externals', seen, linktoExternal);
+    // nav += buildMemberNav(members.namespaces, 'Namespaces', seen, linkto);
+    // nav += buildMemberNav(members.classes, 'Classes', seen, linkto);
+    // nav += buildMemberNav(members.interfaces, 'Interfaces', seen, linkto);
+    // nav += buildMemberNav(members.events, 'Events', seen, linkto);
+    // nav += buildMemberNav(members.mixins, 'Mixins', seen, linkto);
+    // nav += buildMemberNav(members.tutorials, 'Tutorials', seenTutorials, linktoTutorial);
 
-    if (members.globals.length) {
-        globalNav = '';
+    // if (members.globals.length) {
+    //     globalNav = '';
 
-        members.globals.forEach(({kind, longname, name}) => {
-            if ( kind !== 'typedef' && !hasOwnProp.call(seen, longname) ) {
-                globalNav += `<li>${linkto(longname, name)}</li>`;
-            }
-            seen[longname] = true;
-        });
+    //     members.globals.forEach(({kind, longname, name}) => {
+    //         if ( kind !== 'typedef' && !hasOwnProp.call(seen, longname) ) {
+    //             globalNav += `<li>${linkto(longname, name)}</li>`;
+    //         }
+    //         seen[longname] = true;
+    //     });
 
-        if (!globalNav) {
-            // turn the heading into a link so you can actually get to the global page
-            nav += `<h3>${linkto('global', 'Global')}</h3>`;
-        }
-        else {
-            nav += `<h3>Global</h3><ul>${globalNav}</ul>`;
-        }
-    }
+    //     if (!globalNav) {
+    //         // turn the heading into a link so you can actually get to the global page
+    //         nav += `<h3>${linkto('global', 'Global')}</h3>`;
+    //     }
+    //     else {
+    //         nav += `<h3>Global</h3><ul>${globalNav}</ul>`;
+    //     }
+    // }
 
     return nav;
 }
@@ -584,7 +611,30 @@ exports.publish = (taffyData, opts, tutorials) => {
         }
     });
 
-    members = helper.getMembers(data);
+    // members = helper.getMembers(data);
+    members = {
+        modules: data({ kind: 'module' }).get(),
+    }
+    members.modules = members.modules.map(module => {
+        module.children = { global: [] };
+
+        const doclets = data({ memberof: `module:${module.name}`}).get();
+        doclets.forEach(doclet => {
+            if (doclet.service) {
+                const serviceName = doclet.service.name;
+                if (!module.children[serviceName]) {
+                    module.children[serviceName] = [];
+                }
+                module.children[serviceName].push(doclet);
+            } else {
+                module.children.global.push(doclet);
+            }
+        })
+
+
+        return module;
+    })
+
     members.tutorials = tutorials.children;
 
     // output pretty-printed source files by default
@@ -607,7 +657,7 @@ exports.publish = (taffyData, opts, tutorials) => {
         generateSourceFiles(sourceFiles, opts.encoding);
     }
 
-    if (members.globals.length) { generate('Global', [{kind: 'globalobj'}], globalUrl); }
+    // if (members.globals.length) { generate('Global', [{kind: 'globalobj'}], globalUrl); }
 
     // index page displays information from package.json and lists files
     files = find({kind: 'file'});

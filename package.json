@@ -9,8 +9,8 @@
   "sideEffects": false,
   "scripts": {
     "build": "make build",
-    "docs": "./node_modules/.bin/jsdoc -c jsdoc.json",
-    "docs-watch": "./node_modules/.bin/nodemon -w src -w docs/template -w README.md -e js,jsx --exec npm run docs",
+    "docs": "jsdoc -c jsdoc.json",
+    "docs-watch": "nodemon -w src -w docs/template -w README.md -e js,jsx --exec npm run docs",
     "lint": "fedx-scripts eslint --ext .js --ext .jsx .",
     "snapshot": "fedx-scripts jest --updateSnapshot",
     "start": "fedx-scripts webpack-dev-server --progress",

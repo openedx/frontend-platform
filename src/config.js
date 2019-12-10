@@ -5,8 +5,9 @@
  * `config` initialization handler.  Please see the Initialization documentation for more
  * information on handlers and initialization phases.
  *
- * @module Config
+ * @service frontend-platform
  */
+
 import { APP_CONFIG_INITIALIZED } from './initialize';
 import { publish, subscribe } from './pubSub';
 import { ensureDefinedConfig } from './utils';
@@ -40,7 +41,8 @@ let config = {
  * reference to an existing object, and is thus safe to call as often as desired.  The document
  * should have the following keys at a minimum:
  *
- * @memberof module:Config
+ * @memberof module:frontend-platform
+ * @service Config
  * @returns {ConfigDocument}
   */
 export function getConfig() {
@@ -53,7 +55,8 @@ export function getConfig() {
  * The supplied config document will be tested with `ensureDefinedConfig` to ensure it does not
  * have any `undefined` keys.
  *
- * @memberof module:Config
+ * @memberof module:frontend-platform
+ * @service Config
  * @param {ConfigDocument} newConfig
  */
 export function setConfig(newConfig) {
@@ -74,7 +77,8 @@ export function setConfig(newConfig) {
  *
  * If any of the key values are `undefined`, an error will be thrown.
  *
- * @memberof module:Config
+ * @memberof module:frontend-platform
+ * @service Config
  * @param {Object} newConfig
  */
 export function mergeConfig(newConfig) {
@@ -104,7 +108,8 @@ export function mergeConfig(newConfig) {
  * phase handlers responsible for loading additional configuration data in the initialization
  * sequence.
  *
- * @memberof module:Config
+ * @memberof module:frontend-platform
+ * @service Config
  * @param {Array} keys
  * @param {string} [requester='unspecified application code']
  */
@@ -152,5 +157,6 @@ export function ensureConfig(keys, requester = 'unspecified application code') {
  * @property {string} SEGMENT_KEY
  * @property {string} SITE_NAME
  * @property {string} USER_INFO_COOKIE_NAME
- * @memberof module:Config
+ * @memberof module:frontend-platform
+ * @service Config
  */

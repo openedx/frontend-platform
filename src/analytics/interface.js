@@ -1,5 +1,5 @@
 /**
- * @module Analytics
+ * @module frontend-platform/analytics
  */
 import PropTypes from 'prop-types';
 
@@ -110,6 +110,7 @@ export function resetAnalyticsService() {
 /**
  * @name AnalyticsService
  * @interface
+ * @memberof module:frontend-platform/analytics
  * @borrows identifyAnonymousUser as identifyAnonymousUser
  * @borrows identifyAuthenticatedUser as identifyAuthenticatedUser
  * @borrows sendPageEvent as sendPageEvent

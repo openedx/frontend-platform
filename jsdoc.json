@@ -10,6 +10,7 @@
   },
   "plugins": [
       "plugins/markdown",
+      "docs/addTagsPlugin",
       "docs/removeExport"
   ],
   "templates": {

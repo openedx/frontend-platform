@@ -1,5 +1,5 @@
 /**
- * @module Logging
+ * @module frontend-platform/logging
  */
 
 import PropTypes from 'prop-types';

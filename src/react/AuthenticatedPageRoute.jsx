@@ -13,9 +13,9 @@ import PageRoute from './PageRoute';
  *
  * Like a `PageRoute`, also calls `sendPageEvent` when the route becomes active.
  *
- * @memberof module:React
  * @see PageRoute
- * @see {@link module:Analytics~sendPageEvent}
+ * @see {@link module:frontend-platform/analytics~sendPageEvent}
+ * @memberof module:frontend-platform/react
  * @param {Object} props
  */
 export default function AuthenticatedPageRoute(props) {
