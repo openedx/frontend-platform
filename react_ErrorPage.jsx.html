@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: FormattedNumber</title>
+    <title>JSDoc: Source: react/ErrorPage.jsx</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,141 +17,70 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: FormattedNumber</h1>
+    <h1 class="page-title">Source: react/ErrorPage.jsx</h1>
 
     
 
 
 
-
-<section>
-
-<header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>
-            <span class="ancestors"><a href="module-I18n.html">I18n</a>~</span>FormattedNumber<span class="signature">()</span><span class="type-signature"></span></h2>
-        
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-
-    
-
-    
-    <h4 class="name" id="FormattedNumber"><span class="type-signature"></span>new FormattedNumber<span class="signature">()</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="i18n_index.js.html">i18n/index.js</a>, <a href="i18n_index.js.html#line42">line 42</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-    <dt class="tag-see">See:</dt>
-    <dd class="tag-see">
-        <ul>
-            <li><a href="https://github.com/formatjs/react-intl/blob/master/docs/Components.md#formattednumber">React Intl</a></li>
-        </ul>
-    </dd>
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-    </div>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { Component } from 'react';
+import { Button } from '@edx/paragon';
+
+import { FormattedMessage } from '../i18n';
+
+/**
+ * This is the doc for ErrorPage.
+ *
+ * @memberof module:React
+ * @extends {Component}
+ */
+class ErrorPage extends Component {
+  /* istanbul ignore next */
+  reload() {
+    global.location.reload();
+  }
+
+  render() {
+    return (
+      &lt;div className="container-fluid py-5 justify-content-center align-items-start text-center">
+        &lt;div className="row">
+          &lt;div className="col">
+            &lt;p className="my-0 py-5 text-muted">
+              &lt;FormattedMessage
+                id="unexpected.error.message.text"
+                defaultMessage="An unexpected error occurred. Please click the button below to refresh the page."
+                description="error message when an unexpected error occurs"
+              />
+            &lt;/p>
+          &lt;/div>
+        &lt;/div>
+        &lt;div className="row">
+          &lt;div className="col">
+            &lt;Button
+              buttonType="primary"
+              onClick={this.reload}
+              label={
+                &lt;FormattedMessage
+                  id="unexpected.error.button.text"
+                  defaultMessage="Try Again"
+                  description="text for button that tries to reload the app by refreshing the page"
+                />
+              }
+            />
+          &lt;/div>
+        &lt;/div>
+      &lt;/div>
+    );
+  }
+}
+
+export default ErrorPage;
+</code></pre>
+        </article>
+    </section>
 
 
 

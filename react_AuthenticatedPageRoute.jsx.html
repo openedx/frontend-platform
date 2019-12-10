@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: FormattedNumber</title>
+    <title>JSDoc: Source: react/AuthenticatedPageRoute.jsx</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,141 +17,43 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: FormattedNumber</h1>
+    <h1 class="page-title">Source: react/AuthenticatedPageRoute.jsx</h1>
 
     
 
 
 
-
-<section>
-
-<header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>
-            <span class="ancestors"><a href="module-I18n.html">I18n</a>~</span>FormattedNumber<span class="signature">()</span><span class="type-signature"></span></h2>
-        
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-
-    
-
-    
-    <h4 class="name" id="FormattedNumber"><span class="type-signature"></span>new FormattedNumber<span class="signature">()</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="i18n_index.js.html">i18n/index.js</a>, <a href="i18n_index.js.html#line42">line 42</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-    <dt class="tag-see">See:</dt>
-    <dd class="tag-see">
-        <ul>
-            <li><a href="https://github.com/formatjs/react-intl/blob/master/docs/Components.md#formattednumber">React Intl</a></li>
-        </ul>
-    </dd>
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-    </div>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useContext } from 'react';
+import { Route } from 'react-router-dom';
+
+import AppContext from './AppContext';
+import LoginRedirect from './LoginRedirect';
+import PageRoute from './PageRoute';
+
+/**
+ * Redirects to the login page when the route becomes active and the user is not authenticated.
+ *
+ * @memberof module:React
+ * @param {Object} props
+ */
+export default function AuthenticatedPageRoute(props) {
+  const { authenticatedUser } = useContext(AppContext);
+
+  // We need to let Route "render" the redirect - if we did it here in AuthenticatedRoute, it'd
+  // execute immediately, rather than when the router determines the route should become active.
+  if (authenticatedUser === null) {
+    return &lt;Route {...props} component={LoginRedirect} />;
+  }
+  return (
+    &lt;PageRoute {...props} />
+  );
+}
+</code></pre>
+        </article>
+    </section>
 
 
 
