@@ -2,7 +2,8 @@
  * The initialization module provides a function for managing an application's initialization
  * lifecycle.  It also provides constants and default handler implementations.
  *
- * @module Initialization
+ * @memberof frontend-platform
+ * @service Initialization
  */
 
 import { createBrowserHistory } from 'history';
@@ -39,7 +40,8 @@ export const APP_CONFIG_INITIALIZED = `${APP_TOPIC}.CONFIG_INITIALIZED`;
 export const APP_AUTH_INITIALIZED = `${APP_TOPIC}.AUTH_INITIALIZED`;
 
 /**
- * Event published when the application initialization sequence has finished initializing internationalization and executing any i18n handlers.
+ * Event published when the application initialization sequence has finished initializing
+ * internationalization and executing any i18n handlers.
  *
  * @event
  */
@@ -83,7 +85,8 @@ export const APP_INIT_ERROR = `${APP_TOPIC}.INIT_ERROR`;
  * package.  Applications are encouraged to use this history object, rather than creating their own,
  * as behavior may be undefined when managing history via multiple mechanisms/instances.
  *
- * @memberof module:Utilities
+ * @memberof module:frontend-platform
+ * @service Utilities
  */
 export const history = createBrowserHistory();
 
@@ -91,8 +94,9 @@ export const history = createBrowserHistory();
  * The default handler for the initialization lifecycle's `initError` phase.  Logs the error to the
  * LoggingService using `logError`
  *
- * @memberof module:Initialization
- * @see {@link module:Logging~logError}
+ * @see {@link module:frontend-platform/logging~logError}
+ * @memberof module:frontend-platform
+ * @service Initialization
  * @param {*} error
  */
 export async function initError(error) {
@@ -108,7 +112,8 @@ export async function initError(error) {
  * - Optionally loading additional user information via the application's user account data
  * endpoint.
  *
- * @memberof module:Initialization
+ * @memberof module:frontend-platform
+ * @service Initialization
  * @param {boolean} requireUser Whether or not we should redirect to login if a user is not
  * authenticated.
  * @param {boolean} hydrateUser Whether or not we should fetch additional user account data.
@@ -136,7 +141,8 @@ export async function auth(requireUser, hydrateUser) {
  * service.  This is a pre-requisite for sending analytics events, thus, we do it during the
  * initialization sequence so that analytics is ready once the application's UI code starts to load.
  *
- * @memberof module:Initialization
+ * @memberof module:frontend-platform
+ * @service Initialization
  */
 export async function analytics() {
   const authenticatedUser = getAuthenticatedUser();
@@ -188,7 +194,8 @@ function applyOverrideHandlers(overrides) {
  * - ready: A no-op by default.
  * - initError: Uses the 'initError' handler defined above.
  *
- * @memberof module:Initialization
+ * @memberof module:frontend-platform
+ * @service Initialization
  * @param {Object} [options]
  * @param {*} [options.loggingService=NewRelicLoggingService] The `LoggingService` implementation
  * to use.

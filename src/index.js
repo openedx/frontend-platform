@@ -1,3 +1,6 @@
+/**
+ * @module frontend-platform
+ */
 export {
   modifyObjectKeys,
   camelCaseObject,

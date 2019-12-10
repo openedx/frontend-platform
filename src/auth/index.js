@@ -1,5 +1,5 @@
 /**
- * @module Auth
+ * @module frontend-platform/auth
  */
 
 import axios from 'axios';
@@ -216,6 +216,8 @@ export async function hydrateAuthenticatedUser() {
  * ```
  *
  * @name HttpClient
+ * @interface
+ * @memberof module:frontend-platform/auth
  * @property {function} get
  * @property {function} head
  * @property {function} options
@@ -227,6 +229,8 @@ export async function hydrateAuthenticatedUser() {
 
 /**
  * @name UserData
+ * @interface
+ * @memberof module:frontend-platform/auth
  * @property {string} userId
  * @property {string} username
  * @property {Array} roles

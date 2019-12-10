@@ -8,7 +8,7 @@ import { subscribe, unsubscribe } from '../pubSub';
  * provide necessary data to a given component, rather than utilizing a non-React-like Pub/Sub
  * mechanism.
  *
- * @memberof module:React
+ * @memberof module:frontend-platform/react
  * @param {string} type
  * @param {function} callback
  */

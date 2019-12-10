@@ -12,7 +12,8 @@
  * hook into the initialization lifecycle, and we also use them to publish when the application
  * state has changed, i.e., when the config document or user's authentication state have changed.
  *
- * @module PubSub
+ * @memberof frontend-platform
+ * @service PubSub
  */
 
 import PubSub from 'pubsub-js';
@@ -20,7 +21,8 @@ import PubSub from 'pubsub-js';
 
 /**
  *
- * @memberof module:PubSub
+ * @memberof! module:frontend-platform
+ * @service PubSub
  * @param {string} type
  * @param {function} callback
  * @returns {string} A subscription token that can be passed to `unsubscribe`
@@ -31,7 +33,8 @@ export function subscribe(type, callback) {
 
 /**
  *
- * @memberof module:PubSub
+ * @memberof module:frontend-platform
+ * @service PubSub
  * @param {string} token A subscription token provided by `subscribe`
  */
 export function unsubscribe(token) {
@@ -40,7 +43,8 @@ export function unsubscribe(token) {
 
 /**
  *
- * @memberof module:PubSub
+ * @memberof module:frontend-platform
+ * @service PubSub
  * @param {string} type
  * @param {Object} data
  */
