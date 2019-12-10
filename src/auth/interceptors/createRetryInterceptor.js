@@ -3,8 +3,10 @@ import axios from 'axios';
 // This default algorithm is a recreation of what is documented here
 // https://cloud.google.com/storage/docs/exponential-backoff
 const defaultGetBackoffMilliseconds = (nthRetry, maximumBackoffMilliseconds = 16000) => {
-  const randomFractionOfASecond = Math.random();
+  // Retry at exponential intervals (2, 4, 8, 16...)
   const exponentialBackoffSeconds = 2 ** nthRetry;
+  // Add some randomness to avoid sending retries from separate request all at once
+  const randomFractionOfASecond = Math.random();
   const backoffSeconds = exponentialBackoffSeconds + randomFractionOfASecond;
   const backoffMilliseconds = Math.round(backoffSeconds * 1000);
   return Math.min(backoffMilliseconds, maximumBackoffMilliseconds);
