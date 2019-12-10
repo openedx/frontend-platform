@@ -5,7 +5,7 @@ import axios from 'axios';
 const defaultGetBackoffMilliseconds = (nthRetry, maximumBackoffMilliseconds = 16000) => {
   // Retry at exponential intervals (2, 4, 8, 16...)
   const exponentialBackoffSeconds = 2 ** nthRetry;
-  // Add some randomness to avoid sending retries from separate request all at once
+  // Add some randomness to avoid sending retries from separate requests all at once
   const randomFractionOfASecond = Math.random();
   const backoffSeconds = exponentialBackoffSeconds + randomFractionOfASecond;
   const backoffMilliseconds = Math.round(backoffSeconds * 1000);
