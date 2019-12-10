@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: react/LoginRedirect.jsx</title>
+    <title>JSDoc: Source: index.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -19,7 +19,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: react/LoginRedirect.jsx</h1>
+    <h1 class="page-title">Source: index.js</h1>
 
     
 
@@ -28,22 +28,45 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import { useEffect } from 'react';
-import { redirectToLogin } from '../auth';
-
-/**
- * A React component that, when rendered, redirects to the login page as a side effect.  Uses
- * `redirectToLogin` to perform the redirect.
- *
- * @see {@link module:frontend-platform/auth~redirectToLogin}
- * @memberof module:frontend-platform/react
+            <pre class="prettyprint source linenums"><code>/**
+ * @module frontend-platform
  */
-export default function LoginRedirect() {
-  useEffect(() => {
-    redirectToLogin(global.location.href);
-  }, []);
-  return null;
-}
+export {
+  modifyObjectKeys,
+  camelCaseObject,
+  snakeCaseObject,
+  convertKeyNames,
+  getQueryParameters,
+  ensureDefinedConfig,
+} from './utils';
+export {
+  initialize,
+  APP_TOPIC,
+  APP_PUBSUB_INITIALIZED,
+  APP_CONFIG_INITIALIZED,
+  APP_AUTH_INITIALIZED,
+  APP_I18N_INITIALIZED,
+  APP_LOGGING_INITIALIZED,
+  APP_ANALYTICS_INITIALIZED,
+  APP_READY,
+  APP_INIT_ERROR,
+  history,
+  initError,
+  auth,
+} from './initialize';
+export {
+  publish,
+  subscribe,
+  unsubscribe,
+} from './pubSub';
+export {
+  CONFIG_TOPIC,
+  CONFIG_CHANGED,
+  getConfig,
+  setConfig,
+  mergeConfig,
+  ensureConfig,
+} from './config';
 </code></pre>
         </article>
     </section>
