@@ -2,6 +2,7 @@ import Cookies from 'universal-cookie';
 import jwtDecode from 'jwt-decode';
 import axios from 'axios';
 import { logFrontendAuthError, processAxiosErrorAndThrow } from './utils';
+import createRetryInterceptor from './interceptors/createRetryInterceptor';
 
 const httpClient = axios.create();
 // Set withCredentials to true. Enables cross-site Access-Control requests
@@ -9,6 +10,11 @@ const httpClient = axios.create();
 // certificates. More on MDN:
 // https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/withCredentials
 httpClient.defaults.withCredentials = true;
+// Add retries to this axios instance
+httpClient.interceptors.response.use(
+  response => response,
+  createRetryInterceptor({ httpClient }),
+);
 
 const cookies = new Cookies();
 
@@ -102,3 +108,4 @@ const getJwtToken = async (tokenCookieName, tokenRefreshEndpoint) => {
 };
 
 export default getJwtToken;
+export { httpClient };

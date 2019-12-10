@@ -36,7 +36,6 @@
     "@edx/frontend-build": "2.0.4",
     "@edx/paragon": "7.1.5",
     "axios-mock-adapter": "1.17.0",
-    "babel-plugin-rewire": "1.2.0",
     "babel-polyfill": "6.26.0",
     "codecov": "3.6.1",
     "enzyme": "3.10.0",

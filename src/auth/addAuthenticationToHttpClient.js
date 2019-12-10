@@ -1,8 +1,6 @@
-import {
-  csrfTokenProviderInterceptor,
-  jwtTokenProviderInterceptor,
-  processAxiosRequestErrorInterceptor,
-} from './axiosInterceptors';
+import processAxiosRequestErrorInterceptor from './interceptors/processAxiosRequestErrorInterceptor';
+import createJwtTokenProviderInterceptor from './interceptors/createJwtTokenProviderInterceptor';
+import createCsrfTokenProviderInterceptor from './interceptors/createCsrfTokenProviderInterceptor';
 
 /**
  * Adds authentication defaults and interceptors to an http client instance.
@@ -27,7 +25,7 @@ export default function addAuthenticationToHttpClient(newHttpClient, config) {
 
   // The JWT access token interceptor attempts to refresh the user's jwt token
   // before any request unless the isPublic flag is set on the request config.
-  const refreshAccessTokenInterceptor = jwtTokenProviderInterceptor({
+  const refreshAccessTokenInterceptor = createJwtTokenProviderInterceptor({
     tokenCookieName: config.accessTokenCookieName,
     tokenRefreshEndpoint: config.refreshAccessTokenEndpoint,
     shouldSkip: axiosRequestConfig => axiosRequestConfig.isPublic,
@@ -35,7 +33,7 @@ export default function addAuthenticationToHttpClient(newHttpClient, config) {
   // The CSRF token intercepter fetches and caches a csrf token for any post,
   // put, patch, or delete request. That token is then added to the request
   // headers.
-  const attachCsrfTokenInterceptor = csrfTokenProviderInterceptor({
+  const attachCsrfTokenInterceptor = createCsrfTokenProviderInterceptor({
     csrfTokenApiPath: config.csrfTokenApiPath,
     shouldSkip: (axiosRequestConfig) => {
       const { method, isCsrfExempt } = axiosRequestConfig;
