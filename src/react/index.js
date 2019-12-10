@@ -1,4 +1,7 @@
 /**
+ * The React module provides a variety of React components, hooks, and contexts for use in an
+ * application.
+ *
  * @module frontend-platform/react
  */
 

@@ -17,6 +17,7 @@
  *
  *
  * @module frontend-platform/i18n
+ * @see {@link https://github.com/edx/frontend-platform/blob/master/docs/how_tos/i18n.rst}
  * @see {@link https://github.com/formatjs/react-intl/blob/master/docs/Components.md|React Intl} for components exported from this module.
  *
  */

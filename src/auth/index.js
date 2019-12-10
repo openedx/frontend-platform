@@ -7,6 +7,14 @@
  * not using the `initialize` function, an authenticated API client can be created via:
  *
  * ```
+ * import {
+ *   configure,
+ *   fetchAuthenticatedUser,
+ *   getAuthenticatedHttpClient
+ * } from '@edx/frontend-platform/analytics';
+ * import { geConfig } from '@edx/frontend-platform';
+ * import { getLoggingService } from '@edx/frontend-platform/logging';
+ *
  * const {
  *   BASE_URL,
  *   LMS_BASE_URL,
@@ -17,7 +25,7 @@
  *   CSRF_TOKEN_API_PATH,
  * } = getConfig();
  *
- * configureAuth({
+ * configure({
  *   loggingService: getLoggingService(),
  *   appBaseUrl: BASE_URL,
  *   lmsBaseUrl: LMS_BASE_URL,
@@ -32,6 +40,8 @@
  * const authenticatedHttpClient = getAuthenticatedHttpClient();
  * const response = await getAuthenticatedHttpClient().get(`https://example.com/api/user/data/${authenticatedUser.username}`); // fetching from an authenticated API using user data
  * ```
+ *
+ * As shown in this example, auth depends on the configuration document and logging.
  *
  * @module frontend-platform/auth
  */

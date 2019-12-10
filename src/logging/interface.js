@@ -1,4 +1,47 @@
 /**
+ * Contains a shared interface for logging information.  Has a default implementation of
+ * NewRelicLoggingService that sends messages to NewRelic that can be seen in NewRelic Browser and
+ * NewRelic Insights. When in development mode, all messages will instead be sent to the console.
+ *
+ * When you use `logError` or `logApiClientError`, your errors will appear under "JS errors"
+ * for your Browser application.
+ *
+ * Additionally, when you use `logApiClientError`, you get some additional custom metrics for Axios
+ * error responses. To see those details, you can use a New Relic Insights query like the
+ * following
+ *
+ * ```
+ * SELECT * from JavaScriptError WHERE errorStatus is not null SINCE 10 days ago
+ * ```
+ *
+ * When using `logInfo`, these only appear in New Relic Insights when querying for page actions as
+ * follows:
+ *
+ * ```
+ * SELECT * from PageAction WHERE actionName = 'INFO' SINCE 1 hour ago
+ * ```
+ *
+ * You can also add your own custom metrics as an additional argument, or see the code to find
+ * other standard custom attributes.
+ *
+ * The `initialize` function performs much of the logging configuration for you.  If, however,
+ * you're not using the `initialize` function, logging can be configured via:
+ *
+ * ```
+ * import { configure, NewRelicLoggingService, logError } from '@edx/frontend-platform/logging';
+ * import { geConfig } from '@edx/frontend-platform';
+ *
+ * configureLogging(loggingService, {
+ *   config: getConfig(),
+ * });
+ *
+ * logInfo('Just so you know...');
+ * logError('Uhoh!');
+ * logError(new Error('Uhoh error!'));
+ * ```
+ *
+ * As shown in this example, logging depends on the configuration document.
+ *
  * @module frontend-platform/logging
  */
 
