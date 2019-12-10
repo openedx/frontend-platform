@@ -1,7 +1,7 @@
 import React from 'react';
 
 /**
- * @memberof React
+ * @memberof module:React
  */
 const AppContext = React.createContext({
   authenticatedUser: null,

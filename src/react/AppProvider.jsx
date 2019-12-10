@@ -15,7 +15,7 @@ import { getLocale, getMessages, IntlProvider, LOCALE_CHANGED } from '../i18n';
 /**
  *
  * @param {Object} props
- * @memberof React
+ * @memberof module:React
  */
 export default function AppProvider({ store, children }) {
   const [config, setConfig] = useState(getConfig());

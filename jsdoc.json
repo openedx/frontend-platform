@@ -5,7 +5,7 @@
   },
   "source": {
       "include": ["src", "package.json", "README.md"],
-      "includePattern": ".js$",
+      "includePattern": ".+\\.js(doc|x)?$",
       "excludePattern": "(node_modules/|docs)"
   },
   "plugins": [

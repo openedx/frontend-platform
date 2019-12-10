@@ -4,7 +4,7 @@ import { subscribe, unsubscribe } from '../pubSub';
 
 /**
  *
- * @memberof React
+ * @memberof module:React
  * @param {string} type
  * @param {function} callback
  */

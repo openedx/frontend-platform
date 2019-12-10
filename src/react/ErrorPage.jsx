@@ -6,7 +6,7 @@ import { FormattedMessage } from '../i18n';
 /**
  * This is the doc for ErrorPage.
  *
- * @memberof React
+ * @memberof module:React
  * @extends {Component}
  */
 class ErrorPage extends Component {
