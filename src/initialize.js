@@ -40,7 +40,8 @@ export const APP_CONFIG_INITIALIZED = `${APP_TOPIC}.CONFIG_INITIALIZED`;
 export const APP_AUTH_INITIALIZED = `${APP_TOPIC}.AUTH_INITIALIZED`;
 
 /**
- * Event published when the application initialization sequence has finished initializing internationalization and executing any i18n handlers.
+ * Event published when the application initialization sequence has finished initializing
+ * internationalization and executing any i18n handlers.
  *
  * @event
  */
