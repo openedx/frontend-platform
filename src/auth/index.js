@@ -1,4 +1,38 @@
 /**
+ * Simplifies the process of making authenticated API requests to backend edX services by providing
+ * common authN/authZ client code that enables the login/logout flow and handles ensuring the
+ * presence of a valid [JWT cookie](https://github.com/edx/edx-platform/blob/master/openedx/core/djangoapps/oauth_dispatch/docs/decisions/0009-jwt-in-session-cookie.rst).
+ *
+ * The `initialize` function performs much of the auth configuration for you.  If, however, you're
+ * not using the `initialize` function, an authenticated API client can be created via:
+ *
+ * ```
+ * const {
+ *   BASE_URL,
+ *   LMS_BASE_URL,
+ *   LOGIN_URL,
+ *   LOGIN_URL,
+ *   REFRESH_ACCESS_TOKEN_ENDPOINT,
+ *   ACCESS_TOKEN_COOKIE_NAME,
+ *   CSRF_TOKEN_API_PATH,
+ * } = getConfig();
+ *
+ * configureAuth({
+ *   loggingService: getLoggingService(),
+ *   appBaseUrl: BASE_URL,
+ *   lmsBaseUrl: LMS_BASE_URL,
+ *   loginUrl: LOGIN_URL,
+ *   logoutUrl: LOGIN_URL,
+ *   refreshAccessTokenEndpoint: REFRESH_ACCESS_TOKEN_ENDPOINT,
+ *   accessTokenCookieName: ACCESS_TOKEN_COOKIE_NAME,
+ *   csrfTokenApiPath: CSRF_TOKEN_API_PATH,
+ * });
+ *
+ * const authenticatedUser = await fetchAuthenticatedUser(); // validates and decodes JWT token
+ * const authenticatedHttpClient = getAuthenticatedHttpClient();
+ * const response = await getAuthenticatedHttpClient().get(`https://example.com/api/user/data/${authenticatedUser.username}`); // fetching from an authenticated API using user data
+ * ```
+ *
  * @module frontend-platform/auth
  */
 
@@ -12,12 +46,19 @@ import { camelCaseObject, ensureDefinedConfig } from '../utils';
 import { publish } from '../pubSub';
 
 /**
- *
+ * @constant
+ * @private
  */
 export const AUTHENTICATED_USER_TOPIC = 'AUTHENTICATED_USER';
 
 /**
+ * Published when the authenticated user data changes.  This can happen when the authentication
+ * service determines that the user is authenticated or anonymous, as well as when we fetch
+ * additional user account data if the `hydrateAuthenticatedUser` flag has been set in the
+ * `initialize` function.
  *
+ * @event
+ * @see {@link module:Initialization~initialize}
  */
 export const AUTHENTICATED_USER_CHANGED = `${AUTHENTICATED_USER_TOPIC}.CHANGED`;
 
@@ -43,21 +84,21 @@ const configPropTypes = {
 /**
  * Configures an httpClient to make authenticated http requests.
  *
- * @param {Object} incomingConfig
- * @param {string} [incomingConfig.appBaseUrl]
- * @param {string} [incomingConfig.lmsBaseUrl]
- * @param {string} [incomingConfig.loginUrl]
- * @param {string} [incomingConfig.logoutUrl]
- * @param {Object} [incomingConfig.loggingService] requires logError and logInfo methods
- * @param {string} [incomingConfig.refreshAccessTokenEndpoint]
- * @param {string} [incomingConfig.accessTokenCookieName]
- * @param {string} [incomingConfig.csrfTokenApiPath]
+ * @param {Object} options
+ * @param {string} options.appBaseUrl
+ * @param {string} options.lmsBaseUrl
+ * @param {string} options.loginUrl
+ * @param {string} options.logoutUrl
+ * @param {Object} options.loggingService requires logError and logInfo methods
+ * @param {string} options.refreshAccessTokenEndpoint
+ * @param {string} options.accessTokenCookieName
+ * @param {string} options.csrfTokenApiPath
  */
-export function configure(incomingConfig) {
-  ensureDefinedConfig(incomingConfig, 'AuthService');
+export function configure(options) {
+  ensureDefinedConfig(options, 'AuthService');
 
-  PropTypes.checkPropTypes(configPropTypes, incomingConfig, 'config', 'AuthService');
-  config = incomingConfig;
+  PropTypes.checkPropTypes(configPropTypes, options, 'options', 'AuthService');
+  config = options;
   authenticatedHttpClient = addAuthenticationToHttpClient(axios.create(), config);
 }
 
