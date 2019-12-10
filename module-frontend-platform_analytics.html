@@ -31,6 +31,8 @@
 <header>
     
         
+            
+        
     
 </header>
 
@@ -38,6 +40,100 @@
     <div class="container-overview">
     
         
+            <div class="description"><p>Contains a shared interface for tracking events.  Has a default implementation of
+SegmentAnalyticsService, which supports Segment and the Tracking Log API (hosted in LMS).</p>
+<p>The <code>initialize</code> function performs much of the analytics configuration for you.  If, however,
+you're not using the <code>initialize</code> function, analytics can be configured via:</p>
+<pre class="prettyprint source"><code>import { configure, SegmentAnalyticsService } from '@edx/frontend-platform/analytics';
+import { geConfig } from '@edx/frontend-platform';
+import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
+import { getLoggingService } from '@edx/frontend-platform/logging';
+
+configure(SegmentAnalyticsService, {
+  config: getConfig(),
+  loggingService: getLoggingService(),
+  httpClient: getAuthenticatedHttpClient(),
+});
+</code></pre>
+<p>As shown in this example, analytics depends on the configuration document, logging, and having
+an authenticated HTTP client.</p></div>
+        
+
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="analytics_interface.js.html">analytics/interface.js</a>, <a href="analytics_interface.js.html#line1">line 1</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         
     
@@ -200,7 +296,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="analytics_interface.js.html">analytics/interface.js</a>, <a href="analytics_interface.js.html#line33">line 33</a>
+        <a href="analytics_interface.js.html">analytics/interface.js</a>, <a href="analytics_interface.js.html#line55">line 55</a>
     </li></ul></dd>
     
 
@@ -302,7 +398,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="analytics_interface.js.html">analytics/interface.js</a>, <a href="analytics_interface.js.html#line95">line 95</a>
+        <a href="analytics_interface.js.html">analytics/interface.js</a>, <a href="analytics_interface.js.html#line117">line 117</a>
     </li></ul></dd>
     
 
@@ -453,7 +549,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="analytics_interface.js.html">analytics/interface.js</a>, <a href="analytics_interface.js.html#line65">line 65</a>
+        <a href="analytics_interface.js.html">analytics/interface.js</a>, <a href="analytics_interface.js.html#line87">line 87</a>
     </li></ul></dd>
     
 
@@ -609,7 +705,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="analytics_interface.js.html">analytics/interface.js</a>, <a href="analytics_interface.js.html#line56">line 56</a>
+        <a href="analytics_interface.js.html">analytics/interface.js</a>, <a href="analytics_interface.js.html#line78">line 78</a>
     </li></ul></dd>
     
 
@@ -693,7 +789,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="analytics_interface.js.html">analytics/interface.js</a>, <a href="analytics_interface.js.html#line106">line 106</a>
+        <a href="analytics_interface.js.html">analytics/interface.js</a>, <a href="analytics_interface.js.html#line128">line 128</a>
     </li></ul></dd>
     
 
@@ -872,7 +968,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="analytics_interface.js.html">analytics/interface.js</a>, <a href="analytics_interface.js.html#line86">line 86</a>
+        <a href="analytics_interface.js.html">analytics/interface.js</a>, <a href="analytics_interface.js.html#line108">line 108</a>
     </li></ul></dd>
     
 
@@ -1028,7 +1124,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="analytics_interface.js.html">analytics/interface.js</a>, <a href="analytics_interface.js.html#line75">line 75</a>
+        <a href="analytics_interface.js.html">analytics/interface.js</a>, <a href="analytics_interface.js.html#line97">line 97</a>
     </li></ul></dd>
     
 
@@ -1184,7 +1280,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="analytics_interface.js.html">analytics/interface.js</a>, <a href="analytics_interface.js.html#line46">line 46</a>
+        <a href="analytics_interface.js.html">analytics/interface.js</a>, <a href="analytics_interface.js.html#line68">line 68</a>
     </li></ul></dd>
     
 
@@ -1311,7 +1407,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Tue Dec 10 2019 20:38:53 GMT+0000 (Coordinated Universal Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Tue Dec 10 2019 20:58:00 GMT+0000 (Coordinated Universal Time)
 </footer>
 
 <script> prettyPrint(); </script>
