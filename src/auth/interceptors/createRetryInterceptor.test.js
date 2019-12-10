@@ -13,7 +13,6 @@ describe('createRetryInterceptor: defaultGetBackoffMilliseconds', () => {
   });
   it('returns a number between 8000 and 9000 on the third retry', () => {
     const backoffInMilliseconds = defaultGetBackoffMilliseconds(3);
-
     expect(backoffInMilliseconds).toBeGreaterThanOrEqual(8000);
     expect(backoffInMilliseconds).toBeLessThanOrEqual(9000);
   });
