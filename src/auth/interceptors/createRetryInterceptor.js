@@ -1,19 +1,25 @@
 import axios from 'axios';
 
+// This default algorithm is a recreation of what is documented here
+// https://cloud.google.com/storage/docs/exponential-backoff
+const defaultGetBackoffMilliseconds = (nthRetry, maximumBackoffMilliseconds = 16000) => {
+  const randomFractionOfASecond = Math.random();
+  const exponentialBackoffSeconds = 2 ** nthRetry;
+  const backoffSeconds = exponentialBackoffSeconds + randomFractionOfASecond;
+  const backoffMilliseconds = Math.round(backoffSeconds * 1000);
+  return Math.min(backoffMilliseconds, maximumBackoffMilliseconds);
+};
+
 const createRetryInterceptor = (options = {}) => {
   const {
     httpClient = axios.create(),
-    // This default algorithm is a recreation of what is documented here
-    // https://cloud.google.com/storage/docs/exponential-backoff
-    getBackoffMs = (nthRetry, maximumBackoff = 32000) => {
-      const randomSecond = Math.random();
-      const exponentialBackoff = ((2 ** nthRetry) + randomSecond) * 1000;
-      return Math.min(Math.round(exponentialBackoff), maximumBackoff);
-    },
+    getBackoffMilliseconds = defaultGetBackoffMilliseconds,
     // By default only retry outbound request failures (not responses)
-    shouldRetry = error => !error.response && error.config,
-    // By default only retry 4 times, a per-request maxRetries can be
-    // specified in request config.
+    shouldRetry = (error) => {
+      const isRequestError = !error.response && error.config;
+      return isRequestError;
+    },
+    // A per-request maxRetries can be specified in request config.
     defaultMaxRetries = 2,
   } = options;
 
@@ -42,7 +48,7 @@ const createRetryInterceptor = (options = {}) => {
       let retryResponse;
 
       try {
-        const backoffDelay = getBackoffMs(nthRetry);
+        const backoffDelay = getBackoffMilliseconds(nthRetry);
         // Delay (wrapped in a promise so we can await the setTimeout)
         await new Promise(resolve => setTimeout(resolve, backoffDelay));
         // Make retry request
@@ -61,3 +67,4 @@ const createRetryInterceptor = (options = {}) => {
 };
 
 export default createRetryInterceptor;
+export { defaultGetBackoffMilliseconds };

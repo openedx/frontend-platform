@@ -100,9 +100,6 @@ const mockCookies = new Cookies();
 const axiosMock = new MockAdapter(axios);
 const accessTokenAxiosMock = new MockAdapter(accessTokenAxios);
 const csrfTokensAxiosMock = new MockAdapter(csrfTokensAxios);
-axios.defaults.maxRetries = 0;
-csrfTokensAxios.defaults.maxRetries = 0;
-accessTokenAxios.defaults.maxRetries = 0;
 
 
 configure(authConfig);
@@ -193,6 +190,9 @@ beforeEach(() => {
   csrfTokensAxiosMock
     .onGet(process.env.CSRF_TOKEN_REFRESH)
     .reply(200, { csrfToken: mockCsrfToken });
+  axios.defaults.maxRetries = 0;
+  csrfTokensAxios.defaults.maxRetries = 0;
+  accessTokenAxios.defaults.maxRetries = 0;
 });
 
 describe('getAuthenticatedHttpClient', () => {
@@ -447,7 +447,6 @@ describe('authenticatedHttpClient usage', () => {
         await client.get(mockApiEndpointPath);
         expect(accessTokenAxiosMock.history.post.length).toBe(2);
         expectNoCallToCsrfTokenFetch();
-        accessTokenAxios.defaults.maxRetries = 0;
       });
     });
 
