@@ -6,9 +6,16 @@ import LoginRedirect from './LoginRedirect';
 import PageRoute from './PageRoute';
 
 /**
- * Redirects to the login page when the route becomes active and the user is not authenticated.
+ * A react-router route that redirects to the login page when the route becomes active and the user
+ * is not authenticated.  If the application has been initialized with `requireAuthenticatedUser`
+ * false, an authenticatedPageRoute can be used to protect a subset of the application's routes,
+ * rather than the entire application.
+ *
+ * Like a `PageRoute`, also calls `sendPageEvent` when the route becomes active.
  *
  * @memberof module:React
+ * @see PageRoute
+ * @see {@link module:Analytics~sendPageEvent}
  * @param {Object} props
  */
 export default function AuthenticatedPageRoute(props) {

@@ -2,8 +2,10 @@ import { useEffect } from 'react';
 import { redirectToLogin } from '../auth';
 
 /**
- * Wraps the call to redirectToLogin in a Component.
+ * A React component that, when rendered, redirects to the login page as a side effect.  Uses
+ * `redirectToLogin` to perform the redirect.
  *
+ * @see {@link module:Auth~redirectToLogin}
  * @memberof module:React
  */
 export default function LoginRedirect() {
