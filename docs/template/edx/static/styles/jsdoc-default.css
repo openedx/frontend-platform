@@ -157,6 +157,10 @@ h1
     margin: 12px 24px 20px;
 }
 
+article h1 {
+  margin: 12px 24px 20px 0px;
+}
+
 h2, h3.subsection-title
 {
     font-size: 30px;

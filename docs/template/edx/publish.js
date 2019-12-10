@@ -613,7 +613,7 @@ exports.publish = (taffyData, opts, tutorials) => {
     files = find({kind: 'file'});
     packages = find({kind: 'package'});
 
-    generate('Frontend Platform API Documentation',
+    generate('Open edX frontend-platform API Documentation',
         packages.concat(
             [{
                 kind: 'mainpage',
