@@ -81,22 +81,6 @@ Possible keys:
 Please see Initialization Lifecycle Phases for more information on the
 phases responsibilities.
 
-custom
-^^^^^^
-
-You probably don't need this. This is an escape valve for customization
-of the handlers. The ``custom`` property can be used to attach custom
-data to the ``App`` which will be exposed at ``App.custom``. This data
-can be used in custom initialization handlers, or elsewhere in the
-application as necessary.
-
-Note, if you're using this to provide mutable data to the application,
-*strongly* consider using React props, context, or Redux instead.
-
-``LoginRedirect``
------------------
-
-``LoginRedirect`` is a React component that, when rendered, redirects to the login page as a side effect.
 
 App Initialization Lifecycle Phases
 -----------------------------------
