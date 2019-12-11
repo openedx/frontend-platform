@@ -7,7 +7,7 @@ import { FormattedMessage } from '../i18n';
  * An error page that displays a generic message for unexpected errors.  Also contains a "Try
  * Again" button to refresh the page.
  *
- * @memberof module:frontend-platform/react
+ * @memberof module:React
  * @extends {Component}
  */
 class ErrorPage extends Component {

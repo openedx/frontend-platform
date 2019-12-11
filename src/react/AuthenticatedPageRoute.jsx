@@ -15,7 +15,7 @@ import PageRoute from './PageRoute';
  *
  * @see PageRoute
  * @see {@link module:frontend-platform/analytics~sendPageEvent}
- * @memberof module:frontend-platform/react
+ * @memberof module:React
  * @param {Object} props
  */
 export default function AuthenticatedPageRoute(props) {

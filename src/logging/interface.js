@@ -1,4 +1,6 @@
 /**
+ * #### Import members from **@edx/frontend-platform/logging**
+ *
  * Contains a shared interface for logging information.  Has a default implementation of
  * NewRelicLoggingService that sends messages to NewRelic that can be seen in NewRelic Browser and
  * NewRelic Insights. When in development mode, all messages will instead be sent to the console.
@@ -42,7 +44,7 @@
  *
  * As shown in this example, logging depends on the configuration document.
  *
- * @module frontend-platform/logging
+ * @module Logging
  */
 
 import PropTypes from 'prop-types';
@@ -113,6 +115,7 @@ export function resetLoggingService() {
 /**
  * @name LoggingService
  * @interface
- * @borrows logError as logError
- * @borrows logInfo as logInfo
+ * @memberof module:Logging
+ * @property {function} logError
+ * @property {function} logInfo
  */

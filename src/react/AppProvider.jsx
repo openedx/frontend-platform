@@ -36,7 +36,7 @@ import { getLocale, getMessages, IntlProvider, LOCALE_CHANGED } from '../i18n';
  *
  * @param {Object} props
  * @param {Object} [props.store] A redux store.
- * @memberof module:frontend-platform/react
+ * @memberof module:React
  */
 export default function AppProvider({ store, children }) {
   const [config, setConfig] = useState(getConfig());

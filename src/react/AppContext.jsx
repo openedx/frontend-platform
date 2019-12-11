@@ -14,7 +14,7 @@ import React from 'react';
  * accordingly and pass those changes onto React components using the context.
  *
  * `AppContext` is used in a React application like any other `[React Context](https://reactjs.org/docs/context.html)
- * @memberof module:frontend-platform/react
+ * @memberof module:React
  */
 const AppContext = React.createContext({
   authenticatedUser: null,

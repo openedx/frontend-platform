@@ -218,13 +218,12 @@ function generate(title, docs, filename, resolveLinks) {
     let docData;
     let html;
     let outpath;
-
     resolveLinks = resolveLinks !== false;
 
     docData = {
         env: env,
         title: title,
-        docs: docs
+        docs: docs,
     };
 
     outpath = path.join(outdir, filename);
@@ -302,31 +301,19 @@ function attachModuleSymbols(doclets, modules) {
 function buildMemberNav(items, itemHeading, itemsSeen, linktoFn) {
     let nav = '';
 
-    const renderSubNav = (moduleChildren) => {
-        if (!moduleChildren) return '';
-
-        return `<ul class="list-unstyled pl-3 mt-2 mb-4">
-            ${Object.entries(moduleChildren).map(renderSubNavSection).join('')}
-        </ul>`;
-    }
-
-    const renderSubNavSection = ([ childrenSectionName, doclets ]) => {
+    const renderSubNav = (doclets => {
         if (!doclets || !doclets.length) return '';
 
         const renderChild = (doclet) => {
             return `<li>${linktoFn(doclet.longname, doclet.name)}</li>`;
         }
-        const renderSectionTitle = () => {
-            if (childrenSectionName === 'global') return '';
-            return `<h6>${childrenSectionName}</h6>`;
-        }
-        return `<li class="mt-2 mb-4">
-            ${renderSectionTitle()}
-            <ul class="list-unstyled">
+
+        return `
+            <ul class="list-unstyled px-3 pb-4 bg-light">
                 ${doclets.map(renderChild).join('')}
             </ul>
-        </li>`;
-    }
+        `;
+    });
 
     if (items.length) {
         let itemsNav = '';
@@ -335,7 +322,7 @@ function buildMemberNav(items, itemHeading, itemsSeen, linktoFn) {
             let displayName;
 
             if ( !hasOwnProp.call(item, 'longname') ) {
-                itemsNav += `<li>${linktoFn('', item.name)}</li>`;
+                itemsNav += `<li class="nav-item">${linktoFn('', item.name, 'nav-link')}</li>`;
             }
             else if ( !hasOwnProp.call(itemsSeen, item.longname) ) {
                 if (env.conf.templates.default.useLongnameInNav) {
@@ -344,14 +331,17 @@ function buildMemberNav(items, itemHeading, itemsSeen, linktoFn) {
                     displayName = item.name;
                 }
 
-                itemsNav += `<li>${linktoFn(item.longname, displayName.replace(/\b(module|event):/g, ''))} ${renderSubNav(item.children)}</li>`;
+                itemsNav += `<li class="module-section nav-item ${displayName}">
+                    ${linktoFn(item.longname, displayName.replace(/\b(module|event):/g), 'nav-link font-weight-bold')}
+                    ${renderSubNav(item.children)}
+                </li>`;
 
                 itemsSeen[item.longname] = true;
             }
         });
 
         if (itemsNav !== '') {
-            nav += `<ul class="list-unstyled">${itemsNav}</ul>`;
+            nav += `<ul class="list-unstyled nav flex-column">${itemsNav}</ul>`;
         }
     }
 
@@ -611,27 +601,10 @@ exports.publish = (taffyData, opts, tutorials) => {
         }
     });
 
-    // members = helper.getMembers(data);
-    members = {
-        modules: data({ kind: 'module' }).get(),
-    }
+    members = helper.getMembers(data);
+
     members.modules = members.modules.map(module => {
-        module.children = { global: [] };
-
-        const doclets = data({ memberof: `module:${module.name}`}).get();
-        doclets.forEach(doclet => {
-            if (doclet.service) {
-                const serviceName = doclet.service.name;
-                if (!module.children[serviceName]) {
-                    module.children[serviceName] = [];
-                }
-                module.children[serviceName].push(doclet);
-            } else {
-                module.children.global.push(doclet);
-            }
-        })
-
-
+        module.children = data({ memberof: `module:${module.name}`}).get();
         return module;
     })
 
@@ -689,7 +662,7 @@ exports.publish = (taffyData, opts, tutorials) => {
         const myNamespaces = helper.find(namespaces, {longname: longname});
 
         if (myModules.length) {
-            generate(`Module: ${myModules[0].name}`, myModules, helper.longnameToUrl[longname]);
+            generate(`${myModules[0].name}`, myModules, helper.longnameToUrl[longname], myModules[0].name);
         }
 
         if (myClasses.length) {

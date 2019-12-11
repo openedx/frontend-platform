@@ -6,7 +6,7 @@ import { redirectToLogin } from '../auth';
  * `redirectToLogin` to perform the redirect.
  *
  * @see {@link module:frontend-platform/auth~redirectToLogin}
- * @memberof module:frontend-platform/react
+ * @memberof module:React
  */
 export default function LoginRedirect() {
   useEffect(() => {

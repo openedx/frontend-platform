@@ -1,4 +1,5 @@
 /**
+ * #### Import members from **@edx/frontend-platform/auth**
  * Simplifies the process of making authenticated API requests to backend edX services by providing
  * common authN/authZ client code that enables the login/logout flow and handles ensuring the
  * presence of a valid [JWT cookie](https://github.com/edx/edx-platform/blob/master/openedx/core/djangoapps/oauth_dispatch/docs/decisions/0009-jwt-in-session-cookie.rst).
@@ -11,8 +12,8 @@
  *   configure,
  *   fetchAuthenticatedUser,
  *   getAuthenticatedHttpClient
- * } from '@edx/frontend-platform/analytics';
- * import { geConfig } from '@edx/frontend-platform';
+ * } from '@edx/frontend-platform/auth';
+ * import { getConfig } from '@edx/frontend-platform';
  * import { getLoggingService } from '@edx/frontend-platform/logging';
  *
  * const {
@@ -43,7 +44,7 @@
  *
  * As shown in this example, auth depends on the configuration document and logging.
  *
- * @module frontend-platform/auth
+ * @module Auth
  */
 
 import axios from 'axios';
@@ -268,7 +269,7 @@ export async function hydrateAuthenticatedUser() {
  *
  * @name HttpClient
  * @interface
- * @memberof module:frontend-platform/auth
+ * @memberof module:Auth
  * @property {function} get
  * @property {function} head
  * @property {function} options
@@ -281,7 +282,7 @@ export async function hydrateAuthenticatedUser() {
 /**
  * @name UserData
  * @interface
- * @memberof module:frontend-platform/auth
+ * @memberof module:Auth
  * @property {string} userId
  * @property {string} username
  * @property {Array} roles

@@ -1,9 +1,48 @@
 /**
+ * #### Import members from **@edx/frontend-platform**
+ *
  * The initialization module provides a function for managing an application's initialization
  * lifecycle.  It also provides constants and default handler implementations.
  *
- * @memberof frontend-platform
- * @service Initialization
+ * ```
+ * import {
+ *   initialize,
+ *   APP_INIT_ERROR,
+ *   APP_READY,
+ *   subscribe,
+ * } from '@edx/frontend-platform';
+ * import { ErrorPage, AppProvider } from '@edx/frontend-platform/react';
+ * import React from 'react';
+ * import ReactDOM from 'react-dom';
+ * import { Route, Switch } from 'react-router-dom';
+ *
+ * subscribe(APP_READY, () => {
+ *   ReactDOM.render(
+ *     <AppProvider store={configureStore()}>
+ *       <Header />
+ *       <main>
+ *         <Switch>
+ *           <Route exact path="/" component={PaymentPage} />
+ *         </Switch>
+ *       </main>
+ *       <Footer />
+ *     </AppProvider>,
+ *     document.getElementById('root'),
+ *   );
+ * });
+ *
+ * subscribe(APP_INIT_ERROR, (error) => {
+ *   ReactDOM.render(<ErrorPage message={error.message} />, document.getElementById('root'));
+ * });
+ *
+ * initialize({
+ *   messages: [appMessages],
+ *   requireAuthenticatedUser: true,
+ *   hydrateAuthenticatedUser: true,
+ * });
+
+```
+ * @module Initialization
  */
 
 import { createBrowserHistory } from 'history';
@@ -85,8 +124,6 @@ export const APP_INIT_ERROR = `${APP_TOPIC}.INIT_ERROR`;
  * package.  Applications are encouraged to use this history object, rather than creating their own,
  * as behavior may be undefined when managing history via multiple mechanisms/instances.
  *
- * @memberof module:frontend-platform
- * @service Utilities
  */
 export const history = createBrowserHistory();
 
@@ -95,8 +132,6 @@ export const history = createBrowserHistory();
  * LoggingService using `logError`
  *
  * @see {@link module:frontend-platform/logging~logError}
- * @memberof module:frontend-platform
- * @service Initialization
  * @param {*} error
  */
 export async function initError(error) {
@@ -112,8 +147,6 @@ export async function initError(error) {
  * - Optionally loading additional user information via the application's user account data
  * endpoint.
  *
- * @memberof module:frontend-platform
- * @service Initialization
  * @param {boolean} requireUser Whether or not we should redirect to login if a user is not
  * authenticated.
  * @param {boolean} hydrateUser Whether or not we should fetch additional user account data.
@@ -141,8 +174,6 @@ export async function auth(requireUser, hydrateUser) {
  * service.  This is a pre-requisite for sending analytics events, thus, we do it during the
  * initialization sequence so that analytics is ready once the application's UI code starts to load.
  *
- * @memberof module:frontend-platform
- * @service Initialization
  */
 export async function analytics() {
   const authenticatedUser = getAuthenticatedUser();
@@ -194,8 +225,6 @@ function applyOverrideHandlers(overrides) {
  * - ready: A no-op by default.
  * - initError: Uses the 'initError' handler defined above.
  *
- * @memberof module:frontend-platform
- * @service Initialization
  * @param {Object} [options]
  * @param {*} [options.loggingService=NewRelicLoggingService] The `LoggingService` implementation
  * to use.

@@ -9,10 +9,15 @@
 
 frontend-platform is a modest application framework for Open edX micro-frontend applications and their supporting libraries. It provides a number of foundational services that all Open edX micro-frontends should have:
 
-- Analytics
-- Logging
-- Authenticated API client (auth)
-- Internationalization (i18n)
+| Service                            | Module location                  |
+|------------------------------------|----------------------------------|
+| Analytics                          | @edx/frontend-platform/analytics |
+| Logging                            | @edx/frontend-platform/logging   |
+| Authenticated API client (auth)    | @edx/frontend-platform/auth      |
+| Internationalization (i18n)        | @edx/frontend-platform/i18n      |
+| Misc (init, config, pubSub, utils) | @edx/frontend-platform           |
+
+-------------------------------------------------------------------------
 
 In addition, frontend-platform provides an extensible application initialization lifecycle to help manage the configuration of the above services, freeing application developers to focus on feature development.
 
