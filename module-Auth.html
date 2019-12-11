@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Module: frontend-platform/auth</title>
+    <title>JSDoc: Auth</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -15,11 +15,10 @@
     <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
 </head>
 
-<body>
+<body data-module="Auth">
 
 <div id="main">
-
-    <h1 class="page-title">Module: frontend-platform/auth</h1>
+    <h1 class="page-title">Auth</h1>
 
     
 
@@ -40,7 +39,8 @@
     <div class="container-overview">
     
         
-            <div class="description"><p>Simplifies the process of making authenticated API requests to backend edX services by providing
+            <div class="description"><h4>Import members from <strong>@edx/frontend-platform/auth</strong></h4>
+<p>Simplifies the process of making authenticated API requests to backend edX services by providing
 common authN/authZ client code that enables the login/logout flow and handles ensuring the
 presence of a valid <a href="https://github.com/edx/edx-platform/blob/master/openedx/core/djangoapps/oauth_dispatch/docs/decisions/0009-jwt-in-session-cookie.rst">JWT cookie</a>.</p>
 <p>The <code>initialize</code> function performs much of the auth configuration for you.  If, however, you're
@@ -49,8 +49,8 @@ not using the <code>initialize</code> function, an authenticated API client can 
   configure,
   fetchAuthenticatedUser,
   getAuthenticatedHttpClient
-} from '@edx/frontend-platform/analytics';
-import { geConfig } from '@edx/frontend-platform';
+} from '@edx/frontend-platform/auth';
+import { getConfig } from '@edx/frontend-platform';
 import { getLoggingService } from '@edx/frontend-platform/logging';
 
 const {
@@ -171,10 +171,10 @@ const response = await getAuthenticatedHttpClient().get(`https://example.com/api
         <h3 class="subsection-title">Interfaces</h3>
 
         <dl>
-            <dt><a href="module-frontend-platform_auth.HttpClient.html">HttpClient</a></dt>
+            <dt><a href="module-Auth.HttpClient.html">HttpClient</a></dt>
             <dd></dd>
         
-            <dt><a href="module-frontend-platform_auth.UserData.html">UserData</a></dt>
+            <dt><a href="module-Auth.UserData.html">UserData</a></dt>
             <dd></dd>
         </dl>
     
@@ -228,7 +228,7 @@ const response = await getAuthenticatedHttpClient().get(`https://example.com/api
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_index.js.html">auth/index.js</a>, <a href="auth_index.js.html#line62">line 62</a>
+        <a href="auth_index.js.html">auth/index.js</a>, <a href="auth_index.js.html#line63">line 63</a>
     </li></ul></dd>
     
 
@@ -249,6 +249,315 @@ const response = await getAuthenticatedHttpClient().get(`https://example.com/api
 
     
         <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".addAuthenticationToHttpClient"><span class="type-signature">(static) </span>addAuthenticationToHttpClient<span class="signature">(newHttpClient, config)</span><span class="type-signature"> &rarr; {HttpClient}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Adds authentication defaults and interceptors to an http client instance.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>newHttpClient</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">HttpClient</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>config</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>refreshAccessTokenEndpoint</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>accessTokenCookieName</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>csrfTokenApiPath</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="auth_addAuthenticationToHttpClient.js.html">auth/addAuthenticationToHttpClient.js</a>, <a href="auth_addAuthenticationToHttpClient.js.html#line16">line 16</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>Singleton. A configured axios http client</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">HttpClient</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
 
         
             
@@ -567,7 +876,7 @@ const response = await getAuthenticatedHttpClient().get(`https://example.com/api
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_index.js.html">auth/index.js</a>, <a href="auth_index.js.html#line107">line 107</a>
+        <a href="auth_index.js.html">auth/index.js</a>, <a href="auth_index.js.html#line108">line 108</a>
     </li></ul></dd>
     
 
@@ -726,7 +1035,7 @@ authenticated.</p></td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_index.js.html">auth/index.js</a>, <a href="auth_index.js.html#line205">line 205</a>
+        <a href="auth_index.js.html">auth/index.js</a>, <a href="auth_index.js.html#line206">line 206</a>
     </li></ul></dd>
     
 
@@ -833,7 +1142,7 @@ unauthenticated.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_index.js.html">auth/index.js</a>, <a href="auth_index.js.html#line179">line 179</a>
+        <a href="auth_index.js.html">auth/index.js</a>, <a href="auth_index.js.html#line180">line 180</a>
     </li></ul></dd>
     
 
@@ -947,7 +1256,7 @@ logged in.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_index.js.html">auth/index.js</a>, <a href="auth_index.js.html#line129">line 129</a>
+        <a href="auth_index.js.html">auth/index.js</a>, <a href="auth_index.js.html#line130">line 130</a>
     </li></ul></dd>
     
 
@@ -1058,7 +1367,7 @@ anonymous, returns null.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_index.js.html">auth/index.js</a>, <a href="auth_index.js.html#line157">line 157</a>
+        <a href="auth_index.js.html">auth/index.js</a>, <a href="auth_index.js.html#line158">line 158</a>
     </li></ul></dd>
     
 
@@ -1173,7 +1482,7 @@ existing authenticatedUser object, available via getAuthenticatedUser().</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_index.js.html">auth/index.js</a>, <a href="auth_index.js.html#line242">line 242</a>
+        <a href="auth_index.js.html">auth/index.js</a>, <a href="auth_index.js.html#line243">line 243</a>
     </li></ul></dd>
     
 
@@ -1328,7 +1637,7 @@ existing authenticatedUser object, available via getAuthenticatedUser().</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_index.js.html">auth/index.js</a>, <a href="auth_index.js.html#line138">line 138</a>
+        <a href="auth_index.js.html">auth/index.js</a>, <a href="auth_index.js.html#line139">line 139</a>
     </li></ul></dd>
     
 
@@ -1465,7 +1774,7 @@ existing authenticatedUser object, available via getAuthenticatedUser().</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_index.js.html">auth/index.js</a>, <a href="auth_index.js.html#line147">line 147</a>
+        <a href="auth_index.js.html">auth/index.js</a>, <a href="auth_index.js.html#line148">line 148</a>
     </li></ul></dd>
     
 
@@ -1602,7 +1911,7 @@ existing authenticatedUser object, available via getAuthenticatedUser().</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_index.js.html">auth/index.js</a>, <a href="auth_index.js.html#line167">line 167</a>
+        <a href="auth_index.js.html">auth/index.js</a>, <a href="auth_index.js.html#line168">line 168</a>
     </li></ul></dd>
     
 
@@ -1706,7 +2015,7 @@ additional user account data if the <code>hydrateAuthenticatedUser</code> flag h
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_index.js.html">auth/index.js</a>, <a href="auth_index.js.html#line73">line 73</a>
+        <a href="auth_index.js.html">auth/index.js</a>, <a href="auth_index.js.html#line74">line 74</a>
     </li></ul></dd>
     
 
@@ -1716,7 +2025,7 @@ additional user account data if the <code>hydrateAuthenticatedUser</code> flag h
     <dt class="tag-see">See:</dt>
     <dd class="tag-see">
         <ul>
-            <li><code>module:Initialization~initialize</code></li>
+            <li><a href="module-Initialization.html#~initialize"><code>module:Initialization~initialize</code></a></li>
         </ul>
     </dd>
     
@@ -1755,70 +2064,76 @@ additional user account data if the <code>hydrateAuthenticatedUser</code> flag h
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><ul class="list-unstyled"><li><a href="module-frontend-platform.html">frontend-platform</a> <ul class="list-unstyled pl-3 mt-2 mb-4">
-            <li class="mt-2 mb-4">
-            <h6>Initialization</h6>
-            <ul class="list-unstyled">
-                <li><a href="module-frontend-platform.html#.analytics">analytics</a></li><li><a href="module-frontend-platform.html#.auth">auth</a></li><li><a href="module-frontend-platform.html#.initError">initError</a></li><li><a href="module-frontend-platform.html#.initialize">initialize</a></li>
+    <h2><a href="index.html">Home</a></h2><ul class="list-unstyled nav flex-column"><li class="module-section nav-item Analytics">
+                    <a href="module-Analytics.html" class="nav-link font-weight-bold">Analytics</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-Analytics.AnalyticsService.html">AnalyticsService</a></li><li><a href="module-Analytics.SegmentAnalyticsService.html">SegmentAnalyticsService</a></li><li><a href="module-Analytics.html#~configure">configure</a></li><li><a href="module-Analytics.html#~getAnalyticsService">getAnalyticsService</a></li><li><a href="module-Analytics.html#~identifyAnonymousUser">identifyAnonymousUser</a></li><li><a href="module-Analytics.html#~identifyAuthenticatedUser">identifyAuthenticatedUser</a></li><li><a href="module-Analytics.html#~resetAnalyticsService">resetAnalyticsService</a></li><li><a href="module-Analytics.html#~sendPageEvent">sendPageEvent</a></li><li><a href="module-Analytics.html#~sendTrackEvent">sendTrackEvent</a></li><li><a href="module-Analytics.html#~sendTrackingLogEvent">sendTrackingLogEvent</a></li>
             </ul>
-        </li><li class="mt-2 mb-4">
-            <h6>Utilities</h6>
-            <ul class="list-unstyled">
-                <li><a href="module-frontend-platform.html#.camelCaseObject">camelCaseObject</a></li><li><a href="module-frontend-platform.html#.convertKeyNames">convertKeyNames</a></li><li><a href="module-frontend-platform.html#.ensureDefinedConfig">ensureDefinedConfig</a></li><li><a href="module-frontend-platform.html#.getQueryParameters">getQueryParameters</a></li><li><a href="module-frontend-platform.html#.history">history</a></li><li><a href="module-frontend-platform.html#.modifyObjectKeys">modifyObjectKeys</a></li><li><a href="module-frontend-platform.html#.snakeCaseObject">snakeCaseObject</a></li>
+        
+                </li><li class="module-section nav-item Auth">
+                    <a href="module-Auth.html" class="nav-link font-weight-bold">Auth</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-Auth.html#.addAuthenticationToHttpClient">addAuthenticationToHttpClient</a></li><li><a href="module-Auth.HttpClient.html">HttpClient</a></li><li><a href="module-Auth.UserData.html">UserData</a></li><li><a href="module-Auth.html#~AUTHENTICATED_USER_TOPIC">AUTHENTICATED_USER_TOPIC</a></li><li><a href="module-Auth.html#~configure">configure</a></li><li><a href="module-Auth.html#~ensureAuthenticatedUser">ensureAuthenticatedUser</a></li><li><a href="module-Auth.html#~event:AUTHENTICATED_USER_CHANGED">AUTHENTICATED_USER_CHANGED</a></li><li><a href="module-Auth.html#~fetchAuthenticatedUser">fetchAuthenticatedUser</a></li><li><a href="module-Auth.html#~getAuthenticatedHttpClient">getAuthenticatedHttpClient</a></li><li><a href="module-Auth.html#~getAuthenticatedUser">getAuthenticatedUser</a></li><li><a href="module-Auth.html#~hydrateAuthenticatedUser">hydrateAuthenticatedUser</a></li><li><a href="module-Auth.html#~redirectToLogin">redirectToLogin</a></li><li><a href="module-Auth.html#~redirectToLogout">redirectToLogout</a></li><li><a href="module-Auth.html#~setAuthenticatedUser">setAuthenticatedUser</a></li>
             </ul>
-        </li><li class="mt-2 mb-4">
-            <h6>Config</h6>
-            <ul class="list-unstyled">
-                <li><a href="module-frontend-platform.html#.ConfigDocument">ConfigDocument</a></li><li><a href="module-frontend-platform.html#.ensureConfig">ensureConfig</a></li><li><a href="module-frontend-platform.html#.getConfig">getConfig</a></li><li><a href="module-frontend-platform.html#.mergeConfig">mergeConfig</a></li><li><a href="module-frontend-platform.html#.setConfig">setConfig</a></li>
+        
+                </li><li class="module-section nav-item Config">
+                    <a href="module-Config.html" class="nav-link font-weight-bold">Config</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-Config.html#.ConfigDocument">ConfigDocument</a></li><li><a href="module-Config.html#~ensureConfig">ensureConfig</a></li><li><a href="module-Config.html#~getConfig">getConfig</a></li><li><a href="module-Config.html#~mergeConfig">mergeConfig</a></li><li><a href="module-Config.html#~setConfig">setConfig</a></li>
             </ul>
-        </li><li class="mt-2 mb-4">
-            <h6>PubSub</h6>
-            <ul class="list-unstyled">
-                <li><a href="module-frontend-platform.html#.publish">publish</a></li><li><a href="module-frontend-platform.html#.subscribe">subscribe</a></li><li><a href="module-frontend-platform.html#.unsubscribe">unsubscribe</a></li>
+        
+                </li><li class="module-section nav-item Initialization">
+                    <a href="module-Initialization.html" class="nav-link font-weight-bold">Initialization</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-Initialization.html#~analytics">analytics</a></li><li><a href="module-Initialization.html#~APP_TOPIC">APP_TOPIC</a></li><li><a href="module-Initialization.html#~auth">auth</a></li><li><a href="module-Initialization.html#~event:APP_ANALYTICS_INITIALIZED">APP_ANALYTICS_INITIALIZED</a></li><li><a href="module-Initialization.html#~event:APP_AUTH_INITIALIZED">APP_AUTH_INITIALIZED</a></li><li><a href="module-Initialization.html#~event:APP_CONFIG_INITIALIZED">APP_CONFIG_INITIALIZED</a></li><li><a href="module-Initialization.html#~event:APP_I18N_INITIALIZED">APP_I18N_INITIALIZED</a></li><li><a href="module-Initialization.html#~event:APP_INIT_ERROR">APP_INIT_ERROR</a></li><li><a href="module-Initialization.html#~event:APP_LOGGING_INITIALIZED">APP_LOGGING_INITIALIZED</a></li><li><a href="module-Initialization.html#~event:APP_READY">APP_READY</a></li><li><a href="module-Initialization.html#~history">history</a></li><li><a href="module-Initialization.html#~initError">initError</a></li><li><a href="module-Initialization.html#~initialize">initialize</a></li>
             </ul>
-        </li>
-        </ul></li><li><a href="module-frontend-platform_analytics.html">frontend-platform/analytics</a> <ul class="list-unstyled pl-3 mt-2 mb-4">
-            <li class="mt-2 mb-4">
-            
-            <ul class="list-unstyled">
-                <li><a href="module-frontend-platform_analytics.AnalyticsService.html">AnalyticsService</a></li><li><a href="module-frontend-platform_analytics.SegmentAnalyticsService.html">SegmentAnalyticsService</a></li><li><a href="module-frontend-platform_analytics.html#~configure">configure</a></li><li><a href="module-frontend-platform_analytics.html#~getAnalyticsService">getAnalyticsService</a></li><li><a href="module-frontend-platform_analytics.html#~identifyAnonymousUser">identifyAnonymousUser</a></li><li><a href="module-frontend-platform_analytics.html#~identifyAuthenticatedUser">identifyAuthenticatedUser</a></li><li><a href="module-frontend-platform_analytics.html#~resetAnalyticsService">resetAnalyticsService</a></li><li><a href="module-frontend-platform_analytics.html#~sendPageEvent">sendPageEvent</a></li><li><a href="module-frontend-platform_analytics.html#~sendTrackEvent">sendTrackEvent</a></li><li><a href="module-frontend-platform_analytics.html#~sendTrackingLogEvent">sendTrackingLogEvent</a></li>
+        
+                </li><li class="module-section nav-item Internationalization">
+                    <a href="module-Internationalization.html" class="nav-link font-weight-bold">Internationalization</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-Internationalization.html#.configure">configure</a></li><li><a href="module-Internationalization.html#.findSupportedLocale">findSupportedLocale</a></li><li><a href="module-Internationalization.html#.getCookies">getCookies</a></li><li><a href="module-Internationalization.html#.getLocale">getLocale</a></li><li><a href="module-Internationalization.html#.getMessages">getMessages</a></li><li><a href="module-Internationalization.html#.getPrimaryLanguageSubtag">getPrimaryLanguageSubtag</a></li><li><a href="module-Internationalization.html#.handleRtl">handleRtl</a></li><li><a href="module-Internationalization.html#.isRtl">isRtl</a></li><li><a href="module-Internationalization.html#.LOCALE_CHANGED">LOCALE_CHANGED</a></li><li><a href="module-Internationalization.html#.LOCALE_TOPIC">LOCALE_TOPIC</a></li><li><a href="module-Internationalization.html#.mergeMessages">mergeMessages</a></li><li><a href="module-Internationalization.html#~defineMessages">defineMessages</a></li><li><a href="module-Internationalization-FormattedDate.html">FormattedDate</a></li><li><a href="module-Internationalization-FormattedMessage.html">FormattedMessage</a></li><li><a href="module-Internationalization-FormattedMessage.html">FormattedMessage</a></li><li><a href="module-Internationalization-FormattedNumber.html">FormattedNumber</a></li><li><a href="module-Internationalization-FormattedPlural.html">FormattedPlural</a></li><li><a href="module-Internationalization-FormattedRelative.html">FormattedRelative</a></li><li><a href="module-Internationalization-FormattedTime.html">FormattedTime</a></li><li><a href="module-Internationalization-IntlProvider.html">IntlProvider</a></li><li><a href="module-Internationalization.html#~intlShape">intlShape</a></li>
             </ul>
-        </li>
-        </ul></li><li><a href="module-frontend-platform_auth.html">frontend-platform/auth</a> <ul class="list-unstyled pl-3 mt-2 mb-4">
-            <li class="mt-2 mb-4">
-            
-            <ul class="list-unstyled">
-                <li><a href="module-frontend-platform_auth.HttpClient.html">HttpClient</a></li><li><a href="module-frontend-platform_auth.UserData.html">UserData</a></li><li><a href="module-frontend-platform_auth.html#~AUTHENTICATED_USER_TOPIC">AUTHENTICATED_USER_TOPIC</a></li><li><a href="module-frontend-platform_auth.html#~configure">configure</a></li><li><a href="module-frontend-platform_auth.html#~ensureAuthenticatedUser">ensureAuthenticatedUser</a></li><li><a href="module-frontend-platform_auth.html#~event:AUTHENTICATED_USER_CHANGED">AUTHENTICATED_USER_CHANGED</a></li><li><a href="module-frontend-platform_auth.html#~fetchAuthenticatedUser">fetchAuthenticatedUser</a></li><li><a href="module-frontend-platform_auth.html#~getAuthenticatedHttpClient">getAuthenticatedHttpClient</a></li><li><a href="module-frontend-platform_auth.html#~getAuthenticatedUser">getAuthenticatedUser</a></li><li><a href="module-frontend-platform_auth.html#~hydrateAuthenticatedUser">hydrateAuthenticatedUser</a></li><li><a href="module-frontend-platform_auth.html#~redirectToLogin">redirectToLogin</a></li><li><a href="module-frontend-platform_auth.html#~redirectToLogout">redirectToLogout</a></li><li><a href="module-frontend-platform_auth.html#~setAuthenticatedUser">setAuthenticatedUser</a></li>
+        
+                </li><li class="module-section nav-item Logging">
+                    <a href="module-Logging.html" class="nav-link font-weight-bold">Logging</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-Logging.LoggingService.html">LoggingService</a></li><li><a href="module-Logging.NewRelicLoggingService.html">NewRelicLoggingService</a></li><li><a href="module-Logging.html#~configure">configure</a></li><li><a href="module-Logging.html#~getLoggingService">getLoggingService</a></li><li><a href="module-Logging.html#~logError">logError</a></li><li><a href="module-Logging.html#~logInfo">logInfo</a></li><li><a href="module-Logging.html#~resetLoggingService">resetLoggingService</a></li>
             </ul>
-        </li>
-        </ul></li><li><a href="module-frontend-platform_i18n.html">frontend-platform/i18n</a> <ul class="list-unstyled pl-3 mt-2 mb-4">
-            <li class="mt-2 mb-4">
-            
-            <ul class="list-unstyled">
-                <li><a href="module-frontend-platform_i18n.html#.configure">configure</a></li><li><a href="module-frontend-platform_i18n.html#.findSupportedLocale">findSupportedLocale</a></li><li><a href="module-frontend-platform_i18n.html#.getCookies">getCookies</a></li><li><a href="module-frontend-platform_i18n.html#.getLocale">getLocale</a></li><li><a href="module-frontend-platform_i18n.html#.getMessages">getMessages</a></li><li><a href="module-frontend-platform_i18n.html#.getPrimaryLanguageSubtag">getPrimaryLanguageSubtag</a></li><li><a href="module-frontend-platform_i18n.html#.handleRtl">handleRtl</a></li><li><a href="module-frontend-platform_i18n.html#.isRtl">isRtl</a></li><li><a href="module-frontend-platform_i18n.html#.LOCALE_CHANGED">LOCALE_CHANGED</a></li><li><a href="module-frontend-platform_i18n.html#.LOCALE_TOPIC">LOCALE_TOPIC</a></li><li><a href="module-frontend-platform_i18n.html#.mergeMessages">mergeMessages</a></li><li><a href="module-frontend-platform_i18n.html#~defineMessages">defineMessages</a></li><li><a href="module-frontend-platform_i18n-FormattedDate.html">FormattedDate</a></li><li><a href="module-frontend-platform_i18n-FormattedMessage.html">FormattedMessage</a></li><li><a href="module-frontend-platform_i18n-FormattedMessage.html">FormattedMessage</a></li><li><a href="module-frontend-platform_i18n-FormattedNumber.html">FormattedNumber</a></li><li><a href="module-frontend-platform_i18n-FormattedPlural.html">FormattedPlural</a></li><li><a href="module-frontend-platform_i18n-FormattedRelative.html">FormattedRelative</a></li><li><a href="module-frontend-platform_i18n-FormattedTime.html">FormattedTime</a></li><li><a href="module-frontend-platform_i18n-IntlProvider.html">IntlProvider</a></li><li><a href="module-frontend-platform_i18n.html#~intlShape">intlShape</a></li>
+        
+                </li><li class="module-section nav-item PubSub">
+                    <a href="module-PubSub.html" class="nav-link font-weight-bold">PubSub</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-PubSub.html#~publish">publish</a></li><li><a href="module-PubSub.html#~subscribe">subscribe</a></li><li><a href="module-PubSub.html#~unsubscribe">unsubscribe</a></li>
             </ul>
-        </li>
-        </ul></li><li><a href="module-frontend-platform_logging.html">frontend-platform/logging</a> <ul class="list-unstyled pl-3 mt-2 mb-4">
-            <li class="mt-2 mb-4">
-            
-            <ul class="list-unstyled">
-                <li><a href="module-frontend-platform_logging.html#~configure">configure</a></li><li><a href="module-frontend-platform_logging.html#~getLoggingService">getLoggingService</a></li><li><a href="module-frontend-platform_logging.html#~logError">logError</a></li><li><a href="module-frontend-platform_logging.html#~logInfo">logInfo</a></li><li><a href="module-frontend-platform_logging.html#~resetLoggingService">resetLoggingService</a></li>
+        
+                </li><li class="module-section nav-item React">
+                    <a href="module-React.html" class="nav-link font-weight-bold">React</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-React.html#.AppContext">AppContext</a></li><li><a href="module-React.html#.AppProvider">AppProvider</a></li><li><a href="module-React.html#.AuthenticatedPageRoute">AuthenticatedPageRoute</a></li><li><a href="module-React.ErrorBoundary.html">ErrorBoundary</a></li><li><a href="module-React.ErrorPage.html">ErrorPage</a></li><li><a href="module-React.html#.LoginRedirect">LoginRedirect</a></li><li><a href="module-React.html#.OptionalReduxProvider">OptionalReduxProvider</a></li><li><a href="module-React.html#.PageRoute">PageRoute</a></li><li><a href="module-React.html#.useAppEvent">useAppEvent</a></li>
             </ul>
-        </li>
-        </ul></li><li><a href="module-frontend-platform_react.html">frontend-platform/react</a> <ul class="list-unstyled pl-3 mt-2 mb-4">
-            <li class="mt-2 mb-4">
-            
-            <ul class="list-unstyled">
-                <li><a href="module-frontend-platform_react.html#.AppContext">AppContext</a></li><li><a href="module-frontend-platform_react.html#.AppProvider">AppProvider</a></li><li><a href="module-frontend-platform_react.html#.AuthenticatedPageRoute">AuthenticatedPageRoute</a></li><li><a href="module-frontend-platform_react.ErrorBoundary.html">ErrorBoundary</a></li><li><a href="module-frontend-platform_react.ErrorPage.html">ErrorPage</a></li><li><a href="module-frontend-platform_react.html#.LoginRedirect">LoginRedirect</a></li><li><a href="module-frontend-platform_react.html#.OptionalReduxProvider">OptionalReduxProvider</a></li><li><a href="module-frontend-platform_react.html#.PageRoute">PageRoute</a></li><li><a href="module-frontend-platform_react.html#.useAppEvent">useAppEvent</a></li>
+        
+                </li><li class="module-section nav-item Utilities">
+                    <a href="module-Utilities.html" class="nav-link font-weight-bold">Utilities</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-Utilities.html#~camelCaseObject">camelCaseObject</a></li><li><a href="module-Utilities.html#~convertKeyNames">convertKeyNames</a></li><li><a href="module-Utilities.html#~ensureDefinedConfig">ensureDefinedConfig</a></li><li><a href="module-Utilities.html#~getQueryParameters">getQueryParameters</a></li><li><a href="module-Utilities.html#~snakeCaseObject">snakeCaseObject</a></li>
             </ul>
-        </li>
-        </ul></li></ul>
+        
+                </li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Wed Dec 11 2019 15:35:48 GMT+0000 (Coordinated Universal Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Wed Dec 11 2019 21:35:00 GMT+0000 (Coordinated Universal Time)
 </footer>
 
 <script> prettyPrint(); </script>
