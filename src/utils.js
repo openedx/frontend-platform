@@ -1,9 +1,12 @@
+/**
+ * #### Import members from **@edx/frontend-platform**
+ *
+ * @module Utilities
+ */
 import camelCase from 'lodash.camelcase';
 import snakeCase from 'lodash.snakecase';
 
 /**
- * #### Import members from **@edx/frontend-platform**
- *
  * This is the underlying function used by camelCaseObject, snakeCaseObject, and convertKeyNames
  * above.
  *
@@ -29,7 +32,6 @@ import snakeCase from 'lodash.snakecase';
  * Can accept arrays as well as objects, and will perform its conversion on any objects it finds in
  * the array.
  *
- * @module Utilities
  * @param {Object} object
  * @param {function} modify
  * @returns {Object}
