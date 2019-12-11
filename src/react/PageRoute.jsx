@@ -7,7 +7,7 @@ import { sendPageEvent } from '../analytics';
  * A react-router route that calls `sendPageEvent` when it becoems active.
  *
  * @see {@link module:frontend-platform/analytics~sendPageEvent}
- * @memberof module:frontend-platform/react
+ * @memberof module:React
  * @param {Object} props
  */
 export default function PageRoute({ component: Component, ...props }) {

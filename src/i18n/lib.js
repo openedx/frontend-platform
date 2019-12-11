@@ -54,18 +54,18 @@ let messages = null;
 export const getLoggingService = () => loggingService;
 
 /**
- * @memberof module:frontend-platform/i18n
+ * @memberof module:Internationalization
  */
 export const LOCALE_TOPIC = 'LOCALE';
 
 /**
- * @memberof module:frontend-platform/i18n
+ * @memberof module:Internationalization
  */
 export const LOCALE_CHANGED = `${LOCALE_TOPIC}.CHANGED`;
 
 /**
  *
- * @memberof module:frontend-platform/i18n
+ * @memberof module:Internationalization
  * @returns {Cookies}
  */
 export function getCookies() {
@@ -95,7 +95,7 @@ addLocaleData([
  * may be 2 or more characters.
  *
  * @param {string} code
- * @memberof module:frontend-platform/i18n
+ * @memberof module:Internationalization
  */
 export function getPrimaryLanguageSubtag(code) {
   return code.split('-')[0];
@@ -111,7 +111,7 @@ export function getPrimaryLanguageSubtag(code) {
  *
  * @param {string} locale
  * @returns {string}
- * @memberof module:frontend-platform/i18n
+ * @memberof module:Internationalization
  */
 export function findSupportedLocale(locale) {
   if (messages[locale] !== undefined) {
@@ -133,7 +133,7 @@ export function findSupportedLocale(locale) {
  * @param {string} locale If a locale is provided, returns the closest supported locale. Optional.
  * @throws An error if i18n has not yet been configured.
  * @returns {string}
- * @memberof module:frontend-platform/i18n
+ * @memberof module:Internationalization
  */
 export function getLocale(locale) {
   if (messages === null) {
@@ -161,7 +161,7 @@ export function getLocale(locale) {
  * provided.
  *
  * @param {string} [locale=getLocale()]
- * @memberof module:frontend-platform/i18n
+ * @memberof module:Internationalization
  */
 export function getMessages(locale = getLocale()) {
   return messages[locale];
@@ -171,7 +171,7 @@ export function getMessages(locale = getLocale()) {
  * Determines if the provided locale is a right-to-left language.
  *
  * @param {string} locale
- * @memberof module:frontend-platform/i18n
+ * @memberof module:Internationalization
  */
 export function isRtl(locale) {
   return rtlLocales.includes(locale);
@@ -181,7 +181,7 @@ export function isRtl(locale) {
  * Handles applying the RTL stylesheet and "dir=rtl" attribute to the html tag if the current locale
  * is a RTL language.
  *
- * @memberof module:frontend-platform/i18n
+ * @memberof module:Internationalization
  */
 export function handleRtl() {
   if (isRtl(getLocale())) {
@@ -224,7 +224,7 @@ const optionsShape = {
  *
  * @param {Array} [messagesArray=[]]
  * @returns {Object}
- * @memberof module:frontend-platform/i18n
+ * @memberof module:Internationalization
  */
 export function mergeMessages(messagesArray = []) {
   return Array.isArray(messagesArray) ? merge({}, ...messagesArray) : {};
@@ -240,7 +240,7 @@ export function mergeMessages(messagesArray = []) {
  * @param {LoggingService} options.loggingService
  * @param {Object} options.config
  * @param {Object} options.messages
- * @memberof module:frontend-platform/i18n
+ * @memberof module:Internationalization
  */
 export function configure(options) {
   PropTypes.checkPropTypes(optionsShape, options, 'property', 'i18n');

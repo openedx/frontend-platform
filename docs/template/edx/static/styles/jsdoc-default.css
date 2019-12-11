@@ -66,6 +66,41 @@ section
     margin-right: 30px;
 }
 
+.module-section.Analytics ul,
+.module-section.Auth ul,
+.module-section.Config ul,
+.module-section.Initialization ul,
+.module-section.Internationalization ul,
+.module-section.Logging ul,
+.module-section.PubSub ul,
+.module-section.React ul,
+.module-section.Utilities ul {
+    display: none;
+}
+[data-module="Analytics"] .module-section.Analytics ul,
+[data-module="Auth"] .module-section.Auth ul,
+[data-module="Config"] .module-section.Config ul,
+[data-module="Initialization"] .module-section.Initialization ul,
+[data-module="Internationalization"] .module-section.Internationalization ul,
+[data-module="Logging"] .module-section.Logging ul,
+[data-module="PubSub"] .module-section.PubSub ul,
+[data-module="React"] .module-section.React ul,
+[data-module="Utilities"] .module-section.Utilities ul {
+    display: block;
+}
+[data-module="Analytics"] .module-section.Analytics > a,
+[data-module="Auth"] .module-section.Auth > a,
+[data-module="Config"] .module-section.Config > a,
+[data-module="Initialization"] .module-section.Initialization > a,
+[data-module="Internationalization"] .module-section.Internationalization > a,
+[data-module="Logging"] .module-section.Logging > a,
+[data-module="PubSub"] .module-section.PubSub > a,
+[data-module="React"] .module-section.React > a,
+[data-module="Utilities"] .module-section.Utilities > a {
+    color: #333;
+    background: #f8f9fa;
+}
+
 .variation {
     display: none;
 }
@@ -89,8 +124,10 @@ nav
     width: 300px;
     box-sizing: border-box;
     border-right: 1px solid #ddd;
-    padding-left: 16px;
     overflow: auto;;
+}
+nav h2 {
+    padding-left: 1rem;
 }
 
 footer {

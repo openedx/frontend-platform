@@ -1,11 +1,27 @@
 /**
+ * #### Import members from **@edx/frontend-platform**
+ *
  * The configuration module provides utilities for working with an application's configuration
  * document (ConfigDocument).  This module uses `process.env` to import configuration variables
  * from the command-line build process.  It can be dynamically extended at run-time using a
  * `config` initialization handler.  Please see the Initialization documentation for more
  * information on handlers and initialization phases.
  *
- * @service frontend-platform
+ * ```
+ * import { getConfig } from '@edx/frontend-platform';
+ *
+ * const {
+ *   BASE_URL,
+ *   LMS_BASE_URL,
+ *   LOGIN_URL,
+ *   LOGIN_URL,
+ *   REFRESH_ACCESS_TOKEN_ENDPOINT,
+ *   ACCESS_TOKEN_COOKIE_NAME,
+ *   CSRF_TOKEN_API_PATH,
+ * } = getConfig();
+ * ```
+ *
+ * @module Config
  */
 
 import { APP_CONFIG_INITIALIZED } from './initialize';
@@ -41,8 +57,6 @@ let config = {
  * reference to an existing object, and is thus safe to call as often as desired.  The document
  * should have the following keys at a minimum:
  *
- * @memberof module:frontend-platform
- * @service Config
  * @returns {ConfigDocument}
   */
 export function getConfig() {
@@ -55,8 +69,6 @@ export function getConfig() {
  * The supplied config document will be tested with `ensureDefinedConfig` to ensure it does not
  * have any `undefined` keys.
  *
- * @memberof module:frontend-platform
- * @service Config
  * @param {ConfigDocument} newConfig
  */
 export function setConfig(newConfig) {
@@ -77,8 +89,6 @@ export function setConfig(newConfig) {
  *
  * If any of the key values are `undefined`, an error will be thrown.
  *
- * @memberof module:frontend-platform
- * @service Config
  * @param {Object} newConfig
  */
 export function mergeConfig(newConfig) {
@@ -108,8 +118,6 @@ export function mergeConfig(newConfig) {
  * phase handlers responsible for loading additional configuration data in the initialization
  * sequence.
  *
- * @memberof module:frontend-platform
- * @service Config
  * @param {Array} keys
  * @param {string} [requester='unspecified application code']
  */
@@ -140,6 +148,7 @@ export function ensureConfig(keys, requester = 'unspecified application code') {
  * time.
  *
  * @name ConfigDocument
+ * @memberof module:Config
  * @property {string} ACCESS_TOKEN_COOKIE_NAME
  * @property {string} BASE_URL The URL of the current application.
  * @property {string} CREDENTIALS_BASE_URL
@@ -157,6 +166,4 @@ export function ensureConfig(keys, requester = 'unspecified application code') {
  * @property {string} SEGMENT_KEY
  * @property {string} SITE_NAME
  * @property {string} USER_INFO_COOKIE_NAME
- * @memberof module:frontend-platform
- * @service Config
  */

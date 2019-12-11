@@ -1,4 +1,6 @@
 /**
+ * #### Import members from **@edx/frontend-platform/analytics**
+ *
  * Contains a shared interface for tracking events.  Has a default implementation of
  * SegmentAnalyticsService, which supports Segment and the Tracking Log API (hosted in LMS).
  *
@@ -7,7 +9,7 @@
  *
  * ```
  * import { configure, SegmentAnalyticsService } from '@edx/frontend-platform/analytics';
- * import { geConfig } from '@edx/frontend-platform';
+ * import { getConfig } from '@edx/frontend-platform';
  * import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
  * import { getLoggingService } from '@edx/frontend-platform/logging';
  *
@@ -21,7 +23,7 @@
  * As shown in this example, analytics depends on the configuration document, logging, and having
  * an authenticated HTTP client.
  *
- * @module frontend-platform/analytics
+ * @module Analytics
  */
 import PropTypes from 'prop-types';
 
@@ -132,10 +134,10 @@ export function resetAnalyticsService() {
 /**
  * @name AnalyticsService
  * @interface
- * @memberof module:frontend-platform/analytics
- * @borrows identifyAnonymousUser as identifyAnonymousUser
- * @borrows identifyAuthenticatedUser as identifyAuthenticatedUser
- * @borrows sendPageEvent as sendPageEvent
- * @borrows sendTrackEvent as sendTrackEvent
- * @borrows sendTrackingLogEvent as sendTrackingLogEvent
+ * @memberof module:Analytics
+ * @property {function} identifyAnonymousUser
+ * @property {function} identifyAuthenticatedUser
+ * @property {function} sendPageEvent
+ * @property {function} sendTrackEvent
+ * @property {function} sendTrackingLogEvent
  */

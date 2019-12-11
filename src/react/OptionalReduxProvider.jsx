@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
 
 /**
- * @memberof module:frontend-platform/react
+ * @memberof module:React
  * @param {Object} props
  */
 export default function OptionalReduxProvider({ store, children }) {
