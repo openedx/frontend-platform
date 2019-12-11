@@ -60,12 +60,6 @@
  */
 
 /**
- * @name FormattedMessage
- * @kind class
- * @see {@link https://github.com/formatjs/react-intl/blob/master/docs/Components.md#formattedmessage|React Intl}
- */
-
-/**
  * @name IntlProvider
  * @kind class
  * @see {@link https://github.com/formatjs/react-intl/blob/master/docs/Components.md#intlprovider|React Intl}

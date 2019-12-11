@@ -214,7 +214,7 @@ function getPathFromDoclet({meta}) {
         meta.filename;
 }
 
-function generate(title, docs, filename, resolveLinks) {
+function generate(title, docs, filename, { resolveLinks = false, moduleName = '' } = {}) {
     let docData;
     let html;
     let outpath;
@@ -224,6 +224,7 @@ function generate(title, docs, filename, resolveLinks) {
         env: env,
         title: title,
         docs: docs,
+        moduleName,
     };
 
     outpath = path.join(outdir, filename);
@@ -254,8 +255,7 @@ function generateSourceFiles(sourceFiles, encoding = 'utf8') {
             logger.error('Error while generating source file %s: %s', file, e.message);
         }
 
-        generate(`Source: ${sourceFiles[file].shortened}`, [source], sourceOutfile,
-            false);
+        generate(`Source: ${sourceFiles[file].shortened}`, [source], sourceOutfile);
     });
 }
 
@@ -661,28 +661,35 @@ exports.publish = (taffyData, opts, tutorials) => {
         const myModules = helper.find(modules, {longname: longname});
         const myNamespaces = helper.find(namespaces, {longname: longname});
 
+        const trimModuleName = (moduleName) => {
+            if (moduleName.includes('module:')) {
+                return moduleName.split(':')[1];
+            }
+            return moduleName;
+        }
+
         if (myModules.length) {
-            generate(`${myModules[0].name}`, myModules, helper.longnameToUrl[longname], myModules[0].name);
+            generate(`${myModules[0].name}`, myModules, helper.longnameToUrl[longname], { moduleName: myModules[0].name });
         }
 
         if (myClasses.length) {
-            generate(`Class: ${myClasses[0].name}`, myClasses, helper.longnameToUrl[longname]);
+            generate(`Class: ${myClasses[0].name}`, myClasses, helper.longnameToUrl[longname], { moduleName: trimModuleName(myClasses[0].memberof) });
         }
 
         if (myNamespaces.length) {
-            generate(`Namespace: ${myNamespaces[0].name}`, myNamespaces, helper.longnameToUrl[longname]);
+            generate(`Namespace: ${myNamespaces[0].name}`, myNamespaces, helper.longnameToUrl[longname], { moduleName: trimModuleName(myNamespaces[0].memberof) });
         }
 
         if (myMixins.length) {
-            generate(`Mixin: ${myMixins[0].name}`, myMixins, helper.longnameToUrl[longname]);
+            generate(`Mixin: ${myMixins[0].name}`, myMixins, helper.longnameToUrl[longname], { moduleName: trimModuleName(myMixins[0].memberof) });
         }
 
         if (myExternals.length) {
-            generate(`External: ${myExternals[0].name}`, myExternals, helper.longnameToUrl[longname]);
+            generate(`External: ${myExternals[0].name}`, myExternals, helper.longnameToUrl[longname], { moduleName: trimModuleName(myExternals[0].memberof) });
         }
 
         if (myInterfaces.length) {
-            generate(`Interface: ${myInterfaces[0].name}`, myInterfaces, helper.longnameToUrl[longname]);
+            generate(`Interface: ${myInterfaces[0].name}`, myInterfaces, helper.longnameToUrl[longname], { moduleName: trimModuleName(myInterfaces[0].memberof) });
         }
     });
 
