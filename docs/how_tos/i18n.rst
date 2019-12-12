@@ -17,7 +17,7 @@ Internationalize your application with react-intl
 
 These steps will allow your application to accept translation strings. See `frontend-app-account <https://github.com/edx/frontend-app-account/>`_ for an example app to follow.
 
-#. Add ``@edx/frontend-i18n`` as a dependency to your ``package.json`` . (If you are actually writing a consumable component, add ``@edx/frontend-i18n`` as both a dev dependency and peer dependency instead.)  ``@edx/frontend-i18n`` is a wrapper around ``react-intl`` that adds some shims. You should only access the ``react-intl`` functions and elements exposed by ``@edx/frontend-i18n``. (They have the same names as in ``react-intl``.)
+#. Add ``@edx/frontend-platform`` as a dependency to your ``package.json`` . (If you are actually writing a consumable component, add ``@edx/frontend-platform`` as both a dev dependency and peer dependency instead.)  ``@edx/frontend-platform/i18n`` is a wrapper around ``react-intl`` that adds some shims. You should only access the ``react-intl`` functions and elements exposed by ``@edx/frontend-platform/i18n``. (They have the same names as in ``react-intl``.)
 
 #. In ``App.js``, wrap your entire app in an ``IntlProvider`` element. See `Load up your translation files`_ for details. (Consumable components: Don't do this step, except possibly in tests. Your consuming application will do it for you. Instead, update your `README like this example <https://github.com/edx/frontend-component-footer/blame/master/README.rst#L23-L27>`__.)
 
@@ -27,7 +27,7 @@ These steps will allow your application to accept translation strings. See `fron
 
    * The ``defaultMessage`` is required, and should be the English display string. Otherwise translators won't know what they're translating.
 
-    .. note::
+     .. note::
         English strings should not include the HTML brackets < or > since those characters will break Transifex.
 
    * The ``description`` is a note to the translators that can help them figure out how to translate your text. It is optional, but recommended.
@@ -46,7 +46,7 @@ These steps will allow your application to accept translation strings. See `fron
 
    #. Inject the ``intl`` object into your component:
 
-      #. ``import { injectIntl, intlShape } from '@edx/frontend-i18n';``;
+      #. ``import { injectIntl, intlShape } from '@edx/frontend-platform/i18n';``;
 
       #. add ``intl: intlShape.isRequired`` to your component's ``propTypes``.
 
@@ -54,7 +54,7 @@ These steps will allow your application to accept translation strings. See `fron
 
    #. Define your messages using ``defineMessages``. This function doesn't actually do anything; it's just a hook for the translation pipeline to be able to find your translation strings. You can call ``defineMessages`` wherever you want, but if you have a lot of them you might want to move them to a separate file. Either ``MyAppName.messages.js`` (if your entire app has only a few strings) or ``SomeComponent.messages.js`` will work. Your file should look like the example below. For your own sanity, make the property name the same as the ``id`` for each object. Example::
 
-       import { defineMessages } from '@edx/frontend-i18n';
+       import { defineMessages } from '@edx/frontend-platform/i18n';
 
        const messages = defineMessages({
          'myapp.cart.pay.now': {
@@ -105,6 +105,16 @@ The pipeline jobs live in the `ecommerce-scripts <https://github.com/edx/ecommer
 
    #. Extraction: We will be using a Babel plugin to find all the strings inside a ``FormattedMessage`` component or inside a call to ``defineMessages``.
 
+      If you are using @edx/frontend-build...
+    
+      * Add this to ``scripts`` in ``package.json``::
+    
+        "i18n_extract": "BABEL_ENV=i18n fedx-scripts babel src --quiet > /dev/null"
+
+      * The default babel configuration provided by frontend-build has the needed configuration.
+        
+      If you are NOT using @edx/frontend-build:
+
       * Add this to ``scripts`` in ``package.json``::
 
         "i18n_extract": "BABEL_ENV=i18n babel src --quiet > /dev/null"
@@ -120,11 +130,13 @@ The pipeline jobs live in the `ecommerce-scripts <https://github.com/edx/ecommer
               "plugins": [
                 ["react-intl", {
                   "messagesDir": "./temp/babel-plugin-react-intl",
-                  "moduleSourceName": "@edx/frontend-i18n"
+                  "moduleSourceName": "@edx/frontend-platform/i18n"
                  }]
                ]
              }
            }
+
+      Then:
 
       * Confirm that running ``make i18n.extract`` creates a lot of ``.json`` files in ``your-repo/temp/babel-plugin-react-intl/`` .
 
@@ -146,9 +158,9 @@ The pipeline jobs live in the `ecommerce-scripts <https://github.com/edx/ecommer
 
 #. The job to pull translations out of Transifex and commit them to your repo will call ``make pull_translations``.
 
-      * If the languages you want to pull down differ from the default set, you can update the ``transifex_langs`` variable in your local Makefile.
+   * If the languages you want to pull down differ from the default set, you can update the ``transifex_langs`` variable in your local Makefile.
 
-      * The user ``edx_transifex_bot`` will need to have permissions to merge an unreviewed pull request into your repo. This means your repo must either allow merging unreviewed pull requests for everyone, or ``edx_transifex_bot`` needs to be an administrator.
+   * The user ``edx_transifex_bot`` will need to have permissions to merge an unreviewed pull request into your repo. This means your repo must either allow merging unreviewed pull requests for everyone, or ``edx_transifex_bot`` needs to be an administrator.
 
 *******************************************
 Create empty translation files in your repo
@@ -192,13 +204,19 @@ Load up your translation files
 
 #. In ``App.jsx``, make the following changes::
 
-     import { IntlProvider, getMessages } from '@edx/frontend-i18n';
-     // ...
-     <IntlProvider locale={this.props.locale} messages={getMessages()}>
+     import { IntlProvider, getMessages, configure } from '@edx/frontend-platform/i18n';
+     import messages from './i18n/index'; // A map of all messages by locale
 
-#. In ``src/index.jsx``, call ``configureI18n`` as per the `README instructions <https://github.com/edx/frontend-i18n/blob/master/README.rst#configuration>`__.
+      configure({
+        messages,
+        config: getConfig(), // ENVIRONMENT and LANGUAGE_PREFERENCE_COOKIE_NAME are required
+        loggingService: getLoggingService(), // An object with logError and logInfo methods
+      });
 
-#. As of this writing, ``frontend-i18n`` reads the locale from the user language preference cookie, or, if none is found, from the browser's language setting. You can verify everything is working by changing your language preference in your account settings. If you are not logged in, you can change your browser language to one of the languages you have translations for.
+      // ...inside ReactDOM.render...
+      <IntlProvider locale={this.props.locale} messages={}>
+
+#. As of this writing, ``frontend-platform/i18n`` reads the locale from the user language preference cookie, or, if none is found, from the browser's language setting. You can verify everything is working by changing your language preference in your account settings. If you are not logged in, you can change your browser language to one of the languages you have translations for.
 
 ********************
 For more information
