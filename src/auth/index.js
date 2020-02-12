@@ -75,6 +75,7 @@ export const AUTHENTICATED_USER_CHANGED = `${AUTHENTICATED_USER_TOPIC}.CHANGED`;
 
 // Singletons
 let authenticatedHttpClient = null;
+let httpClient = null;
 let config = null;
 let authenticatedUser = null;
 
@@ -111,6 +112,7 @@ export function configure(options) {
   PropTypes.checkPropTypes(configPropTypes, options, 'options', 'AuthService');
   config = options;
   authenticatedHttpClient = addAuthenticationToHttpClient(axios.create(), config);
+  httpClient = axios.create();
 }
 
 
@@ -123,12 +125,21 @@ export function getLoggingService() {
 }
 
 /**
- * Gets the apiClient singleton which is an axios instance.
+ * Gets the authenticated HTTP client singleton which is an axios instance.
  *
  * @returns {HttpClient} Singleton. A configured axios http client
  */
 export function getAuthenticatedHttpClient() {
   return authenticatedHttpClient;
+}
+
+/**
+ * Gets the unauthenticated HTTP lient singleton which is an axios instance.
+ *
+ * @returns {HttpClient} Singleton. A configured axios http client
+ */
+export function getHttpClient() {
+  return httpClient;
 }
 
 /**
