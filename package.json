@@ -22,14 +22,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/davidjoy/frontend-platform.git"
+    "url": "git+https://github.com/edx/frontend-platform.git"
   },
   "author": "edX",
   "license": "AGPL-3.0",
   "bugs": {
-    "url": "https://github.com/davidjoy/frontend-platform/issues"
+    "url": "https://github.com/edx/frontend-platform/issues"
   },
-  "homepage": "https://github.com/davidjoy/frontend-platform#readme",
+  "homepage": "https://github.com/edx/frontend-platform#readme",
   "devDependencies": {
     "@commitlint/cli": "8.2.0",
     "@commitlint/config-angular": "8.2.0",
