@@ -275,7 +275,7 @@ export async function initialize({
       appBaseUrl: getConfig().BASE_URL,
       lmsBaseUrl: getConfig().LMS_BASE_URL,
       loginUrl: getConfig().LOGIN_URL,
-      logoutUrl: getConfig().LOGIN_URL,
+      logoutUrl: getConfig().LOGOUT_URL,
       refreshAccessTokenEndpoint: getConfig().REFRESH_ACCESS_TOKEN_ENDPOINT,
       accessTokenCookieName: getConfig().ACCESS_TOKEN_COOKIE_NAME,
       csrfTokenApiPath: getConfig().CSRF_TOKEN_API_PATH,
