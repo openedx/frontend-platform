@@ -460,6 +460,7 @@ context providers.</p>
 is not authenticated.  If the application has been initialized with <code>requireAuthenticatedUser</code>
 false, an authenticatedPageRoute can be used to protect a subset of the application's routes,
 rather than the entire application.</p>
+<p>It can optionally accept an override URL to redirect to instead of the login page.</p>
 <p>Like a <code>PageRoute</code>, also calls <code>sendPageEvent</code> when the route becomes active.</p>
 </div>
 
@@ -512,7 +513,57 @@ rather than the entire application.</p>
 
             
 
-            <td class="description last"></td>
+            <td class="description last">
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>redirectUrl</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The URL anonymous users should be redirected to, rather than
+viewing the route's contents.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
         </tr>
 
     
@@ -553,7 +604,7 @@ rather than the entire application.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="react_AuthenticatedPageRoute.jsx.html">react/AuthenticatedPageRoute.jsx</a>, <a href="react_AuthenticatedPageRoute.jsx.html#line21">line 21</a>
+        <a href="react_AuthenticatedPageRoute.jsx.html">react/AuthenticatedPageRoute.jsx</a>, <a href="react_AuthenticatedPageRoute.jsx.html#line26">line 26</a>
     </li></ul></dd>
     
 
@@ -835,7 +886,7 @@ rather than the entire application.</p>
 
 
 <div class="description">
-    <p>A react-router route that calls <code>sendPageEvent</code> when it becoems active.</p>
+    <p>A react-router Route component that calls <code>sendPageEvent</code> when it becomes active.</p>
 </div>
 
 
@@ -1155,7 +1206,7 @@ mechanism.</p>
                     <a href="module-Auth.html" class="nav-link font-weight-bold">Auth</a>
                     
             <ul class="list-unstyled px-3 pb-4 bg-light">
-                <li><a href="module-Auth.html#.addAuthenticationToHttpClient">addAuthenticationToHttpClient</a></li><li><a href="module-Auth.HttpClient.html">HttpClient</a></li><li><a href="module-Auth.UserData.html">UserData</a></li><li><a href="module-Auth.html#~AUTHENTICATED_USER_TOPIC">AUTHENTICATED_USER_TOPIC</a></li><li><a href="module-Auth.html#~configure">configure</a></li><li><a href="module-Auth.html#~ensureAuthenticatedUser">ensureAuthenticatedUser</a></li><li><a href="module-Auth.html#~event:AUTHENTICATED_USER_CHANGED">AUTHENTICATED_USER_CHANGED</a></li><li><a href="module-Auth.html#~fetchAuthenticatedUser">fetchAuthenticatedUser</a></li><li><a href="module-Auth.html#~getAuthenticatedHttpClient">getAuthenticatedHttpClient</a></li><li><a href="module-Auth.html#~getAuthenticatedUser">getAuthenticatedUser</a></li><li><a href="module-Auth.html#~getHttpClient">getHttpClient</a></li><li><a href="module-Auth.html#~hydrateAuthenticatedUser">hydrateAuthenticatedUser</a></li><li><a href="module-Auth.html#~redirectToLogin">redirectToLogin</a></li><li><a href="module-Auth.html#~redirectToLogout">redirectToLogout</a></li><li><a href="module-Auth.html#~setAuthenticatedUser">setAuthenticatedUser</a></li>
+                <li><a href="module-Auth.html#.addAuthenticationToHttpClient">addAuthenticationToHttpClient</a></li><li><a href="module-Auth.HttpClient.html">HttpClient</a></li><li><a href="module-Auth.UserData.html">UserData</a></li><li><a href="module-Auth.html#~AUTHENTICATED_USER_TOPIC">AUTHENTICATED_USER_TOPIC</a></li><li><a href="module-Auth.html#~configure">configure</a></li><li><a href="module-Auth.html#~ensureAuthenticatedUser">ensureAuthenticatedUser</a></li><li><a href="module-Auth.html#~event:AUTHENTICATED_USER_CHANGED">AUTHENTICATED_USER_CHANGED</a></li><li><a href="module-Auth.html#~fetchAuthenticatedUser">fetchAuthenticatedUser</a></li><li><a href="module-Auth.html#~getAuthenticatedHttpClient">getAuthenticatedHttpClient</a></li><li><a href="module-Auth.html#~getAuthenticatedUser">getAuthenticatedUser</a></li><li><a href="module-Auth.html#~getHttpClient">getHttpClient</a></li><li><a href="module-Auth.html#~getLoginRedirectUrl">getLoginRedirectUrl</a></li><li><a href="module-Auth.html#~getLogoutRedirectUrl">getLogoutRedirectUrl</a></li><li><a href="module-Auth.html#~hydrateAuthenticatedUser">hydrateAuthenticatedUser</a></li><li><a href="module-Auth.html#~redirectToLogin">redirectToLogin</a></li><li><a href="module-Auth.html#~redirectToLogout">redirectToLogout</a></li><li><a href="module-Auth.html#~setAuthenticatedUser">setAuthenticatedUser</a></li>
             </ul>
         
                 </li><li class="module-section nav-item Config">
@@ -1213,7 +1264,7 @@ mechanism.</p>
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Tue Feb 25 2020 20:22:44 GMT+0000 (Coordinated Universal Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Tue Feb 25 2020 21:35:26 GMT+0000 (Coordinated Universal Time)
 </footer>
 
 <script> prettyPrint(); </script>

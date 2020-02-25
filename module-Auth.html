@@ -1035,7 +1035,7 @@ authenticated.</p></td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_index.js.html">auth/index.js</a>, <a href="auth_index.js.html#line217">line 217</a>
+        <a href="auth_index.js.html">auth/index.js</a>, <a href="auth_index.js.html#line245">line 245</a>
     </li></ul></dd>
     
 
@@ -1142,7 +1142,7 @@ unauthenticated.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_index.js.html">auth/index.js</a>, <a href="auth_index.js.html#line191">line 191</a>
+        <a href="auth_index.js.html">auth/index.js</a>, <a href="auth_index.js.html#line219">line 219</a>
     </li></ul></dd>
     
 
@@ -1367,7 +1367,7 @@ anonymous, returns null.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_index.js.html">auth/index.js</a>, <a href="auth_index.js.html#line169">line 169</a>
+        <a href="auth_index.js.html">auth/index.js</a>, <a href="auth_index.js.html#line197">line 197</a>
     </li></ul></dd>
     
 
@@ -1534,6 +1534,286 @@ anonymous, returns null.</p>
     
 
     
+    <h4 class="name" id="~getLoginRedirectUrl"><span class="type-signature">(inner) </span>getLoginRedirectUrl<span class="signature">(redirectUrl)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Builds a URL to the login page with a post-login redirect URL attached as a query parameter.</p>
+<pre class="prettyprint source"><code>const url = getLoginRedirectUrl('http://localhost/mypage');
+console.log(url); // http://localhost/login?next=http%3A%2F%2Flocalhost%2Fmypage
+</code></pre>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>redirectUrl</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The URL the user should be redirected to after logging in.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="auth_index.js.html">auth/index.js</a>, <a href="auth_index.js.html#line155">line 155</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~getLogoutRedirectUrl"><span class="type-signature">(inner) </span>getLogoutRedirectUrl<span class="signature">(redirectUrl)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Builds a URL to the logout page with a post-logout redirect URL attached as a query parameter.</p>
+<pre class="prettyprint source"><code>const url = getLogoutRedirectUrl('http://localhost/mypage');
+console.log(url); // http://localhost/logout?next=http%3A%2F%2Flocalhost%2Fmypage
+</code></pre>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>redirectUrl</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The URL the user should be redirected to after logging out.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="auth_index.js.html">auth/index.js</a>, <a href="auth_index.js.html#line178">line 178</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
     <h4 class="name" id="~hydrateAuthenticatedUser"><span class="type-signature">(async, inner) </span>hydrateAuthenticatedUser<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;null>}</span></h4>
     
 
@@ -1592,7 +1872,7 @@ existing authenticatedUser object, available via getAuthenticatedUser().</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_index.js.html">auth/index.js</a>, <a href="auth_index.js.html#line254">line 254</a>
+        <a href="auth_index.js.html">auth/index.js</a>, <a href="auth_index.js.html#line282">line 282</a>
     </li></ul></dd>
     
 
@@ -1654,7 +1934,7 @@ existing authenticatedUser object, available via getAuthenticatedUser().</p>
 
 
 <div class="description">
-    <p>Redirect the user to login</p>
+    <p>Redirects the user to the login page.</p>
 </div>
 
 
@@ -1706,7 +1986,7 @@ existing authenticatedUser object, available via getAuthenticatedUser().</p>
 
             
 
-            <td class="description last"><p>the url to redirect to after login</p></td>
+            <td class="description last"><p>The URL the user should be redirected to after logging in.</p></td>
         </tr>
 
     
@@ -1747,7 +2027,7 @@ existing authenticatedUser object, available via getAuthenticatedUser().</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_index.js.html">auth/index.js</a>, <a href="auth_index.js.html#line150">line 150</a>
+        <a href="auth_index.js.html">auth/index.js</a>, <a href="auth_index.js.html#line164">line 164</a>
     </li></ul></dd>
     
 
@@ -1791,7 +2071,7 @@ existing authenticatedUser object, available via getAuthenticatedUser().</p>
 
 
 <div class="description">
-    <p>Redirect the user to logout</p>
+    <p>Redirects the user to the logout page.</p>
 </div>
 
 
@@ -1843,7 +2123,7 @@ existing authenticatedUser object, available via getAuthenticatedUser().</p>
 
             
 
-            <td class="description last"><p>the url to redirect to after logout</p></td>
+            <td class="description last"><p>The URL the user should be redirected to after logging out.</p></td>
         </tr>
 
     
@@ -1884,7 +2164,7 @@ existing authenticatedUser object, available via getAuthenticatedUser().</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_index.js.html">auth/index.js</a>, <a href="auth_index.js.html#line159">line 159</a>
+        <a href="auth_index.js.html">auth/index.js</a>, <a href="auth_index.js.html#line187">line 187</a>
     </li></ul></dd>
     
 
@@ -2021,7 +2301,7 @@ existing authenticatedUser object, available via getAuthenticatedUser().</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_index.js.html">auth/index.js</a>, <a href="auth_index.js.html#line179">line 179</a>
+        <a href="auth_index.js.html">auth/index.js</a>, <a href="auth_index.js.html#line207">line 207</a>
     </li></ul></dd>
     
 
@@ -2185,7 +2465,7 @@ additional user account data if the <code>hydrateAuthenticatedUser</code> flag h
                     <a href="module-Auth.html" class="nav-link font-weight-bold">Auth</a>
                     
             <ul class="list-unstyled px-3 pb-4 bg-light">
-                <li><a href="module-Auth.html#.addAuthenticationToHttpClient">addAuthenticationToHttpClient</a></li><li><a href="module-Auth.HttpClient.html">HttpClient</a></li><li><a href="module-Auth.UserData.html">UserData</a></li><li><a href="module-Auth.html#~AUTHENTICATED_USER_TOPIC">AUTHENTICATED_USER_TOPIC</a></li><li><a href="module-Auth.html#~configure">configure</a></li><li><a href="module-Auth.html#~ensureAuthenticatedUser">ensureAuthenticatedUser</a></li><li><a href="module-Auth.html#~event:AUTHENTICATED_USER_CHANGED">AUTHENTICATED_USER_CHANGED</a></li><li><a href="module-Auth.html#~fetchAuthenticatedUser">fetchAuthenticatedUser</a></li><li><a href="module-Auth.html#~getAuthenticatedHttpClient">getAuthenticatedHttpClient</a></li><li><a href="module-Auth.html#~getAuthenticatedUser">getAuthenticatedUser</a></li><li><a href="module-Auth.html#~getHttpClient">getHttpClient</a></li><li><a href="module-Auth.html#~hydrateAuthenticatedUser">hydrateAuthenticatedUser</a></li><li><a href="module-Auth.html#~redirectToLogin">redirectToLogin</a></li><li><a href="module-Auth.html#~redirectToLogout">redirectToLogout</a></li><li><a href="module-Auth.html#~setAuthenticatedUser">setAuthenticatedUser</a></li>
+                <li><a href="module-Auth.html#.addAuthenticationToHttpClient">addAuthenticationToHttpClient</a></li><li><a href="module-Auth.HttpClient.html">HttpClient</a></li><li><a href="module-Auth.UserData.html">UserData</a></li><li><a href="module-Auth.html#~AUTHENTICATED_USER_TOPIC">AUTHENTICATED_USER_TOPIC</a></li><li><a href="module-Auth.html#~configure">configure</a></li><li><a href="module-Auth.html#~ensureAuthenticatedUser">ensureAuthenticatedUser</a></li><li><a href="module-Auth.html#~event:AUTHENTICATED_USER_CHANGED">AUTHENTICATED_USER_CHANGED</a></li><li><a href="module-Auth.html#~fetchAuthenticatedUser">fetchAuthenticatedUser</a></li><li><a href="module-Auth.html#~getAuthenticatedHttpClient">getAuthenticatedHttpClient</a></li><li><a href="module-Auth.html#~getAuthenticatedUser">getAuthenticatedUser</a></li><li><a href="module-Auth.html#~getHttpClient">getHttpClient</a></li><li><a href="module-Auth.html#~getLoginRedirectUrl">getLoginRedirectUrl</a></li><li><a href="module-Auth.html#~getLogoutRedirectUrl">getLogoutRedirectUrl</a></li><li><a href="module-Auth.html#~hydrateAuthenticatedUser">hydrateAuthenticatedUser</a></li><li><a href="module-Auth.html#~redirectToLogin">redirectToLogin</a></li><li><a href="module-Auth.html#~redirectToLogout">redirectToLogout</a></li><li><a href="module-Auth.html#~setAuthenticatedUser">setAuthenticatedUser</a></li>
             </ul>
         
                 </li><li class="module-section nav-item Config">
@@ -2243,7 +2523,7 @@ additional user account data if the <code>hydrateAuthenticatedUser</code> flag h
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Tue Feb 25 2020 20:22:44 GMT+0000 (Coordinated Universal Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Tue Feb 25 2020 21:35:26 GMT+0000 (Coordinated Universal Time)
 </footer>
 
 <script> prettyPrint(); </script>
