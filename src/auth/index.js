@@ -143,21 +143,49 @@ export function getHttpClient() {
 }
 
 /**
- * Redirect the user to login
+ * Builds a URL to the login page with a post-login redirect URL attached as a query parameter.
  *
- * @param {string} redirectUrl the url to redirect to after login
+ * ```
+ * const url = getLoginRedirectUrl('http://localhost/mypage');
+ * console.log(url); // http://localhost/login?next=http%3A%2F%2Flocalhost%2Fmypage
+ * ```
+ *
+ * @param {string} redirectUrl The URL the user should be redirected to after logging in.
  */
-export function redirectToLogin(redirectUrl = config.appBaseUrl) {
-  global.location.assign(`${config.loginUrl}?next=${encodeURIComponent(redirectUrl)}`);
+export function getLoginRedirectUrl(redirectUrl = config.appBaseUrl) {
+  return `${config.loginUrl}?next=${encodeURIComponent(redirectUrl)}`;
 }
 
 /**
- * Redirect the user to logout
+ * Redirects the user to the login page.
  *
- * @param {string} redirectUrl the url to redirect to after logout
+ * @param {string} redirectUrl The URL the user should be redirected to after logging in.
+ */
+export function redirectToLogin(redirectUrl = config.appBaseUrl) {
+  global.location.assign(getLoginRedirectUrl(redirectUrl));
+}
+
+/**
+ * Builds a URL to the logout page with a post-logout redirect URL attached as a query parameter.
+ *
+ * ```
+ * const url = getLogoutRedirectUrl('http://localhost/mypage');
+ * console.log(url); // http://localhost/logout?next=http%3A%2F%2Flocalhost%2Fmypage
+ * ```
+ *
+ * @param {string} redirectUrl The URL the user should be redirected to after logging out.
+ */
+export function getLogoutRedirectUrl(redirectUrl = config.appBaseUrl) {
+  return `${config.logoutUrl}?redirect_url=${encodeURIComponent(redirectUrl)}`;
+}
+
+/**
+ * Redirects the user to the logout page.
+ *
+ * @param {string} redirectUrl The URL the user should be redirected to after logging out.
  */
 export function redirectToLogout(redirectUrl = config.appBaseUrl) {
-  global.location.assign(`${config.logoutUrl}?redirect_url=${encodeURIComponent(redirectUrl)}`);
+  global.location.assign(getLogoutRedirectUrl(redirectUrl));
 }
 
 /**
