@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Button } from '@edx/paragon';
 
 import { FormattedMessage } from '../i18n';
+import PropTypes from "prop-types";
+import AppProvider from "./AppProvider";
 
 /**
  * An error page that displays a generic message for unexpected errors.  Also contains a "Try
@@ -15,8 +17,8 @@ class ErrorPage extends Component {
   reload() {
     global.location.reload();
   }
-
   render() {
+    const { message } = this.props;
     return (
       <div className="container-fluid py-5 justify-content-center align-items-start text-center">
         <div className="row">
@@ -28,6 +30,11 @@ class ErrorPage extends Component {
                 description="error message when an unexpected error occurs"
               />
             </p>
+            {message && (
+              <div role="alert">
+                <p>{message}</p>
+              </div>
+            )}
           </div>
         </div>
         <div className="row">
@@ -49,5 +56,13 @@ class ErrorPage extends Component {
     );
   }
 }
+
+ErrorPage.propTypes = {
+  message: PropTypes.string
+};
+
+ErrorPage.defaultProps = {
+  message: null,
+};
 
 export default ErrorPage;
