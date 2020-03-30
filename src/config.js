@@ -37,6 +37,7 @@ let config = {
   BASE_URL: process.env.BASE_URL,
   CREDENTIALS_BASE_URL: process.env.CREDENTIALS_BASE_URL,
   CSRF_TOKEN_API_PATH: process.env.CSRF_TOKEN_API_PATH,
+  DISCOVERY_BASE_URL: process.env.DISCOVERY_BASE_URL,
   ECOMMERCE_BASE_URL: process.env.ECOMMERCE_BASE_URL,
   ENVIRONMENT,
   LANGUAGE_PREFERENCE_COOKIE_NAME: process.env.LANGUAGE_PREFERENCE_COOKIE_NAME,
@@ -153,6 +154,7 @@ export function ensureConfig(keys, requester = 'unspecified application code') {
  * @property {string} BASE_URL The URL of the current application.
  * @property {string} CREDENTIALS_BASE_URL
  * @property {string} CSRF_TOKEN_API_PATH
+ * @property {string} DISCOVERY_BASE_URL
  * @property {string} ECOMMERCE_BASE_URL
  * @property {string} ENVIRONMENT This is one of: development, production, or test.
  * @property {string} LANGUAGE_PREFERENCE_COOKIE_NAME

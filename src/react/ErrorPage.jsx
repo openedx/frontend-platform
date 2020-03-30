@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Button } from '@edx/paragon';
 
 import { FormattedMessage } from '../i18n';
-import PropTypes from "prop-types";
-import AppProvider from "./AppProvider";
 
 /**
  * An error page that displays a generic message for unexpected errors.  Also contains a "Try
@@ -58,7 +57,7 @@ class ErrorPage extends Component {
 }
 
 ErrorPage.propTypes = {
-  message: PropTypes.string
+  message: PropTypes.string,
 };
 
 ErrorPage.defaultProps = {
