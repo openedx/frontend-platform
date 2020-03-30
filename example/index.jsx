@@ -15,9 +15,13 @@ subscribe(APP_READY, () => {
   ReactDOM.render(
     <AppProvider>
       <Route exact path="/" component={ExamplePage} />
-      <Route exact path="/error_example" component={ () =>
-        <ErrorPage message="Test error message"/>
-      }/>
+      <Route
+        exact
+        path="/error_example"
+        component={() =>
+          <ErrorPage message="Test error message" />
+        }
+      />
       <AuthenticatedPageRoute exact path="/authenticated" component={AuthenticatedPage} />
     </AppProvider>,
     document.getElementById('root'),
