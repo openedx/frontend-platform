@@ -1,0 +1,12 @@
+# openedx.yaml
+
+---
+owner: edx/fedx-team
+tags:
+  - library
+  - platform
+  - react
+  - i18n
+  - analytics
+  - logging
+  - authentication
