@@ -125,7 +125,7 @@ export const APP_INIT_ERROR = `${APP_TOPIC}.INIT_ERROR`;
  * as behavior may be undefined when managing history via multiple mechanisms/instances.
  *
  */
-export const history = createBrowserHistory();
+export const history = createBrowserHistory({ basename: getConfig().BASE_PATH });
 
 /**
  * The default handler for the initialization lifecycle's `initError` phase.  Logs the error to the
