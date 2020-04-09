@@ -68,3 +68,49 @@ The included service implementations are:
 - React Intl (i18n)
 
 NOTE: As of this writing, both authentication and i18n are _not_ configurable.  The `initialize()` function does not allow applications to supply alternate auth/i18n implementations; this is because the interface and implementations for auth and i18n have not yet been separated and modularized.
+
+# Testing Locally
+
+If you want to test changes to frontend-platform against a micro-frontend locally, you can checkout a micro-frontend (such as frontend-app-learning) as a sibling of frontend-platform and do the following:
+
+1. Build `frontend-platform` for production:
+
+```
+cd frontend-platform
+npm run build
+```
+
+2. Install the built distribution's dependencies:
+
+```
+cd dist 
+npm install
+```
+
+And then, in `frontend-app-learning`:
+
+1. Update package.json to use the `frontend-platform/dist` directory for the `@edx/frontend-platform` dependency:
+
+```
+dependencies: {
+  ...
+  "@edx/frontend-platform": "file:../frontend-platform/dist",
+  ...
+}
+```
+2. Remove your `package-lock.json` file and `node_modules` directory:
+
+```
+rm package-lock.json
+rm -r node_modules
+```
+
+3. Install dependencies again:
+
+```
+npm install
+```
+
+This should cause the `dist` directory of your `frontend-platform` checkout to fulfill `frontend-app-learning`'s `@edx/frontend-platform` dependency.
+
+If you then `npm start` the micro-frontend, you should be running your local frontend-platform distribution.  Just remember that if you make any further changes to `frontend-platform`, you need to do this process again!
