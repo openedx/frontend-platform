@@ -77,6 +77,7 @@ If you want to test changes to frontend-platform against a micro-frontend locall
 
 ```
 cd frontend-platform
+npm install
 npm run build
 ```
 
