@@ -38,6 +38,7 @@ let config = {
   CREDENTIALS_BASE_URL: process.env.CREDENTIALS_BASE_URL,
   CSRF_TOKEN_API_PATH: process.env.CSRF_TOKEN_API_PATH,
   DISCOVERY_API_BASE_URL: process.env.DISCOVERY_API_BASE_URL,
+  PUBLISHER_BASE_URL: process.env.PUBLISHER_BASE_URL,
   ECOMMERCE_BASE_URL: process.env.ECOMMERCE_BASE_URL,
   ENVIRONMENT,
   LANGUAGE_PREFERENCE_COOKIE_NAME: process.env.LANGUAGE_PREFERENCE_COOKIE_NAME,
@@ -88,7 +89,7 @@ export function setConfig(newConfig) {
  *   OTHER_NEW_KEY: 'other new value',
  * });
  *
- * If any of the key values are `undefined`, an error will be thrown.
+ * If any of the key values are `undefined`, an error will be logged to 'warn'.
  *
  * @param {Object} newConfig
  */
@@ -109,7 +110,7 @@ export function mergeConfig(newConfig) {
  * ```
  * ensureConfig(['LMS_BASE_URL', 'LOGIN_URL'], 'MySpecialComponent');
  *
- * // Will throw an error with:
+ * // Will log a warning with:
  * // "App configuration error: LOGIN_URL is required by MySpecialComponent."
  * // if LOGIN_URL is undefined, for example.
  * ```
@@ -126,7 +127,7 @@ export function ensureConfig(keys, requester = 'unspecified application code') {
   subscribe(APP_CONFIG_INITIALIZED, () => {
     keys.forEach((key) => {
       if (config[key] === undefined) {
-        throw new Error(`App configuration error: ${key} is required by ${requester}.`);
+        console.warn(`App configuration error: ${key} is required by ${requester}.`);
       }
     });
   });
@@ -155,6 +156,7 @@ export function ensureConfig(keys, requester = 'unspecified application code') {
  * @property {string} CREDENTIALS_BASE_URL
  * @property {string} CSRF_TOKEN_API_PATH
  * @property {string} DISCOVERY_API_BASE_URL
+ * @property {string} PUBLISHER_BASE_URL
  * @property {string} ECOMMERCE_BASE_URL
  * @property {string} ENVIRONMENT This is one of: development, production, or test.
  * @property {string} LANGUAGE_PREFERENCE_COOKIE_NAME
