@@ -150,20 +150,18 @@ export function getQueryParameters(search = global.location.search) {
  * This function helps catch a certain class of misconfiguration in which configuration variables
  * are not properly defined and/or supplied to a consumer that requires them.  Any key that exists
  * is still set to "undefined" indicates a misconfiguration further up in the application, and
- * should be flagged as a fatal error.
+ * should be flagged as an error, and is logged to 'warn'.
  *
  * Keys that are intended to be falsy should be defined using null, 0, false, etc.
  *
  * @param {Object} object
  * @param {string} requester A human-readable identifier for the code which called this function.
  * Used when throwing errors to aid in debugging.
- *
- * @throws An error if any key in the objectToTest has a value of undefined.
  */
 export function ensureDefinedConfig(object, requester) {
   Object.keys(object).forEach((key) => {
     if (object[key] === undefined) {
-      throw new Error(`Module configuration error: ${key} is required by ${requester}.`);
+      console.warn(`Module configuration error: ${key} is required by ${requester}.`);
     }
   });
 }
