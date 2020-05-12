@@ -15,6 +15,7 @@ process.env.CSRF_TOKEN_API_PATH = '/csrf/api/v1/token';
 process.env.DISCOVERY_API_BASE_URL = 'http://localhost:18381';
 process.env.PUBLISHER_BASE_URL = 'http://localhost:18400';
 process.env.ECOMMERCE_BASE_URL = 'http://localhost:18130';
+process.env.INSIGHTS_BASE_URL = '';
 process.env.LANGUAGE_PREFERENCE_COOKIE_NAME = 'openedx-language-preference';
 process.env.LMS_BASE_URL = 'http://localhost:18000';
 process.env.LOGIN_URL = 'http://localhost:18000/login';

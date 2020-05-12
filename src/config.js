@@ -41,6 +41,7 @@ let config = {
   PUBLISHER_BASE_URL: process.env.PUBLISHER_BASE_URL,
   ECOMMERCE_BASE_URL: process.env.ECOMMERCE_BASE_URL,
   ENVIRONMENT,
+  INSIGHTS_BASE_URL: process.env.INSIGHTS_BASE_URL,
   LANGUAGE_PREFERENCE_COOKIE_NAME: process.env.LANGUAGE_PREFERENCE_COOKIE_NAME,
   LMS_BASE_URL: process.env.LMS_BASE_URL,
   LOGIN_URL: process.env.LOGIN_URL,
@@ -160,6 +161,7 @@ export function ensureConfig(keys, requester = 'unspecified application code') {
  * @property {string} PUBLISHER_BASE_URL
  * @property {string} ECOMMERCE_BASE_URL
  * @property {string} ENVIRONMENT This is one of: development, production, or test.
+ * @property {string} INSIGHTS_BASE_URL The URL of the Insights application.
  * @property {string} LANGUAGE_PREFERENCE_COOKIE_NAME
  * @property {string} LMS_BASE_URL
  * @property {string} LOGIN_URL
