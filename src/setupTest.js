@@ -24,6 +24,7 @@ process.env.ORDER_HISTORY_URL = 'localhost:1996/orders';
 process.env.REFRESH_ACCESS_TOKEN_ENDPOINT = 'http://localhost:18000/login_refresh';
 process.env.SEGMENT_KEY = 'segment_whoa';
 process.env.SITE_NAME = 'edX';
+process.env.STUDIO_BASE_URL = 'http://localhost:18010';
 process.env.USER_INFO_COOKIE_NAME = 'edx-user-info';
 
 /* Auth test variables
