@@ -52,7 +52,7 @@ let config = {
   SECURE_COOKIES: ENVIRONMENT !== 'development',
   SEGMENT_KEY: process.env.SEGMENT_KEY,
   SITE_NAME: process.env.SITE_NAME,
-  STUDIO_BASE_URL: process.env.STUDIO_BASE_URL,
+  STUDIO_BASE_URL: process.env.STUDIO_BASE_URL || null,
   USER_INFO_COOKIE_NAME: process.env.USER_INFO_COOKIE_NAME,
 };
 
