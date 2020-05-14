@@ -59,10 +59,26 @@ let config = {
  * reference to an existing object, and is thus safe to call as often as desired.  The document
  * should have the following keys at a minimum:
  *
+ * If overloaded (to pass in at least a key, and optionally a fallback default value):
+ *   Find the first defined key/value in either config, process.env, or fall back to a default.
+ *
+ * @param {string} [key=undefined]
+ * @param {string} [fallback=undefined]
  * @returns {ConfigDocument}
   */
-export function getConfig() {
-  return config;
+export function getConfig(key=undefined, fallback=undefined) {
+  if (!key) {
+    return config;
+  }
+  let value = config[key];
+  if (value !== undefined) {
+    return value;
+  }
+  value = process.env[key];
+  if (value !== undefined) {
+    return value;
+  }
+  return fallback;
 }
 
 /**
