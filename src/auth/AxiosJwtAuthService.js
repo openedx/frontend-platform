@@ -53,7 +53,6 @@ import { logFrontendAuthError } from './utils';
 import addAuthenticationToHttpClient from './addAuthenticationToHttpClient';
 import getJwtToken from './getJwtToken';
 import { camelCaseObject, ensureDefinedConfig } from '../utils';
-
 import { publish } from '../pubSub';
 
 /**
@@ -78,15 +77,18 @@ let authenticatedHttpClient = null;
 let httpClient = null;
 let config = null;
 let authenticatedUser = null;
+let loggingService = null;
 
-const configPropTypes = {
-  appBaseUrl: PropTypes.string.isRequired,
-  lmsBaseUrl: PropTypes.string.isRequired,
-  loginUrl: PropTypes.string.isRequired,
-  logoutUrl: PropTypes.string.isRequired,
-  refreshAccessTokenEndpoint: PropTypes.string.isRequired,
-  accessTokenCookieName: PropTypes.string.isRequired,
-  csrfTokenApiPath: PropTypes.string.isRequired,
+const optionsPropTypes = {
+  config: PropTypes.shape({
+    appBaseUrl: PropTypes.string.isRequired,
+    lmsBaseUrl: PropTypes.string.isRequired,
+    loginUrl: PropTypes.string.isRequired,
+    logoutUrl: PropTypes.string.isRequired,
+    refreshAccessTokenEndpoint: PropTypes.string.isRequired,
+    accessTokenCookieName: PropTypes.string.isRequired,
+    csrfTokenApiPath: PropTypes.string.isRequired,
+  }).isRequired,
   loggingService: PropTypes.shape({
     logError: PropTypes.func.isRequired,
     logInfo: PropTypes.func.isRequired,
@@ -97,20 +99,24 @@ const configPropTypes = {
  * Configures an httpClient to make authenticated http requests.
  *
  * @param {Object} options
- * @param {string} options.appBaseUrl
- * @param {string} options.lmsBaseUrl
- * @param {string} options.loginUrl
- * @param {string} options.logoutUrl
+ * @param {Object} options.config
+ * @param {string} options.config.appBaseUrl
+ * @param {string} options.config.lmsBaseUrl
+ * @param {string} options.config.loginUrl
+ * @param {string} options.config.logoutUrl
+ * @param {string} options.config.refreshAccessTokenEndpoint
+ * @param {string} options.config.accessTokenCookieName
+ * @param {string} options.config.csrfTokenApiPath
  * @param {Object} options.loggingService requires logError and logInfo methods
- * @param {string} options.refreshAccessTokenEndpoint
- * @param {string} options.accessTokenCookieName
- * @param {string} options.csrfTokenApiPath
  */
 export function configure(options) {
   ensureDefinedConfig(options, 'AuthService');
 
-  PropTypes.checkPropTypes(configPropTypes, options, 'options', 'AuthService');
-  config = options;
+  PropTypes.checkPropTypes(optionsPropTypes, options, 'options', 'AuthService');
+  // eslint-disable-next-line prefer-destructuring
+  config = options.config;
+  // eslint-disable-next-line prefer-destructuring
+  loggingService = options.loggingService;
   authenticatedHttpClient = addAuthenticationToHttpClient(axios.create(), config);
   httpClient = axios.create();
 }
@@ -121,7 +127,7 @@ export function configure(options) {
  * @returns {LoggingService}
  */
 export function getLoggingService() {
-  return config.loggingService;
+  return loggingService;
 }
 
 /**

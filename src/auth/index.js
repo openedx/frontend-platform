@@ -2,7 +2,6 @@ export {
   AUTHENTICATD_USER_TOPIC,
   AUTHENTICATED_USER_CHANGED,
   configure,
-  getLoggingService,
   getAuthenticatedHttpClient,
   getHttpClient,
   getLoginRedirectUrl,

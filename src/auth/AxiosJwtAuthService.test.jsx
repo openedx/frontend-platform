@@ -2,8 +2,8 @@
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 import MockAdapter from 'axios-mock-adapter';
-import { httpClient as accessTokenAxios } from '../getJwtToken';
-import { httpClient as csrfTokensAxios, clearCsrfTokenCache } from '../getCsrfToken';
+import { httpClient as accessTokenAxios } from './getJwtToken';
+import { httpClient as csrfTokensAxios, clearCsrfTokenCache } from './getCsrfToken';
 import {
   configure,
   getAuthenticatedHttpClient,
@@ -13,28 +13,24 @@ import {
   hydrateAuthenticatedUser,
   getAuthenticatedUser,
   setAuthenticatedUser,
-} from '../index';
+} from './AxiosJwtAuthService';
 
 const mockLoggingService = {
   logInfo: jest.fn(),
   logError: jest.fn(),
 };
 
-const mockPubSubService = {
-  publish: jest.fn(),
-  subscribe: jest.fn(),
-};
-
-const authConfig = {
-  appBaseUrl: process.env.BASE_URL,
-  accessTokenCookieName: process.env.ACCESS_TOKEN_COOKIE_NAME,
-  csrfTokenApiPath: '/get-csrf-token',
-  lmsBaseUrl: process.env.LMS_BASE_URL,
-  loginUrl: process.env.LOGIN_URL,
-  logoutUrl: process.env.LOGOUT_URL,
-  refreshAccessTokenEndpoint: process.env.REFRESH_ACCESS_TOKEN_ENDPOINT,
+const authOptions = {
+  config: {
+    appBaseUrl: process.env.BASE_URL,
+    accessTokenCookieName: process.env.ACCESS_TOKEN_COOKIE_NAME,
+    csrfTokenApiPath: '/get-csrf-token',
+    lmsBaseUrl: process.env.LMS_BASE_URL,
+    loginUrl: process.env.LOGIN_URL,
+    logoutUrl: process.env.LOGOUT_URL,
+    refreshAccessTokenEndpoint: process.env.REFRESH_ACCESS_TOKEN_ENDPOINT,
+  },
   loggingService: mockLoggingService,
-  pubSubService: mockPubSubService,
 };
 
 // Set up mocks
@@ -102,13 +98,13 @@ const accessTokenAxiosMock = new MockAdapter(accessTokenAxios);
 const csrfTokensAxiosMock = new MockAdapter(csrfTokensAxios);
 
 
-configure(authConfig);
+configure(authOptions);
 const client = getAuthenticatedHttpClient();
 
 // Helpers
 const setJwtCookieTo = (jwtCookieValue) => {
   mockCookies.get.mockImplementation((cookieName) => {
-    if (cookieName === authConfig.accessTokenCookieName) {
+    if (cookieName === authOptions.config.accessTokenCookieName) {
       return jwtCookieValue;
     }
     return undefined;
@@ -201,13 +197,13 @@ describe('getAuthenticatedHttpClient', () => {
   });
 
   afterAll(() => {
-    configure(authConfig);
+    configure(authOptions);
     console.error.mockRestore();
   });
 
   it('returns a singleton', () => {
-    const client1 = getAuthenticatedHttpClient(authConfig);
-    const client2 = getAuthenticatedHttpClient(authConfig);
+    const client1 = getAuthenticatedHttpClient();
+    const client2 = getAuthenticatedHttpClient();
     expect(client2).toBe(client1);
   });
 });
@@ -252,7 +248,7 @@ describe('authenticatedHttpClient usage', () => {
               expectRequestToHaveCsrfToken(axiosMock.history[method][0]);
               expectRequestToHaveJwtAuth(axiosMock.history[method][0]);
               expect(csrfTokensAxiosMock.history.get[0].url)
-                .toEqual(`${global.location.origin}${authConfig.csrfTokenApiPath}`);
+                .toEqual(`${global.location.origin}${authOptions.config.csrfTokenApiPath}`);
             });
           });
         });
@@ -663,7 +659,7 @@ describe('hydrateAuthenticatedUser', () => {
       roles: [],
       administrator: false,
     });
-    axiosMock.onGet(`${authConfig.lmsBaseUrl}/api/user/v1/accounts/the_user`).reply(200, {
+    axiosMock.onGet(`${authOptions.config.lmsBaseUrl}/api/user/v1/accounts/the_user`).reply(200, {
       additional: 'data',
     });
     await hydrateAuthenticatedUser();

@@ -1,4 +1,4 @@
-import { getLoggingService } from '../index';
+import { getLoggingService } from '../AxiosJwtAuthService';
 import { processAxiosError } from '../utils';
 
 const processAxiosRequestErrorInterceptor = (error) => {

@@ -1,4 +1,4 @@
-import { getLoggingService } from './index';
+import { getLoggingService } from './AxiosJwtAuthService';
 
 // Lifted from here: https://regexr.com/3ok5o
 const urlRegex = /([a-z]{1,2}tps?):\/\/((?:(?!(?:\/|#|\?|&)).)+)(?:(\/(?:(?:(?:(?!(?:#|\?|&)).)+\/))?))?(?:((?:(?!(?:\.|$|\?|#)).)+))?(?:(\.(?:(?!(?:\?|$|#)).)+))?(?:(\?(?:(?!(?:$|#)).)+))?(?:(#.+))?/;
