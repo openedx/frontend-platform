@@ -6,11 +6,11 @@
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import { logFrontendAuthError } from './utils';
-import getJwtToken from './getJwtToken';
 import { camelCaseObject, ensureDefinedConfig } from '../utils';
 import createJwtTokenProviderInterceptor from './interceptors/createJwtTokenProviderInterceptor';
 import createCsrfTokenProviderInterceptor from './interceptors/createCsrfTokenProviderInterceptor';
 import processAxiosRequestErrorInterceptor from './interceptors/processAxiosRequestErrorInterceptor';
+import AxiosJwtTokenService from './AxiosJwtTokenService';
 
 const optionsPropTypes = {
   config: PropTypes.shape({
@@ -66,8 +66,13 @@ export default class AxiosJwtAuthService {
    * @ignore
    */
   initialize() {
+    this.jwtTokenService = new AxiosJwtTokenService(
+      this.config.accessTokenCookieName,
+      this.config.refreshAccessTokenEndpoint,
+    );
     this.authenticatedHttpClient = AxiosJwtAuthService.addAuthenticationToHttpClient(
       axios.create(),
+      this.jwtTokenService,
       this.config,
     );
     this.httpClient = axios.create();
@@ -97,6 +102,15 @@ export default class AxiosJwtAuthService {
    */
   getHttpClient() {
     return this.httpClient;
+  }
+
+  /**
+   * Used primarily for testing.
+   *
+   * @ignore
+   */
+  getJwtTokenService() {
+    return this.jwtTokenService;
   }
 
   /**
@@ -173,10 +187,7 @@ export default class AxiosJwtAuthService {
    * logged in.
    */
   async fetchAuthenticatedUser() {
-    const decodedAccessToken = await getJwtToken(
-      this.config.accessTokenCookieName,
-      this.config.refreshAccessTokenEndpoint,
-    );
+    const decodedAccessToken = await this.jwtTokenService.getJwtToken();
 
     if (decodedAccessToken !== null) {
       this.setAuthenticatedUser({
@@ -254,7 +265,7 @@ export default class AxiosJwtAuthService {
  * @param {string} [config.csrfTokenApiPath]
  * @returns {HttpClient} A configured Axios HTTP client.
  */
-  static addAuthenticationToHttpClient(newHttpClient, config) {
+  static addAuthenticationToHttpClient(newHttpClient, jwtTokenService, config) {
     const httpClient = Object.create(newHttpClient);
     // Set withCredentials to true. Enables cross-site Access-Control requests
     // to be made using cookies, authorization headers or TLS client
@@ -267,8 +278,7 @@ export default class AxiosJwtAuthService {
     // The JWT access token interceptor attempts to refresh the user's jwt token
     // before any request unless the isPublic flag is set on the request config.
     const refreshAccessTokenInterceptor = createJwtTokenProviderInterceptor({
-      tokenCookieName: config.accessTokenCookieName,
-      tokenRefreshEndpoint: config.refreshAccessTokenEndpoint,
+      jwtTokenService,
       shouldSkip: axiosRequestConfig => axiosRequestConfig.isPublic,
     });
     // The CSRF token intercepter fetches and caches a csrf token for any post,

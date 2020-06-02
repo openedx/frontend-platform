@@ -2,18 +2,8 @@
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 import MockAdapter from 'axios-mock-adapter';
-import { httpClient as accessTokenAxios } from './getJwtToken';
 import { httpClient as csrfTokensAxios, clearCsrfTokenCache } from './getCsrfToken';
-import AxiosJwtAuthService, {
-// configure,
-// getAuthenticatedHttpClient,
-// ensureAuthenticatedUser,
-// redirectToLogin,
-// redirectToLogout,
-// hydrateAuthenticatedUser,
-// getAuthenticatedUser,
-// setAuthenticatedUser,
-} from './AxiosJwtAuthService';
+import AxiosJwtAuthService from './AxiosJwtAuthService';
 
 const mockLoggingService = {
   logInfo: jest.fn(),
@@ -92,14 +82,12 @@ const mockApiEndpointPath = `${process.env.BASE_URL}/api/v1/test`;
 window.location.assign = jest.fn();
 const mockCookies = new Cookies();
 
-// This sets the mock adapter on the default instance
-const axiosMock = new MockAdapter(axios);
-const accessTokenAxiosMock = new MockAdapter(accessTokenAxios);
-const csrfTokensAxiosMock = new MockAdapter(csrfTokensAxios);
-
-let service = new AxiosJwtAuthService(authOptions);
-// configure(authOptions);
-const client = service.getAuthenticatedHttpClient();
+let service = null;
+let accessTokenAxios = null;
+let axiosMock = null;
+let accessTokenAxiosMock = null;
+let csrfTokensAxiosMock = null;
+let client = null;
 
 // Helpers
 const setJwtCookieTo = (jwtCookieValue) => {
@@ -171,6 +159,16 @@ const expectRequestToHaveCsrfToken = (request) => {
 };
 
 beforeEach(() => {
+  service = new AxiosJwtAuthService(authOptions);
+  accessTokenAxios = service.getJwtTokenService().getHttpClient();
+
+  // This sets the mock adapter on the default instance
+  axiosMock = new MockAdapter(service.getAuthenticatedHttpClient());
+  accessTokenAxiosMock = new MockAdapter(accessTokenAxios);
+  csrfTokensAxiosMock = new MockAdapter(csrfTokensAxios);
+
+  client = service.getAuthenticatedHttpClient();
+
   service.setAuthenticatedUser(null);
   axiosMock.reset();
   accessTokenAxiosMock.reset();
