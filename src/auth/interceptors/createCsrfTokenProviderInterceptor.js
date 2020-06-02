@@ -1,7 +1,5 @@
-import getCsrfToken from '../getCsrfToken';
-
 const createCsrfTokenProviderInterceptor = (options) => {
-  const { CSRF_TOKEN_API_PATH, shouldSkip } = options;
+  const { csrfTokenService, CSRF_TOKEN_API_PATH, shouldSkip } = options;
 
   // Creating the interceptor inside this closure to
   // maintain reference to the options supplied.
@@ -18,7 +16,7 @@ const createCsrfTokenProviderInterceptor = (options) => {
     // (namely our retry request interceptor below) to access the original request
     // and handle it appropriately
     try {
-      csrfToken = await getCsrfToken(url, CSRF_TOKEN_API_PATH);
+      csrfToken = await csrfTokenService.getCsrfToken(url, CSRF_TOKEN_API_PATH);
     } catch (error) {
       const requestError = Object.create(error);
       requestError.message = `[getCsrfToken] ${requestError.message}`;

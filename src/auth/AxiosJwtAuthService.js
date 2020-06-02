@@ -11,6 +11,7 @@ import createJwtTokenProviderInterceptor from './interceptors/createJwtTokenProv
 import createCsrfTokenProviderInterceptor from './interceptors/createCsrfTokenProviderInterceptor';
 import createProcessAxiosRequestErrorInterceptor from './interceptors/createProcessAxiosRequestErrorInterceptor';
 import AxiosJwtTokenService from './AxiosJwtTokenService';
+import AxiosCsrfTokenService from './AxiosCsrfTokenService';
 
 const optionsPropTypes = {
   config: PropTypes.shape({
@@ -63,6 +64,7 @@ export default class AxiosJwtAuthService {
       this.config.ACCESS_TOKEN_COOKIE_NAME,
       this.config.REFRESH_ACCESS_TOKEN_ENDPOINT,
     );
+    this.csrfTokenService = new AxiosCsrfTokenService(this.config.CSRF_TOKEN_API_PATH);
     this.authenticatedHttpClient = this.addAuthenticationToHttpClient(axios.create());
     this.httpClient = axios.create();
   }
@@ -92,6 +94,15 @@ export default class AxiosJwtAuthService {
    */
   getJwtTokenService() {
     return this.jwtTokenService;
+  }
+
+  /**
+   * Used primarily for testing.
+   *
+   * @ignore
+   */
+  getCsrfTokenService() {
+    return this.csrfTokenService;
   }
 
   /**
@@ -266,6 +277,7 @@ export default class AxiosJwtAuthService {
     // put, patch, or delete request. That token is then added to the request
     // headers.
     const attachCsrfTokenInterceptor = createCsrfTokenProviderInterceptor({
+      csrfTokenService: this.csrfTokenService,
       CSRF_TOKEN_API_PATH: this.config.CSRF_TOKEN_API_PATH,
       shouldSkip: (axiosRequestConfig) => {
         const { method, isCsrfExempt } = axiosRequestConfig;

@@ -2,7 +2,6 @@
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 import MockAdapter from 'axios-mock-adapter';
-import { httpClient as csrfTokensAxios, clearCsrfTokenCache } from './getCsrfToken';
 import AxiosJwtAuthService from './AxiosJwtAuthService';
 
 const mockLoggingService = {
@@ -84,6 +83,7 @@ const mockCookies = new Cookies();
 
 let service = null;
 let accessTokenAxios = null;
+let csrfTokensAxios = null;
 let axiosMock = null;
 let accessTokenAxiosMock = null;
 let csrfTokensAxiosMock = null;
@@ -161,7 +161,7 @@ const expectRequestToHaveCsrfToken = (request) => {
 beforeEach(() => {
   service = new AxiosJwtAuthService(authOptions);
   accessTokenAxios = service.getJwtTokenService().getHttpClient();
-
+  csrfTokensAxios = service.getCsrfTokenService().getHttpClient();
   // This sets the mock adapter on the default instance
   axiosMock = new MockAdapter(service.getAuthenticatedHttpClient());
   accessTokenAxiosMock = new MockAdapter(accessTokenAxios);
@@ -177,7 +177,7 @@ beforeEach(() => {
   window.location.assign.mockReset();
   mockLoggingService.logInfo.mockReset();
   mockLoggingService.logError.mockReset();
-  clearCsrfTokenCache();
+  service.getCsrfTokenService().clearCsrfTokenCache();
   axiosMock.onGet('/unauthorized').reply(401);
   axiosMock.onGet('/forbidden').reply(403);
   axiosMock.onAny().reply(200);
