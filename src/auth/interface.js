@@ -28,13 +28,15 @@
  *
  * configure({
  *   loggingService: getLoggingService(),
- *   appBaseUrl: BASE_URL,
- *   lmsBaseUrl: LMS_BASE_URL,
- *   loginUrl: LOGIN_URL,
- *   logoutUrl: LOGOUT_URL,
- *   refreshAccessTokenEndpoint: REFRESH_ACCESS_TOKEN_ENDPOINT,
- *   accessTokenCookieName: ACCESS_TOKEN_COOKIE_NAME,
- *   csrfTokenApiPath: CSRF_TOKEN_API_PATH,
+ *   config: {
+ *     appBaseUrl: BASE_URL,
+ *     lmsBaseUrl: LMS_BASE_URL,
+ *     loginUrl: LOGIN_URL,
+ *     logoutUrl: LOGOUT_URL,
+ *     refreshAccessTokenEndpoint: REFRESH_ACCESS_TOKEN_ENDPOINT,
+ *     accessTokenCookieName: ACCESS_TOKEN_COOKIE_NAME,
+ *     csrfTokenApiPath: CSRF_TOKEN_API_PATH,
+ *   }
  * });
  *
  * const authenticatedUser = await fetchAuthenticatedUser(); // validates and decodes JWT token

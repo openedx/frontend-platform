@@ -9,7 +9,8 @@ export default class AxiosJwtTokenService {
     return !token || token.exp < Date.now() / 1000;
   }
 
-  constructor(tokenCookieName, tokenRefreshEndpoint) {
+  constructor(loggingService, tokenCookieName, tokenRefreshEndpoint) {
+    this.loggingService = loggingService;
     this.tokenCookieName = tokenCookieName;
     this.tokenRefreshEndpoint = tokenRefreshEndpoint;
 
@@ -99,7 +100,6 @@ export default class AxiosJwtTokenService {
     return this.refreshRequestPromises[this.tokenCookieName];
   }
 
-
   async getJwtToken() {
     try {
       const decodedJwtToken = this.decodeJwtCookie(this.tokenCookieName);
@@ -109,14 +109,14 @@ export default class AxiosJwtTokenService {
     } catch (e) {
       // Log unexpected error and continue with attempt to refresh it.
       // TODO: Fix these.  They're still using loggingService as a singleton.
-      logFrontendAuthError(e);
+      logFrontendAuthError(this.loggingService, e);
     }
 
     try {
       return await this.refresh();
     } catch (e) {
       // TODO: Fix these.  They're still using loggingService as a singleton.
-      logFrontendAuthError(e);
+      logFrontendAuthError(this.loggingService, e);
       throw e;
     }
   }

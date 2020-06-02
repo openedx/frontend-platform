@@ -9,7 +9,7 @@ import { logFrontendAuthError } from './utils';
 import { camelCaseObject, ensureDefinedConfig } from '../utils';
 import createJwtTokenProviderInterceptor from './interceptors/createJwtTokenProviderInterceptor';
 import createCsrfTokenProviderInterceptor from './interceptors/createCsrfTokenProviderInterceptor';
-import processAxiosRequestErrorInterceptor from './interceptors/processAxiosRequestErrorInterceptor';
+import createProcessAxiosRequestErrorInterceptor from './interceptors/createProcessAxiosRequestErrorInterceptor';
 import AxiosJwtTokenService from './AxiosJwtTokenService';
 
 const optionsPropTypes = {
@@ -27,12 +27,6 @@ const optionsPropTypes = {
     logInfo: PropTypes.func.isRequired,
   }).isRequired,
 };
-
-let loggingService = null;
-
-export function getLoggingService() {
-  return loggingService;
-}
 
 export default class AxiosJwtAuthService {
   /**
@@ -56,8 +50,6 @@ export default class AxiosJwtAuthService {
     PropTypes.checkPropTypes(optionsPropTypes, options, 'options', 'AuthService');
 
     this.config = options.config;
-    // eslint-disable-next-line prefer-destructuring
-    loggingService = options.loggingService;
     this.loggingService = options.loggingService;
     this.initialize();
   }
@@ -67,23 +59,12 @@ export default class AxiosJwtAuthService {
    */
   initialize() {
     this.jwtTokenService = new AxiosJwtTokenService(
+      this.loggingService,
       this.config.accessTokenCookieName,
       this.config.refreshAccessTokenEndpoint,
     );
-    this.authenticatedHttpClient = AxiosJwtAuthService.addAuthenticationToHttpClient(
-      axios.create(),
-      this.jwtTokenService,
-      this.config,
-    );
+    this.authenticatedHttpClient = this.addAuthenticationToHttpClient(axios.create());
     this.httpClient = axios.create();
-  }
-
-  /**
-   * @ignore
-   * @returns {LoggingService}
-   */
-  getLoggingService() {
-    return this.loggingService;
   }
 
   /**
@@ -218,7 +199,7 @@ export default class AxiosJwtAuthService {
 
       if (isRedirectFromLoginPage) {
         const redirectLoopError = new Error('Redirect from login page. Rejecting to avoid infinite redirect loop.');
-        logFrontendAuthError(redirectLoopError);
+        logFrontendAuthError(this.loggingService, redirectLoopError);
         throw redirectLoopError;
       }
 
@@ -265,7 +246,7 @@ export default class AxiosJwtAuthService {
  * @param {string} [config.csrfTokenApiPath]
  * @returns {HttpClient} A configured Axios HTTP client.
  */
-  static addAuthenticationToHttpClient(newHttpClient, jwtTokenService, config) {
+  addAuthenticationToHttpClient(newHttpClient) {
     const httpClient = Object.create(newHttpClient);
     // Set withCredentials to true. Enables cross-site Access-Control requests
     // to be made using cookies, authorization headers or TLS client
@@ -278,19 +259,23 @@ export default class AxiosJwtAuthService {
     // The JWT access token interceptor attempts to refresh the user's jwt token
     // before any request unless the isPublic flag is set on the request config.
     const refreshAccessTokenInterceptor = createJwtTokenProviderInterceptor({
-      jwtTokenService,
+      jwtTokenService: this.jwtTokenService,
       shouldSkip: axiosRequestConfig => axiosRequestConfig.isPublic,
     });
     // The CSRF token intercepter fetches and caches a csrf token for any post,
     // put, patch, or delete request. That token is then added to the request
     // headers.
     const attachCsrfTokenInterceptor = createCsrfTokenProviderInterceptor({
-      csrfTokenApiPath: config.csrfTokenApiPath,
+      csrfTokenApiPath: this.config.csrfTokenApiPath,
       shouldSkip: (axiosRequestConfig) => {
         const { method, isCsrfExempt } = axiosRequestConfig;
         const CSRF_PROTECTED_METHODS = ['post', 'put', 'patch', 'delete'];
         return isCsrfExempt || !CSRF_PROTECTED_METHODS.includes(method);
       },
+    });
+
+    const processAxiosRequestErrorInterceptor = createProcessAxiosRequestErrorInterceptor({
+      loggingService: this.loggingService,
     });
 
     // Request interceptors: Axios runs the interceptors in reverse order from
