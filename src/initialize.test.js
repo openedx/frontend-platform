@@ -13,11 +13,10 @@ import {
 import { subscribe } from './pubSub';
 
 import { configure as configureLogging, NewRelicLoggingService, getLoggingService, logError } from './logging';
-import { configure as configureAuth, getAuthenticatedHttpClient, ensureAuthenticatedUser, fetchAuthenticatedUser, hydrateAuthenticatedUser, getAuthenticatedUser } from './auth';
+import { configure as configureAuth, getAuthenticatedHttpClient, ensureAuthenticatedUser, fetchAuthenticatedUser, hydrateAuthenticatedUser, getAuthenticatedUser, AxiosJwtAuthService } from './auth';
 import { configure as configureAnalytics, SegmentAnalyticsService } from './analytics';
 import { configure as configureI18n } from './i18n';
 import { getConfig } from './config';
-
 
 jest.mock('./logging');
 jest.mock('./auth');
@@ -70,7 +69,7 @@ describe('initialize', () => {
     await initialize({ messages });
 
     expect(configureLogging).toHaveBeenCalledWith(NewRelicLoggingService, { config });
-    expect(configureAuth).toHaveBeenCalledWith({
+    expect(configureAuth).toHaveBeenCalledWith(AxiosJwtAuthService, {
       loggingService: getLoggingService(),
       config: {
         appBaseUrl: process.env.BASE_URL,

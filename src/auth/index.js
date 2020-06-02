@@ -1,5 +1,5 @@
 export {
-  AUTHENTICATD_USER_TOPIC,
+  AUTHENTICATED_USER_TOPIC,
   AUTHENTICATED_USER_CHANGED,
   configure,
   getAuthenticatedHttpClient,
@@ -13,4 +13,5 @@ export {
   fetchAuthenticatedUser,
   ensureAuthenticatedUser,
   hydrateAuthenticatedUser,
-} from './AxiosJwtAuthService';
+} from './interface';
+export { default as AxiosJwtAuthService } from './AxiosJwtAuthService';

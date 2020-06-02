@@ -4,15 +4,15 @@ import Cookies from 'universal-cookie';
 import MockAdapter from 'axios-mock-adapter';
 import { httpClient as accessTokenAxios } from './getJwtToken';
 import { httpClient as csrfTokensAxios, clearCsrfTokenCache } from './getCsrfToken';
-import {
-  configure,
-  getAuthenticatedHttpClient,
-  ensureAuthenticatedUser,
-  redirectToLogin,
-  redirectToLogout,
-  hydrateAuthenticatedUser,
-  getAuthenticatedUser,
-  setAuthenticatedUser,
+import AxiosJwtAuthService, {
+// configure,
+// getAuthenticatedHttpClient,
+// ensureAuthenticatedUser,
+// redirectToLogin,
+// redirectToLogout,
+// hydrateAuthenticatedUser,
+// getAuthenticatedUser,
+// setAuthenticatedUser,
 } from './AxiosJwtAuthService';
 
 const mockLoggingService = {
@@ -97,9 +97,9 @@ const axiosMock = new MockAdapter(axios);
 const accessTokenAxiosMock = new MockAdapter(accessTokenAxios);
 const csrfTokensAxiosMock = new MockAdapter(csrfTokensAxios);
 
-
-configure(authOptions);
-const client = getAuthenticatedHttpClient();
+let service = new AxiosJwtAuthService(authOptions);
+// configure(authOptions);
+const client = service.getAuthenticatedHttpClient();
 
 // Helpers
 const setJwtCookieTo = (jwtCookieValue) => {
@@ -171,7 +171,7 @@ const expectRequestToHaveCsrfToken = (request) => {
 };
 
 beforeEach(() => {
-  setAuthenticatedUser(null);
+  service.setAuthenticatedUser(null);
   axiosMock.reset();
   accessTokenAxiosMock.reset();
   csrfTokensAxiosMock.reset();
@@ -197,13 +197,13 @@ describe('getAuthenticatedHttpClient', () => {
   });
 
   afterAll(() => {
-    configure(authOptions);
+    service = new AxiosJwtAuthService(authOptions);
     console.error.mockRestore();
   });
 
   it('returns a singleton', () => {
-    const client1 = getAuthenticatedHttpClient();
-    const client2 = getAuthenticatedHttpClient();
+    const client1 = service.getAuthenticatedHttpClient();
+    const client2 = service.getAuthenticatedHttpClient();
     expect(client2).toBe(client1);
   });
 });
@@ -625,18 +625,18 @@ describe('authenticatedHttpClient usage', () => {
 
 describe('redirectToLogin', () => {
   it('can redirect to login with different redirect url parameters', () => {
-    redirectToLogin('http://edx.org/dashboard');
+    service.redirectToLogin('http://edx.org/dashboard');
     expectLogin('http://edx.org/dashboard');
-    redirectToLogin();
+    service.redirectToLogin();
     expectLogin(process.env.BASE_URL);
   });
 });
 
 describe('redirectToLogout', () => {
   it('can redirect to logout with different redirect url parameters', () => {
-    redirectToLogout('http://edx.org/');
+    service.redirectToLogout('http://edx.org/');
     expectLogout('http://edx.org/');
-    redirectToLogout();
+    service.redirectToLogout();
     expectLogout(process.env.BASE_URL);
   });
 });
@@ -647,13 +647,13 @@ describe('hydrateAuthenticatedUser', () => {
   });
 
   it('should not change authenticated user if it is null', async () => {
-    await hydrateAuthenticatedUser();
-    expect(getAuthenticatedUser()).toBeNull();
+    await service.hydrateAuthenticatedUser();
+    expect(service.getAuthenticatedUser()).toBeNull();
   });
 
   it('should call the user accounts API and merge the result into authenticatedUser', async () => {
     setJwtCookieTo(jwtTokens.valid.encoded);
-    setAuthenticatedUser({
+    service.setAuthenticatedUser({
       userId: 'abc123',
       username: 'the_user',
       roles: [],
@@ -662,8 +662,8 @@ describe('hydrateAuthenticatedUser', () => {
     axiosMock.onGet(`${authOptions.config.lmsBaseUrl}/api/user/v1/accounts/the_user`).reply(200, {
       additional: 'data',
     });
-    await hydrateAuthenticatedUser();
-    const authenticatedUser = getAuthenticatedUser();
+    await service.hydrateAuthenticatedUser();
+    const authenticatedUser = service.getAuthenticatedUser();
     expect(authenticatedUser).toEqual({
       userId: 'abc123',
       username: 'the_user',
@@ -679,7 +679,7 @@ describe('ensureAuthenticatedUser', () => {
     it('refreshes a missing jwt token and returns a user access token', () => {
       setJwtCookieTo(null);
       setJwtTokenRefreshResponseTo(200, jwtTokens.valid.encoded);
-      return ensureAuthenticatedUser().then((authenticatedUserAccessToken) => {
+      return service.ensureAuthenticatedUser().then((authenticatedUserAccessToken) => {
         expect(authenticatedUserAccessToken).toEqual(jwtTokens.valid.formatted);
         expectSingleCallToJwtTokenRefresh();
       });
@@ -688,7 +688,7 @@ describe('ensureAuthenticatedUser', () => {
     it('refreshes a missing jwt token and returns a user access token with roles', () => {
       setJwtCookieTo(null);
       setJwtTokenRefreshResponseTo(200, jwtTokens.validWithRoles.encoded);
-      return ensureAuthenticatedUser().then((authenticatedUserAccessToken) => {
+      return service.ensureAuthenticatedUser().then((authenticatedUserAccessToken) => {
         expect(authenticatedUserAccessToken).toEqual(jwtTokens.validWithRoles.formatted);
         expectSingleCallToJwtTokenRefresh();
       });
@@ -702,7 +702,7 @@ describe('ensureAuthenticatedUser', () => {
       // The JWT cookie is null despite a 200 response.
       setJwtTokenRefreshResponseTo(200, null);
       expect.hasAssertions();
-      return ensureAuthenticatedUser().catch(() => {
+      return service.ensureAuthenticatedUser().catch(() => {
         expectSingleCallToJwtTokenRefresh();
         expectLogFunctionToHaveBeenCalledWithMessage(
           mockLoggingService.logError.mock.calls[0],
@@ -721,7 +721,7 @@ describe('ensureAuthenticatedUser', () => {
     it('attempts to refresh a missing jwt token and redirects user to login', () => {
       setJwtCookieTo(null);
       expect.hasAssertions();
-      return ensureAuthenticatedUser(`${process.env.BASE_URL}/route`).catch((unauthorizedError) => {
+      return service.ensureAuthenticatedUser(`${process.env.BASE_URL}/route`).catch((unauthorizedError) => {
         expect(unauthorizedError.isRedirecting).toBe(true);
         expectSingleCallToJwtTokenRefresh();
         expectLogin(`${process.env.BASE_URL}/route`);
@@ -732,7 +732,7 @@ describe('ensureAuthenticatedUser', () => {
       jest.spyOn(global.document, 'referrer', 'get').mockReturnValue(process.env.LOGIN_URL);
       setJwtCookieTo(null);
       expect.hasAssertions();
-      return ensureAuthenticatedUser().catch(() => {
+      return service.ensureAuthenticatedUser().catch(() => {
         expectSingleCallToJwtTokenRefresh();
         expect(window.location.assign).not.toHaveBeenCalled();
         expectLogFunctionToHaveBeenCalledWithMessage(

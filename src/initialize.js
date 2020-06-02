@@ -54,7 +54,7 @@ import {
 } from './config';
 import { configure as configureLogging, getLoggingService, NewRelicLoggingService, logError } from './logging';
 import { configure as configureAnalytics, SegmentAnalyticsService, identifyAnonymousUser, identifyAuthenticatedUser } from './analytics';
-import { getAuthenticatedHttpClient, configure as configureAuth, ensureAuthenticatedUser, fetchAuthenticatedUser, hydrateAuthenticatedUser, getAuthenticatedUser } from './auth';
+import { getAuthenticatedHttpClient, configure as configureAuth, ensureAuthenticatedUser, fetchAuthenticatedUser, hydrateAuthenticatedUser, getAuthenticatedUser, AxiosJwtAuthService } from './auth';
 import { configure as configureI18n } from './i18n';
 
 /** @constant */
@@ -247,6 +247,7 @@ function applyOverrideHandlers(overrides) {
 export async function initialize({
   loggingService = NewRelicLoggingService,
   analyticsService = SegmentAnalyticsService,
+  authService = AxiosJwtAuthService,
   requireAuthenticatedUser: requireUser = false,
   hydrateAuthenticatedUser: hydrateUser = false,
   messages,
@@ -270,9 +271,10 @@ export async function initialize({
     publish(APP_LOGGING_INITIALIZED);
 
     // Authentication
-    configureAuth({
+    configureAuth(authService, {
       loggingService: getLoggingService(),
       config: {
+        // TODO: Pass in the normal config instead of renaming things here.
         appBaseUrl: getConfig().BASE_URL,
         lmsBaseUrl: getConfig().LMS_BASE_URL,
         loginUrl: getConfig().LOGIN_URL,
