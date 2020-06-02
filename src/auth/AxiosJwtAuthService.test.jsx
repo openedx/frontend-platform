@@ -12,13 +12,13 @@ const mockLoggingService = {
 
 const authOptions = {
   config: {
-    appBaseUrl: process.env.BASE_URL,
-    accessTokenCookieName: process.env.ACCESS_TOKEN_COOKIE_NAME,
-    csrfTokenApiPath: '/get-csrf-token',
-    lmsBaseUrl: process.env.LMS_BASE_URL,
-    loginUrl: process.env.LOGIN_URL,
-    logoutUrl: process.env.LOGOUT_URL,
-    refreshAccessTokenEndpoint: process.env.REFRESH_ACCESS_TOKEN_ENDPOINT,
+    BASE_URL: process.env.BASE_URL,
+    ACCESS_TOKEN_COOKIE_NAME: process.env.ACCESS_TOKEN_COOKIE_NAME,
+    CSRF_TOKEN_API_PATH: '/get-csrf-token',
+    LMS_BASE_URL: process.env.LMS_BASE_URL,
+    LOGIN_URL: process.env.LOGIN_URL,
+    LOGOUT_URL: process.env.LOGOUT_URL,
+    REFRESH_ACCESS_TOKEN_ENDPOINT: process.env.REFRESH_ACCESS_TOKEN_ENDPOINT,
   },
   loggingService: mockLoggingService,
 };
@@ -92,7 +92,7 @@ let client = null;
 // Helpers
 const setJwtCookieTo = (jwtCookieValue) => {
   mockCookies.get.mockImplementation((cookieName) => {
-    if (cookieName === authOptions.config.accessTokenCookieName) {
+    if (cookieName === authOptions.config.ACCESS_TOKEN_COOKIE_NAME) {
       return jwtCookieValue;
     }
     return undefined;
@@ -246,7 +246,7 @@ describe('authenticatedHttpClient usage', () => {
               expectRequestToHaveCsrfToken(axiosMock.history[method][0]);
               expectRequestToHaveJwtAuth(axiosMock.history[method][0]);
               expect(csrfTokensAxiosMock.history.get[0].url)
-                .toEqual(`${global.location.origin}${authOptions.config.csrfTokenApiPath}`);
+                .toEqual(`${global.location.origin}${authOptions.config.CSRF_TOKEN_API_PATH}`);
             });
           });
         });
@@ -657,7 +657,7 @@ describe('hydrateAuthenticatedUser', () => {
       roles: [],
       administrator: false,
     });
-    axiosMock.onGet(`${authOptions.config.lmsBaseUrl}/api/user/v1/accounts/the_user`).reply(200, {
+    axiosMock.onGet(`${authOptions.config.LMS_BASE_URL}/api/user/v1/accounts/the_user`).reply(200, {
       additional: 'data',
     });
     await service.hydrateAuthenticatedUser();

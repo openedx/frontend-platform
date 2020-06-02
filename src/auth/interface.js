@@ -16,27 +16,9 @@
  * import { getConfig } from '@edx/frontend-platform';
  * import { getLoggingService } from '@edx/frontend-platform/logging';
  *
- * const {
- *   BASE_URL,
- *   LMS_BASE_URL,
- *   LOGIN_URL,
- *   LOGOUT_URL,
- *   REFRESH_ACCESS_TOKEN_ENDPOINT,
- *   ACCESS_TOKEN_COOKIE_NAME,
- *   CSRF_TOKEN_API_PATH,
- * } = getConfig();
- *
  * configure({
  *   loggingService: getLoggingService(),
- *   config: {
- *     appBaseUrl: BASE_URL,
- *     lmsBaseUrl: LMS_BASE_URL,
- *     loginUrl: LOGIN_URL,
- *     logoutUrl: LOGOUT_URL,
- *     refreshAccessTokenEndpoint: REFRESH_ACCESS_TOKEN_ENDPOINT,
- *     accessTokenCookieName: ACCESS_TOKEN_COOKIE_NAME,
- *     csrfTokenApiPath: CSRF_TOKEN_API_PATH,
- *   }
+ *   config: getConfig(),
  * });
  *
  * const authenticatedUser = await fetchAuthenticatedUser(); // validates and decodes JWT token
@@ -70,13 +52,13 @@ export const AUTHENTICATED_USER_CHANGED = `${AUTHENTICATED_USER_TOPIC}.CHANGED`;
 
 const optionsShape = {
   config: PropTypes.shape({
-    appBaseUrl: PropTypes.string.isRequired,
-    lmsBaseUrl: PropTypes.string.isRequired,
-    loginUrl: PropTypes.string.isRequired,
-    logoutUrl: PropTypes.string.isRequired,
-    refreshAccessTokenEndpoint: PropTypes.string.isRequired,
-    accessTokenCookieName: PropTypes.string.isRequired,
-    csrfTokenApiPath: PropTypes.string.isRequired,
+    BASE_URL: PropTypes.string.isRequired,
+    LMS_BASE_URL: PropTypes.string.isRequired,
+    LOGIN_URL: PropTypes.string.isRequired,
+    LOGOUT_URL: PropTypes.string.isRequired,
+    REFRESH_ACCESS_TOKEN_ENDPOINT: PropTypes.string.isRequired,
+    ACCESS_TOKEN_COOKIE_NAME: PropTypes.string.isRequired,
+    CSRF_TOKEN_API_PATH: PropTypes.string.isRequired,
   }).isRequired,
   loggingService: PropTypes.shape({
     logError: PropTypes.func.isRequired,

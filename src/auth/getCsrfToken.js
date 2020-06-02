@@ -12,7 +12,7 @@ httpClient.defaults.headers.common['USE-JWT-COOKIE'] = true;
 let csrfTokenCache = {};
 const csrfTokenRequestPromises = {};
 
-const getCsrfToken = async (url, csrfTokenApiPath) => {
+const getCsrfToken = async (url, CSRF_TOKEN_API_PATH) => {
   let urlParts;
   try {
     urlParts = getUrlParts(url);
@@ -32,7 +32,7 @@ const getCsrfToken = async (url, csrfTokenApiPath) => {
 
   if (!csrfTokenRequestPromises[domain]) {
     csrfTokenRequestPromises[domain] = httpClient
-      .get(`${protocol}://${domain}${csrfTokenApiPath}`)
+      .get(`${protocol}://${domain}${CSRF_TOKEN_API_PATH}`)
       .then((response) => {
         csrfTokenCache[domain] = response.data.csrfToken;
         return csrfTokenCache[domain];

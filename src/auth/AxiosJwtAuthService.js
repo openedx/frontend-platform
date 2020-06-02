@@ -14,13 +14,13 @@ import AxiosJwtTokenService from './AxiosJwtTokenService';
 
 const optionsPropTypes = {
   config: PropTypes.shape({
-    appBaseUrl: PropTypes.string.isRequired,
-    lmsBaseUrl: PropTypes.string.isRequired,
-    loginUrl: PropTypes.string.isRequired,
-    logoutUrl: PropTypes.string.isRequired,
-    refreshAccessTokenEndpoint: PropTypes.string.isRequired,
-    accessTokenCookieName: PropTypes.string.isRequired,
-    csrfTokenApiPath: PropTypes.string.isRequired,
+    BASE_URL: PropTypes.string.isRequired,
+    LMS_BASE_URL: PropTypes.string.isRequired,
+    LOGIN_URL: PropTypes.string.isRequired,
+    LOGOUT_URL: PropTypes.string.isRequired,
+    REFRESH_ACCESS_TOKEN_ENDPOINT: PropTypes.string.isRequired,
+    ACCESS_TOKEN_COOKIE_NAME: PropTypes.string.isRequired,
+    CSRF_TOKEN_API_PATH: PropTypes.string.isRequired,
   }).isRequired,
   loggingService: PropTypes.shape({
     logError: PropTypes.func.isRequired,
@@ -32,13 +32,13 @@ export default class AxiosJwtAuthService {
   /**
    * @param {Object} options
    * @param {Object} options.config
-   * @param {string} options.config.appBaseUrl
-   * @param {string} options.config.lmsBaseUrl
-   * @param {string} options.config.loginUrl
-   * @param {string} options.config.logoutUrl
-   * @param {string} options.config.refreshAccessTokenEndpoint
-   * @param {string} options.config.accessTokenCookieName
-   * @param {string} options.config.csrfTokenApiPath
+   * @param {string} options.config.BASE_URL
+   * @param {string} options.config.LMS_BASE_URL
+   * @param {string} options.config.LOGIN_URL
+   * @param {string} options.config.LOGOUT_URL
+   * @param {string} options.config.REFRESH_ACCESS_TOKEN_ENDPOINT
+   * @param {string} options.config.ACCESS_TOKEN_COOKIE_NAME
+   * @param {string} options.config.CSRF_TOKEN_API_PATH
    * @param {Object} options.loggingService requires logError and logInfo methods
    */
   constructor(options) {
@@ -60,8 +60,8 @@ export default class AxiosJwtAuthService {
   initialize() {
     this.jwtTokenService = new AxiosJwtTokenService(
       this.loggingService,
-      this.config.accessTokenCookieName,
-      this.config.refreshAccessTokenEndpoint,
+      this.config.ACCESS_TOKEN_COOKIE_NAME,
+      this.config.REFRESH_ACCESS_TOKEN_ENDPOINT,
     );
     this.authenticatedHttpClient = this.addAuthenticationToHttpClient(axios.create());
     this.httpClient = axios.create();
@@ -104,8 +104,8 @@ export default class AxiosJwtAuthService {
    *
    * @param {string} redirectUrl The URL the user should be redirected to after logging in.
    */
-  getLoginRedirectUrl(redirectUrl = this.config.appBaseUrl) {
-    return `${this.config.loginUrl}?next=${encodeURIComponent(redirectUrl)}`;
+  getLoginRedirectUrl(redirectUrl = this.config.BASE_URL) {
+    return `${this.config.LOGIN_URL}?next=${encodeURIComponent(redirectUrl)}`;
   }
 
   /**
@@ -113,7 +113,7 @@ export default class AxiosJwtAuthService {
    *
    * @param {string} redirectUrl The URL the user should be redirected to after logging in.
    */
-  redirectToLogin(redirectUrl = this.config.appBaseUrl) {
+  redirectToLogin(redirectUrl = this.config.BASE_URL) {
     global.location.assign(this.getLoginRedirectUrl(redirectUrl));
   }
 
@@ -127,8 +127,8 @@ export default class AxiosJwtAuthService {
    *
    * @param {string} redirectUrl The URL the user should be redirected to after logging out.
    */
-  getLogoutRedirectUrl(redirectUrl = this.config.appBaseUrl) {
-    return `${this.config.logoutUrl}?redirect_url=${encodeURIComponent(redirectUrl)}`;
+  getLogoutRedirectUrl(redirectUrl = this.config.BASE_URL) {
+    return `${this.config.LOGOUT_URL}?redirect_url=${encodeURIComponent(redirectUrl)}`;
   }
 
   /**
@@ -136,7 +136,7 @@ export default class AxiosJwtAuthService {
    *
    * @param {string} redirectUrl The URL the user should be redirected to after logging out.
    */
-  redirectToLogout(redirectUrl = this.config.appBaseUrl) {
+  redirectToLogout(redirectUrl = this.config.BASE_URL) {
     global.location.assign(this.getLogoutRedirectUrl(redirectUrl));
   }
 
@@ -186,16 +186,16 @@ export default class AxiosJwtAuthService {
    * Ensures a user is authenticated. It will redirect to login when not
    * authenticated.
    *
-   * @param {string} [redirectUrl=config.appBaseUrl] to return user after login when not
+   * @param {string} [redirectUrl=config.BASE_URL] to return user after login when not
    * authenticated.
    * @returns {Promise<UserData>}
    */
-  async ensureAuthenticatedUser(redirectUrl = this.config.appBaseUrl) {
+  async ensureAuthenticatedUser(redirectUrl = this.config.BASE_URL) {
     await this.fetchAuthenticatedUser();
 
     if (this.getAuthenticatedUser() === null) {
       const isRedirectFromLoginPage = global.document.referrer &&
-        global.document.referrer.startsWith(this.config.loginUrl);
+        global.document.referrer.startsWith(this.config.LOGIN_URL);
 
       if (isRedirectFromLoginPage) {
         const redirectLoopError = new Error('Redirect from login page. Rejecting to avoid infinite redirect loop.');
@@ -231,7 +231,7 @@ export default class AxiosJwtAuthService {
     const user = this.getAuthenticatedUser();
     if (user !== null) {
       const response = await this.authenticatedHttpClient
-        .get(`${this.config.lmsBaseUrl}/api/user/v1/accounts/${user.username}`);
+        .get(`${this.config.LMS_BASE_URL}/api/user/v1/accounts/${user.username}`);
       this.setAuthenticatedUser({ ...user, ...camelCaseObject(response.data) });
     }
   }
@@ -241,9 +241,9 @@ export default class AxiosJwtAuthService {
  *
  * @param {HttpClient} newHttpClient
  * @param {Object} config
- * @param {string} [config.refreshAccessTokenEndpoint]
- * @param {string} [config.accessTokenCookieName]
- * @param {string} [config.csrfTokenApiPath]
+ * @param {string} [config.REFRESH_ACCESS_TOKEN_ENDPOINT]
+ * @param {string} [config.ACCESS_TOKEN_COOKIE_NAME]
+ * @param {string} [config.CSRF_TOKEN_API_PATH]
  * @returns {HttpClient} A configured Axios HTTP client.
  */
   addAuthenticationToHttpClient(newHttpClient) {
@@ -266,7 +266,7 @@ export default class AxiosJwtAuthService {
     // put, patch, or delete request. That token is then added to the request
     // headers.
     const attachCsrfTokenInterceptor = createCsrfTokenProviderInterceptor({
-      csrfTokenApiPath: this.config.csrfTokenApiPath,
+      CSRF_TOKEN_API_PATH: this.config.CSRF_TOKEN_API_PATH,
       shouldSkip: (axiosRequestConfig) => {
         const { method, isCsrfExempt } = axiosRequestConfig;
         const CSRF_PROTECTED_METHODS = ['post', 'put', 'patch', 'delete'];
