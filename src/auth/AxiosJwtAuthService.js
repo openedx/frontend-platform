@@ -1,8 +1,3 @@
-/**
- * @implements {AuthService}
- * @memberof module:Auth
- */
-
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import { logFrontendAuthError } from './utils';
@@ -29,7 +24,11 @@ const optionsPropTypes = {
   }).isRequired,
 };
 
-export default class AxiosJwtAuthService {
+/**
+ * @implements {AuthService}
+ * @memberof module:Auth
+ */
+class AxiosJwtAuthService {
   /**
    * @param {Object} options
    * @param {Object} options.config
@@ -52,13 +51,6 @@ export default class AxiosJwtAuthService {
 
     this.config = options.config;
     this.loggingService = options.loggingService;
-    this.initialize();
-  }
-
-  /**
-   * @ignore
-   */
-  initialize() {
     this.jwtTokenService = new AxiosJwtTokenService(
       this.loggingService,
       this.config.ACCESS_TOKEN_COOKIE_NAME,
@@ -307,3 +299,5 @@ export default class AxiosJwtAuthService {
     return httpClient;
   }
 }
+
+export default AxiosJwtAuthService;

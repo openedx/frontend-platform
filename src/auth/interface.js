@@ -1,5 +1,6 @@
 /**
  * #### Import members from **@edx/frontend-platform/auth**
+ *
  * Simplifies the process of making authenticated API requests to backend edX services by providing
  * common authN/authZ client code that enables the login/logout flow and handles ensuring the
  * presence of a valid [JWT cookie](https://github.com/edx/edx-platform/blob/master/openedx/core/djangoapps/oauth_dispatch/docs/decisions/0009-jwt-in-session-cookie.rst).
