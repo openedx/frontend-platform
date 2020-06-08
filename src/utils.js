@@ -161,6 +161,7 @@ export function getQueryParameters(search = global.location.search) {
 export function ensureDefinedConfig(object, requester) {
   Object.keys(object).forEach((key) => {
     if (object[key] === undefined) {
+      // eslint-disable-next-line no-console
       console.warn(`Module configuration error: ${key} is required by ${requester}.`);
     }
   });

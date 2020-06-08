@@ -62,18 +62,19 @@ class AxiosJwtAuthService {
   }
 
   /**
-   * Gets the authenticated HTTP client singleton which is an axios instance.
+   * Gets the authenticated HTTP client for the service.  This is an axios instance.
    *
-   * @returns {HttpClient} Singleton. A configured axios http client
+   * @returns {HttpClient} A configured axios http client which can be used for authenticated
+   * requests.
    */
   getAuthenticatedHttpClient() {
     return this.authenticatedHttpClient;
   }
 
   /**
-   * Gets the unauthenticated HTTP lient singleton which is an axios instance.
+   * Gets the unauthenticated HTTP client for the service.  This is an axios instance.
    *
-   * @returns {HttpClient} Singleton. A configured axios http client
+   * @returns {HttpClient} A configured axios http client.
    */
   getHttpClient() {
     return this.httpClient;
@@ -157,7 +158,6 @@ class AxiosJwtAuthService {
    * Sets the authenticated user to the provided value.
    *
    * @param {UserData} authUser
-   * @emits AUTHENTICATED_USER_CHANGED
    */
   setAuthenticatedUser(authUser) {
     this.authenticatedUser = authUser;

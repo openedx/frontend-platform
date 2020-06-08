@@ -29,6 +29,9 @@
  *
  * As shown in this example, auth depends on the configuration document and logging.
  *
+ * NOTE: The documentation for AxiosJwtAuthService is nearly the same as that for the top-level
+ * auth interface, except that it contains some Axios-specific details.
+ *
  * @module Auth
  */
 import PropTypes from 'prop-types';
@@ -117,56 +120,84 @@ export function resetAuthService() {
 }
 
 /**
+ * Gets the authenticated HTTP client for the service.
  *
+ * @returns {HttpClient}
  */
 export function getAuthenticatedHttpClient() {
   return service.getAuthenticatedHttpClient();
 }
 
 /**
+ * Gets the unauthenticated HTTP client for the service.
  *
+ * @returns {HttpClient}
  */
 export function getHttpClient() {
   return service.getHttpClient();
 }
 
 /**
+ * Builds a URL to the login page with a post-login redirect URL attached as a query parameter.
  *
+ * ```
+ * const url = getLoginRedirectUrl('http://localhost/mypage');
+ * console.log(url); // http://localhost/login?next=http%3A%2F%2Flocalhost%2Fmypage
+ * ```
+ *
+ * @param {string} redirectUrl The URL the user should be redirected to after logging in.
  */
 export function getLoginRedirectUrl(redirectUrl) {
   return service.getLoginRedirectUrl(redirectUrl);
 }
 
 /**
+ * Redirects the user to the login page.
  *
+ * @param {string} redirectUrl The URL the user should be redirected to after logging in.
  */
 export function redirectToLogin(redirectUrl) {
   return service.redirectToLogin(redirectUrl);
 }
 
 /**
+ * Builds a URL to the logout page with a post-logout redirect URL attached as a query parameter.
  *
+ * ```
+ * const url = getLogoutRedirectUrl('http://localhost/mypage');
+ * console.log(url); // http://localhost/logout?next=http%3A%2F%2Flocalhost%2Fmypage
+ * ```
+ *
+ * @param {string} redirectUrl The URL the user should be redirected to after logging out.
  */
 export function getLogoutRedirectUrl(redirectUrl) {
   return service.getLogoutRedirectUrl(redirectUrl);
 }
 
 /**
+ * Redirects the user to the logout page.
  *
+ * @param {string} redirectUrl The URL the user should be redirected to after logging out.
  */
 export function redirectToLogout(redirectUrl) {
   return service.redirectToLogout(redirectUrl);
 }
 
 /**
+ * If it exists, returns the user data representing the currently authenticated user. If the
+ * user is anonymous, returns null.
  *
+ * @returns {UserData|null}
  */
 export function getAuthenticatedUser() {
   return service.getAuthenticatedUser();
 }
 
 /**
+ * Sets the authenticated user to the provided value.
  *
+ * @param {UserData} authUser
+ * @emits AUTHENTICATED_USER_CHANGED
  */
 export function setAuthenticatedUser(authUser) {
   service.setAuthenticatedUser(authUser);
@@ -174,21 +205,40 @@ export function setAuthenticatedUser(authUser) {
 }
 
 /**
+ * Reads the authenticated user's access token. Resolves to null if the user is
+ * unauthenticated.
  *
+ * @returns {Promise<UserData>|Promise<null>} Resolves to the user's access token if they are
+ * logged in.
  */
 export async function fetchAuthenticatedUser() {
   return service.fetchAuthenticatedUser();
 }
 
 /**
+ * Ensures a user is authenticated. It will redirect to login when not
+ * authenticated.
  *
+ * @param {string} [redirectUrl=config.BASE_URL] to return user after login when not
+ * authenticated.
+ * @returns {Promise<UserData>}
  */
 export async function ensureAuthenticatedUser(redirectUrl) {
   return service.ensureAuthenticatedUser(redirectUrl);
 }
 
 /**
+ * Fetches additional user account information for the authenticated user and merges it into the
+ * existing authenticatedUser object, available via getAuthenticatedUser().
  *
+ * ```
+ *  console.log(authenticatedUser); // Will be sparse and only contain basic information.
+ *  await hydrateAuthenticatedUser()
+ *  const authenticatedUser = getAuthenticatedUser();
+ *  console.log(authenticatedUser); // Will contain additional user information
+ * ```
+ *
+ * @returns {Promise<null>}
  */
 export async function hydrateAuthenticatedUser() {
   return service.hydrateAuthenticatedUser();
