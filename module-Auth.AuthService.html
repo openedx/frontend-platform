@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: auth/addAuthenticationToHttpClient.js</title>
+    <title>JSDoc: Interface: AuthService</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -15,81 +15,383 @@
     <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
 </head>
 
-<body data-module="">
+<body data-module="Auth">
 
 <div id="main">
-    <h1 class="page-title">Source: auth/addAuthenticationToHttpClient.js</h1>
+    <h1 class="page-title">Interface: AuthService</h1>
 
     
 
 
 
+
+<section>
+
+<header>
     
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>import processAxiosRequestErrorInterceptor from './interceptors/processAxiosRequestErrorInterceptor';
-import createJwtTokenProviderInterceptor from './interceptors/createJwtTokenProviderInterceptor';
-import createCsrfTokenProviderInterceptor from './interceptors/createCsrfTokenProviderInterceptor';
+        <h2>
+            <span class="ancestors"><a href="module-Auth.html">Auth</a>.</span>AuthService</h2>
+        
+    
+</header>
 
-/**
- * Adds authentication defaults and interceptors to an http client instance.
- *
- * @param {HttpClient} newHttpClient
- * @param {Object} config
- * @param {string} [config.refreshAccessTokenEndpoint]
- * @param {string} [config.accessTokenCookieName]
- * @param {string} [config.csrfTokenApiPath]
- * @returns {HttpClient} Singleton. A configured axios http client
- * @memberof module:Auth
- */
-export default function addAuthenticationToHttpClient(newHttpClient, config) {
-  const httpClient = Object.create(newHttpClient);
-  // Set withCredentials to true. Enables cross-site Access-Control requests
-  // to be made using cookies, authorization headers or TLS client
-  // certificates. More on MDN:
-  // https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/withCredentials
-  httpClient.defaults.withCredentials = true;
+<article>
+    <div class="container-overview">
+    
+        
 
-  // Axios interceptors
+        
 
-  // The JWT access token interceptor attempts to refresh the user's jwt token
-  // before any request unless the isPublic flag is set on the request config.
-  const refreshAccessTokenInterceptor = createJwtTokenProviderInterceptor({
-    tokenCookieName: config.accessTokenCookieName,
-    tokenRefreshEndpoint: config.refreshAccessTokenEndpoint,
-    shouldSkip: axiosRequestConfig => axiosRequestConfig.isPublic,
-  });
-  // The CSRF token intercepter fetches and caches a csrf token for any post,
-  // put, patch, or delete request. That token is then added to the request
-  // headers.
-  const attachCsrfTokenInterceptor = createCsrfTokenProviderInterceptor({
-    csrfTokenApiPath: config.csrfTokenApiPath,
-    shouldSkip: (axiosRequestConfig) => {
-      const { method, isCsrfExempt } = axiosRequestConfig;
-      const CSRF_PROTECTED_METHODS = ['post', 'put', 'patch', 'delete'];
-      return isCsrfExempt || !CSRF_PROTECTED_METHODS.includes(method);
-    },
-  });
 
-  // Request interceptors: Axios runs the interceptors in reverse order from
-  // how they are listed. After fetching csrf tokens no longer require jwt
-  // authentication, it won't matter which happens first. This change is
-  // coming soon in edx-platform. Nov. 2019
-  httpClient.interceptors.request.use(attachCsrfTokenInterceptor);
-  httpClient.interceptors.request.use(refreshAccessTokenInterceptor);
+    <h5 class="subsection-title">Properties:</h5>
 
-  // Response interceptor: moves axios response error data into the error
-  // object at error.customAttributes
-  httpClient.interceptors.response.use(
-    response => response,
-    processAxiosRequestErrorInterceptor,
-  );
+    
 
-  return httpClient;
-}
-</code></pre>
-        </article>
-    </section>
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>getAuthenticatedHttpClient</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>getHttpClient</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>getLoginRedirectUrl</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>redirectToLogin</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>getLogoutRedirectUrl</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>redirectToLogout</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>getAuthenticatedUser</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>setAuthenticatedUser</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>fetchAuthenticatedUser</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ensureAuthenticatedUser</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>hydrateAuthenticatedUser</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="auth_interface.js.html">auth/interface.js</a>, <a href="auth_interface.js.html#line198">line 198</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 
@@ -108,7 +410,7 @@ export default function addAuthenticationToHttpClient(newHttpClient, config) {
                     <a href="module-Auth.html" class="nav-link font-weight-bold">Auth</a>
                     
             <ul class="list-unstyled px-3 pb-4 bg-light">
-                <li><a href="module-Auth.html#.addAuthenticationToHttpClient">addAuthenticationToHttpClient</a></li><li><a href="module-Auth.HttpClient.html">HttpClient</a></li><li><a href="module-Auth.UserData.html">UserData</a></li><li><a href="module-Auth.html#~AUTHENTICATED_USER_TOPIC">AUTHENTICATED_USER_TOPIC</a></li><li><a href="module-Auth.html#~configure">configure</a></li><li><a href="module-Auth.html#~ensureAuthenticatedUser">ensureAuthenticatedUser</a></li><li><a href="module-Auth.html#~event:AUTHENTICATED_USER_CHANGED">AUTHENTICATED_USER_CHANGED</a></li><li><a href="module-Auth.html#~fetchAuthenticatedUser">fetchAuthenticatedUser</a></li><li><a href="module-Auth.html#~getAuthenticatedHttpClient">getAuthenticatedHttpClient</a></li><li><a href="module-Auth.html#~getAuthenticatedUser">getAuthenticatedUser</a></li><li><a href="module-Auth.html#~getHttpClient">getHttpClient</a></li><li><a href="module-Auth.html#~getLoginRedirectUrl">getLoginRedirectUrl</a></li><li><a href="module-Auth.html#~getLogoutRedirectUrl">getLogoutRedirectUrl</a></li><li><a href="module-Auth.html#~hydrateAuthenticatedUser">hydrateAuthenticatedUser</a></li><li><a href="module-Auth.html#~redirectToLogin">redirectToLogin</a></li><li><a href="module-Auth.html#~redirectToLogout">redirectToLogout</a></li><li><a href="module-Auth.html#~setAuthenticatedUser">setAuthenticatedUser</a></li>
+                <li><a href="module-Auth.AuthService.html">AuthService</a></li><li><a href="module-Auth.AxiosJwtAuthService.html">AxiosJwtAuthService</a></li><li><a href="module-Auth.HttpClient.html">HttpClient</a></li><li><a href="module-Auth.UserData.html">UserData</a></li><li><a href="module-Auth.html#~AUTHENTICATED_USER_TOPIC">AUTHENTICATED_USER_TOPIC</a></li><li><a href="module-Auth.html#~configure">configure</a></li><li><a href="module-Auth.html#~ensureAuthenticatedUser">ensureAuthenticatedUser</a></li><li><a href="module-Auth.html#~event:AUTHENTICATED_USER_CHANGED">AUTHENTICATED_USER_CHANGED</a></li><li><a href="module-Auth.html#~fetchAuthenticatedUser">fetchAuthenticatedUser</a></li><li><a href="module-Auth.html#~getAuthenticatedHttpClient">getAuthenticatedHttpClient</a></li><li><a href="module-Auth.html#~getAuthenticatedUser">getAuthenticatedUser</a></li><li><a href="module-Auth.html#~getAuthService">getAuthService</a></li><li><a href="module-Auth.html#~getHttpClient">getHttpClient</a></li><li><a href="module-Auth.html#~getLoginRedirectUrl">getLoginRedirectUrl</a></li><li><a href="module-Auth.html#~getLogoutRedirectUrl">getLogoutRedirectUrl</a></li><li><a href="module-Auth.html#~hydrateAuthenticatedUser">hydrateAuthenticatedUser</a></li><li><a href="module-Auth.html#~redirectToLogin">redirectToLogin</a></li><li><a href="module-Auth.html#~redirectToLogout">redirectToLogout</a></li><li><a href="module-Auth.html#~resetAuthService">resetAuthService</a></li><li><a href="module-Auth.html#~setAuthenticatedUser">setAuthenticatedUser</a></li>
             </ul>
         
                 </li><li class="module-section nav-item Config">
@@ -166,7 +468,7 @@ export default function addAuthenticationToHttpClient(newHttpClient, config) {
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Wed Jun 03 2020 11:11:48 GMT+0000 (Coordinated Universal Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Mon Jun 08 2020 14:16:32 GMT+0000 (Coordinated Universal Time)
 </footer>
 
 <script> prettyPrint(); </script>

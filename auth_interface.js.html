@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: auth/index.js</title>
+    <title>JSDoc: Source: auth/interface.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -18,7 +18,7 @@
 <body data-module="">
 
 <div id="main">
-    <h1 class="page-title">Source: auth/index.js</h1>
+    <h1 class="page-title">Source: auth/interface.js</h1>
 
     
 
@@ -29,6 +29,7 @@
         <article>
             <pre class="prettyprint source linenums"><code>/**
  * #### Import members from **@edx/frontend-platform/auth**
+ *
  * Simplifies the process of making authenticated API requests to backend edX services by providing
  * common authN/authZ client code that enables the login/logout flow and handles ensuring the
  * presence of a valid [JWT cookie](https://github.com/edx/edx-platform/blob/master/openedx/core/djangoapps/oauth_dispatch/docs/decisions/0009-jwt-in-session-cookie.rst).
@@ -45,25 +46,9 @@
  * import { getConfig } from '@edx/frontend-platform';
  * import { getLoggingService } from '@edx/frontend-platform/logging';
  *
- * const {
- *   BASE_URL,
- *   LMS_BASE_URL,
- *   LOGIN_URL,
- *   LOGOUT_URL,
- *   REFRESH_ACCESS_TOKEN_ENDPOINT,
- *   ACCESS_TOKEN_COOKIE_NAME,
- *   CSRF_TOKEN_API_PATH,
- * } = getConfig();
- *
  * configure({
  *   loggingService: getLoggingService(),
- *   appBaseUrl: BASE_URL,
- *   lmsBaseUrl: LMS_BASE_URL,
- *   loginUrl: LOGIN_URL,
- *   logoutUrl: LOGOUT_URL,
- *   refreshAccessTokenEndpoint: REFRESH_ACCESS_TOKEN_ENDPOINT,
- *   accessTokenCookieName: ACCESS_TOKEN_COOKIE_NAME,
- *   csrfTokenApiPath: CSRF_TOKEN_API_PATH,
+ *   config: getConfig(),
  * });
  *
  * const authenticatedUser = await fetchAuthenticatedUser(); // validates and decodes JWT token
@@ -75,14 +60,7 @@
  *
  * @module Auth
  */
-
-import axios from 'axios';
 import PropTypes from 'prop-types';
-import { logFrontendAuthError } from './utils';
-import addAuthenticationToHttpClient from './addAuthenticationToHttpClient';
-import getJwtToken from './getJwtToken';
-import { camelCaseObject, ensureDefinedConfig } from '../utils';
-
 import { publish } from '../pubSub';
 
 /**
@@ -102,220 +80,166 @@ export const AUTHENTICATED_USER_TOPIC = 'AUTHENTICATED_USER';
  */
 export const AUTHENTICATED_USER_CHANGED = `${AUTHENTICATED_USER_TOPIC}.CHANGED`;
 
-// Singletons
-let authenticatedHttpClient = null;
-let httpClient = null;
-let config = null;
-let authenticatedUser = null;
-
-const configPropTypes = {
-  appBaseUrl: PropTypes.string.isRequired,
-  lmsBaseUrl: PropTypes.string.isRequired,
-  loginUrl: PropTypes.string.isRequired,
-  logoutUrl: PropTypes.string.isRequired,
-  refreshAccessTokenEndpoint: PropTypes.string.isRequired,
-  accessTokenCookieName: PropTypes.string.isRequired,
-  csrfTokenApiPath: PropTypes.string.isRequired,
+const optionsShape = {
+  config: PropTypes.shape({
+    BASE_URL: PropTypes.string.isRequired,
+    LMS_BASE_URL: PropTypes.string.isRequired,
+    LOGIN_URL: PropTypes.string.isRequired,
+    LOGOUT_URL: PropTypes.string.isRequired,
+    REFRESH_ACCESS_TOKEN_ENDPOINT: PropTypes.string.isRequired,
+    ACCESS_TOKEN_COOKIE_NAME: PropTypes.string.isRequired,
+    CSRF_TOKEN_API_PATH: PropTypes.string.isRequired,
+  }).isRequired,
   loggingService: PropTypes.shape({
     logError: PropTypes.func.isRequired,
     logInfo: PropTypes.func.isRequired,
   }).isRequired,
 };
 
-/**
- * Configures an httpClient to make authenticated http requests.
- *
- * @param {Object} options
- * @param {string} options.appBaseUrl
- * @param {string} options.lmsBaseUrl
- * @param {string} options.loginUrl
- * @param {string} options.logoutUrl
- * @param {Object} options.loggingService requires logError and logInfo methods
- * @param {string} options.refreshAccessTokenEndpoint
- * @param {string} options.accessTokenCookieName
- * @param {string} options.csrfTokenApiPath
- */
-export function configure(options) {
-  ensureDefinedConfig(options, 'AuthService');
+const serviceShape = {
+  getAuthenticatedHttpClient: PropTypes.func.isRequired,
+  getHttpClient: PropTypes.func.isRequired,
+  getLoginRedirectUrl: PropTypes.func.isRequired,
+  redirectToLogin: PropTypes.func.isRequired,
+  getLogoutRedirectUrl: PropTypes.func.isRequired,
+  redirectToLogout: PropTypes.func.isRequired,
+  getAuthenticatedUser: PropTypes.func.isRequired,
+  setAuthenticatedUser: PropTypes.func.isRequired,
+  fetchAuthenticatedUser: PropTypes.func.isRequired,
+  ensureAuthenticatedUser: PropTypes.func.isRequired,
+  hydrateAuthenticatedUser: PropTypes.func.isRequired,
+};
 
-  PropTypes.checkPropTypes(configPropTypes, options, 'options', 'AuthService');
-  config = options;
-  authenticatedHttpClient = addAuthenticationToHttpClient(axios.create(), config);
-  httpClient = axios.create();
+let service;
+
+/**
+ *
+ * @param {class} AuthService
+ * @param {*} options
+ * @returns {AuthService}
+ */
+export function configure(AuthService, options) {
+  PropTypes.checkPropTypes(optionsShape, options, 'property', 'Auth');
+  service = new AuthService(options);
+  PropTypes.checkPropTypes(serviceShape, service, 'property', 'AuthService');
+  return service;
 }
 
-
 /**
- * @ignore
- * @returns {LoggingService}
+ *
+ *
+ * @returns {AuthService}
  */
-export function getLoggingService() {
-  return config.loggingService;
+export function getAuthService() {
+  if (!service) {
+    throw Error('You must first configure the auth service.');
+  }
+
+  return service;
 }
 
 /**
- * Gets the authenticated HTTP client singleton which is an axios instance.
  *
- * @returns {HttpClient} Singleton. A configured axios http client
+ */
+export function resetAuthService() {
+  service = null;
+}
+
+/**
+ *
  */
 export function getAuthenticatedHttpClient() {
-  return authenticatedHttpClient;
+  return service.getAuthenticatedHttpClient();
 }
 
 /**
- * Gets the unauthenticated HTTP lient singleton which is an axios instance.
  *
- * @returns {HttpClient} Singleton. A configured axios http client
  */
 export function getHttpClient() {
-  return httpClient;
+  return service.getHttpClient();
 }
 
 /**
- * Builds a URL to the login page with a post-login redirect URL attached as a query parameter.
  *
- * ```
- * const url = getLoginRedirectUrl('http://localhost/mypage');
- * console.log(url); // http://localhost/login?next=http%3A%2F%2Flocalhost%2Fmypage
- * ```
- *
- * @param {string} redirectUrl The URL the user should be redirected to after logging in.
  */
-export function getLoginRedirectUrl(redirectUrl = config.appBaseUrl) {
-  return `${config.loginUrl}?next=${encodeURIComponent(redirectUrl)}`;
+export function getLoginRedirectUrl(redirectUrl) {
+  return service.getLoginRedirectUrl(redirectUrl);
 }
 
 /**
- * Redirects the user to the login page.
  *
- * @param {string} redirectUrl The URL the user should be redirected to after logging in.
  */
-export function redirectToLogin(redirectUrl = config.appBaseUrl) {
-  global.location.assign(getLoginRedirectUrl(redirectUrl));
+export function redirectToLogin(redirectUrl) {
+  return service.redirectToLogin(redirectUrl);
 }
 
 /**
- * Builds a URL to the logout page with a post-logout redirect URL attached as a query parameter.
  *
- * ```
- * const url = getLogoutRedirectUrl('http://localhost/mypage');
- * console.log(url); // http://localhost/logout?next=http%3A%2F%2Flocalhost%2Fmypage
- * ```
- *
- * @param {string} redirectUrl The URL the user should be redirected to after logging out.
  */
-export function getLogoutRedirectUrl(redirectUrl = config.appBaseUrl) {
-  return `${config.logoutUrl}?redirect_url=${encodeURIComponent(redirectUrl)}`;
+export function getLogoutRedirectUrl(redirectUrl) {
+  return service.getLogoutRedirectUrl(redirectUrl);
 }
 
 /**
- * Redirects the user to the logout page.
  *
- * @param {string} redirectUrl The URL the user should be redirected to after logging out.
  */
-export function redirectToLogout(redirectUrl = config.appBaseUrl) {
-  global.location.assign(getLogoutRedirectUrl(redirectUrl));
+export function redirectToLogout(redirectUrl) {
+  return service.redirectToLogout(redirectUrl);
 }
 
 /**
- * If it exists, returns the user data representing the currently authenticated user. If the user is
- * anonymous, returns null.
  *
- * @returns {UserData|null}
  */
 export function getAuthenticatedUser() {
-  return authenticatedUser;
+  return service.getAuthenticatedUser();
 }
 
 /**
- * Sets the authenticated user to the provided value.
  *
- * @param {UserData} authUser
- * @emits AUTHENTICATED_USER_CHANGED
  */
 export function setAuthenticatedUser(authUser) {
-  authenticatedUser = authUser;
+  service.setAuthenticatedUser(authUser);
   publish(AUTHENTICATED_USER_CHANGED);
 }
 
 /**
- * Reads the authenticated user's access token. Resolves to null if the user is
- * unauthenticated.
  *
- * @returns {Promise&lt;UserData>|Promise&lt;null>} Resolves to the user's access token if they are
- * logged in.
  */
 export async function fetchAuthenticatedUser() {
-  const decodedAccessToken = await getJwtToken(
-    config.accessTokenCookieName,
-    config.refreshAccessTokenEndpoint,
-  );
-
-  if (decodedAccessToken !== null) {
-    setAuthenticatedUser({
-      userId: decodedAccessToken.user_id,
-      username: decodedAccessToken.preferred_username,
-      roles: decodedAccessToken.roles || [],
-      administrator: decodedAccessToken.administrator,
-    });
-  }
-
-  return getAuthenticatedUser();
+  return service.fetchAuthenticatedUser();
 }
 
 /**
- * Ensures a user is authenticated. It will redirect to login when not
- * authenticated.
  *
- * @param {string} [redirectUrl=config.appBaseUrl] to return user after login when not
- * authenticated.
- * @returns {Promise&lt;UserData>}
  */
-export async function ensureAuthenticatedUser(redirectUrl = config.appBaseUrl) {
-  await fetchAuthenticatedUser();
-
-  if (getAuthenticatedUser() === null) {
-    const isRedirectFromLoginPage = global.document.referrer &amp;&amp;
-      global.document.referrer.startsWith(config.loginUrl);
-
-    if (isRedirectFromLoginPage) {
-      const redirectLoopError = new Error('Redirect from login page. Rejecting to avoid infinite redirect loop.');
-      logFrontendAuthError(redirectLoopError);
-      throw redirectLoopError;
-    }
-
-    // The user is not authenticated, send them to the login page.
-    redirectToLogin(redirectUrl);
-
-    const unauthorizedError = new Error('Failed to ensure the user is authenticated');
-    unauthorizedError.isRedirecting = true;
-    throw unauthorizedError;
-  }
-
-  return getAuthenticatedUser();
+export async function ensureAuthenticatedUser(redirectUrl) {
+  return service.ensureAuthenticatedUser(redirectUrl);
 }
 
 /**
- * Fetches additional user account information for the authenticated user and merges it into the
- * existing authenticatedUser object, available via getAuthenticatedUser().
  *
- * ```
- *  console.log(authenticatedUser); // Will be sparse and only contain basic information.
- *  await hydrateAuthenticatedUser()
- *  const authenticatedUser = getAuthenticatedUser();
- *  console.log(authenticatedUser); // Will contain additional user information
- * ```
- *
- * @returns {Promise&lt;null>}
  */
 export async function hydrateAuthenticatedUser() {
-  const user = getAuthenticatedUser();
-  if (user !== null) {
-    const response = await authenticatedHttpClient
-      .get(`${config.lmsBaseUrl}/api/user/v1/accounts/${user.username}`);
-    setAuthenticatedUser({ ...user, ...camelCaseObject(response.data) });
-  }
+  return service.hydrateAuthenticatedUser();
 }
+
+
+/**
+ * @name AuthService
+ * @interface
+ * @memberof module:Auth
+ * @property {function} getAuthenticatedHttpClient
+ * @property {function} getHttpClient
+ * @property {function} getLoginRedirectUrl
+ * @property {function} redirectToLogin
+ * @property {function} getLogoutRedirectUrl
+ * @property {function} redirectToLogout
+ * @property {function} getAuthenticatedUser
+ * @property {function} setAuthenticatedUser
+ * @property {function} fetchAuthenticatedUser
+ * @property {function} ensureAuthenticatedUser
+ * @property {function} hydrateAuthenticatedUser
+ */
 
 /**
  * A configured axios client. See axios docs for more
@@ -377,7 +301,7 @@ export async function hydrateAuthenticatedUser() {
                     <a href="module-Auth.html" class="nav-link font-weight-bold">Auth</a>
                     
             <ul class="list-unstyled px-3 pb-4 bg-light">
-                <li><a href="module-Auth.html#.addAuthenticationToHttpClient">addAuthenticationToHttpClient</a></li><li><a href="module-Auth.HttpClient.html">HttpClient</a></li><li><a href="module-Auth.UserData.html">UserData</a></li><li><a href="module-Auth.html#~AUTHENTICATED_USER_TOPIC">AUTHENTICATED_USER_TOPIC</a></li><li><a href="module-Auth.html#~configure">configure</a></li><li><a href="module-Auth.html#~ensureAuthenticatedUser">ensureAuthenticatedUser</a></li><li><a href="module-Auth.html#~event:AUTHENTICATED_USER_CHANGED">AUTHENTICATED_USER_CHANGED</a></li><li><a href="module-Auth.html#~fetchAuthenticatedUser">fetchAuthenticatedUser</a></li><li><a href="module-Auth.html#~getAuthenticatedHttpClient">getAuthenticatedHttpClient</a></li><li><a href="module-Auth.html#~getAuthenticatedUser">getAuthenticatedUser</a></li><li><a href="module-Auth.html#~getHttpClient">getHttpClient</a></li><li><a href="module-Auth.html#~getLoginRedirectUrl">getLoginRedirectUrl</a></li><li><a href="module-Auth.html#~getLogoutRedirectUrl">getLogoutRedirectUrl</a></li><li><a href="module-Auth.html#~hydrateAuthenticatedUser">hydrateAuthenticatedUser</a></li><li><a href="module-Auth.html#~redirectToLogin">redirectToLogin</a></li><li><a href="module-Auth.html#~redirectToLogout">redirectToLogout</a></li><li><a href="module-Auth.html#~setAuthenticatedUser">setAuthenticatedUser</a></li>
+                <li><a href="module-Auth.AuthService.html">AuthService</a></li><li><a href="module-Auth.AxiosJwtAuthService.html">AxiosJwtAuthService</a></li><li><a href="module-Auth.HttpClient.html">HttpClient</a></li><li><a href="module-Auth.UserData.html">UserData</a></li><li><a href="module-Auth.html#~AUTHENTICATED_USER_TOPIC">AUTHENTICATED_USER_TOPIC</a></li><li><a href="module-Auth.html#~configure">configure</a></li><li><a href="module-Auth.html#~ensureAuthenticatedUser">ensureAuthenticatedUser</a></li><li><a href="module-Auth.html#~event:AUTHENTICATED_USER_CHANGED">AUTHENTICATED_USER_CHANGED</a></li><li><a href="module-Auth.html#~fetchAuthenticatedUser">fetchAuthenticatedUser</a></li><li><a href="module-Auth.html#~getAuthenticatedHttpClient">getAuthenticatedHttpClient</a></li><li><a href="module-Auth.html#~getAuthenticatedUser">getAuthenticatedUser</a></li><li><a href="module-Auth.html#~getAuthService">getAuthService</a></li><li><a href="module-Auth.html#~getHttpClient">getHttpClient</a></li><li><a href="module-Auth.html#~getLoginRedirectUrl">getLoginRedirectUrl</a></li><li><a href="module-Auth.html#~getLogoutRedirectUrl">getLogoutRedirectUrl</a></li><li><a href="module-Auth.html#~hydrateAuthenticatedUser">hydrateAuthenticatedUser</a></li><li><a href="module-Auth.html#~redirectToLogin">redirectToLogin</a></li><li><a href="module-Auth.html#~redirectToLogout">redirectToLogout</a></li><li><a href="module-Auth.html#~resetAuthService">resetAuthService</a></li><li><a href="module-Auth.html#~setAuthenticatedUser">setAuthenticatedUser</a></li>
             </ul>
         
                 </li><li class="module-section nav-item Config">
@@ -435,7 +359,7 @@ export async function hydrateAuthenticatedUser() {
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Wed Jun 03 2020 11:11:48 GMT+0000 (Coordinated Universal Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Mon Jun 08 2020 14:16:32 GMT+0000 (Coordinated Universal Time)
 </footer>
 
 <script> prettyPrint(); </script>
