@@ -54,7 +54,7 @@ import {
 } from './config';
 import { configure as configureLogging, getLoggingService, NewRelicLoggingService, logError } from './logging';
 import { configure as configureAnalytics, SegmentAnalyticsService, identifyAnonymousUser, identifyAuthenticatedUser } from './analytics';
-import { getAuthenticatedHttpClient, configure as configureAuth, ensureAuthenticatedUser, fetchAuthenticatedUser, hydrateAuthenticatedUser, getAuthenticatedUser } from './auth';
+import { getAuthenticatedHttpClient, configure as configureAuth, ensureAuthenticatedUser, fetchAuthenticatedUser, hydrateAuthenticatedUser, getAuthenticatedUser, AxiosJwtAuthService } from './auth';
 import { configure as configureI18n } from './i18n';
 
 /** @constant */
@@ -247,6 +247,7 @@ function applyOverrideHandlers(overrides) {
 export async function initialize({
   loggingService = NewRelicLoggingService,
   analyticsService = SegmentAnalyticsService,
+  authService = AxiosJwtAuthService,
   requireAuthenticatedUser: requireUser = false,
   hydrateAuthenticatedUser: hydrateUser = false,
   messages,
@@ -270,15 +271,9 @@ export async function initialize({
     publish(APP_LOGGING_INITIALIZED);
 
     // Authentication
-    configureAuth({
+    configureAuth(authService, {
       loggingService: getLoggingService(),
-      appBaseUrl: getConfig().BASE_URL,
-      lmsBaseUrl: getConfig().LMS_BASE_URL,
-      loginUrl: getConfig().LOGIN_URL,
-      logoutUrl: getConfig().LOGOUT_URL,
-      refreshAccessTokenEndpoint: getConfig().REFRESH_ACCESS_TOKEN_ENDPOINT,
-      accessTokenCookieName: getConfig().ACCESS_TOKEN_COOKIE_NAME,
-      csrfTokenApiPath: getConfig().CSRF_TOKEN_API_PATH,
+      config: getConfig(),
     });
     await handlers.auth(requireUser, hydrateUser);
     publish(APP_AUTH_INITIALIZED);

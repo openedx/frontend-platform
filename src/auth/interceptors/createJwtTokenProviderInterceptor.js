@@ -1,9 +1,6 @@
-import getJwtToken from '../getJwtToken';
-
 const createJwtTokenProviderInterceptor = (options) => {
   const {
-    tokenCookieName,
-    tokenRefreshEndpoint,
+    jwtTokenService,
     shouldSkip,
   } = options;
 
@@ -20,7 +17,7 @@ const createJwtTokenProviderInterceptor = (options) => {
     // (namely our retry request interceptor below) to access the original request
     // and handle it appropriately
     try {
-      await getJwtToken(tokenCookieName, tokenRefreshEndpoint);
+      await jwtTokenService.getJwtToken();
     } catch (error) {
       const requestError = Object.create(error);
       requestError.message = `[getJwtToken] ${requestError.message}`;

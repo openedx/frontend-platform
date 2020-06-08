@@ -13,11 +13,10 @@ import {
 import { subscribe } from './pubSub';
 
 import { configure as configureLogging, NewRelicLoggingService, getLoggingService, logError } from './logging';
-import { configure as configureAuth, getAuthenticatedHttpClient, ensureAuthenticatedUser, fetchAuthenticatedUser, hydrateAuthenticatedUser, getAuthenticatedUser } from './auth';
+import { configure as configureAuth, getAuthenticatedHttpClient, ensureAuthenticatedUser, fetchAuthenticatedUser, hydrateAuthenticatedUser, getAuthenticatedUser, AxiosJwtAuthService } from './auth';
 import { configure as configureAnalytics, SegmentAnalyticsService } from './analytics';
 import { configure as configureI18n } from './i18n';
 import { getConfig } from './config';
-
 
 jest.mock('./logging');
 jest.mock('./auth');
@@ -70,15 +69,9 @@ describe('initialize', () => {
     await initialize({ messages });
 
     expect(configureLogging).toHaveBeenCalledWith(NewRelicLoggingService, { config });
-    expect(configureAuth).toHaveBeenCalledWith({
+    expect(configureAuth).toHaveBeenCalledWith(AxiosJwtAuthService, {
       loggingService: getLoggingService(),
-      appBaseUrl: process.env.BASE_URL,
-      lmsBaseUrl: process.env.LMS_BASE_URL,
-      loginUrl: process.env.LOGIN_URL,
-      logoutUrl: process.env.LOGOUT_URL,
-      refreshAccessTokenEndpoint: process.env.REFRESH_ACCESS_TOKEN_ENDPOINT,
-      accessTokenCookieName: process.env.ACCESS_TOKEN_COOKIE_NAME,
-      csrfTokenApiPath: process.env.CSRF_TOKEN_API_PATH,
+      config,
     });
     expect(configureAnalytics).toHaveBeenCalledWith(SegmentAnalyticsService, {
       config,

@@ -67,7 +67,7 @@ The included service implementations are:
 - Axios/JWT (auth)
 - React Intl (i18n)
 
-NOTE: As of this writing, both authentication and i18n are _not_ configurable.  The `initialize()` function does not allow applications to supply alternate auth/i18n implementations; this is because the interface and implementations for auth and i18n have not yet been separated and modularized.
+NOTE: As of this writing, i18n is _not_ configurable.  The `initialize()` function does not allow applications to supply an alternate i18n implementation; this is because the interface and implementation for i18n has not yet been separated and modularized.
 
 # Testing Locally
 
@@ -84,7 +84,7 @@ npm run build
 2. Install the built distribution's dependencies:
 
 ```
-cd dist 
+cd dist
 npm install
 ```
 
