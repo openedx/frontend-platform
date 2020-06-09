@@ -15,3 +15,4 @@ export {
   hydrateAuthenticatedUser,
 } from './interface';
 export { default as AxiosJwtAuthService } from './AxiosJwtAuthService';
+export { default as MockAuthService } from './MockAuthService';

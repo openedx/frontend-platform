@@ -127,6 +127,7 @@ export function ensureConfig(keys, requester = 'unspecified application code') {
   subscribe(APP_CONFIG_INITIALIZED, () => {
     keys.forEach((key) => {
       if (config[key] === undefined) {
+        // eslint-disable-next-line no-console
         console.warn(`App configuration error: ${key} is required by ${requester}.`);
       }
     });
