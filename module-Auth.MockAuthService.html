@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Auth</title>
+    <title>JSDoc: Class: MockAuthService</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -18,7 +18,7 @@
 <body data-module="Auth">
 
 <div id="main">
-    <h1 class="page-title">Auth</h1>
+    <h1 class="page-title">Class: MockAuthService</h1>
 
     
 
@@ -29,8 +29,68 @@
 
 <header>
     
+        <h2><span class="attribs"><span class="type-signature"></span></span>
+            <span class="ancestors"><a href="module-Auth.html">Auth</a>~</span>MockAuthService<span class="signature">(options)</span><span class="type-signature"></span></h2>
         
-            
+            <div class="class-description"><p>The MockAuthService class uses axios-mock-adapter to wrap it's HttpClients so that they can be
+mocked for development and testing.  In an application, it could be used to temporarily override
+the &quot;real&quot; auth service:</p>
+<pre class="prettyprint source"><code>import {
+  initialize,
+  APP_AUTH_INITIALIZED,
+  subscribe,
+  mergeConfig,
+} from '@edx/frontend-platform';
+import { MockAuthService } from '@edx/frontend-platform/auth';
+
+initialize({
+  handlers: {
+    config: () => {
+      mergeConfig({
+        authenticatedUser: {
+          userId: 'abc123',
+          username: 'Mock User',
+          roles: [],
+          administrator: false,
+        },
+        hydratedAuthenticatedUser: {
+          // Additional user props expected to be returned from a user accounts API, providing
+          // additional user details beyond those present in the JWT.  This data is added into
+          // the user object if and when hydrateAuthenticatedUser is called.  See documentation
+          // for `hydrateAuthenticatedUser` for more details.
+        }
+      });
+    },
+  },
+  messages: [],
+  authService: MockAuthService,
+});
+
+subscribe(APP_AUTH_INITIALIZED, () => {
+  // This variable is now a MockAdapter from axios-mock-adapter, allowing onGet, onPost, etc.
+  // mocking.  This handler will be called prior to any further initialization.  See the
+  // &quot;Application Initialization&quot; phases in the README for call order details.
+  const mockAuthenticatedHttpClient = getAuthenticatedHttpClient();
+  // Mock calls here.
+});
+</code></pre>
+<p>In a test where you would like to mock out API requests - perhaps from a redux-thunk function -
+you could do the following to set up a MockAuthService for your test:</p>
+<pre class="prettyprint source"><code>import { getConfig } from '@edx/frontend-platform';
+import { configure, MockAuthService } from '@edx/frontend-platform/auth';
+
+const mockLoggingService = {
+  logInfo: jest.fn(),
+  logError: jest.fn(),
+};
+configure(MockAuthService, { config: getConfig(), loggingService: mockLoggingService });
+const mockAuthenticatedHttpClient = getAuthenticatedHttpClient();
+
+// Mock calls for your tests.  This configuration can be done in any sort of test setup.
+</code></pre>
+<p>NOTE: The login/logout methods related to redirecting currently maintain their real behaviors.  A
+subsequent update to this mock service could allow them to be configured/mocked via the
+constructor's config options.</p></div>
         
     
 </header>
@@ -39,223 +99,13 @@
     <div class="container-overview">
     
         
-            <div class="description"><h4>Import members from <strong>@edx/frontend-platform/auth</strong></h4>
-<p>Simplifies the process of making authenticated API requests to backend edX services by providing
-common authN/authZ client code that enables the login/logout flow and handles ensuring the
-presence of a valid <a href="https://github.com/edx/edx-platform/blob/master/openedx/core/djangoapps/oauth_dispatch/docs/decisions/0009-jwt-in-session-cookie.rst">JWT cookie</a>.</p>
-<p>The <code>initialize</code> function performs much of the auth configuration for you.  If, however, you're
-not using the <code>initialize</code> function, an authenticated API client can be created via:</p>
-<pre class="prettyprint source"><code>import {
-  configure,
-  fetchAuthenticatedUser,
-  getAuthenticatedHttpClient
-} from '@edx/frontend-platform/auth';
-import { getConfig } from '@edx/frontend-platform';
-import { getLoggingService } from '@edx/frontend-platform/logging';
 
-configure({
-  loggingService: getLoggingService(),
-  config: getConfig(),
-});
-
-const authenticatedUser = await fetchAuthenticatedUser(); // validates and decodes JWT token
-const authenticatedHttpClient = getAuthenticatedHttpClient();
-const response = await getAuthenticatedHttpClient().get(`https://example.com/api/user/data/${authenticatedUser.username}`); // fetching from an authenticated API using user data
-</code></pre>
-<p>As shown in this example, auth depends on the configuration document and logging.</p>
-<p>NOTE: The documentation for AxiosJwtAuthService is nearly the same as that for the top-level
-auth interface, except that it contains some Axios-specific details.</p></div>
-        
-
-        
-            
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
+    
+    <h2>Constructor</h2>
     
 
     
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_interface.js.html">auth/interface.js</a>, <a href="auth_interface.js.html#line1">line 1</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-    
-    </div>
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Classes</h3>
-
-        <dl>
-            <dt><a href="module-Auth.AxiosJwtAuthService.html">AxiosJwtAuthService</a></dt>
-            <dd></dd>
-        
-            <dt><a href="module-Auth.MockAuthService.html">MockAuthService</a></dt>
-            <dd></dd>
-        </dl>
-    
-
-    
-        <h3 class="subsection-title">Interfaces</h3>
-
-        <dl>
-            <dt><a href="module-Auth.AuthService.html">AuthService</a></dt>
-            <dd></dd>
-        
-            <dt><a href="module-Auth.HttpClient.html">HttpClient</a></dt>
-            <dd></dd>
-        
-            <dt><a href="module-Auth.UserData.html">UserData</a></dt>
-            <dd></dd>
-        </dl>
-    
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Members</h3>
-
-        
-            
-<h4 class="name" id="~AUTHENTICATED_USER_TOPIC"><span class="type-signature">(private, inner, constant) </span>AUTHENTICATED_USER_TOPIC<span class="type-signature"></span></h4>
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_interface.js.html">auth/interface.js</a>, <a href="auth_interface.js.html#line44">line 44</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-    
-
-    
-        <h3 class="subsection-title">Methods</h3>
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="~configure"><span class="type-signature">(inner) </span>configure<span class="signature">(AuthService, options)</span><span class="type-signature"> &rarr; {AuthService}</span></h4>
+    <h4 class="name" id="MockAuthService"><span class="type-signature"></span>new MockAuthService<span class="signature">(options)</span><span class="type-signature"></span></h4>
     
 
     
@@ -295,13 +145,97 @@ auth interface, except that it contains some Axios-specific details.</p></div>
 
         <tr>
             
-                <td class="name"><code>AuthService</code></td>
+                <td class="name"><code>options</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">class</span>
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>config</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>BASE_URL</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
 
 
             
@@ -318,13 +252,13 @@ auth interface, except that it contains some Axios-specific details.</p></div>
 
         <tr>
             
-                <td class="name"><code>options</code></td>
+                <td class="name"><code>LMS_BASE_URL</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">*</span>
+<span class="param-type">string</span>
 
 
             
@@ -335,6 +269,204 @@ auth interface, except that it contains some Axios-specific details.</p></div>
             
 
             <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>LOGIN_URL</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>LOGOUT_URL</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>REFRESH_ACCESS_TOKEN_ENDPOINT</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ACCESS_TOKEN_COOKIE_NAME</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>CSRF_TOKEN_API_PATH</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>hydratedAuthenticatedUser</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>authenticatedUser</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>loggingService</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>requires logError and logInfo methods</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
         </tr>
 
     
@@ -359,6 +491,13 @@ auth interface, except that it contains some Axios-specific details.</p></div>
     
 
     
+    <dt class="implements">Implements:</dt>
+    <dd class="implements"><ul>
+        
+            <li>AuthService</li>
+        
+    </ul></dd>
+    
 
     
 
@@ -375,7 +514,7 @@ auth interface, except that it contains some Axios-specific details.</p></div>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_interface.js.html">auth/interface.js</a>, <a href="auth_interface.js.html#line95">line 95</a>
+        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line118">line 118</a>
     </li></ul></dd>
     
 
@@ -400,28 +539,30 @@ auth interface, except that it contains some Axios-specific details.</p></div>
 
 
 
-<h5>Returns:</h5>
-
-        
 
 
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">AuthService</span>
 
 
-    </dd>
-</dl>
+
+    
+    </div>
 
     
 
+    
 
+    
 
+    
 
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
 
         
             
@@ -429,7 +570,7 @@ auth interface, except that it contains some Axios-specific details.</p></div>
     
 
     
-    <h4 class="name" id="~ensureAuthenticatedUser"><span class="type-signature">(async, inner) </span>ensureAuthenticatedUser<span class="signature">(redirectUrl<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise.&lt;UserData>}</span></h4>
+    <h4 class="name" id="ensureAuthenticatedUser"><span class="type-signature">(async) </span>ensureAuthenticatedUser<span class="signature">(redirectUrl<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise.&lt;UserData>}</span></h4>
     
 
     
@@ -437,8 +578,7 @@ auth interface, except that it contains some Axios-specific details.</p></div>
 
 
 <div class="description">
-    <p>Ensures a user is authenticated. It will redirect to login when not
-authenticated.</p>
+    <p>Ensures a user is authenticated. It will redirect to login when not authenticated.</p>
 </div>
 
 
@@ -552,7 +692,7 @@ authenticated.</p></td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_interface.js.html">auth/interface.js</a>, <a href="auth_interface.js.html#line226">line 226</a>
+        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line242">line 242</a>
     </li></ul></dd>
     
 
@@ -606,7 +746,7 @@ authenticated.</p></td>
     
 
     
-    <h4 class="name" id="~fetchAuthenticatedUser"><span class="type-signature">(async, inner) </span>fetchAuthenticatedUser<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;UserData>|Promise.&lt;null>}</span></h4>
+    <h4 class="name" id="fetchAuthenticatedUser"><span class="type-signature">(async) </span>fetchAuthenticatedUser<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;UserData>|Promise.&lt;null>}</span></h4>
     
 
     
@@ -614,8 +754,9 @@ authenticated.</p></td>
 
 
 <div class="description">
-    <p>Reads the authenticated user's access token. Resolves to null if the user is
-unauthenticated.</p>
+    <p>Returns the current authenticated user details, as supplied in the <code>authenticatedUser</code> field
+of the config options.  Resolves to null if the user is unauthenticated / the config option
+has not been set.</p>
 </div>
 
 
@@ -659,7 +800,7 @@ unauthenticated.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_interface.js.html">auth/interface.js</a>, <a href="auth_interface.js.html#line214">line 214</a>
+        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line231">line 231</a>
     </li></ul></dd>
     
 
@@ -721,7 +862,7 @@ logged in.</p>
     
 
     
-    <h4 class="name" id="~getAuthenticatedHttpClient"><span class="type-signature">(inner) </span>getAuthenticatedHttpClient<span class="signature">()</span><span class="type-signature"> &rarr; {HttpClient}</span></h4>
+    <h4 class="name" id="getAuthenticatedHttpClient"><span class="type-signature"></span>getAuthenticatedHttpClient<span class="signature">()</span><span class="type-signature"> &rarr; {HttpClient}</span></h4>
     
 
     
@@ -729,7 +870,8 @@ logged in.</p>
 
 
 <div class="description">
-    <p>Gets the authenticated HTTP client for the service.</p>
+    <p>Gets the authenticated HTTP client instance, which is an axios client wrapped in
+MockAdapter from axios-mock-adapter.</p>
 </div>
 
 
@@ -773,7 +915,7 @@ logged in.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_interface.js.html">auth/interface.js</a>, <a href="auth_interface.js.html#line127">line 127</a>
+        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line143">line 143</a>
     </li></ul></dd>
     
 
@@ -801,6 +943,10 @@ logged in.</p>
 <h5>Returns:</h5>
 
         
+<div class="param-desc">
+    <p>An HttpClient wrapped in MockAdapter.</p>
+</div>
+
 
 
 <dl>
@@ -827,7 +973,7 @@ logged in.</p>
     
 
     
-    <h4 class="name" id="~getAuthenticatedUser"><span class="type-signature">(inner) </span>getAuthenticatedUser<span class="signature">()</span><span class="type-signature"> &rarr; {UserData|null}</span></h4>
+    <h4 class="name" id="getAuthenticatedUser"><span class="type-signature"></span>getAuthenticatedUser<span class="signature">()</span><span class="type-signature"> &rarr; {UserData|null}</span></h4>
     
 
     
@@ -880,7 +1026,7 @@ user is anonymous, returns null.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_interface.js.html">auth/interface.js</a>, <a href="auth_interface.js.html#line192">line 192</a>
+        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line209">line 209</a>
     </li></ul></dd>
     
 
@@ -937,109 +1083,7 @@ user is anonymous, returns null.</p>
     
 
     
-    <h4 class="name" id="~getAuthService"><span class="type-signature">(inner) </span>getAuthService<span class="signature">()</span><span class="type-signature"> &rarr; {AuthService}</span></h4>
-    
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_interface.js.html">auth/interface.js</a>, <a href="auth_interface.js.html#line107">line 107</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">AuthService</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="~getHttpClient"><span class="type-signature">(inner) </span>getHttpClient<span class="signature">()</span><span class="type-signature"> &rarr; {HttpClient}</span></h4>
+    <h4 class="name" id="getHttpClient"><span class="type-signature"></span>getHttpClient<span class="signature">()</span><span class="type-signature"> &rarr; {HttpClient}</span></h4>
     
 
     
@@ -1047,7 +1091,8 @@ user is anonymous, returns null.</p>
 
 
 <div class="description">
-    <p>Gets the unauthenticated HTTP client for the service.</p>
+    <p>Gets the unauthenticated HTTP client instance, which is an axios client wrapped in
+MockAdapter from axios-mock-adapter.</p>
 </div>
 
 
@@ -1091,7 +1136,7 @@ user is anonymous, returns null.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_interface.js.html">auth/interface.js</a>, <a href="auth_interface.js.html#line136">line 136</a>
+        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line153">line 153</a>
     </li></ul></dd>
     
 
@@ -1119,6 +1164,10 @@ user is anonymous, returns null.</p>
 <h5>Returns:</h5>
 
         
+<div class="param-desc">
+    <p>An HttpClient wrapped in MockAdapter.</p>
+</div>
+
 
 
 <dl>
@@ -1145,7 +1194,7 @@ user is anonymous, returns null.</p>
     
 
     
-    <h4 class="name" id="~getLoginRedirectUrl"><span class="type-signature">(inner) </span>getLoginRedirectUrl<span class="signature">(redirectUrl)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="getLoginRedirectUrl"><span class="type-signature"></span>getLoginRedirectUrl<span class="signature">(redirectUrl)</span><span class="type-signature"></span></h4>
     
 
     
@@ -1249,7 +1298,7 @@ console.log(url); // http://localhost/login?next=http%3A%2F%2Flocalhost%2Fmypage
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_interface.js.html">auth/interface.js</a>, <a href="auth_interface.js.html#line150">line 150</a>
+        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line167">line 167</a>
     </li></ul></dd>
     
 
@@ -1285,7 +1334,7 @@ console.log(url); // http://localhost/login?next=http%3A%2F%2Flocalhost%2Fmypage
     
 
     
-    <h4 class="name" id="~getLogoutRedirectUrl"><span class="type-signature">(inner) </span>getLogoutRedirectUrl<span class="signature">(redirectUrl)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="getLogoutRedirectUrl"><span class="type-signature"></span>getLogoutRedirectUrl<span class="signature">(redirectUrl)</span><span class="type-signature"></span></h4>
     
 
     
@@ -1389,7 +1438,7 @@ console.log(url); // http://localhost/logout?next=http%3A%2F%2Flocalhost%2Fmypag
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_interface.js.html">auth/interface.js</a>, <a href="auth_interface.js.html#line173">line 173</a>
+        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line190">line 190</a>
     </li></ul></dd>
     
 
@@ -1425,7 +1474,7 @@ console.log(url); // http://localhost/logout?next=http%3A%2F%2Flocalhost%2Fmypag
     
 
     
-    <h4 class="name" id="~hydrateAuthenticatedUser"><span class="type-signature">(async, inner) </span>hydrateAuthenticatedUser<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;null>}</span></h4>
+    <h4 class="name" id="hydrateAuthenticatedUser"><span class="type-signature">(async) </span>hydrateAuthenticatedUser<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;null>}</span></h4>
     
 
     
@@ -1433,8 +1482,9 @@ console.log(url); // http://localhost/logout?next=http%3A%2F%2Flocalhost%2Fmypag
 
 
 <div class="description">
-    <p>Fetches additional user account information for the authenticated user and merges it into the
-existing authenticatedUser object, available via getAuthenticatedUser().</p>
+    <p>Adds the user data supplied in the <code>hydratedAuthenticatedUser</code> config option into the object
+returned by <code>getAuthenticatedUser</code>.  This emulates the behavior of a real auth service which
+would make a request to fetch this data prior to merging it in.</p>
 <pre class="prettyprint source"><code> console.log(authenticatedUser); // Will be sparse and only contain basic information.
  await hydrateAuthenticatedUser()
  const authenticatedUser = getAuthenticatedUser();
@@ -1483,7 +1533,7 @@ existing authenticatedUser object, available via getAuthenticatedUser().</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_interface.js.html">auth/interface.js</a>, <a href="auth_interface.js.html#line243">line 243</a>
+        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line267">line 267</a>
     </li></ul></dd>
     
 
@@ -1537,7 +1587,7 @@ existing authenticatedUser object, available via getAuthenticatedUser().</p>
     
 
     
-    <h4 class="name" id="~redirectToLogin"><span class="type-signature">(inner) </span>redirectToLogin<span class="signature">(redirectUrl)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="redirectToLogin"><span class="type-signature"></span>redirectToLogin<span class="signature">(redirectUrl)</span><span class="type-signature"></span></h4>
     
 
     
@@ -1638,7 +1688,7 @@ existing authenticatedUser object, available via getAuthenticatedUser().</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_interface.js.html">auth/interface.js</a>, <a href="auth_interface.js.html#line159">line 159</a>
+        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line176">line 176</a>
     </li></ul></dd>
     
 
@@ -1674,7 +1724,7 @@ existing authenticatedUser object, available via getAuthenticatedUser().</p>
     
 
     
-    <h4 class="name" id="~redirectToLogout"><span class="type-signature">(inner) </span>redirectToLogout<span class="signature">(redirectUrl)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="redirectToLogout"><span class="type-signature"></span>redirectToLogout<span class="signature">(redirectUrl)</span><span class="type-signature"></span></h4>
     
 
     
@@ -1775,7 +1825,7 @@ existing authenticatedUser object, available via getAuthenticatedUser().</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_interface.js.html">auth/interface.js</a>, <a href="auth_interface.js.html#line182">line 182</a>
+        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line199">line 199</a>
     </li></ul></dd>
     
 
@@ -1811,91 +1861,7 @@ existing authenticatedUser object, available via getAuthenticatedUser().</p>
     
 
     
-    <h4 class="name" id="~resetAuthService"><span class="type-signature">(inner) </span>resetAuthService<span class="signature">()</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_interface.js.html">auth/interface.js</a>, <a href="auth_interface.js.html#line118">line 118</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="~setAuthenticatedUser"><span class="type-signature">(inner) </span>setAuthenticatedUser<span class="signature">(authUser)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="setAuthenticatedUser"><span class="type-signature"></span>setAuthenticatedUser<span class="signature">(authUser)</span><span class="type-signature"></span></h4>
     
 
     
@@ -1996,7 +1962,7 @@ existing authenticatedUser object, available via getAuthenticatedUser().</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_interface.js.html">auth/interface.js</a>, <a href="auth_interface.js.html#line202">line 202</a>
+        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line219">line 219</a>
     </li></ul></dd>
     
 
@@ -2036,108 +2002,6 @@ existing authenticatedUser object, available via getAuthenticatedUser().</p>
 
     
 
-    
-        <h3 class="subsection-title">Events</h3>
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="~event:AUTHENTICATED_USER_CHANGED">AUTHENTICATED_USER_CHANGED</h4>
-    
-
-    
-
-
-
-<div class="description">
-    <p>Published when the authenticated user data changes.  This can happen when the authentication
-service determines that the user is authenticated or anonymous, as well as when we fetch
-additional user account data if the <code>hydrateAuthenticatedUser</code> flag has been set in the
-<code>initialize</code> function.</p>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_interface.js.html">auth/interface.js</a>, <a href="auth_interface.js.html#line55">line 55</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-    <dt class="tag-see">See:</dt>
-    <dd class="tag-see">
-        <ul>
-            <li>{@link module:Initialization~initialize}</li>
-        </ul>
-    </dd>
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
     
 </article>
 
