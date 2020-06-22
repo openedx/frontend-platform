@@ -35,6 +35,7 @@
     "@commitlint/config-angular": "8.2.0",
     "@edx/frontend-build": "2.0.6",
     "@edx/paragon": "7.1.5",
+    "axios-mock-adapter": "1.17.0",
     "babel-polyfill": "6.26.0",
     "codecov": "3.6.5",
     "enzyme": "3.10.0",
@@ -52,7 +53,6 @@
   "dependencies": {
     "@cospired/i18n-iso-languages": "2.1.2",
     "axios": "0.18.1",
-    "axios-mock-adapter": "1.17.0",
     "form-urlencoded": "4.1.4",
     "glob": "7.1.6",
     "history": "4.10.1",

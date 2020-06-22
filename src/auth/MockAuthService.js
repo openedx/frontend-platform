@@ -1,5 +1,4 @@
 import axios from 'axios';
-import MockAdapter from 'axios-mock-adapter';
 import PropTypes from 'prop-types';
 import { ensureDefinedConfig } from '../utils';
 
@@ -31,9 +30,10 @@ const optionsPropTypes = {
 };
 
 /**
- * The MockAuthService class uses axios-mock-adapter to wrap it's HttpClients so that they can be
- * mocked for development and testing.  In an application, it could be used to temporarily override
- * the "real" auth service:
+ * The MockAuthService class mocks authenticated user-fetching logic and allows for manually
+ * setting user data.  It is compatible with axios-mock-adapter to wrap its HttpClients so that
+ * they can be mocked for development and testing.  In an application, it could be used to
+ * temporarily override the "real" auth service:
  *
  * ```
  * import {
@@ -43,6 +43,7 @@ const optionsPropTypes = {
  *   mergeConfig,
  * } from '@edx/frontend-platform';
  * import { MockAuthService } from '@edx/frontend-platform/auth';
+ * import MockAdapter from 'axios-mock-adapter';
  *
  * initialize({
  *   handlers: {
@@ -71,8 +72,9 @@ const optionsPropTypes = {
  *   // This variable is now a MockAdapter from axios-mock-adapter, allowing onGet, onPost, etc.
  *   // mocking.  This handler will be called prior to any further initialization.  See the
  *   // "Application Initialization" phases in the README for call order details.
- *   const mockAuthenticatedHttpClient = getAuthenticatedHttpClient();
+ *   const mockAdapter = new MockAdapter(getAuthenticatedHttpClient());
  *   // Mock calls here.
+ *   mockAdapter.onGet(...);
  * });
  * ```
  *
@@ -80,17 +82,26 @@ const optionsPropTypes = {
  * you could do the following to set up a MockAuthService for your test:
  *
  * ```
- * import { getConfig } from '@edx/frontend-platform';
+ * import { getConfig, mergeConfig } from '@edx/frontend-platform';
  * import { configure, MockAuthService } from '@edx/frontend-platform/auth';
+ * import MockAdapter from 'axios-mock-adapter';
  *
  * const mockLoggingService = {
  *   logInfo: jest.fn(),
  *   logError: jest.fn(),
  * };
+ * mergeConfig({
+ *   authenticatedUser: {
+ *     userId: 'abc123',
+ *     username: 'Mock User',
+ *     roles: [],
+ *     administrator: false,
+ *   },
+ * });
  * configure(MockAuthService, { config: getConfig(), loggingService: mockLoggingService });
- * const mockAuthenticatedHttpClient = getAuthenticatedHttpClient();
- *
+ * const mockAdapter = new MockAdapter(getAuthenticatedHttpClient());
  * // Mock calls for your tests.  This configuration can be done in any sort of test setup.
+ * mockAdapter.onGet(...);
  * ```
  *
  * NOTE: The login/logout methods related to redirecting currently maintain their real behaviors.  A
@@ -130,8 +141,8 @@ class MockAuthService {
     this.hydratedAuthenticatedUser = this.config.hydratedAuthenticatedUser ?
       this.config.hydratedAuthenticatedUser : {};
 
-    this.authenticatedHttpClient = new MockAdapter(axios.create());
-    this.httpClient = new MockAdapter(axios.create());
+    this.authenticatedHttpClient = axios.create();
+    this.httpClient = axios.create();
   }
 
   /**
@@ -256,10 +267,10 @@ class MockAuthService {
    * would make a request to fetch this data prior to merging it in.
    *
    * ```
-   *  console.log(authenticatedUser); // Will be sparse and only contain basic information.
-   *  await hydrateAuthenticatedUser()
-   *  const authenticatedUser = getAuthenticatedUser();
-   *  console.log(authenticatedUser); // Will contain additional user information
+   * console.log(authenticatedUser); // Will be sparse and only contain basic information.
+   * await hydrateAuthenticatedUser()
+   * const authenticatedUser = getAuthenticatedUser();
+   * console.log(authenticatedUser); // Will contain additional user information
    * ```
    *
    * @returns {Promise<null>}
