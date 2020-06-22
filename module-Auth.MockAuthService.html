@@ -32,9 +32,10 @@
         <h2><span class="attribs"><span class="type-signature"></span></span>
             <span class="ancestors"><a href="module-Auth.html">Auth</a>~</span>MockAuthService<span class="signature">(options)</span><span class="type-signature"></span></h2>
         
-            <div class="class-description"><p>The MockAuthService class uses axios-mock-adapter to wrap it's HttpClients so that they can be
-mocked for development and testing.  In an application, it could be used to temporarily override
-the &quot;real&quot; auth service:</p>
+            <div class="class-description"><p>The MockAuthService class mocks authenticated user-fetching logic and allows for manually
+setting user data.  It is compatible with axios-mock-adapter to wrap its HttpClients so that
+they can be mocked for development and testing.  In an application, it could be used to
+temporarily override the &quot;real&quot; auth service:</p>
 <pre class="prettyprint source"><code>import {
   initialize,
   APP_AUTH_INITIALIZED,
@@ -42,6 +43,7 @@ the &quot;real&quot; auth service:</p>
   mergeConfig,
 } from '@edx/frontend-platform';
 import { MockAuthService } from '@edx/frontend-platform/auth';
+import MockAdapter from 'axios-mock-adapter';
 
 initialize({
   handlers: {
@@ -70,23 +72,33 @@ subscribe(APP_AUTH_INITIALIZED, () => {
   // This variable is now a MockAdapter from axios-mock-adapter, allowing onGet, onPost, etc.
   // mocking.  This handler will be called prior to any further initialization.  See the
   // &quot;Application Initialization&quot; phases in the README for call order details.
-  const mockAuthenticatedHttpClient = getAuthenticatedHttpClient();
+  const mockAdapter = new MockAdapter(getAuthenticatedHttpClient());
   // Mock calls here.
+  mockAdapter.onGet(...);
 });
 </code></pre>
 <p>In a test where you would like to mock out API requests - perhaps from a redux-thunk function -
 you could do the following to set up a MockAuthService for your test:</p>
-<pre class="prettyprint source"><code>import { getConfig } from '@edx/frontend-platform';
+<pre class="prettyprint source"><code>import { getConfig, mergeConfig } from '@edx/frontend-platform';
 import { configure, MockAuthService } from '@edx/frontend-platform/auth';
+import MockAdapter from 'axios-mock-adapter';
 
 const mockLoggingService = {
   logInfo: jest.fn(),
   logError: jest.fn(),
 };
+mergeConfig({
+  authenticatedUser: {
+    userId: 'abc123',
+    username: 'Mock User',
+    roles: [],
+    administrator: false,
+  },
+});
 configure(MockAuthService, { config: getConfig(), loggingService: mockLoggingService });
-const mockAuthenticatedHttpClient = getAuthenticatedHttpClient();
-
+const mockAdapter = new MockAdapter(getAuthenticatedHttpClient());
 // Mock calls for your tests.  This configuration can be done in any sort of test setup.
+mockAdapter.onGet(...);
 </code></pre>
 <p>NOTE: The login/logout methods related to redirecting currently maintain their real behaviors.  A
 subsequent update to this mock service could allow them to be configured/mocked via the
@@ -514,7 +526,7 @@ constructor's config options.</p></div>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line118">line 118</a>
+        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line129">line 129</a>
     </li></ul></dd>
     
 
@@ -692,7 +704,7 @@ authenticated.</p></td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line242">line 242</a>
+        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line253">line 253</a>
     </li></ul></dd>
     
 
@@ -800,7 +812,7 @@ has not been set.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line231">line 231</a>
+        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line242">line 242</a>
     </li></ul></dd>
     
 
@@ -915,7 +927,7 @@ MockAdapter from axios-mock-adapter.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line143">line 143</a>
+        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line154">line 154</a>
     </li></ul></dd>
     
 
@@ -1026,7 +1038,7 @@ user is anonymous, returns null.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line209">line 209</a>
+        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line220">line 220</a>
     </li></ul></dd>
     
 
@@ -1136,7 +1148,7 @@ MockAdapter from axios-mock-adapter.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line153">line 153</a>
+        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line164">line 164</a>
     </li></ul></dd>
     
 
@@ -1298,7 +1310,7 @@ console.log(url); // http://localhost/login?next=http%3A%2F%2Flocalhost%2Fmypage
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line167">line 167</a>
+        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line178">line 178</a>
     </li></ul></dd>
     
 
@@ -1438,7 +1450,7 @@ console.log(url); // http://localhost/logout?next=http%3A%2F%2Flocalhost%2Fmypag
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line190">line 190</a>
+        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line201">line 201</a>
     </li></ul></dd>
     
 
@@ -1485,10 +1497,10 @@ console.log(url); // http://localhost/logout?next=http%3A%2F%2Flocalhost%2Fmypag
     <p>Adds the user data supplied in the <code>hydratedAuthenticatedUser</code> config option into the object
 returned by <code>getAuthenticatedUser</code>.  This emulates the behavior of a real auth service which
 would make a request to fetch this data prior to merging it in.</p>
-<pre class="prettyprint source"><code> console.log(authenticatedUser); // Will be sparse and only contain basic information.
- await hydrateAuthenticatedUser()
- const authenticatedUser = getAuthenticatedUser();
- console.log(authenticatedUser); // Will contain additional user information
+<pre class="prettyprint source"><code>console.log(authenticatedUser); // Will be sparse and only contain basic information.
+await hydrateAuthenticatedUser()
+const authenticatedUser = getAuthenticatedUser();
+console.log(authenticatedUser); // Will contain additional user information
 </code></pre>
 </div>
 
@@ -1533,7 +1545,7 @@ would make a request to fetch this data prior to merging it in.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line267">line 267</a>
+        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line278">line 278</a>
     </li></ul></dd>
     
 
@@ -1688,7 +1700,7 @@ would make a request to fetch this data prior to merging it in.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line176">line 176</a>
+        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line187">line 187</a>
     </li></ul></dd>
     
 
@@ -1825,7 +1837,7 @@ would make a request to fetch this data prior to merging it in.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line199">line 199</a>
+        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line210">line 210</a>
     </li></ul></dd>
     
 
@@ -1962,7 +1974,7 @@ would make a request to fetch this data prior to merging it in.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line219">line 219</a>
+        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line230">line 230</a>
     </li></ul></dd>
     
 
@@ -2082,7 +2094,7 @@ would make a request to fetch this data prior to merging it in.</p>
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Tue Jun 09 2020 15:46:50 GMT+0000 (Coordinated Universal Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Mon Jun 22 2020 15:16:15 GMT+0000 (Coordinated Universal Time)
 </footer>
 
 <script> prettyPrint(); </script>
