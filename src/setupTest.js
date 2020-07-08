@@ -19,6 +19,7 @@ process.env.LANGUAGE_PREFERENCE_COOKIE_NAME = 'openedx-language-preference';
 process.env.LMS_BASE_URL = 'http://localhost:18000';
 process.env.LOGIN_URL = 'http://localhost:18000/login';
 process.env.LOGOUT_URL = 'http://localhost:18000/logout';
+process.env.STUDIO_BASE_URL = 'http://localhost:18010';
 process.env.MARKETING_SITE_BASE_URL = 'http://localhost:18000';
 process.env.ORDER_HISTORY_URL = 'localhost:1996/orders';
 process.env.REFRESH_ACCESS_TOKEN_ENDPOINT = 'http://localhost:18000/login_refresh';

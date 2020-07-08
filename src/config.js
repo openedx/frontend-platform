@@ -45,6 +45,7 @@ let config = {
   LMS_BASE_URL: process.env.LMS_BASE_URL,
   LOGIN_URL: process.env.LOGIN_URL,
   LOGOUT_URL: process.env.LOGOUT_URL,
+  STUDIO_BASE_URL: process.env.STUDIO_BASE_URL,
   MARKETING_SITE_BASE_URL: process.env.MARKETING_SITE_BASE_URL,
   ORDER_HISTORY_URL: process.env.ORDER_HISTORY_URL,
   REFRESH_ACCESS_TOKEN_ENDPOINT: process.env.REFRESH_ACCESS_TOKEN_ENDPOINT,
@@ -164,6 +165,7 @@ export function ensureConfig(keys, requester = 'unspecified application code') {
  * @property {string} LMS_BASE_URL
  * @property {string} LOGIN_URL
  * @property {string} LOGOUT_URL
+ * @property {string} STUDIO_BASE_URL
  * @property {string} MARKETING_SITE_BASE_URL
  * @property {string} ORDER_HISTORY_URL
  * @property {string} REFRESH_ACCESS_TOKEN_ENDPOINT
