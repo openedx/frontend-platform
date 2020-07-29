@@ -62,7 +62,7 @@ export default function AppProvider({ store, children }) {
       >
         <IntlProvider locale={locale} messages={getMessages()}>
           <OptionalReduxProvider store={store}>
-            <Router history={history}>
+            <Router history={history} basename={getConfig().BASENAME}>
               <React.Fragment>{children}</React.Fragment>
             </Router>
           </OptionalReduxProvider>
