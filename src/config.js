@@ -24,17 +24,15 @@
  * @module Config
  */
 
-import { APP_CONFIG_INITIALIZED } from './initialize';
+import { APP_CONFIG_INITIALIZED, CONFIG_CHANGED } from './constants';
 import { publish, subscribe } from './pubSub';
 import { ensureDefinedConfig } from './utils';
-
-export const CONFIG_TOPIC = 'CONFIG';
-export const CONFIG_CHANGED = `${CONFIG_TOPIC}.CHANGED`;
 
 const ENVIRONMENT = process.env.NODE_ENV;
 let config = {
   ACCESS_TOKEN_COOKIE_NAME: process.env.ACCESS_TOKEN_COOKIE_NAME,
   BASE_URL: process.env.BASE_URL,
+  PUBLIC_PATH: process.env.PUBLIC_PATH || '/',
   CREDENTIALS_BASE_URL: process.env.CREDENTIALS_BASE_URL,
   CSRF_TOKEN_API_PATH: process.env.CSRF_TOKEN_API_PATH,
   DISCOVERY_API_BASE_URL: process.env.DISCOVERY_API_BASE_URL,
