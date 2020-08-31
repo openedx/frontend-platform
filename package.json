@@ -34,7 +34,7 @@
     "@commitlint/cli": "8.2.0",
     "@commitlint/config-angular": "8.2.0",
     "@edx/frontend-build": "2.0.6",
-    "@edx/paragon": "7.1.5",
+    "@edx/paragon": "10.1.1",
     "axios-mock-adapter": "1.17.0",
     "babel-polyfill": "6.26.0",
     "codecov": "3.7.2",
@@ -67,7 +67,7 @@
     "universal-cookie": "4.0.3"
   },
   "peerDependencies": {
-    "@edx/paragon": "^7.1.3",
+    "@edx/paragon": "^7.1.3 || ^10.0.0",
     "prop-types": "^15.7.2",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
