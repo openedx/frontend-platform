@@ -41,7 +41,7 @@
     "enzyme": "3.10.0",
     "enzyme-adapter-react-16": "1.15.4",
     "husky": "3.0.9",
-    "jsdoc": "3.6.5",
+    "jsdoc": "3.6.6",
     "nodemon": "2.0.4",
     "prop-types": "15.7.2",
     "react": "16.11.0",
