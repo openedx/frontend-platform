@@ -64,7 +64,7 @@
     "lodash.snakecase": "4.1.1",
     "pubsub-js": "1.7.0",
     "react-intl": "2.9.0",
-    "universal-cookie": "4.0.3"
+    "universal-cookie": "4.0.4"
   },
   "peerDependencies": {
     "@edx/paragon": "^7.1.3",
