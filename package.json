@@ -39,7 +39,7 @@
     "babel-polyfill": "6.26.0",
     "codecov": "3.7.2",
     "enzyme": "3.10.0",
-    "enzyme-adapter-react-16": "1.15.4",
+    "enzyme-adapter-react-16": "1.15.5",
     "husky": "3.0.9",
     "jsdoc": "3.6.6",
     "nodemon": "2.0.4",
