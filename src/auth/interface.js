@@ -238,10 +238,11 @@ export async function ensureAuthenticatedUser(redirectUrl) {
  *  console.log(authenticatedUser); // Will contain additional user information
  * ```
  *
- * @returns {Promise<null>}
+ * @emits AUTHENTICATED_USER_CHANGED
  */
 export async function hydrateAuthenticatedUser() {
-  return service.hydrateAuthenticatedUser();
+  await service.hydrateAuthenticatedUser();
+  publish(AUTHENTICATED_USER_CHANGED);
 }
 
 

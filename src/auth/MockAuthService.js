@@ -225,7 +225,6 @@ class MockAuthService {
    * Sets the authenticated user to the provided value.
    *
    * @param {UserData} authUser
-   * @emits AUTHENTICATED_USER_CHANGED
    */
   setAuthenticatedUser(authUser) {
     this.authenticatedUser = authUser;
