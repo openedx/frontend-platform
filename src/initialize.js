@@ -45,7 +45,7 @@
  * @module Initialization
  */
 
-import { createBrowserHistory } from 'history';
+import { createBrowserHistory, createMemoryHistory } from 'history';
 import {
   publish,
 } from './pubSub';
@@ -126,7 +126,7 @@ export const APP_INIT_ERROR = `${APP_TOPIC}.INIT_ERROR`;
  * environments where browser history may be inaccessible due to `window` being undefined, this falls back to
  * memory history.
  */
-export var history = (typeof window !== 'undefined') ? createBrowserHistory() : createMemoryHistory();
+export const history = (typeof window !== 'undefined') ? createBrowserHistory() : createMemoryHistory();
 
 /**
  * The default handler for the initialization lifecycle's `initError` phase.  Logs the error to the
