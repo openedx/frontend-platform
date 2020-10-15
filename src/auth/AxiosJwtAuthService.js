@@ -7,6 +7,7 @@ import createCsrfTokenProviderInterceptor from './interceptors/createCsrfTokenPr
 import createProcessAxiosRequestErrorInterceptor from './interceptors/createProcessAxiosRequestErrorInterceptor';
 import AxiosJwtTokenService from './AxiosJwtTokenService';
 import AxiosCsrfTokenService from './AxiosCsrfTokenService';
+import configureCache from './LocalForageCache';
 
 const optionsPropTypes = {
   config: PropTypes.shape({
@@ -44,6 +45,8 @@ class AxiosJwtAuthService {
   constructor(options) {
     this.authenticatedHttpClient = null;
     this.httpClient = null;
+    this.cachedAuthenticatedHttpClient = null;
+    this.cachedHttpClient = null;
     this.authenticatedUser = null;
 
     ensureDefinedConfig(options, 'AuthService');
@@ -59,24 +62,48 @@ class AxiosJwtAuthService {
     this.csrfTokenService = new AxiosCsrfTokenService(this.config.CSRF_TOKEN_API_PATH);
     this.authenticatedHttpClient = this.addAuthenticationToHttpClient(axios.create());
     this.httpClient = axios.create();
+    configureCache()
+      .then((cachedAxiosClient) => {
+        this.cachedAuthenticatedHttpClient = this.addAuthenticationToHttpClient(cachedAxiosClient);
+        this.cachedHttpClient = cachedAxiosClient;
+      })
+      .catch((e) => {
+        // fallback to non-cached HTTP clients and log error
+        this.cachedAuthenticatedHttpClient = this.authenticatedHttpClient;
+        this.cachedHttpClient = this.httpClient;
+        logFrontendAuthError(this.loggingService, `configureCache failed with error: ${e.message}`);
+      });
   }
 
   /**
    * Gets the authenticated HTTP client for the service.  This is an axios instance.
    *
+   * @param {Object} [options] Optional options for how the HTTP client should be configured.
+   * @param {boolean} [options.useCache] Whether to use front end caching for all requests made
+   * with the returned client.
+   *
    * @returns {HttpClient} A configured axios http client which can be used for authenticated
    * requests.
    */
-  getAuthenticatedHttpClient() {
+  getAuthenticatedHttpClient(options = {}) {
+    if (options.useCache) {
+      return this.cachedAuthenticatedHttpClient;
+    }
     return this.authenticatedHttpClient;
   }
 
   /**
    * Gets the unauthenticated HTTP client for the service.  This is an axios instance.
    *
+   * @param {Object} [options] Optional options for how the HTTP client should be configured.
+   * @param {boolean} [options.useCache] Whether to use front end caching for all requests made
+   * with the returned client.
    * @returns {HttpClient} A configured axios http client.
    */
-  getHttpClient() {
+  getHttpClient(options = {}) {
+    if (options.useCache) {
+      return this.cachedHttpClient;
+    }
     return this.httpClient;
   }
 
