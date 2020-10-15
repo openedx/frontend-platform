@@ -120,12 +120,13 @@ export const APP_READY = `${APP_TOPIC}.READY`;
 export const APP_INIT_ERROR = `${APP_TOPIC}.INIT_ERROR`;
 
 /**
- * A browser history object created by the [history](https://github.com/ReactTraining/history)
+ * A browser history or memory history object created by the [history](https://github.com/ReactTraining/history)
  * package.  Applications are encouraged to use this history object, rather than creating their own,
- * as behavior may be undefined when managing history via multiple mechanisms/instances.
- *
+ * as behavior may be undefined when managing history via multiple mechanisms/instances. Note that in
+ * environments where browser history may be inaccessible due to `window` being undefined, this falls back to
+ * memory history.
  */
-export const history = createBrowserHistory();
+export var history = (typeof window !== 'undefined') ? createBrowserHistory() : createMemoryHistory();
 
 /**
  * The default handler for the initialization lifecycle's `initError` phase.  Logs the error to the
