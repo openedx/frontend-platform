@@ -122,9 +122,9 @@ export const APP_INIT_ERROR = `${APP_TOPIC}.INIT_ERROR`;
 /**
  * A browser history or memory history object created by the [history](https://github.com/ReactTraining/history)
  * package.  Applications are encouraged to use this history object, rather than creating their own,
- * as behavior may be undefined when managing history via multiple mechanisms/instances. Note that in
- * environments where browser history may be inaccessible due to `window` being undefined, this falls back to
- * memory history.
+ * as behavior may be undefined when managing history via multiple mechanisms/instances. Note that
+ * in environments where browser history may be inaccessible due to `window` being undefined, this
+ * falls back to memory history.
  */
 export const history = (typeof window !== 'undefined') ? createBrowserHistory() : createMemoryHistory();
 
@@ -186,7 +186,7 @@ export async function analytics() {
 }
 
 function applyOverrideHandlers(overrides) {
-  const noOp = async () => {};
+  const noOp = async () => { };
   return {
     pubSub: noOp,
     config: noOp,
