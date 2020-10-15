@@ -7,6 +7,7 @@ import createCsrfTokenProviderInterceptor from './interceptors/createCsrfTokenPr
 import createProcessAxiosRequestErrorInterceptor from './interceptors/createProcessAxiosRequestErrorInterceptor';
 import AxiosJwtTokenService from './AxiosJwtTokenService';
 import AxiosCsrfTokenService from './AxiosCsrfTokenService';
+import configureCache from './LocalForageCache';
 
 const optionsPropTypes = {
   config: PropTypes.shape({
@@ -44,6 +45,8 @@ class AxiosJwtAuthService {
   constructor(options) {
     this.authenticatedHttpClient = null;
     this.httpClient = null;
+    this.cachedAuthenticatedHttpClient = null;
+    this.cachedHttpClient = null;
     this.authenticatedUser = null;
 
     ensureDefinedConfig(options, 'AuthService');
@@ -59,25 +62,33 @@ class AxiosJwtAuthService {
     this.csrfTokenService = new AxiosCsrfTokenService(this.config.CSRF_TOKEN_API_PATH);
     this.authenticatedHttpClient = this.addAuthenticationToHttpClient(axios.create());
     this.httpClient = axios.create();
+    configureCache().then((cachedAxiosClient) => {
+      this.cachedAuthenticatedHttpClient = this.addAuthenticationToHttpClient(cachedAxiosClient);
+      this.cachedHttpClient = cachedAxiosClient;
+    });
   }
 
   /**
    * Gets the authenticated HTTP client for the service.  This is an axios instance.
    *
+   * @param {boolean} useCache Whether to use front end caching for all requests made with the returned client
+   *
    * @returns {HttpClient} A configured axios http client which can be used for authenticated
    * requests.
    */
-  getAuthenticatedHttpClient() {
-    return this.authenticatedHttpClient;
+  getAuthenticatedHttpClient(useCache = false) {
+    return useCache ? this.cachedAuthenticatedHttpClient : this.authenticatedHttpClient;
   }
 
   /**
    * Gets the unauthenticated HTTP client for the service.  This is an axios instance.
    *
+   * @param {boolean} useCache Whether to use front end caching for all requests made with the returned client
+   *
    * @returns {HttpClient} A configured axios http client.
    */
-  getHttpClient() {
-    return this.httpClient;
+  getHttpClient(useCache = false) {
+    return useCache ? this.cachedHttpClient : this.httpClient;
   }
 
   /**

@@ -122,19 +122,23 @@ export function resetAuthService() {
 /**
  * Gets the authenticated HTTP client for the service.
  *
+ * @param {boolean} useCache Whether to use front end caching for all requests made with the returned client
+ *
  * @returns {HttpClient}
  */
-export function getAuthenticatedHttpClient() {
-  return service.getAuthenticatedHttpClient();
+export function getAuthenticatedHttpClient(useCache = false) {
+  return service.getAuthenticatedHttpClient(useCache);
 }
 
 /**
  * Gets the unauthenticated HTTP client for the service.
  *
+ * @param {boolean} useCache Whether to use front end caching for all requests made with the returned client
+ *
  * @returns {HttpClient}
  */
-export function getHttpClient() {
-  return service.getHttpClient();
+export function getHttpClient(useCache = false) {
+  return service.getHttpClient(useCache);
 }
 
 /**

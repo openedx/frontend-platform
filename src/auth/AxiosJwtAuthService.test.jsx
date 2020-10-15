@@ -82,13 +82,13 @@ global.location = { ...global.location, assign: jest.fn() };
 
 const mockCookies = new Cookies();
 
-let service = null;
 let accessTokenAxios = null;
 let csrfTokensAxios = null;
 let axiosMock = null;
 let accessTokenAxiosMock = null;
 let csrfTokensAxiosMock = null;
 let client = null;
+let cachedClient = null;
 
 // Helpers
 const setJwtCookieTo = (jwtCookieValue) => {
@@ -159,9 +159,9 @@ const expectRequestToHaveCsrfToken = (request) => {
 };
 
 const { location } = global;
+const service = new AxiosJwtAuthService(authOptions);
 
 beforeEach(() => {
-  service = new AxiosJwtAuthService(authOptions);
   accessTokenAxios = service.getJwtTokenService().getHttpClient();
   csrfTokensAxios = service.getCsrfTokenService().getHttpClient();
   // This sets the mock adapter on the default instance
@@ -170,6 +170,7 @@ beforeEach(() => {
   csrfTokensAxiosMock = new MockAdapter(csrfTokensAxios);
 
   client = service.getAuthenticatedHttpClient();
+  cachedClient = service.getAuthenticatedHttpClient(true);
 
   service.setAuthenticatedUser(null);
   axiosMock.reset();
@@ -205,7 +206,6 @@ describe('getAuthenticatedHttpClient', () => {
   });
 
   afterAll(() => {
-    service = new AxiosJwtAuthService(authOptions);
     console.error.mockRestore();
   });
 
@@ -213,6 +213,22 @@ describe('getAuthenticatedHttpClient', () => {
     const client1 = service.getAuthenticatedHttpClient();
     const client2 = service.getAuthenticatedHttpClient();
     expect(client2).toBe(client1);
+  });
+
+  it('returns a cached singleton', () => {
+    const client1 = service.getAuthenticatedHttpClient(true);
+    const client2 = service.getAuthenticatedHttpClient(true);
+    expect(client2).toBe(client1);
+    expect(client1).not.toBeNull();
+    expect(client2).not.toBeNull();
+  });
+
+  it('returns a different singleton between the cached and non cached versions', () => {
+    const client1 = service.getAuthenticatedHttpClient(true);
+    const client2 = service.getAuthenticatedHttpClient();
+    expect(client2).not.toBe(client1);
+    expect(client1).not.toBeNull();
+    expect(client2).not.toBeNull();
   });
 });
 
@@ -747,6 +763,172 @@ describe('ensureAuthenticatedUser', () => {
           mockLoggingService.logError.mock.calls[0],
           '[frontend-auth] Redirect from login page. Rejecting to avoid infinite redirect loop.',
         );
+      });
+    });
+  });
+});
+
+// These tests all make real network calls to https://httpbin.org just as documented in the axios-cache-adapter tests
+describe('Cache Functionality', () => {
+  describe('No JWT Token Found on Load', () => {
+    beforeEach(() => {
+      setJwtCookieTo(null);
+      setJwtTokenRefreshResponseTo(200, jwtTokens.valid.encoded);
+    });
+
+    it('Cached GET: does not refresh JWT on second request with valid JWT', () => {
+      return cachedClient.get('https://httpbin.org/get').then((response1) => {
+        // Verify first request was not pulled from cache
+        expect(response1.request.fromCache).toEqual(undefined);
+        return cachedClient.get('https://httpbin.org/get').then((response2) => {
+          expectSingleCallToJwtTokenRefresh();
+          // Like the uncached client the CSRF token shouldn't be fetched either
+          expectNoCallToCsrfTokenFetch();
+          expectRequestToHaveJwtAuth(response2.config);
+          expect(response2.request.fromCache).toEqual(true);
+        });
+      });
+    });
+
+    it('Always refreshes the JWT on GET requests with invalid JWT', () => {
+      return cachedClient.get('https://httpbin.org/get').then((response1) => {
+        setJwtCookieTo(null);
+        setJwtTokenRefreshResponseTo(200, jwtTokens.valid.encoded);
+        expectRequestToHaveJwtAuth(response1.config);
+        return cachedClient.get('https://httpbin.org/get').then((response2) => {
+          expect(accessTokenAxiosMock.history.post.length).toBe(2);
+          // Like the uncached client the CSRF token shouldn't be fetched either
+          expectNoCallToCsrfTokenFetch();
+          expectRequestToHaveJwtAuth(response2.config);
+          expect(response2.request.fromCache).toEqual(true);
+        });
+      });
+    });
+
+    it('Always refreshes the JWT on POST requests', () => {
+      return cachedClient.post('https://httpbin.org/post').then((response1) => {
+        setJwtCookieTo(null);
+        setJwtTokenRefreshResponseTo(200, jwtTokens.valid.encoded);
+        expectRequestToHaveJwtAuth(response1.config);
+        return cachedClient.post('https://httpbin.org/post').then((response2) => {
+          expectRequestToHaveJwtAuth(response2.config);
+          // Verify the JWT got refreshed for both requests that do not have a JWT
+          expect(accessTokenAxiosMock.history.post.length).toBe(2);
+          // Like the uncached client the CSRF token should only be fetched once
+          expect(csrfTokensAxiosMock.history.get.length).toBe(1);
+          // Making a post request with axios-cache-adapter automatically invalidates the cache
+          expect(response2.request.fromCache).toEqual(undefined);
+        });
+      });
+    });
+
+    it('Parallel GET Requests: refresh the jwt token only once', () => {
+      return Promise.all([
+        cachedClient.get('https://httpbin.org/get'),
+        cachedClient.get('https://httpbin.org/get'),
+      ]).then((responses) => {
+        expectSingleCallToJwtTokenRefresh();
+        expectNoCallToCsrfTokenFetch();
+        expectRequestToHaveJwtAuth(responses[0].config);
+        expectRequestToHaveJwtAuth(responses[1].config);
+      });
+    });
+
+    it('Parallel POST Requests: refresh the jwt and csrf tokens only once', () => {
+      return Promise.all([
+        cachedClient.post('https://httpbin.org/post'),
+        cachedClient.post('https://httpbin.org/post'),
+      ]).then((responses) => {
+        expectSingleCallToJwtTokenRefresh();
+        expectSingleCallToCsrfTokenFetch();
+        expectRequestToHaveJwtAuth(responses[0].config);
+        expectRequestToHaveCsrfToken(responses[0].config);
+        expectRequestToHaveJwtAuth(responses[1].config);
+        expectRequestToHaveCsrfToken(responses[1].config);
+      });
+    });
+  });
+
+  describe('An expired token is found on load', () => {
+    beforeEach(() => {
+      setJwtCookieTo(jwtTokens.expired.encoded);
+      setJwtTokenRefreshResponseTo(200, jwtTokens.valid.encoded);
+    });
+
+    it('GET request: refreshes the jwt token', () => {
+      return cachedClient.get('https://httpbin.org/get').then((response) => {
+        expectSingleCallToJwtTokenRefresh();
+        expectNoCallToCsrfTokenFetch();
+        expectRequestToHaveJwtAuth(response.config);
+      });
+    });
+
+    ['post', 'put', 'patch', 'delete'].forEach((method) => {
+      it(`${method.toUpperCase()}: refreshes the csrf and jwt tokens`, () => {
+        return cachedClient[method](`https://httpbin.org/${method}`).then((response) => {
+          expectSingleCallToJwtTokenRefresh();
+          expectSingleCallToCsrfTokenFetch();
+          expectRequestToHaveJwtAuth(response.config);
+          expectRequestToHaveCsrfToken(response.config);
+        });
+      });
+    });
+  });
+
+  describe('A valid token is found on load', () => {
+    beforeEach(() => {
+      setJwtCookieTo(jwtTokens.valid.encoded);
+      setJwtTokenRefreshResponseTo(200, jwtTokens.valid.encoded);
+    });
+
+    it('GET request: does not attempt to refresh the jwt token', () => {
+      setJwtCookieTo(jwtTokens.valid.encoded);
+      return cachedClient.get('https://httpbin.org/get').then((response) => {
+        expectNoCallToJwtTokenRefresh();
+        expectNoCallToCsrfTokenFetch();
+        expectRequestToHaveJwtAuth(response.config);
+      });
+    });
+
+    ['post', 'put', 'patch', 'delete'].forEach((method) => {
+      it(`${method.toUpperCase()}: refreshes the csrf token but does not attempt to refresh the jwt token`, () => {
+        setJwtCookieTo(jwtTokens.valid.encoded);
+        return cachedClient[method](`https://httpbin.org/${method}`).then((response) => {
+          expectNoCallToJwtTokenRefresh();
+          expectSingleCallToCsrfTokenFetch();
+          expectRequestToHaveJwtAuth(response.config);
+          expectRequestToHaveCsrfToken(response.config);
+        });
+      });
+    });
+  });
+
+  describe('Token refresh failures', () => {
+    describe('The refresh request fails for an unknown reason', () => {
+      beforeEach(() => {
+        setJwtCookieTo(null);
+        setJwtTokenRefreshResponseTo(403, null);
+      });
+
+      ['get', 'post', 'put', 'patch', 'delete'].forEach((method) => {
+        it(`${method.toUpperCase()}: throws an error and calls logError`, () => {
+          expect.hasAssertions();
+          return cachedClient[method](`https://httpbin.org/${method}`).catch(() => {
+            expectSingleCallToJwtTokenRefresh();
+            expectNoCallToCsrfTokenFetch();
+            expectLogFunctionToHaveBeenCalledWithMessage(
+              mockLoggingService.logError.mock.calls[0],
+              '[frontend-auth] Axios Error (Response): 403 http://localhost:18000/login_refresh (empty response)',
+              {
+                httpErrorRequestMethod: 'post',
+                httpErrorResponseData: '(empty response)',
+                httpErrorStatus: 403,
+                httpErrorType: 'api-response-error',
+                httpErrorRequestUrl: 'http://localhost:18000/login_refresh',
+              },
+            );
+          });
+        });
       });
     });
   });
