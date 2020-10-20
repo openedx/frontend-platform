@@ -2,8 +2,7 @@ import 'babel-polyfill'; // eslint-disable-line import/no-extraneous-dependencie
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Route } from 'react-router-dom';
-import { AppProvider, ErrorPage, AuthenticatedPageRoute } from '@edx/frontend-platform/react';
+import { AppProvider, AuthenticatedPageRoute, ErrorPage, PageRoute } from '@edx/frontend-platform/react';
 import { APP_INIT_ERROR, APP_READY, initialize } from '@edx/frontend-platform';
 import { subscribe } from '@edx/frontend-platform/pubSub';
 
@@ -14,8 +13,8 @@ import AuthenticatedPage from './AuthenticatedPage';
 subscribe(APP_READY, () => {
   ReactDOM.render(
     <AppProvider>
-      <Route exact path="/" component={ExamplePage} />
-      <Route
+      <PageRoute exact path="/" component={ExamplePage} />
+      <PageRoute
         exact
         path="/error_example"
         component={() =>
