@@ -8,7 +8,8 @@ import ErrorBoundary from './ErrorBoundary';
 import AppContext from './AppContext';
 import { useAppEvent } from './hooks';
 import { getAuthenticatedUser, AUTHENTICATED_USER_CHANGED } from '../auth';
-import { getConfig, CONFIG_CHANGED } from '../config';
+import { getConfig } from '../config';
+import { CONFIG_CHANGED } from '../constants';
 import { history } from '../initialize';
 import {
   getLocale,

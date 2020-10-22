@@ -7,9 +7,9 @@ import {
   APP_ANALYTICS_INITIALIZED,
   APP_I18N_INITIALIZED,
   APP_READY,
-  initialize,
   APP_INIT_ERROR,
-} from './initialize';
+} from './constants';
+import { initialize } from './initialize';
 import { subscribe } from './pubSub';
 
 import {
