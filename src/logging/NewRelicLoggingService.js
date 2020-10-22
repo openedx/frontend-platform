@@ -10,7 +10,8 @@ function fixErrorLength(error) {
     const processedError = Object.create(error);
     processedError.message = processedError.message.substring(0, MAX_ERROR_LENGTH);
     return processedError;
-  } else if (typeof error === 'string' && error.length > MAX_ERROR_LENGTH) {
+  }
+  if (typeof error === 'string' && error.length > MAX_ERROR_LENGTH) {
     return error.substring(0, MAX_ERROR_LENGTH);
   }
   return error;
@@ -58,7 +59,7 @@ export default class NewRelicLoggingService {
     }
     /* istanbul ignore else */
     if (window && typeof window.newrelic !== 'undefined') {
-      window.newrelic.addPageAction('INFO', Object.assign({}, { message }, customAttributes));
+      window.newrelic.addPageAction('INFO', { message, ...customAttributes });
     }
   }
 

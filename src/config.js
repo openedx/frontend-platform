@@ -24,6 +24,7 @@
  * @module Config
  */
 
+// eslint-disable-next-line import/no-cycle
 import { APP_CONFIG_INITIALIZED } from './initialize';
 import { publish, subscribe } from './pubSub';
 import { ensureDefinedConfig } from './utils';

@@ -49,12 +49,23 @@ import { createBrowserHistory } from 'history';
 import {
   publish,
 } from './pubSub';
+// eslint-disable-next-line import/no-cycle
+import { getConfig } from './config';
 import {
-  getConfig,
-} from './config';
-import { configure as configureLogging, getLoggingService, NewRelicLoggingService, logError } from './logging';
-import { configure as configureAnalytics, SegmentAnalyticsService, identifyAnonymousUser, identifyAuthenticatedUser } from './analytics';
-import { getAuthenticatedHttpClient, configure as configureAuth, ensureAuthenticatedUser, fetchAuthenticatedUser, hydrateAuthenticatedUser, getAuthenticatedUser, AxiosJwtAuthService } from './auth';
+  configure as configureLogging, getLoggingService, NewRelicLoggingService, logError,
+} from './logging';
+import {
+  configure as configureAnalytics, SegmentAnalyticsService, identifyAnonymousUser, identifyAuthenticatedUser,
+} from './analytics';
+import {
+  getAuthenticatedHttpClient,
+  configure as configureAuth,
+  ensureAuthenticatedUser,
+  fetchAuthenticatedUser,
+  hydrateAuthenticatedUser,
+  getAuthenticatedUser,
+  AxiosJwtAuthService,
+} from './auth';
 import { configure as configureI18n } from './i18n';
 
 /** @constant */
@@ -165,7 +176,6 @@ export async function auth(requireUser, hydrateUser) {
     hydrateAuthenticatedUser();
   }
 }
-
 
 /**
  * The default handler for the initialization lifecycle's `analytics` phase.

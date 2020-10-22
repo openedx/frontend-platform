@@ -19,7 +19,6 @@
 
 import PubSub from 'pubsub-js';
 
-
 /**
  *
  * @param {string} type

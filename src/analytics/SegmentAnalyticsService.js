@@ -25,7 +25,9 @@ class SegmentAnalyticsService {
     const { analytics } = global;
 
     // If the real analytics.js is already on the page return.
-    if (analytics.initialize) return;
+    if (analytics.initialize) {
+      return;
+    }
 
     // If the snippet was invoked do nothing.
     if (analytics.invoked) {

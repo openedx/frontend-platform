@@ -5,7 +5,6 @@ import { logError } from '../logging';
 
 import ErrorPage from './ErrorPage';
 
-
 /**
  * Error boundary component used to log caught errors and display the error page.
  *

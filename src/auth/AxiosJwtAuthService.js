@@ -197,8 +197,8 @@ class AxiosJwtAuthService {
     await this.fetchAuthenticatedUser();
 
     if (this.getAuthenticatedUser() === null) {
-      const isRedirectFromLoginPage = global.document.referrer &&
-        global.document.referrer.startsWith(this.config.LOGIN_URL);
+      const isRedirectFromLoginPage = global.document.referrer
+        && global.document.referrer.startsWith(this.config.LOGIN_URL);
 
       if (isRedirectFromLoginPage) {
         const redirectLoopError = new Error('Redirect from login page. Rejecting to avoid infinite redirect loop.');
