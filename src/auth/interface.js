@@ -245,7 +245,6 @@ export async function hydrateAuthenticatedUser() {
   publish(AUTHENTICATED_USER_CHANGED);
 }
 
-
 /**
  * @name AuthService
  * @interface

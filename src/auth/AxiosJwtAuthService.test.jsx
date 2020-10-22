@@ -78,7 +78,8 @@ Object.keys(jwtTokens).forEach((jwtTokenName) => {
 const mockCsrfToken = 'thetokenvalue';
 const mockApiEndpointPath = `${process.env.BASE_URL}/api/v1/test`;
 
-window.location.assign = jest.fn();
+global.location = { ...global.location, assign: jest.fn() };
+
 const mockCookies = new Cookies();
 
 let service = null;
@@ -106,16 +107,15 @@ const setJwtTokenRefreshResponseTo = (status, jwtCookieValue) => {
   });
 };
 
-
 function expectLogout(redirectUrl = process.env.BASE_URL) {
   const encodedRedirectUrl = encodeURIComponent(redirectUrl);
-  expect(window.location.assign)
+  expect(global.location.assign)
     .toHaveBeenCalledWith(`${process.env.LOGOUT_URL}?redirect_url=${encodedRedirectUrl}`);
 }
 
 function expectLogin(redirectUrl = process.env.BASE_URL) {
   const encodedRedirectUrl = encodeURIComponent(redirectUrl);
-  expect(window.location.assign)
+  expect(global.location.assign)
     .toHaveBeenCalledWith(`${process.env.LOGIN_URL}?next=${encodedRedirectUrl}`);
 }
 
@@ -158,6 +158,8 @@ const expectRequestToHaveCsrfToken = (request) => {
   expect(request.headers['X-CSRFToken']).toEqual(mockCsrfToken);
 };
 
+const { location } = global;
+
 beforeEach(() => {
   service = new AxiosJwtAuthService(authOptions);
   accessTokenAxios = service.getJwtTokenService().getHttpClient();
@@ -174,7 +176,11 @@ beforeEach(() => {
   accessTokenAxiosMock.reset();
   csrfTokensAxiosMock.reset();
   mockCookies.get.mockReset();
-  window.location.assign.mockReset();
+  delete global.location;
+  global.location = {
+    assign: jest.fn(),
+    origin: 'http://localhost',
+  };
   mockLoggingService.logInfo.mockReset();
   mockLoggingService.logError.mockReset();
   service.getCsrfTokenService().clearCsrfTokenCache();
@@ -187,6 +193,10 @@ beforeEach(() => {
   axios.defaults.maxRetries = 0;
   csrfTokensAxios.defaults.maxRetries = 0;
   accessTokenAxios.defaults.maxRetries = 0;
+});
+
+afterEach(() => {
+  global.location = location;
 });
 
 describe('getAuthenticatedHttpClient', () => {
@@ -512,7 +522,7 @@ describe('authenticatedHttpClient usage', () => {
       it(`${method.toUpperCase()}: does not redirect to login`, () => {
         return client[method](mockApiEndpointPath).then(() => {
           expectSingleCallToJwtTokenRefresh();
-          expect(window.location.assign).not.toHaveBeenCalled();
+          expect(global.location.assign).not.toHaveBeenCalled();
         });
       });
     });
@@ -732,7 +742,7 @@ describe('ensureAuthenticatedUser', () => {
       expect.hasAssertions();
       return service.ensureAuthenticatedUser().catch(() => {
         expectSingleCallToJwtTokenRefresh();
-        expect(window.location.assign).not.toHaveBeenCalled();
+        expect(global.location.assign).not.toHaveBeenCalled();
         expectLogFunctionToHaveBeenCalledWithMessage(
           mockLoggingService.logError.mock.calls[0],
           '[frontend-auth] Redirect from login page. Rejecting to avoid infinite redirect loop.',

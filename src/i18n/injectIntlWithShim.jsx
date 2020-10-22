@@ -10,10 +10,6 @@ import { getLoggingService } from './lib';
  */
 const injectIntlWithShim = (WrappedComponent) => {
   class ShimmedIntlComponent extends React.Component {
-    static propTypes = {
-      intl: intlShape.isRequired,
-    };
-
     constructor(props) {
       super(props);
       this.shimmedIntl = Object.create(this.props.intl, {
@@ -39,8 +35,11 @@ const injectIntlWithShim = (WrappedComponent) => {
     }
   }
 
+  ShimmedIntlComponent.propTypes = {
+    intl: intlShape.isRequired,
+  };
+
   return injectIntl(ShimmedIntlComponent);
 };
-
 
 export default injectIntlWithShim;

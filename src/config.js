@@ -25,6 +25,7 @@
  */
 
 import { APP_CONFIG_INITIALIZED, CONFIG_CHANGED } from './constants';
+
 import { publish, subscribe } from './pubSub';
 import { ensureDefinedConfig } from './utils';
 

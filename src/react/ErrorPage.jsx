@@ -16,6 +16,7 @@ class ErrorPage extends Component {
   reload() {
     global.location.reload();
   }
+
   render() {
     const { message } = this.props;
     return (
@@ -41,13 +42,13 @@ class ErrorPage extends Component {
             <Button
               buttonType="primary"
               onClick={this.reload}
-              label={
+              label={(
                 <FormattedMessage
                   id="unexpected.error.button.text"
                   defaultMessage="Try Again"
                   description="text for button that tries to reload the app by refreshing the page"
                 />
-              }
+              )}
             />
           </div>
         </div>

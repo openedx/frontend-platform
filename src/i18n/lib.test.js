@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import {
   configure,
   getPrimaryLanguageSubtag,
@@ -13,10 +14,15 @@ jest.mock('universal-cookie');
 
 describe('lib', () => {
   describe('configure', () => {
-    let warnSpy = null;
+    let originalWarn = null;
 
     beforeEach(() => {
-      warnSpy = spyOn(console, 'warn');
+      originalWarn = console.warn;
+      console.warn = jest.fn();
+    });
+
+    afterEach(() => {
+      console.warn = originalWarn;
     });
 
     it('should not call console.warn in production', () => {
@@ -33,7 +39,7 @@ describe('lib', () => {
         },
       });
 
-      expect(warnSpy).not.toHaveBeenCalled();
+      expect(console.warn).not.toHaveBeenCalled();
     });
 
     it('should warn about unexpected locales', () => {
@@ -61,7 +67,7 @@ describe('lib', () => {
         },
       });
 
-      expect(warnSpy).toHaveBeenCalledWith('Unexpected locale: uhoh');
+      expect(console.warn).toHaveBeenCalledWith('Unexpected locale: uhoh');
     });
 
     it('should warn about missing locales', () => {
@@ -74,20 +80,20 @@ describe('lib', () => {
         messages: {},
       });
 
-      expect(warnSpy).toHaveBeenCalledTimes(13);
-      expect(warnSpy).toHaveBeenCalledWith('Missing locale: ar');
-      expect(warnSpy).toHaveBeenCalledWith('Missing locale: es-419');
-      expect(warnSpy).toHaveBeenCalledWith('Missing locale: fr');
-      expect(warnSpy).toHaveBeenCalledWith('Missing locale: zh-cn');
-      expect(warnSpy).toHaveBeenCalledWith('Missing locale: ca');
-      expect(warnSpy).toHaveBeenCalledWith('Missing locale: he');
-      expect(warnSpy).toHaveBeenCalledWith('Missing locale: id');
-      expect(warnSpy).toHaveBeenCalledWith('Missing locale: ko-kr');
-      expect(warnSpy).toHaveBeenCalledWith('Missing locale: pl');
-      expect(warnSpy).toHaveBeenCalledWith('Missing locale: pt-br');
-      expect(warnSpy).toHaveBeenCalledWith('Missing locale: ru');
-      expect(warnSpy).toHaveBeenCalledWith('Missing locale: th');
-      expect(warnSpy).toHaveBeenCalledWith('Missing locale: uk');
+      expect(console.warn).toHaveBeenCalledTimes(13);
+      expect(console.warn).toHaveBeenCalledWith('Missing locale: ar');
+      expect(console.warn).toHaveBeenCalledWith('Missing locale: es-419');
+      expect(console.warn).toHaveBeenCalledWith('Missing locale: fr');
+      expect(console.warn).toHaveBeenCalledWith('Missing locale: zh-cn');
+      expect(console.warn).toHaveBeenCalledWith('Missing locale: ca');
+      expect(console.warn).toHaveBeenCalledWith('Missing locale: he');
+      expect(console.warn).toHaveBeenCalledWith('Missing locale: id');
+      expect(console.warn).toHaveBeenCalledWith('Missing locale: ko-kr');
+      expect(console.warn).toHaveBeenCalledWith('Missing locale: pl');
+      expect(console.warn).toHaveBeenCalledWith('Missing locale: pt-br');
+      expect(console.warn).toHaveBeenCalledWith('Missing locale: ru');
+      expect(console.warn).toHaveBeenCalledWith('Missing locale: th');
+      expect(console.warn).toHaveBeenCalledWith('Missing locale: uk');
     });
   });
 

@@ -138,8 +138,9 @@ class MockAuthService {
 
     // Mock user
     this.authenticatedUser = this.config.authenticatedUser ? this.config.authenticatedUser : null;
-    this.hydratedAuthenticatedUser = this.config.hydratedAuthenticatedUser ?
-      this.config.hydratedAuthenticatedUser : {};
+    this.hydratedAuthenticatedUser = this.config.hydratedAuthenticatedUser
+      ? this.config.hydratedAuthenticatedUser
+      : {};
 
     this.authenticatedHttpClient = axios.create();
     this.httpClient = axios.create();

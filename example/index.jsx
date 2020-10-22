@@ -2,7 +2,12 @@ import 'babel-polyfill'; // eslint-disable-line import/no-extraneous-dependencie
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { AppProvider, AuthenticatedPageRoute, ErrorPage, PageRoute } from '@edx/frontend-platform/react';
+import {
+  AppProvider,
+  AuthenticatedPageRoute,
+  ErrorPage,
+  PageRoute,
+} from '@edx/frontend-platform/react';
 import { APP_INIT_ERROR, APP_READY, initialize } from '@edx/frontend-platform';
 import { subscribe } from '@edx/frontend-platform/pubSub';
 
@@ -17,9 +22,7 @@ subscribe(APP_READY, () => {
       <PageRoute
         exact
         path="/error_example"
-        component={() =>
-          <ErrorPage message="Test error message" />
-        }
+        component={() => <ErrorPage message="Test error message" />}
       />
       <AuthenticatedPageRoute exact path="/authenticated" component={AuthenticatedPage} />
     </AppProvider>,

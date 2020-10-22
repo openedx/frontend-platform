@@ -12,8 +12,21 @@ import {
 import { initialize } from './initialize';
 import { subscribe } from './pubSub';
 
-import { configure as configureLogging, NewRelicLoggingService, getLoggingService, logError } from './logging';
-import { configure as configureAuth, getAuthenticatedHttpClient, ensureAuthenticatedUser, fetchAuthenticatedUser, hydrateAuthenticatedUser, getAuthenticatedUser, AxiosJwtAuthService } from './auth';
+import {
+  configure as configureLogging,
+  NewRelicLoggingService,
+  getLoggingService,
+  logError,
+} from './logging';
+import {
+  configure as configureAuth,
+  getAuthenticatedHttpClient,
+  ensureAuthenticatedUser,
+  fetchAuthenticatedUser,
+  hydrateAuthenticatedUser,
+  getAuthenticatedUser,
+  AxiosJwtAuthService,
+} from './auth';
 import { configure as configureAnalytics, SegmentAnalyticsService } from './analytics';
 import { configure as configureI18n } from './i18n';
 import { getConfig } from './config';

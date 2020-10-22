@@ -49,14 +49,33 @@ import { createBrowserHistory, createMemoryHistory } from 'history';
 import {
   publish,
 } from './pubSub';
+// eslint-disable-next-line import/no-cycle
+import { getConfig } from './config';
 import {
-  getConfig,
-} from './config';
-import { configure as configureLogging, getLoggingService, NewRelicLoggingService, logError } from './logging';
-import { configure as configureAnalytics, SegmentAnalyticsService, identifyAnonymousUser, identifyAuthenticatedUser } from './analytics';
-import { getAuthenticatedHttpClient, configure as configureAuth, ensureAuthenticatedUser, fetchAuthenticatedUser, hydrateAuthenticatedUser, getAuthenticatedUser, AxiosJwtAuthService } from './auth';
+  configure as configureLogging, getLoggingService, NewRelicLoggingService, logError,
+} from './logging';
+import {
+  configure as configureAnalytics, SegmentAnalyticsService, identifyAnonymousUser, identifyAuthenticatedUser,
+} from './analytics';
+import {
+  getAuthenticatedHttpClient,
+  configure as configureAuth,
+  ensureAuthenticatedUser,
+  fetchAuthenticatedUser,
+  hydrateAuthenticatedUser,
+  getAuthenticatedUser,
+  AxiosJwtAuthService,
+} from './auth';
 import { configure as configureI18n } from './i18n';
-import { APP_PUBSUB_INITIALIZED, APP_CONFIG_INITIALIZED, APP_AUTH_INITIALIZED, APP_I18N_INITIALIZED, APP_LOGGING_INITIALIZED, APP_ANALYTICS_INITIALIZED, APP_READY, APP_INIT_ERROR } from './constants';
+import {
+  APP_PUBSUB_INITIALIZED,
+  APP_CONFIG_INITIALIZED,
+  APP_AUTH_INITIALIZED,
+  APP_I18N_INITIALIZED,
+  APP_LOGGING_INITIALIZED,
+  APP_ANALYTICS_INITIALIZED,
+  APP_READY, APP_INIT_ERROR,
+} from './constants';
 
 /**
  * A browser history or memory history object created by the [history](https://github.com/ReactTraining/history)
@@ -108,7 +127,6 @@ export async function auth(requireUser, hydrateUser) {
     hydrateAuthenticatedUser();
   }
 }
-
 
 /**
  * The default handler for the initialization lifecycle's `analytics` phase.

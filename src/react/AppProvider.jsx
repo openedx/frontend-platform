@@ -11,7 +11,12 @@ import { getAuthenticatedUser, AUTHENTICATED_USER_CHANGED } from '../auth';
 import { getConfig } from '../config';
 import { CONFIG_CHANGED } from '../constants';
 import { history } from '../initialize';
-import { getLocale, getMessages, IntlProvider, LOCALE_CHANGED } from '../i18n';
+import {
+  getLocale,
+  getMessages,
+  IntlProvider,
+  LOCALE_CHANGED,
+} from '../i18n';
 
 /**
  * A wrapper component for React-based micro-frontends to initialize a number of common data/
@@ -64,7 +69,7 @@ export default function AppProvider({ store, children }) {
         <IntlProvider locale={locale} messages={getMessages()}>
           <OptionalReduxProvider store={store}>
             <Router history={history}>
-              <React.Fragment>{children}</React.Fragment>
+              <>{children}</>
             </Router>
           </OptionalReduxProvider>
         </IntlProvider>
