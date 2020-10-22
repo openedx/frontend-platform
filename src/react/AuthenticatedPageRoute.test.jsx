@@ -16,8 +16,10 @@ describe('AuthenticatedPageRoute', () => {
   let history;
 
   beforeEach(() => {
-    delete global.location.assign;
-    global.location.assign = jest.fn();
+    delete global.location;
+    global.location = {
+      assign: jest.fn(),
+    };
     sendPageEvent.mockReset();
     getLoginRedirectUrl.mockReset();
     getAuthenticatedUser.mockReset();
@@ -45,6 +47,7 @@ describe('AuthenticatedPageRoute', () => {
       </AppContext.Provider>
     );
     history.push('/authenticated');
+    global.location.href = 'http://localhost/authenticated';
     mount(component);
     expect(getLoginRedirectUrl).toHaveBeenCalledWith('http://localhost/authenticated');
     expect(sendPageEvent).not.toHaveBeenCalled();
