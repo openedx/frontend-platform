@@ -45,7 +45,7 @@
  * @module Initialization
  */
 
-import { createBrowserHistory } from 'history';
+import { createBrowserHistory, createMemoryHistory } from 'history';
 import {
   publish,
 } from './pubSub';
@@ -59,14 +59,16 @@ import { configure as configureI18n } from './i18n';
 import { APP_PUBSUB_INITIALIZED, APP_CONFIG_INITIALIZED, APP_AUTH_INITIALIZED, APP_I18N_INITIALIZED, APP_LOGGING_INITIALIZED, APP_ANALYTICS_INITIALIZED, APP_READY, APP_INIT_ERROR } from './constants';
 
 /**
- * A browser history object created by the [history](https://github.com/ReactTraining/history)
+ * A browser history or memory history object created by the [history](https://github.com/ReactTraining/history)
  * package.  Applications are encouraged to use this history object, rather than creating their own,
- * as behavior may be undefined when managing history via multiple mechanisms/instances.
- *
+ * as behavior may be undefined when managing history via multiple mechanisms/instances. Note that
+ * in environments where browser history may be inaccessible due to `window` being undefined, this
+ * falls back to memory history.
  */
-export const history = createBrowserHistory({
-  basename: getConfig().PUBLIC_PATH,
-});
+export const history = (typeof window !== 'undefined') ?
+  createBrowserHistory({
+    basename: getConfig().PUBLIC_PATH,
+  }) : createMemoryHistory();
 
 /**
  * The default handler for the initialization lifecycle's `initError` phase.  Logs the error to the
@@ -126,7 +128,7 @@ export async function analytics() {
 }
 
 function applyOverrideHandlers(overrides) {
-  const noOp = async () => {};
+  const noOp = async () => { };
   return {
     pubSub: noOp,
     config: noOp,
