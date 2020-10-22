@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Interface: AuthService</title>
+    <title>JSDoc: Source: constants.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -15,383 +15,89 @@
     <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
 </head>
 
-<body data-module="Auth">
+<body data-module="">
 
 <div id="main">
-    <h1 class="page-title">Interface: AuthService</h1>
+    <h1 class="page-title">Source: constants.js</h1>
 
     
 
 
 
-
-<section>
-
-<header>
     
-        <h2>
-            <span class="ancestors"><a href="module-Auth.html">Auth</a>.</span>AuthService</h2>
-        
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-
-        
-
-
-    <h5 class="subsection-title">Properties:</h5>
-
-    
-
-<table class="props">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>getAuthenticatedHttpClient</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>getHttpClient</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>getLoginRedirectUrl</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>redirectToLogin</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>getLogoutRedirectUrl</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>redirectToLogout</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>getAuthenticatedUser</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>setAuthenticatedUser</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>fetchAuthenticatedUser</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>ensureAuthenticatedUser</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>hydrateAuthenticatedUser</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_interface.js.html">auth/interface.js</a>, <a href="auth_interface.js.html#line249">line 249</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-        
-    
-    </div>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>
+/** @constant */
+export const APP_TOPIC = 'APP';
+
+export const APP_PUBSUB_INITIALIZED = `${APP_TOPIC}.PUBSUB_INITIALIZED`;
+
+/**
+ * Event published when the application initialization sequence has finished loading any dynamic
+ * configuration setup in a custom config handler.
+ *
+ * @event
+ */
+export const APP_CONFIG_INITIALIZED = `${APP_TOPIC}.CONFIG_INITIALIZED`;
+
+/**
+ * Event published when the application initialization sequence has finished determining the user's
+ * authentication state, creating an authenticated API client, and executing auth handlers.
+ *
+ * @event
+ */
+export const APP_AUTH_INITIALIZED = `${APP_TOPIC}.AUTH_INITIALIZED`;
+
+/**
+ * Event published when the application initialization sequence has finished initializing
+ * internationalization and executing any i18n handlers.
+ *
+ * @event
+ */
+export const APP_I18N_INITIALIZED = `${APP_TOPIC}.I18N_INITIALIZED`;
+
+/**
+ * Event published when the application initialization sequence has finished initializing the
+ * logging service and executing any logging handlers.
+ *
+ * @event
+ */
+export const APP_LOGGING_INITIALIZED = `${APP_TOPIC}.LOGGING_INITIALIZED`;
+
+/**
+ * Event published when the application initialization sequence has finished initializing the
+ * analytics service and executing any analytics handlers.
+ *
+ * @event
+ */
+export const APP_ANALYTICS_INITIALIZED = `${APP_TOPIC}.ANALYTICS_INITIALIZED`;
+
+/**
+ * Event published when the application initialization sequence has finished.  Applications should
+ * subscribe to this event and start rendering the UI when it has fired.
+ *
+ * @event
+ */
+export const APP_READY = `${APP_TOPIC}.READY`;
+
+/**
+ * Event published when the application initialization sequence has aborted.  This is frequently
+ * used to show an error page when an initialization error has occurred.
+ *
+ * @see {@link module:React~ErrorPage}
+ * @event
+ */
+export const APP_INIT_ERROR = `${APP_TOPIC}.INIT_ERROR`;
+
+/** @constant */
+export const CONFIG_TOPIC = 'CONFIG';
+
+export const CONFIG_CHANGED = `${CONFIG_TOPIC}.CHANGED`;
+
+</code></pre>
+        </article>
+    </section>
 
 
 
