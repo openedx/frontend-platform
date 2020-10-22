@@ -11,10 +11,10 @@
  *   APP_READY,
  *   subscribe,
  * } from '@edx/frontend-platform';
- * import { ErrorPage, AppProvider } from '@edx/frontend-platform/react';
+ * import { AppProvider, ErrorPage, PageRoute } from '@edx/frontend-platform/react';
  * import React from 'react';
  * import ReactDOM from 'react-dom';
- * import { Route, Switch } from 'react-router-dom';
+ * import { Switch } from 'react-router-dom';
  *
  * subscribe(APP_READY, () => {
  *   ReactDOM.render(
@@ -22,7 +22,7 @@
  *       <Header />
  *       <main>
  *         <Switch>
- *           <Route exact path="/" component={PaymentPage} />
+ *           <PageRoute exact path="/" component={PaymentPage} />
  *         </Switch>
  *       </main>
  *       <Footer />
@@ -56,68 +56,7 @@ import { configure as configureLogging, getLoggingService, NewRelicLoggingServic
 import { configure as configureAnalytics, SegmentAnalyticsService, identifyAnonymousUser, identifyAuthenticatedUser } from './analytics';
 import { getAuthenticatedHttpClient, configure as configureAuth, ensureAuthenticatedUser, fetchAuthenticatedUser, hydrateAuthenticatedUser, getAuthenticatedUser, AxiosJwtAuthService } from './auth';
 import { configure as configureI18n } from './i18n';
-
-/** @constant */
-export const APP_TOPIC = 'APP';
-
-export const APP_PUBSUB_INITIALIZED = `${APP_TOPIC}.PUBSUB_INITIALIZED`;
-
-/**
- * Event published when the application initialization sequence has finished loading any dynamic
- * configuration setup in a custom config handler.
- *
- * @event
- */
-export const APP_CONFIG_INITIALIZED = `${APP_TOPIC}.CONFIG_INITIALIZED`;
-
-/**
- * Event published when the application initialization sequence has finished determining the user's
- * authentication state, creating an authenticated API client, and executing auth handlers.
- *
- * @event
- */
-export const APP_AUTH_INITIALIZED = `${APP_TOPIC}.AUTH_INITIALIZED`;
-
-/**
- * Event published when the application initialization sequence has finished initializing
- * internationalization and executing any i18n handlers.
- *
- * @event
- */
-export const APP_I18N_INITIALIZED = `${APP_TOPIC}.I18N_INITIALIZED`;
-
-/**
- * Event published when the application initialization sequence has finished initializing the
- * logging service and executing any logging handlers.
- *
- * @event
- */
-export const APP_LOGGING_INITIALIZED = `${APP_TOPIC}.LOGGING_INITIALIZED`;
-
-/**
- * Event published when the application initialization sequence has finished initializing the
- * analytics service and executing any analytics handlers.
- *
- * @event
- */
-export const APP_ANALYTICS_INITIALIZED = `${APP_TOPIC}.ANALYTICS_INITIALIZED`;
-
-/**
- * Event published when the application initialization sequence has finished.  Applications should
- * subscribe to this event and start rendering the UI when it has fired.
- *
- * @event
- */
-export const APP_READY = `${APP_TOPIC}.READY`;
-
-/**
- * Event published when the application initialization sequence has aborted.  This is frequently
- * used to show an error page when an initialization error has occurred.
- *
- * @see {@link module:React~ErrorPage}
- * @event
- */
-export const APP_INIT_ERROR = `${APP_TOPIC}.INIT_ERROR`;
+import { APP_PUBSUB_INITIALIZED, APP_CONFIG_INITIALIZED, APP_AUTH_INITIALIZED, APP_I18N_INITIALIZED, APP_LOGGING_INITIALIZED, APP_ANALYTICS_INITIALIZED, APP_READY, APP_INIT_ERROR } from './constants';
 
 /**
  * A browser history or memory history object created by the [history](https://github.com/ReactTraining/history)
@@ -126,7 +65,10 @@ export const APP_INIT_ERROR = `${APP_TOPIC}.INIT_ERROR`;
  * in environments where browser history may be inaccessible due to `window` being undefined, this
  * falls back to memory history.
  */
-export const history = (typeof window !== 'undefined') ? createBrowserHistory() : createMemoryHistory();
+export const history = (typeof window !== 'undefined') ? 
+  createBrowserHistory({
+    basename: getConfig().PUBLIC_PATH,
+  }) : createMemoryHistory();
 
 /**
  * The default handler for the initialization lifecycle's `initError` phase.  Logs the error to the

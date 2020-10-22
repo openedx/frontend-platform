@@ -7,7 +7,6 @@ export {
   ensureDefinedConfig,
 } from './utils';
 export {
-  initialize,
   APP_TOPIC,
   APP_PUBSUB_INITIALIZED,
   APP_CONFIG_INITIALIZED,
@@ -17,6 +16,11 @@ export {
   APP_ANALYTICS_INITIALIZED,
   APP_READY,
   APP_INIT_ERROR,
+  CONFIG_TOPIC,
+  CONFIG_CHANGED,
+} from './constants';
+export {
+  initialize,
   history,
   initError,
   auth,
@@ -27,8 +31,6 @@ export {
   unsubscribe,
 } from './pubSub';
 export {
-  CONFIG_TOPIC,
-  CONFIG_CHANGED,
   getConfig,
   setConfig,
   mergeConfig,
