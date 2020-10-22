@@ -67,7 +67,15 @@ import {
   AxiosJwtAuthService,
 } from './auth';
 import { configure as configureI18n } from './i18n';
-import { APP_PUBSUB_INITIALIZED, APP_CONFIG_INITIALIZED, APP_AUTH_INITIALIZED, APP_I18N_INITIALIZED, APP_LOGGING_INITIALIZED, APP_ANALYTICS_INITIALIZED, APP_READY, APP_INIT_ERROR } from './constants';
+import {
+  APP_PUBSUB_INITIALIZED,
+  APP_CONFIG_INITIALIZED,
+  APP_AUTH_INITIALIZED,
+  APP_I18N_INITIALIZED,
+  APP_LOGGING_INITIALIZED,
+  APP_ANALYTICS_INITIALIZED,
+  APP_READY, APP_INIT_ERROR,
+} from './constants';
 
 /**
  * A browser history object created by the [history](https://github.com/ReactTraining/history)

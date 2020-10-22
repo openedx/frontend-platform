@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import {
   configure,
   getPrimaryLanguageSubtag,
@@ -16,7 +17,7 @@ describe('lib', () => {
     let originalWarn = null;
 
     beforeEach(() => {
-      originalWarn = console.warn; // warnSpy =  jest.spyOn(console, 'warn');
+      originalWarn = console.warn;
       console.warn = jest.fn();
     });
 

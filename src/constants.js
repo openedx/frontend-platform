@@ -1,4 +1,3 @@
-
 /** @constant */
 export const APP_TOPIC = 'APP';
 
@@ -65,4 +64,3 @@ export const APP_INIT_ERROR = `${APP_TOPIC}.INIT_ERROR`;
 export const CONFIG_TOPIC = 'CONFIG';
 
 export const CONFIG_CHANGED = `${CONFIG_TOPIC}.CHANGED`;
-
