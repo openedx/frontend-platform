@@ -65,7 +65,7 @@ import { APP_PUBSUB_INITIALIZED, APP_CONFIG_INITIALIZED, APP_AUTH_INITIALIZED, A
  * in environments where browser history may be inaccessible due to `window` being undefined, this
  * falls back to memory history.
  */
-export const history = (typeof window !== 'undefined') ? 
+export const history = (typeof window !== 'undefined') ?
   createBrowserHistory({
     basename: getConfig().PUBLIC_PATH,
   }) : createMemoryHistory();
