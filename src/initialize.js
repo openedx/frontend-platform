@@ -84,8 +84,8 @@ import {
  * in environments where browser history may be inaccessible due to `window` being undefined, this
  * falls back to memory history.
  */
-export const history = (typeof window !== 'undefined') ?
-  createBrowserHistory({
+export const history = (typeof window !== 'undefined')
+  ? createBrowserHistory({
     basename: getConfig().PUBLIC_PATH,
   }) : createMemoryHistory();
 
