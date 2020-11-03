@@ -6,7 +6,8 @@ import { setup } from 'axios-cache-adapter';
 /**
  * Async function to configure localforage and setup the cache
  *
- * @returns {Object} An axios instance configured to use localforage as a cache
+ * @returns {Promise} A promise that, when resolved, returns an axios instance configured to
+ * use localforage as a cache.
  */
 export default async function configureCache() {
   // Register the imported `memoryDriver` to `localforage`

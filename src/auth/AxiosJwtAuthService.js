@@ -71,24 +71,33 @@ class AxiosJwtAuthService {
   /**
    * Gets the authenticated HTTP client for the service.  This is an axios instance.
    *
-   * @param {boolean} useCache Whether to use front end caching for all requests made with the returned client
+   * @param {Object} [options] Optional options for how the HTTP client should be configured.
+   * @param {boolean} [options.useCache] Whether to use front end caching for all requests made
+   * with the returned client.
    *
    * @returns {HttpClient} A configured axios http client which can be used for authenticated
    * requests.
    */
-  getAuthenticatedHttpClient(useCache = false) {
-    return useCache ? this.cachedAuthenticatedHttpClient : this.authenticatedHttpClient;
+  getAuthenticatedHttpClient(options = {}) {
+    if (options.useCache) {
+      return this.cachedAuthenticatedHttpClient;
+    }
+    return this.authenticatedHttpClient;
   }
 
   /**
    * Gets the unauthenticated HTTP client for the service.  This is an axios instance.
    *
-   * @param {boolean} useCache Whether to use front end caching for all requests made with the returned client
-   *
+   * @param {Object} [options] Optional options for how the HTTP client should be configured.
+   * @param {boolean} [options.useCache] Whether to use front end caching for all requests made
+   * with the returned client.
    * @returns {HttpClient} A configured axios http client.
    */
-  getHttpClient(useCache = false) {
-    return useCache ? this.cachedHttpClient : this.httpClient;
+  getHttpClient(options = {}) {
+    if (options.useCache) {
+      return this.cachedHttpClient;
+    }
+    return this.httpClient;
   }
 
   /**
