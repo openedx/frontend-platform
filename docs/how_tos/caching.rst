@@ -17,7 +17,9 @@ Server caching helps to limit the cost of an API request on the server and its d
 Client caching
 ==============
 
-Client caching helps to limit the cost of an API request incurred by the user. Rather than relying on a API implementing server caching, commonly referenced data may be cached locally within the client (i.e., browser). Similar to server caching, on the first request of an API, the request will occur as usual but the response data will be stored in the client. However, on subsequent requests (within a given timeframe), the client will check if a copy of the requested resource exists. If it does, it will read from the client cache rather than making a network request to the API. This has the benefit of freeing up resources on the server as it no longer needs to handle repeat queries within a given timeframe.
+Client caching helps to limit the cost of an API request incurred by the user. Rather than relying on a API implementing server caching, commonly referenced data may be cached locally within the client (i.e., browser). Similar to server caching, on the first request of an API, the request will occur as usual but the response data will be stored in the client.
+
+However, on subsequent requests (within a given timeframe), the client will check if a copy of the requested resource exists. If it does, it will read from the client cache rather than making a network request to the API. This has the benefit of freeing up resources on the server as it no longer needs to handle repeat queries within a given timeframe.
 
 Typically, client caching stores data for a given time (e.g., 5 minutes) since it was last requested. This allows the client cache to be dynamic in the sense that data will be eventually consistent and unneeded local data can be cleared once it is no longer relevant.
 
