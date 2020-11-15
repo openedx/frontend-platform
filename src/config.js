@@ -52,6 +52,7 @@ let config = {
   SEGMENT_KEY: process.env.SEGMENT_KEY,
   SITE_NAME: process.env.SITE_NAME,
   USER_INFO_COOKIE_NAME: process.env.USER_INFO_COOKIE_NAME,
+  HIDE_HEADER_NAV: process.env.HIDE_HEADER_NAV === 'true',
 };
 
 /**
