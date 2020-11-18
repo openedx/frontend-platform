@@ -33,6 +33,8 @@ const ENVIRONMENT = process.env.NODE_ENV;
 let config = {
   ACCESS_TOKEN_COOKIE_NAME: process.env.ACCESS_TOKEN_COOKIE_NAME,
   BASE_URL: process.env.BASE_URL,
+  BRAZE_ENDPOINT: process.env.BRAZE_ENDPOINT,
+  BRAZE_KEY: process.env.BRAZE_KEY,
   PUBLIC_PATH: process.env.PUBLIC_PATH || '/',
   CREDENTIALS_BASE_URL: process.env.CREDENTIALS_BASE_URL,
   CSRF_TOKEN_API_PATH: process.env.CSRF_TOKEN_API_PATH,
@@ -154,6 +156,8 @@ export function ensureConfig(keys, requester = 'unspecified application code') {
  * @memberof module:Config
  * @property {string} ACCESS_TOKEN_COOKIE_NAME
  * @property {string} BASE_URL The URL of the current application.
+ * @property {string} BRAZE_ENDPOINT
+ * @property {string} BRAZE_KEY
  * @property {string} CREDENTIALS_BASE_URL
  * @property {string} CSRF_TOKEN_API_PATH
  * @property {string} DISCOVERY_API_BASE_URL
