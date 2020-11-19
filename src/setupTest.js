@@ -26,6 +26,10 @@ process.env.REFRESH_ACCESS_TOKEN_ENDPOINT = 'http://localhost:18000/login_refres
 process.env.SEGMENT_KEY = 'segment_whoa';
 process.env.SITE_NAME = 'edX';
 process.env.USER_INFO_COOKIE_NAME = 'edx-user-info';
+process.env.LOGO_URL = 'https://edx-cdn.org/v3/default/logo.svg';
+process.env.LOGO_TRADEMARK_URL = 'https://edx-cdn.org/v3/default/logo-trademark.svg';
+process.env.LOGO_WHITE_URL = 'https://edx-cdn.org/v3/default/logo-white.svg';
+process.env.FAVICON_URL = 'https://edx-cdn.org/v3/default/favicon.ico';
 
 /* Auth test variables
 
