@@ -176,4 +176,8 @@ export function ensureConfig(keys, requester = 'unspecified application code') {
  * @property {string} SEGMENT_KEY
  * @property {string} SITE_NAME
  * @property {string} USER_INFO_COOKIE_NAME
+ * @property {string} LOGO_URL
+ * @property {string} LOGO_TRADEMARK_URL
+ * @property {string} LOGO_WHITE_URL
+ * @property {string} FAVICON_URL
  */
