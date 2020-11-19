@@ -52,6 +52,10 @@ let config = {
   SEGMENT_KEY: process.env.SEGMENT_KEY,
   SITE_NAME: process.env.SITE_NAME,
   USER_INFO_COOKIE_NAME: process.env.USER_INFO_COOKIE_NAME,
+  LOGO_URL: process.env.LOGO_URL,
+  LOGO_TRADEMARK_URL: process.env.LOGO_TRADEMARK_URL,
+  LOGO_WHITE_URL: process.env.LOGO_WHITE_URL,
+  FAVICON_URL: process.env.FAVICON_URL,
 };
 
 /**
