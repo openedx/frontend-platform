@@ -50,6 +50,25 @@ The initialization process proceeds in a series of phases, giving the initializi
 
 Most applications won't need to do anything special at all.
 
+### Application Configuration
+
+When the application loads, a list of known environment variables is loaded from `process.env` into an object which it exposes via `getConfig` - the point here is primarily to isolate our code from usages of `process.env` which may not always be the way we choose to configure our apps.  The application initialization lifecycle runtime configuration as well via the `config` handler, documented in the [initialization function](https://edx.github.io/frontend-platform/module-Initialization.html#~initialize).  If you want to get a variable into the config that it’s not expecting, you can use [`mergeConfig`](https://edx.github.io/frontend-platform/module-Config.html#~mergeConfig) during initialization to add it in from `process.env`.
+
+Such an example might look like:
+
+```
+initialize({
+  // ... other initialization options
+  handlers: {
+    config: () => {
+      mergeConfig({
+        CUSTOM_VARIABLE: process.env.CUSTOM_VARIABLE || null,
+      }, 'Custom app config');
+    },
+  },
+});
+```
+
 ### Service interfaces
 
 Each service (analytics, auth, i18n, logging) provided by frontend-platform has a API contract which all implementations of that service are guaranteed to fulfill.  Applications that use frontend-platform can use its configured services via a convenient set of exported functions.  An application that wants to use the service interfaces need only initialize them via the initialize() function, optionally providing custom service interfaces as desired (you probably won't need to).
