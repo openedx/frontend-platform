@@ -1,7 +1,7 @@
-import formurlencoded from 'form-urlencoded';
-import { snakeCaseObject } from '../utils';
-
 /**
+ * The MockAnalyticsService implements all functions of AnalyticsService with Jest mocks, i.e.,
+ * jest.fn().  It has no other functionality.
+ *
  * @implements {AnalyticsService}
  * @memberof module:Analytics
  */
