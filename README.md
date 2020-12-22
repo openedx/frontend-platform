@@ -52,7 +52,7 @@ Most applications won't need to do anything special at all.
 
 ### Application Configuration
 
-When the application loads, a list of known environment variables is loaded from `process.env` into an object which it exposes via `getConfig` - the point here is primarily to isolate our code from usages of `process.env` which may not always be the way we choose to configure our apps.  The application initialization lifecycle runtime configuration as well via the `config` handler, documented in the [initialization function](https://edx.github.io/frontend-platform/module-Initialization.html#~initialize).  If you want to get a variable into the config that it’s not expecting, you can use [`mergeConfig`](https://edx.github.io/frontend-platform/module-Config.html#~mergeConfig) during initialization to add it in from `process.env`.
+When the application loads, a list of known environment variables is loaded from `process.env` into an object which it exposes via `getConfig` - the point here is primarily to isolate our code from usages of `process.env` which may not always be the way we choose to configure our apps.  The application initialization lifecycle supports runtime configuration as well via the `config` handler, documented in the [initialize function](https://edx.github.io/frontend-platform/module-Initialization.html#~initialize).  If you want to get a variable into the config that it’s not expecting, you can use [`mergeConfig`](https://edx.github.io/frontend-platform/module-Config.html#~mergeConfig) during initialization to add it in from `process.env`.
 
 Such an example might look like:
 
