@@ -22,7 +22,7 @@ class ErrorPage extends Component {
   render() {
     const { message } = this.props;
     return (
-      <Container fluid className="py-5 justify-content-center align-items-center text-center">
+      <Container fluid className="py-5 justify-content-center align-items-start text-center">
         <Row>
           <Col>
             <p className="text-muted">
