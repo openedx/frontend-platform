@@ -40,7 +40,7 @@ class ErrorPage extends Component {
             <Button onClick={this.reload}>
               <FormattedMessage
                 id="unexpected.error.button.text"
-                defaultMessage="Try Again"
+                defaultMessage="Try again"
                 description="text for button that tries to reload the app by refreshing the page"
               />
             </Button>
