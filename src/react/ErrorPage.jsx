@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button } from '@edx/paragon';
+import {
+  Button, Container, Row, Col,
+} from '@edx/paragon';
 
 import { FormattedMessage } from '../i18n';
 
@@ -20,10 +22,10 @@ class ErrorPage extends Component {
   render() {
     const { message } = this.props;
     return (
-      <div className="container-fluid py-5 justify-content-center align-items-start text-center">
-        <div className="row">
-          <div className="col">
-            <p className="my-0 py-5 text-muted">
+      <Container fluid className="py-5 justify-content-center align-items-start text-center">
+        <Row>
+          <Col>
+            <p className="text-muted">
               <FormattedMessage
                 id="unexpected.error.message.text"
                 defaultMessage="An unexpected error occurred. Please click the button below to refresh the page."
@@ -31,28 +33,20 @@ class ErrorPage extends Component {
               />
             </p>
             {message && (
-              <div role="alert">
+              <div role="alert" className="my-4">
                 <p>{message}</p>
               </div>
             )}
-          </div>
-        </div>
-        <div className="row">
-          <div className="col">
-            <Button
-              buttonType="primary"
-              onClick={this.reload}
-              label={(
-                <FormattedMessage
-                  id="unexpected.error.button.text"
-                  defaultMessage="Try Again"
-                  description="text for button that tries to reload the app by refreshing the page"
-                />
-              )}
-            />
-          </div>
-        </div>
-      </div>
+            <Button onClick={this.reload}>
+              <FormattedMessage
+                id="unexpected.error.button.text"
+                defaultMessage="Try again"
+                description="text for button that tries to reload the app by refreshing the page"
+              />
+            </Button>
+          </Col>
+        </Row>
+      </Container>
     );
   }
 }
