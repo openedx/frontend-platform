@@ -34,7 +34,7 @@
     "@commitlint/cli": "8.2.0",
     "@commitlint/config-angular": "8.2.0",
     "@edx/frontend-build": "5.3.2",
-    "@edx/paragon": "7.1.5",
+    "@edx/paragon": "7.2.1",
     "axios-mock-adapter": "1.19.0",
     "babel-polyfill": "6.26.0",
     "codecov": "3.7.2",
