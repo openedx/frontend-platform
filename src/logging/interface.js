@@ -5,12 +5,8 @@
  * NewRelicLoggingService that sends messages to NewRelic that can be seen in NewRelic Browser and
  * NewRelic Insights. When in development mode, all messages will instead be sent to the console.
  *
- * When you use `logError` or `logApiClientError`, your errors will appear under "JS errors"
+ * When you use `logError`, your errors will appear under "JS errors"
  * for your Browser application.
- *
- * Additionally, when you use `logApiClientError`, you get some additional custom metrics for Axios
- * error responses. To see those details, you can use a New Relic Insights query like the
- * following
  *
  * ```
  * SELECT * from JavaScriptError WHERE errorStatus is not null SINCE 10 days ago
