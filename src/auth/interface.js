@@ -171,7 +171,7 @@ export function redirectToLogin(redirectUrl) {
  *
  * ```
  * const url = getLogoutRedirectUrl('http://localhost/mypage');
- * console.log(url); // http://localhost/logout?next=http%3A%2F%2Flocalhost%2Fmypage
+ * console.log(url); // http://localhost/logout?redirect_url=http%3A%2F%2Flocalhost%2Fmypage
  * ```
  *
  * @param {string} redirectUrl The URL the user should be redirected to after logging out.
