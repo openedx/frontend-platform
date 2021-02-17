@@ -1,9 +1,19 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import { logError } from '../logging';
+import { logError, logInfo } from '../logging';
+import { getConfig } from '../config';
 
 import ErrorPage from './ErrorPage';
+
+function shouldQuietError(error) {
+  if (!('QUIET_ERROR_REGEXES' in getConfig())) {
+    return false;
+  }
+  const quietErrorRegexes = getConfig().QUIET_ERROR_REGEXES.split(';');
+  const errorString = error.toString();
+  return quietErrorRegexes.some(regex => regex.matches(errorString));
+}
 
 /**
  * Error boundary component used to log caught errors and display the error page.
@@ -23,7 +33,8 @@ export default class ErrorBoundary extends Component {
   }
 
   componentDidCatch(error, info) {
-    logError(error, { stack: info.componentStack });
+    const log = shouldQuietError(error) ? logInfo : logError;
+    log(error, { stack: info.componentStack });
   }
 
   render() {
