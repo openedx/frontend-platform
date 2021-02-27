@@ -54,9 +54,10 @@ const ExamplePageWithAnalytics = () => {
       <hr />
       <div>
         <Button
+          as="a"
+          href="https://edx.org"
           variant="tertiary"
           className="mr-2"
-          onClick={() => { console.log('Action 1 was clicked'); }}
           analyticEvents={{
             onClick: {
               name: 'edx.ui.lms.button_clicked',
