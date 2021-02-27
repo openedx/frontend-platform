@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 import React, { useState } from 'react';
 import { getConfig } from '@edx/frontend-platform';
 import { getAnalyticsService } from '@edx/frontend-platform/analytics';

@@ -57,7 +57,6 @@ import {
 } from './logging';
 import {
   configure as configureAnalytics,
-  getAnalyticsService,
   SegmentAnalyticsService,
   identifyAnonymousUser,
   identifyAuthenticatedUser,
