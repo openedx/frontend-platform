@@ -79,7 +79,7 @@ const ExamplePageWithAnalytics = () => {
                 someProperty: 20,
               },
               dispatchers: [
-                analyticsService?.sendTrackingLogEvent.bind(analyticsService),
+                (eventName, eventProperties) => analyticsService.sendTrackingLogEvent(eventName, eventProperties),
               ],
             },
           }}

@@ -21,13 +21,12 @@ import './index.scss';
 
 subscribe(APP_READY, () => {
   const analyticsService = getAnalyticsService();
-  const sendTrackEvent = analyticsService?.sendTrackEvent;
 
   ReactDOM.render(
     <AppProvider>
       <ParagonProvider
         analytics={{
-          sendTrackEvent: sendTrackEvent.bind(analyticsService),
+          sendTrackEvent: (eventName, eventPoperties) => analyticsService.sendTrackEvent(eventName, eventPoperties),
         }}
       >
         <PageRoute exact path="/" component={ExamplePage} />
