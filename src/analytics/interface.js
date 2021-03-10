@@ -85,9 +85,10 @@ export function identifyAuthenticatedUser(userId, traits) {
  *
  *
  * @param {*} traits
+ * @returns {Promise}
  */
 export function identifyAnonymousUser(traits) {
-  service.identifyAnonymousUser(traits);
+  return service.identifyAnonymousUser(traits);
 }
 
 /**

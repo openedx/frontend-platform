@@ -141,7 +141,7 @@ export async function analytics() {
   if (authenticatedUser && authenticatedUser.userId) {
     identifyAuthenticatedUser(authenticatedUser.userId);
   } else {
-    identifyAnonymousUser();
+    await identifyAnonymousUser();
   }
 }
 

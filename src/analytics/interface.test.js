@@ -43,6 +43,7 @@ beforeEach(() => {
   window.analytics.identify = jest.fn();
   window.analytics.page = jest.fn();
   window.analytics.track = jest.fn();
+  window.analytics.reset = jest.fn();
 });
 
 describe('analytics sendTrackingLogEvent', () => {
@@ -86,10 +87,22 @@ describe('analytics identifyAuthenticatedUser', () => {
 });
 
 describe('analytics identifyAnonymousUser', () => {
-  it('calls Segment identify on success', () => {
+  it('calls Segment identify on success - no previous segment user', () => {
+    window.analytics.user = () => ({ id: () => null });
     const testTraits = { anything: 'Yay!' };
     identifyAnonymousUser(testTraits);
 
+    expect(window.analytics.reset.mock.calls.length).toBe(0);
+    expect(window.analytics.identify.mock.calls.length).toBe(1);
+    expect(window.analytics.identify).toBeCalledWith(testTraits);
+  });
+
+  it('calls Segment identify on success - previous segment user', () => {
+    window.analytics.user = () => ({ id: () => 7 });
+    const testTraits = { anything: 'Yay!' };
+    identifyAnonymousUser(testTraits);
+
+    expect(window.analytics.reset.mock.calls.length).toBe(1);
     expect(window.analytics.identify.mock.calls.length).toBe(1);
     expect(window.analytics.identify).toBeCalledWith(testTraits);
   });
