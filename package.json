@@ -53,6 +53,8 @@
   },
   "dependencies": {
     "@cospired/i18n-iso-languages": "2.1.2",
+    "@formatjs/intl-pluralrules": "^4.0.6",
+    "@formatjs/intl-relativetimeformat": "^8.0.4",
     "axios": "0.21.1",
     "axios-cache-adapter": "^2.5.0",
     "form-urlencoded": "4.1.4",
@@ -67,7 +69,7 @@
     "lodash.merge": "4.6.2",
     "lodash.snakecase": "4.1.1",
     "pubsub-js": "1.7.0",
-    "react-intl": "2.9.0",
+    "react-intl": "^5.12.3",
     "universal-cookie": "4.0.4"
   },
   "peerDependencies": {

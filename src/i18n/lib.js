@@ -1,21 +1,53 @@
 import PropTypes from 'prop-types';
-import { addLocaleData } from 'react-intl';
-import arLocale from 'react-intl/locale-data/ar';
-import enLocale from 'react-intl/locale-data/en';
-import esLocale from 'react-intl/locale-data/es';
-import frLocale from 'react-intl/locale-data/fr';
-import zhLocale from 'react-intl/locale-data/zh';
-import caLocale from 'react-intl/locale-data/ca';
-import heLocale from 'react-intl/locale-data/he';
-import idLocale from 'react-intl/locale-data/id';
-import koLocale from 'react-intl/locale-data/ko';
-import plLocale from 'react-intl/locale-data/pl';
-import ptLocale from 'react-intl/locale-data/pt';
-import ruLocale from 'react-intl/locale-data/ru';
-import thLocale from 'react-intl/locale-data/th';
-import ukLocale from 'react-intl/locale-data/uk';
+// import { addLocaleData } from 'react-intl';
+// import arLocale from 'react-intl/locale-data/ar';
+// import enLocale from 'react-intl/locale-data/en';
+// import esLocale from 'react-intl/locale-data/es';
+// import frLocale from 'react-intl/locale-data/fr';
+// import zhLocale from 'react-intl/locale-data/zh';
+// import caLocale from 'react-intl/locale-data/ca';
+// import heLocale from 'react-intl/locale-data/he';
+// import idLocale from 'react-intl/locale-data/id';
+// import koLocale from 'react-intl/locale-data/ko';
+// import plLocale from 'react-intl/locale-data/pl';
+// import ptLocale from 'react-intl/locale-data/pt';
+// import ruLocale from 'react-intl/locale-data/ru';
+// import thLocale from 'react-intl/locale-data/th';
+// import ukLocale from 'react-intl/locale-data/uk';
 import Cookies from 'universal-cookie';
 import merge from 'lodash.merge';
+
+import '@formatjs/intl-pluralrules/polyfill';
+import '@formatjs/intl-pluralrules/locale-data/ar';
+import '@formatjs/intl-pluralrules/locale-data/en';
+import '@formatjs/intl-pluralrules/locale-data/es';
+import '@formatjs/intl-pluralrules/locale-data/fr';
+import '@formatjs/intl-pluralrules/locale-data/zh';
+import '@formatjs/intl-pluralrules/locale-data/ca';
+import '@formatjs/intl-pluralrules/locale-data/he';
+import '@formatjs/intl-pluralrules/locale-data/id';
+import '@formatjs/intl-pluralrules/locale-data/ko';
+import '@formatjs/intl-pluralrules/locale-data/pl';
+import '@formatjs/intl-pluralrules/locale-data/pt';
+import '@formatjs/intl-pluralrules/locale-data/ru';
+import '@formatjs/intl-pluralrules/locale-data/th';
+import '@formatjs/intl-pluralrules/locale-data/uk';
+
+import '@formatjs/intl-relativetimeformat/polyfill';
+import '@formatjs/intl-relativetimeformat/locale-data/ar';
+import '@formatjs/intl-relativetimeformat/locale-data/en';
+import '@formatjs/intl-relativetimeformat/locale-data/es';
+import '@formatjs/intl-relativetimeformat/locale-data/fr';
+import '@formatjs/intl-relativetimeformat/locale-data/zh';
+import '@formatjs/intl-relativetimeformat/locale-data/ca';
+import '@formatjs/intl-relativetimeformat/locale-data/he';
+import '@formatjs/intl-relativetimeformat/locale-data/id';
+import '@formatjs/intl-relativetimeformat/locale-data/ko';
+import '@formatjs/intl-relativetimeformat/locale-data/pl';
+import '@formatjs/intl-relativetimeformat/locale-data/pt';
+import '@formatjs/intl-relativetimeformat/locale-data/ru';
+import '@formatjs/intl-relativetimeformat/locale-data/th';
+import '@formatjs/intl-relativetimeformat/locale-data/uk';
 
 const cookies = new Cookies();
 const supportedLocales = [
@@ -46,10 +78,21 @@ let loggingService = null;
 let messages = null;
 
 /**
+ * @memberof module:Internationalization
+ *
+ * Prior versions of react-intl (our primary implementation of the i18n service) included a
+ * PropTypes-based 'shape' for its `intl` object.  This has since been removed.  For legacy
+ * compatibility, we include an `intlShape` export that is set to PropTypes.object.  Usage of this
+ * export is deprecated.
+ *
+ * @deprecated
+ */
+export const intlShape = PropTypes.object;
+
+/**
  *
  * @ignore
  * @returns {LoggingService}
- *
  */
 export const getLoggingService = () => loggingService;
 
@@ -72,22 +115,22 @@ export function getCookies() {
   return cookies;
 }
 
-addLocaleData([
-  ...arLocale,
-  ...enLocale,
-  ...esLocale,
-  ...frLocale,
-  ...zhLocale,
-  ...caLocale,
-  ...heLocale,
-  ...idLocale,
-  ...koLocale,
-  ...plLocale,
-  ...ptLocale,
-  ...ruLocale,
-  ...thLocale,
-  ...ukLocale,
-]);
+// addLocaleData([
+//   ...arLocale,
+//   ...enLocale,
+//   ...esLocale,
+//   ...frLocale,
+//   ...zhLocale,
+//   ...caLocale,
+//   ...heLocale,
+//   ...idLocale,
+//   ...koLocale,
+//   ...plLocale,
+//   ...ptLocale,
+//   ...ruLocale,
+//   ...thLocale,
+//   ...ukLocale,
+// ]);
 
 /**
  * Some of our dependencies function on primary language subtags, rather than full locales.
