@@ -3,6 +3,7 @@ export {
   AUTHENTICATED_USER_CHANGED,
   configure,
   getAuthenticatedHttpClient,
+  getAuthService,
   getHttpClient,
   getLoginRedirectUrl,
   redirectToLogin,

@@ -32,51 +32,15 @@ const optionsPropTypes = {
 /**
  * The MockAuthService class mocks authenticated user-fetching logic and allows for manually
  * setting user data.  It is compatible with axios-mock-adapter to wrap its HttpClients so that
- * they can be mocked for development and testing.  In an application, it could be used to
- * temporarily override the "real" auth service:
+ * they can be mocked for testing.
  *
- * ```
- * import {
- *   initialize,
- *   APP_AUTH_INITIALIZED,
- *   subscribe,
- *   mergeConfig,
- * } from '@edx/frontend-platform';
- * import { MockAuthService } from '@edx/frontend-platform/auth';
- * import MockAdapter from 'axios-mock-adapter';
+ * It wraps all methods of the service with Jest mock functions (jest.fn()).  This allows test code
+ * to assert expectations on all functions of the service while preserving sensible behaviors.  For
+ * instance, the login/logout methods related to redirecting maintain their real behavior.
  *
- * initialize({
- *   handlers: {
- *     config: () => {
- *       mergeConfig({
- *         authenticatedUser: {
- *           userId: 'abc123',
- *           username: 'Mock User',
- *           roles: [],
- *           administrator: false,
- *         },
- *         hydratedAuthenticatedUser: {
- *           // Additional user props expected to be returned from a user accounts API, providing
- *           // additional user details beyond those present in the JWT.  This data is added into
- *           // the user object if and when hydrateAuthenticatedUser is called.  See documentation
- *           // for `hydrateAuthenticatedUser` for more details.
- *         }
- *       });
- *     },
- *   },
- *   messages: [],
- *   authService: MockAuthService,
- * });
- *
- * subscribe(APP_AUTH_INITIALIZED, () => {
- *   // This variable is now a MockAdapter from axios-mock-adapter, allowing onGet, onPost, etc.
- *   // mocking.  This handler will be called prior to any further initialization.  See the
- *   // "Application Initialization" phases in the README for call order details.
- *   const mockAdapter = new MockAdapter(getAuthenticatedHttpClient());
- *   // Mock calls here.
- *   mockAdapter.onGet(...);
- * });
- * ```
+ * This service is NOT suitable for use in an application itself - only tests.  It depends on Jest,
+ * which should only be a dev dependency of your project.  You don't want to pull the entire suite
+ * of test dependencies into your application at runtime, probably even in your dev server.
  *
  * In a test where you would like to mock out API requests - perhaps from a redux-thunk function -
  * you could do the following to set up a MockAuthService for your test:
@@ -104,9 +68,8 @@ const optionsPropTypes = {
  * mockAdapter.onGet(...);
  * ```
  *
- * NOTE: The login/logout methods related to redirecting currently maintain their real behaviors.  A
- * subsequent update to this mock service could allow them to be configured/mocked via the
- * constructor's config options.
+ * Also see the `initializeMockApp` function which also automatically uses mock services for
+ * Logging and Analytics.
  *
  * @implements {AuthService}
  * @memberof module:Auth
@@ -147,26 +110,28 @@ class MockAuthService {
   }
 
   /**
+   * A Jest mock function (jest.fn())
+   *
    * Gets the authenticated HTTP client instance, which is an axios client wrapped in
    * MockAdapter from axios-mock-adapter.
    *
    * @returns {HttpClient} An HttpClient wrapped in MockAdapter.
    */
-  getAuthenticatedHttpClient() {
-    return this.authenticatedHttpClient;
-  }
+  getAuthenticatedHttpClient = jest.fn(() => this.authenticatedHttpClient);
 
   /**
+   * A Jest mock function (jest.fn())
+   *
    * Gets the unauthenticated HTTP client instance, which is an axios client wrapped in
    * MockAdapter from axios-mock-adapter.
    *
    * @returns {HttpClient} An HttpClient wrapped in MockAdapter.
    */
-  getHttpClient() {
-    return this.httpClient;
-  }
+  getHttpClient = jest.fn(() => this.httpClient);
 
   /**
+   * A Jest mock function (jest.fn())
+   *
    * Builds a URL to the login page with a post-login redirect URL attached as a query parameter.
    *
    * ```
@@ -176,20 +141,25 @@ class MockAuthService {
    *
    * @param {string} redirectUrl The URL the user should be redirected to after logging in.
    */
-  getLoginRedirectUrl(redirectUrl = this.config.BASE_URL) {
-    return `${this.config.LOGIN_URL}?next=${encodeURIComponent(redirectUrl)}`;
-  }
+  getLoginRedirectUrl = jest.fn(
+    (redirectUrl = this.config.BASE_URL) => `${this.config.LOGIN_URL}?next=${encodeURIComponent(redirectUrl)}`,
+  );
 
   /**
-   * Redirects the user to the login page.
+   * A Jest mock function (jest.fn())
+   *
+   * Redirects the user to the logout page in the real implementation.  Is a no-op here.
    *
    * @param {string} redirectUrl The URL the user should be redirected to after logging in.
    */
-  redirectToLogin(redirectUrl = this.config.BASE_URL) {
-    global.location.assign(this.getLoginRedirectUrl(redirectUrl));
-  }
+  redirectToLogin = jest.fn((redirectUrl = this.config.BASE_URL) => {
+    // Do nothing after getting the URL - this preserves the calls properly, but doesn't redirect.
+    this.getLoginRedirectUrl(redirectUrl);
+  });
 
   /**
+   * A Jest mock function (jest.fn())
+   *
    * Builds a URL to the logout page with a post-logout redirect URL attached as a query parameter.
    *
    * ```
@@ -199,59 +169,65 @@ class MockAuthService {
    *
    * @param {string} redirectUrl The URL the user should be redirected to after logging out.
    */
-  getLogoutRedirectUrl(redirectUrl = this.config.BASE_URL) {
-    return `${this.config.LOGOUT_URL}?redirect_url=${encodeURIComponent(redirectUrl)}`;
-  }
+  getLogoutRedirectUrl = jest.fn((redirectUrl = this.config.BASE_URL) => `${this.config.LOGOUT_URL}?redirect_url=${encodeURIComponent(redirectUrl)}`);
 
   /**
-   * Redirects the user to the logout page.
+   * A Jest mock function (jest.fn())
+   *
+   * Redirects the user to the logout page in the real implementation.  Is a no-op here.
    *
    * @param {string} redirectUrl The URL the user should be redirected to after logging out.
    */
-  redirectToLogout(redirectUrl = this.config.BASE_URL) {
-    global.location.assign(this.getLogoutRedirectUrl(redirectUrl));
-  }
+  redirectToLogout = jest.fn((redirectUrl = this.config.BASE_URL) => {
+    // Do nothing after getting the URL - this preserves the calls properly, but doesn't redirect.
+    this.getLogoutRedirectUrl(redirectUrl);
+  });
 
   /**
+   * A Jest mock function (jest.fn())
+   *
    * If it exists, returns the user data representing the currently authenticated user. If the
    * user is anonymous, returns null.
    *
    * @returns {UserData|null}
    */
-  getAuthenticatedUser() {
-    return this.authenticatedUser;
-  }
+  getAuthenticatedUser = jest.fn(() => this.authenticatedUser);
 
   /**
+   * A Jest mock function (jest.fn())
+   *
    * Sets the authenticated user to the provided value.
    *
    * @param {UserData} authUser
    */
-  setAuthenticatedUser(authUser) {
+  setAuthenticatedUser = jest.fn((authUser) => {
     this.authenticatedUser = authUser;
-  }
+  });
 
   /**
+   * A Jest mock function (jest.fn())
+   *
    * Returns the current authenticated user details, as supplied in the `authenticatedUser` field
    * of the config options.  Resolves to null if the user is unauthenticated / the config option
    * has not been set.
    *
-   * @returns {Promise<UserData>|Promise<null>} Resolves to the user's access token if they are
+   * @returns {UserData|null} Resolves to the user's access token if they are
    * logged in.
    */
-  async fetchAuthenticatedUser() {
-    return this.getAuthenticatedUser();
-  }
+  fetchAuthenticatedUser = jest.fn(() => this.getAuthenticatedUser());
 
   /**
+   * A Jest mock function (jest.fn())
+   *
    * Ensures a user is authenticated. It will redirect to login when not authenticated.
    *
    * @param {string} [redirectUrl=config.BASE_URL] to return user after login when not
    * authenticated.
-   * @returns {Promise<UserData>}
+   * @returns {UserData|null} Resolves to the user's access token if they are
+   * logged in.
    */
-  async ensureAuthenticatedUser(redirectUrl = this.config.BASE_URL) {
-    await this.fetchAuthenticatedUser();
+  ensureAuthenticatedUser = jest.fn((redirectUrl = this.config.BASE_URL) => {
+    this.fetchAuthenticatedUser();
 
     if (this.getAuthenticatedUser() === null) {
       // The user is not authenticated, send them to the login page.
@@ -259,9 +235,11 @@ class MockAuthService {
     }
 
     return this.getAuthenticatedUser();
-  }
+  })
 
   /**
+   * A Jest mock function (jest.fn())
+   *
    * Adds the user data supplied in the `hydratedAuthenticatedUser` config option into the object
    * returned by `getAuthenticatedUser`.  This emulates the behavior of a real auth service which
    * would make a request to fetch this data prior to merging it in.
@@ -275,12 +253,12 @@ class MockAuthService {
    *
    * @returns {Promise<null>}
    */
-  async hydrateAuthenticatedUser() {
+  hydrateAuthenticatedUser = jest.fn(() => {
     const user = this.getAuthenticatedUser();
     if (user !== null) {
       this.setAuthenticatedUser({ ...user, ...this.hydratedAuthenticatedUser });
     }
-  }
+  });
 }
 
 export default MockAuthService;

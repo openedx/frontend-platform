@@ -1,6 +1,7 @@
 /**
- * The MockAnalyticsService implements all functions of AnalyticsService with Jest mocks, i.e.,
- * jest.fn().  It has no other functionality.
+ * The MockAnalyticsService implements all functions of AnalyticsService as Jest mocks (jest.fn())).
+ * It emulates the behavior of a real analytics service but witohut making any requests. It has no
+ * other functionality.
  *
  * @implements {AnalyticsService}
  * @memberof module:Analytics
@@ -13,30 +14,58 @@ class MockAnalyticsService {
     this.httpClient = httpClient;
   }
 
-  /**
-   * Implemented as a jest.fn().
-   */
-  sendTrackingLogEvent = jest.fn();
+  checkIdentifyCalled = jest.fn(() => {
+    if (!this.hasIdentifyBeenCalled) {
+      this.loggingService.logError('Identify must be called before other tracking events.');
+    }
+  });
 
   /**
-   * Implemented as a jest.fn().
+   * Returns a resolved promise.
+   *
+   * @returns {Promise} The promise returned by HttpClient.post.
    */
-  identifyAuthenticatedUser = jest.fn();
+  sendTrackingLogEvent = jest.fn(() => Promise.resolve());
 
   /**
-   * Implemented as a jest.fn().
+   * No-op, but records that identify has been called.
+   *
+   * @param {string} userId
+   * @throws {Error} If userId argument is not supplied.
    */
-  identifyAnonymousUser = jest.fn();
+  identifyAuthenticatedUser = jest.fn((userId) => {
+    if (!userId) {
+      throw new Error('UserId is required for identifyAuthenticatedUser.');
+    }
+    this.hasIdentifyBeenCalled = true;
+  });
 
   /**
-   * Implemented as a jest.fn().
+   * No-op, but records that it has been called to prevent double-identification.
+   * @returns {Promise} A resolved promise.
    */
-  sendTrackEvent = jest.fn();
+  identifyAnonymousUser = jest.fn(() => {
+    this.hasIdentifyBeenCalled = true;
+    return Promise.resolve();
+  });
 
   /**
-   * Implemented as a jest.fn().
+   * Logs the event to the console.
+   *
+   * Checks whether identify has been called, logging an error to the logging service if not.
    */
-  sendPageEvent = jest.fn();
+  sendTrackEvent = jest.fn(() => {
+    this.checkIdentifyCalled();
+  });
+
+  /**
+   * Logs the event to the console.
+   *
+   * Checks whether identify has been called, logging an error to the logging service if not.
+   */
+  sendPageEvent = jest.fn(() => {
+    this.checkIdentifyCalled();
+  });
 }
 
 export default MockAnalyticsService;

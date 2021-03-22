@@ -20,9 +20,11 @@ const mockLoggingService = {
   logError: jest.fn(),
   logInfo: jest.fn(),
 };
-const mockAuthApiClient = {
-  post: jest.fn().mockResolvedValue(undefined),
+// The actual ApiClient is a function, so while this feels weird, it accurately models the real
+// thing.
+const mockAuthApiClient = () => {
 };
+mockAuthApiClient.post = jest.fn().mockResolvedValue(undefined);
 
 // SegmentAnalyticsService inserts a script before the first script element
 // in the document. Add one here.

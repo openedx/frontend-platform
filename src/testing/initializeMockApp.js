@@ -3,6 +3,7 @@ import { configure as configureI18n } from '../i18n';
 import { configure as configureLogging, MockLoggingService } from '../logging';
 import { configure as configureAuth, MockAuthService } from '../auth';
 import { getConfig } from '../config';
+import mockMessages from './mockMessages';
 
 /**
  * Initializes a mock application for component testing. The mock application includes
@@ -27,9 +28,9 @@ import { getConfig } from '../config';
  * authenticated user. This is passed directly to MockAuthService.
  */
 export default function initializeMockApp({
-  messages = {},
+  messages = mockMessages,
   authenticatedUser = null,
-}) {
+} = {}) {
   const loggingService = configureLogging(MockLoggingService, {
     config: getConfig(),
   });
@@ -40,11 +41,13 @@ export default function initializeMockApp({
   });
 
   const analyticsService = configureAnalytics(MockAnalyticsService, {
+    config: getConfig(),
     httpClient: authService.getAuthenticatedHttpClient(),
     loggingService,
   });
 
-  const i18nService = configureI18n({
+  // The i18n service configure function has no return value, since there isn't a service class.
+  configureI18n({
     config: getConfig(),
     loggingService,
     messages,
@@ -53,7 +56,6 @@ export default function initializeMockApp({
   return {
     analyticsService,
     authService,
-    i18nService,
     loggingService,
   };
 }
