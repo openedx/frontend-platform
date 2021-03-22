@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: react/PageRoute.jsx</title>
+    <title>JSDoc: Source: analytics/MockAnalyticsService.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -18,7 +18,7 @@
 <body data-module="">
 
 <div id="main">
-    <h1 class="page-title">Source: react/PageRoute.jsx</h1>
+    <h1 class="page-title">Source: analytics/MockAnalyticsService.js</h1>
 
     
 
@@ -27,35 +27,77 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/* eslint-disable react/prop-types */
-import React, { useEffect } from 'react';
-import { Route, useRouteMatch } from 'react-router-dom';
-import { sendPageEvent } from '../analytics';
-
-/**
- * A react-router Route component that calls `sendPageEvent` when it becomes active.
+            <pre class="prettyprint source linenums"><code>/**
+ * The MockAnalyticsService implements all functions of AnalyticsService as Jest mocks (jest.fn())).
+ * It emulates the behavior of a real analytics service but witohut making any requests. It has no
+ * other functionality.
  *
- * @see {@link module:frontend-platform/analytics~sendPageEvent}
- * @memberof module:React
- * @param {Object} props
+ * @implements {AnalyticsService}
+ * @memberof module:Analytics
  */
-export default function PageRoute(props) {
-  const match = useRouteMatch({
-    path: props.path,
-    exact: props.exact,
-    strict: props.strict,
-    sensitive: props.sensitive,
+class MockAnalyticsService {
+  static hasIdentifyBeenCalled = false;
+
+  constructor({ httpClient, loggingService }) {
+    this.loggingService = loggingService;
+    this.httpClient = httpClient;
+  }
+
+  checkIdentifyCalled = jest.fn(() => {
+    if (!this.hasIdentifyBeenCalled) {
+      this.loggingService.logError('Identify must be called before other tracking events.');
+    }
   });
 
-  useEffect(() => {
-    if (match) {
-      sendPageEvent();
+  /**
+   * Returns a resolved promise.
+   *
+   * @returns {Promise} The promise returned by HttpClient.post.
+   */
+  sendTrackingLogEvent = jest.fn(() => Promise.resolve());
+
+  /**
+   * No-op, but records that identify has been called.
+   *
+   * @param {string} userId
+   * @throws {Error} If userId argument is not supplied.
+   */
+  identifyAuthenticatedUser = jest.fn((userId) => {
+    if (!userId) {
+      throw new Error('UserId is required for identifyAuthenticatedUser.');
     }
-  }, [match]);
-  return (
-    &lt;Route {...props} />
-  );
+    this.hasIdentifyBeenCalled = true;
+  });
+
+  /**
+   * No-op, but records that it has been called to prevent double-identification.
+   * @returns {Promise} A resolved promise.
+   */
+  identifyAnonymousUser = jest.fn(() => {
+    this.hasIdentifyBeenCalled = true;
+    return Promise.resolve();
+  });
+
+  /**
+   * Logs the event to the console.
+   *
+   * Checks whether identify has been called, logging an error to the logging service if not.
+   */
+  sendTrackEvent = jest.fn(() => {
+    this.checkIdentifyCalled();
+  });
+
+  /**
+   * Logs the event to the console.
+   *
+   * Checks whether identify has been called, logging an error to the logging service if not.
+   */
+  sendPageEvent = jest.fn(() => {
+    this.checkIdentifyCalled();
+  });
 }
+
+export default MockAnalyticsService;
 </code></pre>
         </article>
     </section>

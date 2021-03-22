@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: react/PageRoute.jsx</title>
+    <title>JSDoc: Source: logging/MockLoggingService.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -18,7 +18,7 @@
 <body data-module="">
 
 <div id="main">
-    <h1 class="page-title">Source: react/PageRoute.jsx</h1>
+    <h1 class="page-title">Source: logging/MockLoggingService.js</h1>
 
     
 
@@ -27,35 +27,30 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/* eslint-disable react/prop-types */
-import React, { useEffect } from 'react';
-import { Route, useRouteMatch } from 'react-router-dom';
-import { sendPageEvent } from '../analytics';
-
-/**
- * A react-router Route component that calls `sendPageEvent` when it becomes active.
+            <pre class="prettyprint source linenums"><code>/**
+ * The MockLoggingService implements both logInfo and logError as jest mock functions via
+ * jest.fn().  It has no other functionality.
  *
- * @see {@link module:frontend-platform/analytics~sendPageEvent}
- * @memberof module:React
- * @param {Object} props
+ * @implements {LoggingService}
+ * @memberof module:Logging
  */
-export default function PageRoute(props) {
-  const match = useRouteMatch({
-    path: props.path,
-    exact: props.exact,
-    strict: props.strict,
-    sensitive: props.sensitive,
-  });
+class MockLoggingService {
+  /**
+   * Implemented as a jest.fn()
+   *
+   * @memberof MockLoggingService
+   */
+  logInfo = jest.fn();
 
-  useEffect(() => {
-    if (match) {
-      sendPageEvent();
-    }
-  }, [match]);
-  return (
-    &lt;Route {...props} />
-  );
+  /**
+   * Implemented as a jest.fn()
+   *
+   * @memberof MockLoggingService
+   */
+  logError = jest.fn();
 }
+
+export default MockLoggingService;
 </code></pre>
         </article>
     </section>

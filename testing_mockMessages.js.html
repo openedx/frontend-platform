@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: react/PageRoute.jsx</title>
+    <title>JSDoc: Source: testing/mockMessages.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -18,7 +18,7 @@
 <body data-module="">
 
 <div id="main">
-    <h1 class="page-title">Source: react/PageRoute.jsx</h1>
+    <h1 class="page-title">Source: testing/mockMessages.js</h1>
 
     
 
@@ -27,35 +27,27 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/* eslint-disable react/prop-types */
-import React, { useEffect } from 'react';
-import { Route, useRouteMatch } from 'react-router-dom';
-import { sendPageEvent } from '../analytics';
-
-/**
- * A react-router Route component that calls `sendPageEvent` when it becomes active.
- *
- * @see {@link module:frontend-platform/analytics~sendPageEvent}
- * @memberof module:React
- * @param {Object} props
+            <pre class="prettyprint source linenums"><code>/**
+ * An empty messages object suitable for fulfilling the i18n service's contract.
+ * @memberof module:Testing
  */
-export default function PageRoute(props) {
-  const match = useRouteMatch({
-    path: props.path,
-    exact: props.exact,
-    strict: props.strict,
-    sensitive: props.sensitive,
-  });
+const messages = {
+  ar: {},
+  'es-419': {},
+  fr: {},
+  'zh-cn': {},
+  ca: {},
+  he: {},
+  id: {},
+  'ko-kr': {},
+  pl: {},
+  'pt-br': {},
+  ru: {},
+  th: {},
+  uk: {},
+};
 
-  useEffect(() => {
-    if (match) {
-      sendPageEvent();
-    }
-  }, [match]);
-  return (
-    &lt;Route {...props} />
-  );
-}
+export default messages;
 </code></pre>
         </article>
     </section>

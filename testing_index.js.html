@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: react/PageRoute.jsx</title>
+    <title>JSDoc: Source: testing/index.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -18,7 +18,7 @@
 <body data-module="">
 
 <div id="main">
-    <h1 class="page-title">Source: react/PageRoute.jsx</h1>
+    <h1 class="page-title">Source: testing/index.js</h1>
 
     
 
@@ -27,35 +27,15 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/* eslint-disable react/prop-types */
-import React, { useEffect } from 'react';
-import { Route, useRouteMatch } from 'react-router-dom';
-import { sendPageEvent } from '../analytics';
-
-/**
- * A react-router Route component that calls `sendPageEvent` when it becomes active.
+            <pre class="prettyprint source linenums"><code>/**
+ * #### Import members from **@edx/frontend-platform/testing**
+ * The testing module provides helpers for writing tests in Jest.
  *
- * @see {@link module:frontend-platform/analytics~sendPageEvent}
- * @memberof module:React
- * @param {Object} props
+ * @module Testing
  */
-export default function PageRoute(props) {
-  const match = useRouteMatch({
-    path: props.path,
-    exact: props.exact,
-    strict: props.strict,
-    sensitive: props.sensitive,
-  });
 
-  useEffect(() => {
-    if (match) {
-      sendPageEvent();
-    }
-  }, [match]);
-  return (
-    &lt;Route {...props} />
-  );
-}
+export { default as initializeMockApp } from './initializeMockApp';
+export { default as mockMessages } from './mockMessages';
 </code></pre>
         </article>
     </section>

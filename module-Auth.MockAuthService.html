@@ -34,49 +34,13 @@
         
             <div class="class-description"><p>The MockAuthService class mocks authenticated user-fetching logic and allows for manually
 setting user data.  It is compatible with axios-mock-adapter to wrap its HttpClients so that
-they can be mocked for development and testing.  In an application, it could be used to
-temporarily override the &quot;real&quot; auth service:</p>
-<pre class="prettyprint source"><code>import {
-  initialize,
-  APP_AUTH_INITIALIZED,
-  subscribe,
-  mergeConfig,
-} from '@edx/frontend-platform';
-import { MockAuthService } from '@edx/frontend-platform/auth';
-import MockAdapter from 'axios-mock-adapter';
-
-initialize({
-  handlers: {
-    config: () => {
-      mergeConfig({
-        authenticatedUser: {
-          userId: 'abc123',
-          username: 'Mock User',
-          roles: [],
-          administrator: false,
-        },
-        hydratedAuthenticatedUser: {
-          // Additional user props expected to be returned from a user accounts API, providing
-          // additional user details beyond those present in the JWT.  This data is added into
-          // the user object if and when hydrateAuthenticatedUser is called.  See documentation
-          // for `hydrateAuthenticatedUser` for more details.
-        }
-      });
-    },
-  },
-  messages: [],
-  authService: MockAuthService,
-});
-
-subscribe(APP_AUTH_INITIALIZED, () => {
-  // This variable is now a MockAdapter from axios-mock-adapter, allowing onGet, onPost, etc.
-  // mocking.  This handler will be called prior to any further initialization.  See the
-  // &quot;Application Initialization&quot; phases in the README for call order details.
-  const mockAdapter = new MockAdapter(getAuthenticatedHttpClient());
-  // Mock calls here.
-  mockAdapter.onGet(...);
-});
-</code></pre>
+they can be mocked for testing.</p>
+<p>It wraps all methods of the service with Jest mock functions (jest.fn()).  This allows test code
+to assert expectations on all functions of the service while preserving sensible behaviors.  For
+instance, the login/logout methods related to redirecting maintain their real behavior.</p>
+<p>This service is NOT suitable for use in an application itself - only tests.  It depends on Jest,
+which should only be a dev dependency of your project.  You don't want to pull the entire suite
+of test dependencies into your application at runtime, probably even in your dev server.</p>
 <p>In a test where you would like to mock out API requests - perhaps from a redux-thunk function -
 you could do the following to set up a MockAuthService for your test:</p>
 <pre class="prettyprint source"><code>import { getConfig, mergeConfig } from '@edx/frontend-platform';
@@ -100,9 +64,8 @@ const mockAdapter = new MockAdapter(getAuthenticatedHttpClient());
 // Mock calls for your tests.  This configuration can be done in any sort of test setup.
 mockAdapter.onGet(...);
 </code></pre>
-<p>NOTE: The login/logout methods related to redirecting currently maintain their real behaviors.  A
-subsequent update to this mock service could allow them to be configured/mocked via the
-constructor's config options.</p></div>
+<p>Also see the <code>initializeMockApp</code> function which also automatically uses mock services for
+Logging and Analytics.</p></div>
         
     
 </header>
@@ -526,7 +489,7 @@ constructor's config options.</p></div>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line114">line 114</a>
+        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line77">line 77</a>
     </li></ul></dd>
     
 
@@ -572,103 +535,20 @@ constructor's config options.</p></div>
     
 
     
-
-    
-        <h3 class="subsection-title">Methods</h3>
+        <h3 class="subsection-title">Members</h3>
 
         
             
+<h4 class="name" id="ensureAuthenticatedUser"><span class="type-signature"></span>ensureAuthenticatedUser<span class="type-signature"></span></h4>
 
-    
-
-    
-    <h4 class="name" id="ensureAuthenticatedUser"><span class="type-signature">(async) </span>ensureAuthenticatedUser<span class="signature">(redirectUrl<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise.&lt;UserData>}</span></h4>
-    
-
-    
 
 
 
 <div class="description">
-    <p>Ensures a user is authenticated. It will redirect to login when not authenticated.</p>
+    <p>A Jest mock function (jest.fn())</p>
+<p>Ensures a user is authenticated. It will redirect to login when not authenticated.</p>
 </div>
 
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-        <th>Default</th>
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>redirectUrl</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    config.BASE_URL
-                
-                </td>
-            
-
-            <td class="description last"><p>to return user after login when not
-authenticated.</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
 
 
 
@@ -704,7 +584,7 @@ authenticated.</p></td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line253">line 253</a>
+        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line229">line 229</a>
     </li></ul></dd>
     
 
@@ -720,53 +600,16 @@ authenticated.</p></td>
 
 
 
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Promise.&lt;UserData></span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
         
             
+<h4 class="name" id="fetchAuthenticatedUser"><span class="type-signature"></span>fetchAuthenticatedUser<span class="type-signature"></span></h4>
 
-    
-
-    
-    <h4 class="name" id="fetchAuthenticatedUser"><span class="type-signature">(async) </span>fetchAuthenticatedUser<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;UserData>|Promise.&lt;null>}</span></h4>
-    
-
-    
 
 
 
 <div class="description">
-    <p>Returns the current authenticated user details, as supplied in the <code>authenticatedUser</code> field
+    <p>A Jest mock function (jest.fn())</p>
+<p>Returns the current authenticated user details, as supplied in the <code>authenticatedUser</code> field
 of the config options.  Resolves to null if the user is unauthenticated / the config option
 has not been set.</p>
 </div>
@@ -777,6 +620,64 @@ has not been set.</p>
 
 
 
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line217">line 217</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="getAuthenticatedHttpClient"><span class="type-signature"></span>getAuthenticatedHttpClient<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    <p>A Jest mock function (jest.fn())</p>
+<p>Gets the authenticated HTTP client instance, which is an axios client wrapped in
+MockAdapter from axios-mock-adapter.</p>
+</div>
+
 
 
 
@@ -812,7 +713,7 @@ has not been set.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line242">line 242</a>
+        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line120">line 120</a>
     </li></ul></dd>
     
 
@@ -828,41 +729,65 @@ has not been set.</p>
 
 
 
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
         
-<div class="param-desc">
-    <p>Resolves to the user's access token if they are
-logged in.</p>
+            
+<h4 class="name" id="getAuthenticatedUser"><span class="type-signature"></span>getAuthenticatedUser<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    <p>A Jest mock function (jest.fn())</p>
+<p>If it exists, returns the user data representing the currently authenticated user. If the
+user is anonymous, returns null.</p>
 </div>
 
 
 
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Promise.&lt;UserData></span>
-|
-
-<span class="param-type">Promise.&lt;null></span>
 
 
-    </dd>
-</dl>
+
+
+<dl class="details">
 
     
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line194">line 194</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
 
 
 
@@ -870,19 +795,14 @@ logged in.</p>
 
         
             
+<h4 class="name" id="getHttpClient"><span class="type-signature"></span>getHttpClient<span class="type-signature"></span></h4>
 
-    
-
-    
-    <h4 class="name" id="getAuthenticatedHttpClient"><span class="type-signature"></span>getAuthenticatedHttpClient<span class="signature">()</span><span class="type-signature"> &rarr; {HttpClient}</span></h4>
-    
-
-    
 
 
 
 <div class="description">
-    <p>Gets the authenticated HTTP client instance, which is an axios client wrapped in
+    <p>A Jest mock function (jest.fn())</p>
+<p>Gets the unauthenticated HTTP client instance, which is an axios client wrapped in
 MockAdapter from axios-mock-adapter.</p>
 </div>
 
@@ -891,6 +811,265 @@ MockAdapter from axios-mock-adapter.</p>
 
 
 
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line130">line 130</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="getLoginRedirectUrl"><span class="type-signature"></span>getLoginRedirectUrl<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    <p>A Jest mock function (jest.fn())</p>
+<p>Builds a URL to the login page with a post-login redirect URL attached as a query parameter.</p>
+<pre class="prettyprint source"><code>const url = getLoginRedirectUrl('http://localhost/mypage');
+console.log(url); // http://localhost/login?next=http%3A%2F%2Flocalhost%2Fmypage
+</code></pre>
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line144">line 144</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="getLogoutRedirectUrl"><span class="type-signature"></span>getLogoutRedirectUrl<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    <p>A Jest mock function (jest.fn())</p>
+<p>Builds a URL to the logout page with a post-logout redirect URL attached as a query parameter.</p>
+<pre class="prettyprint source"><code>const url = getLogoutRedirectUrl('http://localhost/mypage');
+console.log(url); // http://localhost/logout?next=http%3A%2F%2Flocalhost%2Fmypage
+</code></pre>
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line172">line 172</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="hydrateAuthenticatedUser"><span class="type-signature"></span>hydrateAuthenticatedUser<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    <p>A Jest mock function (jest.fn())</p>
+<p>Adds the user data supplied in the <code>hydratedAuthenticatedUser</code> config option into the object
+returned by <code>getAuthenticatedUser</code>.  This emulates the behavior of a real auth service which
+would make a request to fetch this data prior to merging it in.</p>
+<pre class="prettyprint source"><code>console.log(authenticatedUser); // Will be sparse and only contain basic information.
+await hydrateAuthenticatedUser()
+const authenticatedUser = getAuthenticatedUser();
+console.log(authenticatedUser); // Will contain additional user information
+</code></pre>
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line256">line 256</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="redirectToLogin"><span class="type-signature"></span>redirectToLogin<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    <p>A Jest mock function (jest.fn())</p>
+<p>Redirects the user to the logout page in the real implementation.  Is a no-op here.</p>
+</div>
 
 
 
@@ -943,65 +1122,17 @@ MockAdapter from axios-mock-adapter.</p>
 
 
 
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    <p>An HttpClient wrapped in MockAdapter.</p>
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">HttpClient</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
         
             
+<h4 class="name" id="redirectToLogout"><span class="type-signature"></span>redirectToLogout<span class="type-signature"></span></h4>
 
-    
-
-    
-    <h4 class="name" id="getAuthenticatedUser"><span class="type-signature"></span>getAuthenticatedUser<span class="signature">()</span><span class="type-signature"> &rarr; {UserData|null}</span></h4>
-    
-
-    
 
 
 
 <div class="description">
-    <p>If it exists, returns the user data representing the currently authenticated user. If the
-user is anonymous, returns null.</p>
+    <p>A Jest mock function (jest.fn())</p>
+<p>Redirects the user to the logout page in the real implementation.  Is a no-op here.</p>
 </div>
-
-
-
-
-
-
 
 
 
@@ -1038,7 +1169,7 @@ user is anonymous, returns null.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line221">line 221</a>
+        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line181">line 181</a>
     </li></ul></dd>
     
 
@@ -1054,64 +1185,17 @@ user is anonymous, returns null.</p>
 
 
 
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">UserData</span>
-|
-
-<span class="param-type">null</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
         
             
+<h4 class="name" id="setAuthenticatedUser"><span class="type-signature"></span>setAuthenticatedUser<span class="type-signature"></span></h4>
 
-    
-
-    
-    <h4 class="name" id="getHttpClient"><span class="type-signature"></span>getHttpClient<span class="signature">()</span><span class="type-signature"> &rarr; {HttpClient}</span></h4>
-    
-
-    
 
 
 
 <div class="description">
-    <p>Gets the unauthenticated HTTP client instance, which is an axios client wrapped in
-MockAdapter from axios-mock-adapter.</p>
+    <p>A Jest mock function (jest.fn())</p>
+<p>Sets the authenticated user to the provided value.</p>
 </div>
-
-
-
-
-
-
 
 
 
@@ -1148,7 +1232,7 @@ MockAdapter from axios-mock-adapter.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line165">line 165</a>
+        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line203">line 203</a>
     </li></ul></dd>
     
 
@@ -1164,847 +1248,9 @@ MockAdapter from axios-mock-adapter.</p>
 
 
 
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
         
-<div class="param-desc">
-    <p>An HttpClient wrapped in MockAdapter.</p>
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">HttpClient</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="getLoginRedirectUrl"><span class="type-signature"></span>getLoginRedirectUrl<span class="signature">(redirectUrl)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    <p>Builds a URL to the login page with a post-login redirect URL attached as a query parameter.</p>
-<pre class="prettyprint source"><code>const url = getLoginRedirectUrl('http://localhost/mypage');
-console.log(url); // http://localhost/login?next=http%3A%2F%2Flocalhost%2Fmypage
-</code></pre>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>redirectUrl</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>The URL the user should be redirected to after logging in.</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line179">line 179</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="getLogoutRedirectUrl"><span class="type-signature"></span>getLogoutRedirectUrl<span class="signature">(redirectUrl)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    <p>Builds a URL to the logout page with a post-logout redirect URL attached as a query parameter.</p>
-<pre class="prettyprint source"><code>const url = getLogoutRedirectUrl('http://localhost/mypage');
-console.log(url); // http://localhost/logout?next=http%3A%2F%2Flocalhost%2Fmypage
-</code></pre>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>redirectUrl</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>The URL the user should be redirected to after logging out.</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line202">line 202</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="hydrateAuthenticatedUser"><span class="type-signature">(async) </span>hydrateAuthenticatedUser<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;null>}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    <p>Adds the user data supplied in the <code>hydratedAuthenticatedUser</code> config option into the object
-returned by <code>getAuthenticatedUser</code>.  This emulates the behavior of a real auth service which
-would make a request to fetch this data prior to merging it in.</p>
-<pre class="prettyprint source"><code>console.log(authenticatedUser); // Will be sparse and only contain basic information.
-await hydrateAuthenticatedUser()
-const authenticatedUser = getAuthenticatedUser();
-console.log(authenticatedUser); // Will contain additional user information
-</code></pre>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line278">line 278</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Promise.&lt;null></span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="redirectToLogin"><span class="type-signature"></span>redirectToLogin<span class="signature">(redirectUrl)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    <p>Redirects the user to the login page.</p>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
     
-
-        <tr>
-            
-                <td class="name"><code>redirectUrl</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>The URL the user should be redirected to after logging in.</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line188">line 188</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="redirectToLogout"><span class="type-signature"></span>redirectToLogout<span class="signature">(redirectUrl)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    <p>Redirects the user to the logout page.</p>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>redirectUrl</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>The URL the user should be redirected to after logging out.</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line211">line 211</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="setAuthenticatedUser"><span class="type-signature"></span>setAuthenticatedUser<span class="signature">(authUser)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    <p>Sets the authenticated user to the provided value.</p>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>authUser</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">UserData</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="auth_MockAuthService.js.html">auth/MockAuthService.js</a>, <a href="auth_MockAuthService.js.html#line230">line 230</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
-        
     
 
     
@@ -2024,7 +1270,7 @@ console.log(authenticatedUser); // Will contain additional user information
                     <a href="module-Analytics.html" class="nav-link font-weight-bold">Analytics</a>
                     
             <ul class="list-unstyled px-3 pb-4 bg-light">
-                <li><a href="module-Analytics.AnalyticsService.html">AnalyticsService</a></li><li><a href="module-Analytics.SegmentAnalyticsService.html">SegmentAnalyticsService</a></li><li><a href="module-Analytics.html#~configure">configure</a></li><li><a href="module-Analytics.html#~getAnalyticsService">getAnalyticsService</a></li><li><a href="module-Analytics.html#~identifyAnonymousUser">identifyAnonymousUser</a></li><li><a href="module-Analytics.html#~identifyAuthenticatedUser">identifyAuthenticatedUser</a></li><li><a href="module-Analytics.html#~resetAnalyticsService">resetAnalyticsService</a></li><li><a href="module-Analytics.html#~sendPageEvent">sendPageEvent</a></li><li><a href="module-Analytics.html#~sendTrackEvent">sendTrackEvent</a></li><li><a href="module-Analytics.html#~sendTrackingLogEvent">sendTrackingLogEvent</a></li>
+                <li><a href="module-Analytics.AnalyticsService.html">AnalyticsService</a></li><li><a href="module-Analytics.MockAnalyticsService.html">MockAnalyticsService</a></li><li><a href="module-Analytics.SegmentAnalyticsService.html">SegmentAnalyticsService</a></li><li><a href="module-Analytics.html#~configure">configure</a></li><li><a href="module-Analytics.html#~getAnalyticsService">getAnalyticsService</a></li><li><a href="module-Analytics.html#~identifyAnonymousUser">identifyAnonymousUser</a></li><li><a href="module-Analytics.html#~identifyAuthenticatedUser">identifyAuthenticatedUser</a></li><li><a href="module-Analytics.html#~resetAnalyticsService">resetAnalyticsService</a></li><li><a href="module-Analytics.html#~sendPageEvent">sendPageEvent</a></li><li><a href="module-Analytics.html#~sendTrackEvent">sendTrackEvent</a></li><li><a href="module-Analytics.html#~sendTrackingLogEvent">sendTrackingLogEvent</a></li>
             </ul>
         
                 </li><li class="module-section nav-item Auth">
@@ -2059,7 +1305,7 @@ console.log(authenticatedUser); // Will contain additional user information
                     <a href="module-Logging.html" class="nav-link font-weight-bold">Logging</a>
                     
             <ul class="list-unstyled px-3 pb-4 bg-light">
-                <li><a href="module-Logging.LoggingService.html">LoggingService</a></li><li><a href="module-Logging.NewRelicLoggingService.html">NewRelicLoggingService</a></li><li><a href="module-Logging.html#~configure">configure</a></li><li><a href="module-Logging.html#~getLoggingService">getLoggingService</a></li><li><a href="module-Logging.html#~logError">logError</a></li><li><a href="module-Logging.html#~logInfo">logInfo</a></li><li><a href="module-Logging.html#~resetLoggingService">resetLoggingService</a></li>
+                <li><a href="module-Logging.LoggingService.html">LoggingService</a></li><li><a href="module-Logging.MockLoggingService.html">MockLoggingService</a></li><li><a href="module-Logging.NewRelicLoggingService.html">NewRelicLoggingService</a></li><li><a href="module-Logging.html#~configure">configure</a></li><li><a href="module-Logging.html#~getLoggingService">getLoggingService</a></li><li><a href="module-Logging.html#~logError">logError</a></li><li><a href="module-Logging.html#~logInfo">logInfo</a></li><li><a href="module-Logging.html#~resetLoggingService">resetLoggingService</a></li>
             </ul>
         
                 </li><li class="module-section nav-item PubSub">
@@ -2076,6 +1322,13 @@ console.log(authenticatedUser); // Will contain additional user information
                 <li><a href="module-React.html#.AppContext">AppContext</a></li><li><a href="module-React.html#.AppProvider">AppProvider</a></li><li><a href="module-React.html#.AuthenticatedPageRoute">AuthenticatedPageRoute</a></li><li><a href="module-React.ErrorBoundary.html">ErrorBoundary</a></li><li><a href="module-React.ErrorPage.html">ErrorPage</a></li><li><a href="module-React.html#.LoginRedirect">LoginRedirect</a></li><li><a href="module-React.html#.OptionalReduxProvider">OptionalReduxProvider</a></li><li><a href="module-React.html#.PageRoute">PageRoute</a></li><li><a href="module-React.html#.useAppEvent">useAppEvent</a></li>
             </ul>
         
+                </li><li class="module-section nav-item Testing">
+                    <a href="module-Testing.html" class="nav-link font-weight-bold">Testing</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-Testing.html#.initializeMockApp">initializeMockApp</a></li><li><a href="module-Testing.html#.messages">messages</a></li>
+            </ul>
+        
                 </li><li class="module-section nav-item Utilities">
                     <a href="module-Utilities.html" class="nav-link font-weight-bold">Utilities</a>
                     
@@ -2089,7 +1342,7 @@ console.log(authenticatedUser); // Will contain additional user information
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Wed Mar 10 2021 19:09:53 GMT+0000 (Coordinated Universal Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Mon Mar 22 2021 17:47:16 GMT+0000 (Coordinated Universal Time)
 </footer>
 
 <script> prettyPrint(); </script>

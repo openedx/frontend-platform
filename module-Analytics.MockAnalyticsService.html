@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: react/PageRoute.jsx</title>
+    <title>JSDoc: Class: MockAnalyticsService</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -15,50 +15,466 @@
     <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
 </head>
 
-<body data-module="">
+<body data-module="Analytics">
 
 <div id="main">
-    <h1 class="page-title">Source: react/PageRoute.jsx</h1>
+    <h1 class="page-title">Class: MockAnalyticsService</h1>
 
     
 
 
 
+
+<section>
+
+<header>
     
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>/* eslint-disable react/prop-types */
-import React, { useEffect } from 'react';
-import { Route, useRouteMatch } from 'react-router-dom';
-import { sendPageEvent } from '../analytics';
+        <h2><span class="attribs"><span class="type-signature"></span></span>
+            <span class="ancestors"><a href="module-Analytics.html">Analytics</a>.</span>MockAnalyticsService<span class="signature">()</span><span class="type-signature"></span></h2>
+        
+            <div class="class-description"><p>The MockAnalyticsService implements all functions of AnalyticsService as Jest mocks (jest.fn())).
+It emulates the behavior of a real analytics service but witohut making any requests. It has no
+other functionality.</p></div>
+        
+    
+</header>
 
-/**
- * A react-router Route component that calls `sendPageEvent` when it becomes active.
- *
- * @see {@link module:frontend-platform/analytics~sendPageEvent}
- * @memberof module:React
- * @param {Object} props
- */
-export default function PageRoute(props) {
-  const match = useRouteMatch({
-    path: props.path,
-    exact: props.exact,
-    strict: props.strict,
-    sensitive: props.sensitive,
-  });
+<article>
+    <div class="container-overview">
+    
+        
 
-  useEffect(() => {
-    if (match) {
-      sendPageEvent();
-    }
-  }, [match]);
-  return (
-    &lt;Route {...props} />
-  );
-}
-</code></pre>
-        </article>
-    </section>
+    
+    <h2>Constructor</h2>
+    
+
+    
+    <h4 class="name" id="MockAnalyticsService"><span class="type-signature"></span>new MockAnalyticsService<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="implements">Implements:</dt>
+    <dd class="implements"><ul>
+        
+            <li>AnalyticsService</li>
+        
+    </ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="analytics_MockAnalyticsService.js.html">analytics/MockAnalyticsService.js</a>, <a href="analytics_MockAnalyticsService.js.html#line9">line 9</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+<h4 class="name" id="identifyAnonymousUser"><span class="type-signature"></span>identifyAnonymousUser<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    <p>No-op, but records that it has been called to prevent double-identification.</p>
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="analytics_MockAnalyticsService.js.html">analytics/MockAnalyticsService.js</a>, <a href="analytics_MockAnalyticsService.js.html#line47">line 47</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="identifyAuthenticatedUser"><span class="type-signature"></span>identifyAuthenticatedUser<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    <p>No-op, but records that identify has been called.</p>
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="analytics_MockAnalyticsService.js.html">analytics/MockAnalyticsService.js</a>, <a href="analytics_MockAnalyticsService.js.html#line36">line 36</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="sendPageEvent"><span class="type-signature"></span>sendPageEvent<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    <p>Logs the event to the console.</p>
+<p>Checks whether identify has been called, logging an error to the logging service if not.</p>
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="analytics_MockAnalyticsService.js.html">analytics/MockAnalyticsService.js</a>, <a href="analytics_MockAnalyticsService.js.html#line66">line 66</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="sendTrackEvent"><span class="type-signature"></span>sendTrackEvent<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    <p>Logs the event to the console.</p>
+<p>Checks whether identify has been called, logging an error to the logging service if not.</p>
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="analytics_MockAnalyticsService.js.html">analytics/MockAnalyticsService.js</a>, <a href="analytics_MockAnalyticsService.js.html#line57">line 57</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="sendTrackingLogEvent"><span class="type-signature"></span>sendTrackingLogEvent<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    <p>Returns a resolved promise.</p>
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="analytics_MockAnalyticsService.js.html">analytics/MockAnalyticsService.js</a>, <a href="analytics_MockAnalyticsService.js.html#line28">line 28</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 
