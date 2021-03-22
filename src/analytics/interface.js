@@ -29,9 +29,7 @@ import PropTypes from 'prop-types';
 
 const optionsShape = {
   config: PropTypes.object.isRequired,
-  httpClient: PropTypes.shape({
-    post: PropTypes.func.isRequired,
-  }).isRequired,
+  httpClient: PropTypes.func.isRequired,
   loggingService: PropTypes.shape({
     logError: PropTypes.func.isRequired,
     logInfo: PropTypes.func.isRequired,

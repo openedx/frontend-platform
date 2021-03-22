@@ -9,3 +9,4 @@ export {
   resetAnalyticsService,
 } from './interface';
 export { default as SegmentAnalyticsService } from './SegmentAnalyticsService';
+export { default as MockAnalyticsService } from './MockAnalyticsService';

@@ -36,3 +36,7 @@ export {
   mergeConfig,
   ensureConfig,
 } from './config';
+export {
+  initializeMockApp,
+  mockMessages,
+} from './testing';
