@@ -1,5 +1,6 @@
 /**
  * An empty messages object suitable for fulfilling the i18n service's contract.
+ * @memberof module:Testing
  */
 const messages = {
   ar: {},

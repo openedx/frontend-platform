@@ -21,11 +21,27 @@ import mockMessages from './mockMessages';
  * easily, as this functionality would be more-or-less identical to what the real initialize
  * function does.
  *
+ * Example:
+ *
+ * ```
+ * import { initializeMockApp } from '@edx/frontend-platform/testing';
+ * import { logInfo } from '@edx/frontend-platform/logging';
+ *
+ * describe('initializeMockApp', () => {
+ *   it('mocks things correctly', () => {
+ *     const { loggingService } = initializeMockApp();
+ *     logInfo('test', {});
+ *     expect(loggingService.logInfo).toHaveBeenCalledWith('test', {});
+ *   });
+ * });
+ * ```
+ *
  * @param {Object} [options]
  * @param {*} [options.messages] A i18n-compatible messages object, or an array of such objects. If
  * an array is provided, duplicate keys are resolved with the last-one-in winning.
  * @param {UserData|null} [options.authenticatedUser] A UserData object representing the
  * authenticated user. This is passed directly to MockAuthService.
+ * @memberof module:Testing
  */
 export default function initializeMockApp({
   messages = mockMessages,
