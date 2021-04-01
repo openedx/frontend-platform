@@ -7,13 +7,13 @@ import { AppContext } from '@edx/frontend-platform/react';
 import { ensureConfig, mergeConfig, getConfig } from '@edx/frontend-platform';
 import messages from './messages';
 
-ensureConfig([
-  'EXAMPLE_VAR',
-]);
-
 mergeConfig({
   EXAMPLE_VAR: process.env.EXAMPLE_VAR,
-}, 'ExamplePage');
+});
+
+ensureConfig([
+  'EXAMPLE_VAR',
+], 'ExamplePage');
 
 class ExamplePage extends Component {
   constructor(props, context) {
