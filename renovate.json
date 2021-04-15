@@ -1,9 +1,15 @@
 {
   "extends": [
-    "config:base"
+    "config:base",
+    ":automergeLinters",
+    ":automergeTesters",
+    ":automergeMinor",
+    ":noUnscheduledUpdates",
+    ":semanticCommits"
   ],
-  "patch": {
-    "automerge": true
-  },
-  "rebaseStalePrs": true
+  "rebaseStalePrs": true,
+  "schedule": [
+    "every weekend"
+  ],
+  "timezone": "America/New_York"
 }
