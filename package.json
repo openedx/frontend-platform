@@ -31,8 +31,8 @@
   },
   "homepage": "https://github.com/edx/frontend-platform#readme",
   "devDependencies": {
-    "@commitlint/cli": "8.2.0",
-    "@commitlint/config-angular": "8.2.0",
+    "@commitlint/cli": "8.3.5",
+    "@commitlint/config-angular": "8.3.4",
     "@edx/brand": "npm:@edx/brand-openedx@1.1.0",
     "@edx/frontend-build": "5.6.9",
     "@edx/paragon": "12.8.0",
