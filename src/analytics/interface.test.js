@@ -46,6 +46,11 @@ beforeEach(() => {
   window.analytics.page = jest.fn();
   window.analytics.track = jest.fn();
   window.analytics.reset = jest.fn();
+  window.analytics.ready = jest.fn((callback) => {
+    if (callback) {
+      callback();
+    }
+  });
 });
 
 describe('analytics sendTrackingLogEvent', () => {
