@@ -158,28 +158,17 @@ class SegmentAnalyticsService {
   identifyAnonymousUser(traits) {
     // if we do not have an authenticated user (indicated by being in this method),
     // but we still have a user id associated in segment, reset the local segment state
-    // This has to be wrapped in the document.readyState logic because the analytics.user()
+    // This has to be wrapped in the analytics.ready() callback because the analytics.user()
     // function isn't available until the analytics.js package has finished initializing.
     return new Promise((resolve, reject) => { // eslint-disable-line no-unused-vars
-      if (document.readyState === 'complete') {
+      global.analytics.ready(() => {
         if (global.analytics.user().id()) {
           global.analytics.reset();
         }
         global.analytics.identify(traits);
         this.hasIdentifyBeenCalled = true;
         resolve();
-      } else {
-        document.addEventListener('readystatechange', event => {
-          if (event.target.readyState === 'complete') {
-            if (global.analytics.user().id()) {
-              global.analytics.reset();
-            }
-            global.analytics.identify(traits);
-            this.hasIdentifyBeenCalled = true;
-            resolve();
-          }
-        });
-      }
+      });
     });
   }
 
