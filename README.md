@@ -21,6 +21,12 @@ frontend-platform is a modest application framework for Open edX micro-frontend 
 
 In addition, frontend-platform provides an extensible application initialization lifecycle to help manage the configuration of the above services, freeing application developers to focus on feature development.
 
+## Getting started
+
+1. `npm install`
+2. `npm start`
+3. Open http://localhost:8080 to view the example app.
+
 ## Architecture
 
 The four foundational services listed above (analytics, auth, i18n, and logging) are provided as imports to applications via frontend-platform's API layer.  The initialization sequence creates an instance of each service and exposes its methods as functional exports, creating a layer of abstraction between service implementations and their usage in application code.
@@ -33,7 +39,7 @@ Internally, service implementations are strictly isolated from the rest of the p
 
 Likewise, platform code should not make use of service methods that are not part of the documented interface for the same reasons.
 
-### Application Initialization
+### Application initialization
 
 frontend-platform provides an `initialize()` function which bootstraps and configures an application.  The `initialize()` function uses a set of [sensible defaults](https://en.wikipedia.org/wiki/Convention_over_configuration) unless otherwise specified, bootstrapping the application with services reflecting Open edX's best practices around analytics, authentication, internationalization, and logging.
 
@@ -50,7 +56,7 @@ The initialization process proceeds in a series of phases, giving the initializi
 
 Most applications won't need to do anything special at all.
 
-### Application Configuration
+### Application configuration
 
 When the application loads, a list of known environment variables is loaded from `process.env` into an object which it exposes via `getConfig` - the point here is primarily to isolate our code from usages of `process.env` which may not always be the way we choose to configure our apps.  The application initialization lifecycle supports runtime configuration as well via the `config` handler, documented in the [initialize function](https://edx.github.io/frontend-platform/module-Initialization.html#~initialize).  If you want to get a variable into the config that it’s not expecting, you can use [`mergeConfig`](https://edx.github.io/frontend-platform/module-Config.html#~mergeConfig) during initialization to add it in from `process.env`.
 
@@ -88,7 +94,9 @@ The included service implementations are:
 
 NOTE: As of this writing, i18n is _not_ configurable.  The `initialize()` function does not allow applications to supply an alternate i18n implementation; this is because the interface and implementation for i18n has not yet been separated and modularized.
 
-# Testing Locally
+# Local development & testing locally
+
+When making changes to frontend-platform, be sure to manually run the included example app located in `./example`. The example app includes 2 routes to test for both unauthenticated and authenticated users. To start the example app, run `npm start` from the root directory.
 
 If you want to test changes to frontend-platform against a micro-frontend locally, follow the directions here: https://github.com/edx/frontend-build#local-module-configuration-for-webpack
 
