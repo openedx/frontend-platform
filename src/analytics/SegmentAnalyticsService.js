@@ -6,14 +6,13 @@ import { snakeCaseObject } from '../utils';
  * @memberof module:Analytics
  */
 class SegmentAnalyticsService {
-  static hasIdentifyBeenCalled = false;
-
   constructor({ httpClient, loggingService, config }) {
     this.loggingService = loggingService;
     this.httpClient = httpClient;
     this.trackingLogApiUrl = `${config.LMS_BASE_URL}/event`;
     this.segmentKey = config.SEGMENT_KEY;
     this.initialize();
+    this.hasIdentifyBeenCalled = false;
   }
 
   // The code in this function is from Segment's website, with the following
