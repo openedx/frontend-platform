@@ -6,31 +6,39 @@ import { snakeCaseObject } from '../utils';
  * @memberof module:Analytics
  */
 class SegmentAnalyticsService {
-  static hasIdentifyBeenCalled = false;
-
   constructor({ httpClient, loggingService, config }) {
     this.loggingService = loggingService;
     this.httpClient = httpClient;
     this.trackingLogApiUrl = `${config.LMS_BASE_URL}/event`;
     this.segmentKey = config.SEGMENT_KEY;
-    this.initialize();
+    this.hasIdentifyBeenCalled = false;
+    this.segmentInitialized = false;
+
+    if (this.segmentKey) {
+      this.initializeSegment();
+    }
   }
 
-  // The code in this function is from Segment's website, with the following
-  // update: - Takes the segment key as a parameter (
-  // https://segment.com/docs/sources/website/analytics.js/quickstart/
-  initialize() {
+  // The code in this function is from Segment's website, with a few updates:
+  // - It uses the segmentKey from the SegmentAnalyticsService instance.
+  // - It also saves a "segmentInitialized" variable on the SegmentAnalyticsService instance so
+  //   that the service can keep track of its own initialization state.
+  // Reference:
+  // https://segment.com/docs/connections/sources/catalog/libraries/website/javascript/quickstart/
+  initializeSegment() {
     // Create a queue, but don't obliterate an existing one!
     global.analytics = global.analytics || [];
     const { analytics } = global;
 
     // If the real analytics.js is already on the page return.
     if (analytics.initialize) {
+      this.segmentInitialized = true;
       return;
     }
 
     // If the snippet was invoked do nothing.
     if (analytics.invoked) {
+      this.segmentInitialized = true;
       return;
     }
 
@@ -86,6 +94,8 @@ class SegmentAnalyticsService {
       const first = document.getElementsByTagName('script')[0];
       first.parentNode.insertBefore(script, first);
       analytics._loadOptions = options; // eslint-disable-line no-underscore-dangle
+
+      this.segmentInitialized = true;
     };
 
     // Add a version to keep track of what's in the wild.
@@ -145,6 +155,10 @@ class SegmentAnalyticsService {
     if (!userId) {
       throw new Error('UserId is required for identifyAuthenticatedUser.');
     }
+
+    if (!this.segmentInitialized) {
+      return;
+    }
     global.analytics.identify(userId, traits);
     this.hasIdentifyBeenCalled = true;
   }
@@ -156,6 +170,9 @@ class SegmentAnalyticsService {
    * @returns {Promise} Promise that will resolve once the document readyState is complete
    */
   identifyAnonymousUser(traits) {
+    if (!this.segmentInitialized) {
+      return Promise.resolve();
+    }
     // if we do not have an authenticated user (indicated by being in this method),
     // but we still have a user id associated in segment, reset the local segment state
     // This has to be wrapped in the analytics.ready() callback because the analytics.user()
@@ -180,6 +197,9 @@ class SegmentAnalyticsService {
    * @param {*} [properties]
    */
   sendTrackEvent(eventName, properties) {
+    if (!this.segmentInitialized) {
+      return;
+    }
     this.checkIdentifyCalled();
     global.analytics.track(eventName, properties);
   }
@@ -192,6 +212,9 @@ class SegmentAnalyticsService {
    * @param {*} [properties]
    */
   sendPageEvent(category, name, properties) {
+    if (!this.segmentInitialized) {
+      return;
+    }
     this.checkIdentifyCalled();
     global.analytics.page(category, name, properties);
   }
