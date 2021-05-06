@@ -1,35 +1,17 @@
 /**
  * #### Import members from **@edx/frontend-platform/logging**
  *
- * Contains a shared interface for logging information.  Has a default implementation of
- * NewRelicLoggingService that sends messages to NewRelic that can be seen in NewRelic Browser and
- * NewRelic Insights. When in development mode, all messages will instead be sent to the console.
- *
- * When you use `logError`, your errors will appear under "JS errors"
- * for your Browser application.
- *
- * ```
- * SELECT * from JavaScriptError WHERE errorStatus is not null SINCE 10 days ago
- * ```
- *
- * When using `logInfo`, these only appear in New Relic Insights when querying for page actions as
- * follows:
- *
- * ```
- * SELECT * from PageAction WHERE actionName = 'INFO' SINCE 1 hour ago
- * ```
- *
- * You can also add your own custom metrics as an additional argument, or see the code to find
- * other standard custom attributes.
+ * Contains a shared interface for logging information. (The default implementation is in
+ * NewRelicLoggingService.js.) When in development mode, all messages will instead be sent to the console.
  *
  * The `initialize` function performs much of the logging configuration for you.  If, however,
- * you're not using the `initialize` function, logging can be configured via:
+ * you're not using the `initialize` function, logging (via New Relic) can be configured via:
  *
  * ```
- * import { configure, NewRelicLoggingService, logError } from '@edx/frontend-platform/logging';
+ * import { configure, NewRelicLoggingService, logInfo, logError } from '@edx/frontend-platform/logging';
  * import { geConfig } from '@edx/frontend-platform';
  *
- * configureLogging(loggingService, {
+ * configureLogging(NewRelicLoggingService, {
  *   config: getConfig(),
  * });
  *

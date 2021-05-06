@@ -6,10 +6,23 @@ global.newrelic = {
 };
 
 let service = null;
+const configWithIgnoredErrors = {
+  config: {
+    IGNORED_ERROR_REGEXES: /^Ignore this error|very minor/,
+  },
+};
+const configWithNullIgnoredErrors = {
+  config: {
+    IGNORED_ERROR_REGEXES: null,
+  },
+};
+const configWithMissingIgnoredErrors = {
+  config: {},
+};
 
 describe('NewRelicLoggingService', () => {
   beforeEach(() => {
-    service = new NewRelicLoggingService();
+    service = new NewRelicLoggingService(configWithIgnoredErrors);
   });
 
   describe('logInfo', () => {
@@ -21,6 +34,15 @@ describe('NewRelicLoggingService', () => {
       const message = 'Test log';
       service.logInfo(message);
       expect(global.newrelic.addPageAction).toHaveBeenCalledWith('INFO', { message });
+    });
+
+    it('passes info parameters properly with custom attributes', () => {
+      const message = 'Test log';
+      const customAttrs = { a: 1, b: 'red', c: 3 };
+      service.logInfo(message, customAttrs);
+      expect(global.newrelic.addPageAction).toHaveBeenCalledWith('INFO', {
+        message: 'Test log', a: 1, b: 'red', c: 3,
+      });
     });
   });
 
@@ -67,6 +89,52 @@ describe('NewRelicLoggingService', () => {
       };
       service.logError(error);
       expect(global.newrelic.noticeError).toHaveBeenCalledWith(expectedError, undefined);
+    });
+  });
+
+  describe('ignoredErrors', () => {
+    beforeEach(() => {
+      global.newrelic.addPageAction.mockReset();
+      global.newrelic.noticeError.mockReset();
+    });
+
+    it('calls New Relic client as error objects but ignored and sent as page action', () => {
+      const error1 = new Error('Ignore this error!');
+      error1.customAttributes = {
+        hi: 'hello',
+      };
+      service.logError(error1);
+      expect(global.newrelic.addPageAction).toHaveBeenCalledWith('IGNORED_ERROR', {
+        message: error1.message, ...error1.customAttributes,
+      });
+
+      const error2 = new Error('very minor');
+      service.logError(error2);
+      expect(global.newrelic.addPageAction).toHaveBeenCalledWith('IGNORED_ERROR', {
+        message: error2.message,
+      });
+    });
+
+    it('calls New Relic client as error string but ignored and sent as page action', () => {
+      const error = 'Ignore this error!';
+      service.logError(error);
+      expect(global.newrelic.addPageAction).toHaveBeenCalledWith('IGNORED_ERROR', {
+        message: error,
+      });
+    });
+
+    it('calls New Relic client as error object but with null ignored error config', () => {
+      service = new NewRelicLoggingService(configWithNullIgnoredErrors);
+      const error = new Error('Ignore this error!');
+      service.logError(error);
+      expect(global.newrelic.noticeError).toHaveBeenCalledWith(error, undefined);
+    });
+
+    it('calls New Relic client as error object but with missing ignored error config', () => {
+      service = new NewRelicLoggingService(configWithMissingIgnoredErrors);
+      const error = new Error('Ignore this error!');
+      service.logError(error);
+      expect(global.newrelic.noticeError).toHaveBeenCalledWith(error, undefined);
     });
   });
 });
