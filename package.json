@@ -38,7 +38,7 @@
     "@edx/paragon": "12.8.0",
     "axios-mock-adapter": "1.19.0",
     "babel-polyfill": "6.26.0",
-    "codecov": "3.8.1",
+    "codecov": "3.8.2",
     "enzyme": "3.11.0",
     "enzyme-adapter-react-16": "1.15.6",
     "husky": "3.1.0",
