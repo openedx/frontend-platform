@@ -9,8 +9,7 @@ const createProcessAxiosRequestErrorInterceptor = (options) => {
     const processedError = processAxiosError(error);
     const { httpErrorStatus } = processedError.customAttributes;
     if (httpErrorStatus === 401 || httpErrorStatus === 403) {
-      // TODO: Fix this so it no longer imports a logging service.
-      loggingService.logInfo(processedError, processedError.customAttributes);
+      loggingService.logInfo(processedError.message, processedError.customAttributes);
     }
     return Promise.reject(processedError);
   };
