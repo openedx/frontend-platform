@@ -17,16 +17,44 @@ function fixErrorLength(error) {
   return error;
 }
 
+/* Constants used as New Relic page action names. */
+const pageActionNameInfo = 'INFO';
+const pageActionNameIgnoredError = 'IGNORED_ERROR';
+
+function sendPageAction(actionName, message, customAttributes) {
+  if (process.env.NODE_ENV === 'development') {
+    console.log(message, customAttributes); // eslint-disable-line
+  }
+  if (window && typeof window.newrelic !== 'undefined') {
+    window.newrelic.addPageAction(actionName, { message, ...customAttributes });
+  }
+}
+
+function sendError(error, customAttributes) {
+  if (process.env.NODE_ENV === 'development') {
+    console.error(error, customAttributes); // eslint-disable-line
+  }
+  if (window && typeof window.newrelic !== 'undefined') {
+    window.newrelic.noticeError(fixErrorLength(error), customAttributes);
+  }
+}
+
 /**
  * The NewRelicLoggingService is a concrete implementation of the logging service interface that
  * sends messages to NewRelic that can be seen in NewRelic Browser and NewRelic Insights. When in
  * development mode, all messages will instead be sent to the console.
  *
- * When you use `logError`, your errors will appear under "JS errors"
- * for your Browser application.
+ * When you use `logError`, your errors will be checked to see if they're ignored *or* not.
+ * Not-ignored errors will appear under "JS errors" for your Browser application.
  *
  * ```
  * SELECT * from JavaScriptError WHERE errorStatus is not null SINCE 10 days ago
+ * ```
+ *
+ * Ignored errors will appear in New Relic Insights as page actions, which can be queried:
+ *
+ * ```
+ * SELECT * from PageAction WHERE actionName = 'IGNORED_ERROR' SINCE 1 hour ago
  * ```
  *
  * When using `logInfo`, these only appear in New Relic Insights when querying for page actions as
@@ -45,6 +73,39 @@ function fixErrorLength(error) {
  * @memberof module:Logging
  */
 export default class NewRelicLoggingService {
+  constructor(options) {
+    this.config = options ? options.config : undefined;
+    /*
+        Array of explicit error message regexes. If an error message matches a regex, the error is considered
+        an *ignored* error and submitted to New Relic as a page action - not an error.
+
+        Ignored error regexes are configured per frontend application (MFE).
+
+        The list of error regexes is represented in the .env files as a string, with multiple regexes enabled
+        via the '|' regex syntax.
+
+        For example, here's a .env line which ignores two specific errors:
+
+        IGNORED_ERROR_REGEXES='^\\[frontend-auth\\] Unimportant Error|Specific non-critical error #[\\d]+'
+
+        This example would ignore errors with the following messages:
+
+        [frontend-app-generic] - Specific non-critical error #45678 happened.
+        [frontend-app-generic] - Specific non-critical error #93475 happened.
+        [frontend-auth] Unimportant Error: Browser strangeness occurred.
+
+        To test your regex additions, use a JS CLI environment (such as node) and run code like this:
+
+        x = new RegExp('^\\[frontend-auth\\] Unimportant Error|Specific non-critical error #[\\d]+');
+        '[frontend-app-generic] - Specific non-critical error #45678 happened.'.match(x);
+        '[frontend-auth] Unimportant Error: Browser strangeness occurred.'.match(x);
+        'This error should not match anything!'.match(x);
+
+        For edx.org, add new error message regexes in edx-internal YAML as needed.
+    */
+    this.ignoredErrorRegexes = (this.config && 'IGNORED_ERROR_REGEXES' in this.config) ? this.config.IGNORED_ERROR_REGEXES : undefined;
+  }
+
   /**
    *
    *
@@ -53,14 +114,7 @@ export default class NewRelicLoggingService {
    * @memberof NewRelicLoggingService
    */
   logInfo(message, customAttributes = {}) {
-    /* istanbul ignore next */
-    if (process.env.NODE_ENV === 'development') {
-      console.log(message, customAttributes); // eslint-disable-line
-    }
-    /* istanbul ignore else */
-    if (window && typeof window.newrelic !== 'undefined') {
-      window.newrelic.addPageAction('INFO', { message, ...customAttributes });
-    }
+    sendPageAction(pageActionNameInfo, message, customAttributes);
   }
 
   /**
@@ -77,14 +131,19 @@ export default class NewRelicLoggingService {
       // noticeError expects undefined if there are no custom attributes.
       allCustomAttributes = undefined;
     }
-    /* istanbul ignore next */
-    if (process.env.NODE_ENV === 'development') {
-      console.error(error, allCustomAttributes); // eslint-disable-line
-    }
-    /* istanbul ignore else */
-    if (window && typeof window.newrelic !== 'undefined') {
-      // Note: customProperties are not sent.  Presumably High-Security Mode is being used.
-      window.newrelic.noticeError(fixErrorLength(error), allCustomAttributes);
+
+    /*
+        Separate the errors into ignored errors and other errors.
+        Ignored errors are logged via adding a page action.
+        Other errors are logged via noticeError and count as "JS Errors" for the application.
+    */
+    const errorMessage = typeof error === 'string' ? error : error.message;
+    if (this.ignoredErrorRegexes && errorMessage.match(this.ignoredErrorRegexes)) {
+      /* ignored error */
+      sendPageAction(pageActionNameIgnoredError, errorMessage, allCustomAttributes);
+    } else {
+      /*  error! */
+      sendError(error, allCustomAttributes);
     }
   }
 }

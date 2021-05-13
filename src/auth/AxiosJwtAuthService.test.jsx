@@ -127,7 +127,7 @@ const expectLogFunctionToHaveBeenCalledWithMessage = (
   customAttributes,
 ) => {
   const loggedError = callParams[0];
-  expect(loggedError.message).toEqual(errorMessage);
+  expect(typeof loggedError === 'string' ? loggedError : loggedError.message).toEqual(errorMessage);
   if (customAttributes) {
     expect(callParams[1]).toEqual(expect.objectContaining(customAttributes));
   }
