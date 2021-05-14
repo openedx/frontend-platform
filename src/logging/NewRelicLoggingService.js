@@ -76,13 +76,13 @@ export default class NewRelicLoggingService {
   constructor(options) {
     this.config = options ? options.config : undefined;
     /*
-        Array of explicit error message regexes. If an error message matches a regex, the error is considered
-        an *ignored* error and submitted to New Relic as a page action - not an error.
+        String which is an explicit error message regex. If an error message matches the regex, the error
+        is considered an *ignored* error and submitted to New Relic as a page action - not an error.
 
         Ignored error regexes are configured per frontend application (MFE).
 
-        The list of error regexes is represented in the .env files as a string, with multiple regexes enabled
-        via the '|' regex syntax.
+        The regex for all ignored errors are represented in the .env files as a single string. If you need to
+        ignore multiple errors, use the standard `|` regex syntax.
 
         For example, here's a .env line which ignores two specific errors:
 
