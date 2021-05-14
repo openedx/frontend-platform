@@ -74,7 +74,7 @@ function sendError(error, customAttributes) {
  */
 export default class NewRelicLoggingService {
   constructor(options) {
-    this.config = options ? options.config : undefined;
+    const config = options ? options.config : undefined;
     /*
         String which is an explicit error message regex. If an error message matches the regex, the error
         is considered an *ignored* error and submitted to New Relic as a page action - not an error.
@@ -103,7 +103,7 @@ export default class NewRelicLoggingService {
 
         For edx.org, add new error message regexes in edx-internal YAML as needed.
     */
-    this.ignoredErrorRegexes = (this.config && 'IGNORED_ERROR_REGEX' in this.config) ? this.config.IGNORED_ERROR_REGEX : undefined;
+    this.ignoredErrorRegexes = config ? config.IGNORED_ERROR_REGEX : undefined;
   }
 
   /**
