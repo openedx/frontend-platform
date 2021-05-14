@@ -41,7 +41,7 @@ let config = {
   ECOMMERCE_BASE_URL: process.env.ECOMMERCE_BASE_URL,
   ENVIRONMENT,
   // Convert the ignored errors regex string to a regex, guarding against an empty string.
-  IGNORED_ERROR_REGEXES: process.env.IGNORED_ERROR_REGEXES.trim() === '' ? undefined : new RegExp(process.env.IGNORED_ERROR_REGEXES),
+  IGNORED_ERROR_REGEX: process.env.IGNORED_ERROR_REGEX.trim() === '' ? undefined : new RegExp(process.env.IGNORED_ERROR_REGEX),
   LANGUAGE_PREFERENCE_COOKIE_NAME: process.env.LANGUAGE_PREFERENCE_COOKIE_NAME,
   LMS_BASE_URL: process.env.LMS_BASE_URL,
   LOGIN_URL: process.env.LOGIN_URL,
@@ -166,7 +166,7 @@ export function ensureConfig(keys, requester = 'unspecified application code') {
  * @property {string} PUBLISHER_BASE_URL
  * @property {string} ECOMMERCE_BASE_URL
  * @property {string} ENVIRONMENT This is one of: development, production, or test.
- * @property {string} IGNORED_ERROR_REGEXES
+ * @property {string} IGNORED_ERROR_REGEX
  * @property {string} LANGUAGE_PREFERENCE_COOKIE_NAME
  * @property {string} LMS_BASE_URL
  * @property {string} LOGIN_URL

@@ -86,7 +86,7 @@ export default class NewRelicLoggingService {
 
         For example, here's a .env line which ignores two specific errors:
 
-        IGNORED_ERROR_REGEXES='^\\[frontend-auth\\] Unimportant Error|Specific non-critical error #[\\d]+'
+        IGNORED_ERROR_REGEX='^\\[frontend-auth\\] Unimportant Error|Specific non-critical error #[\\d]+'
 
         This example would ignore errors with the following messages:
 
@@ -103,7 +103,7 @@ export default class NewRelicLoggingService {
 
         For edx.org, add new error message regexes in edx-internal YAML as needed.
     */
-    this.ignoredErrorRegexes = (this.config && 'IGNORED_ERROR_REGEXES' in this.config) ? this.config.IGNORED_ERROR_REGEXES : undefined;
+    this.ignoredErrorRegexes = (this.config && 'IGNORED_ERROR_REGEX' in this.config) ? this.config.IGNORED_ERROR_REGEX : undefined;
   }
 
   /**
