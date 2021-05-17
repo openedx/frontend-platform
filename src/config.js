@@ -29,6 +29,15 @@ import { APP_CONFIG_INITIALIZED, CONFIG_CHANGED } from './constants';
 import { publish, subscribe } from './pubSub';
 import { ensureDefinedConfig } from './utils';
 
+function extractRegex(envVar) {
+  // Convert the environment variable string to a regex, while guarding
+  // against a non-string and an empty/whitespace-only string.
+  if (typeof envVar === 'string' && envVar.trim() !== '') {
+    return new RegExp(envVar);
+  }
+  return undefined;
+}
+
 const ENVIRONMENT = process.env.NODE_ENV;
 let config = {
   ACCESS_TOKEN_COOKIE_NAME: process.env.ACCESS_TOKEN_COOKIE_NAME,
@@ -40,8 +49,7 @@ let config = {
   PUBLISHER_BASE_URL: process.env.PUBLISHER_BASE_URL,
   ECOMMERCE_BASE_URL: process.env.ECOMMERCE_BASE_URL,
   ENVIRONMENT,
-  // Convert the ignored errors regex string to a regex, guarding against an empty string.
-  IGNORED_ERROR_REGEX: process.env.IGNORED_ERROR_REGEX.trim() === '' ? undefined : new RegExp(process.env.IGNORED_ERROR_REGEX),
+  IGNORED_ERROR_REGEX: extractRegex(process.env.IGNORED_ERROR_REGEX),
   LANGUAGE_PREFERENCE_COOKIE_NAME: process.env.LANGUAGE_PREFERENCE_COOKIE_NAME,
   LMS_BASE_URL: process.env.LMS_BASE_URL,
   LOGIN_URL: process.env.LOGIN_URL,

@@ -16,6 +16,16 @@ const configWithNullIgnoredErrors = {
     IGNORED_ERROR_REGEX: null,
   },
 };
+const configWithEmptyIgnoredErrors = {
+  config: {
+    IGNORED_ERROR_REGEX: '',
+  },
+};
+const configWithWhitespaceIgnoredErrors = {
+  config: {
+    IGNORED_ERROR_REGEX: '     ',
+  },
+};
 const configWithMissingIgnoredErrors = {
   config: {},
 };
@@ -125,6 +135,20 @@ describe('NewRelicLoggingService', () => {
 
     it('calls New Relic client as error object but with null ignored error config', () => {
       service = new NewRelicLoggingService(configWithNullIgnoredErrors);
+      const error = new Error('Ignore this error!');
+      service.logError(error);
+      expect(global.newrelic.noticeError).toHaveBeenCalledWith(error, undefined);
+    });
+
+    it('calls New Relic client as error object but with empty ignored error config', () => {
+      service = new NewRelicLoggingService(configWithEmptyIgnoredErrors);
+      const error = new Error('Ignore this error!');
+      service.logError(error);
+      expect(global.newrelic.noticeError).toHaveBeenCalledWith(error, undefined);
+    });
+
+    it('calls New Relic client as error object but with whitespace-only ignored error config', () => {
+      service = new NewRelicLoggingService(configWithWhitespaceIgnoredErrors);
       const error = new Error('Ignore this error!');
       service.logError(error);
       expect(global.newrelic.noticeError).toHaveBeenCalledWith(error, undefined);
