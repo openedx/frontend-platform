@@ -46,12 +46,50 @@ describe('NewRelicLoggingService', () => {
       expect(global.newrelic.addPageAction).toHaveBeenCalledWith('INFO', { message });
     });
 
-    it('passes info parameters properly with custom attributes', () => {
+    it('handles plain string message properly with custom attributes', () => {
       const message = 'Test log';
-      const customAttrs = { a: 1, b: 'red', c: 3 };
-      service.logInfo(message, customAttrs);
+      const attrs = { a: 1, b: 'red', c: 3 };
+      service.logInfo(message, attrs);
       expect(global.newrelic.addPageAction).toHaveBeenCalledWith('INFO', {
-        message: 'Test log', a: 1, b: 'red', c: 3,
+        message, ...attrs,
+      });
+    });
+
+    it('handles plain string message properly with no custom attributes', () => {
+      const message = 'Test log';
+      service.logInfo(message);
+      expect(global.newrelic.addPageAction).toHaveBeenCalledWith('INFO', {
+        message,
+      });
+    });
+
+    it('handles error object properly with custom attributes', () => {
+      const message = 'Test log';
+      const attrs = { a: 1, b: 'red', c: 3 };
+      const err = { message, customAttributes: attrs };
+      service.logInfo(err);
+      expect(global.newrelic.addPageAction).toHaveBeenCalledWith('INFO', {
+        message, ...attrs,
+      });
+    });
+
+    it('handles error object properly with no custom attributes', () => {
+      const message = 'Test log';
+      const err = { message };
+      service.logInfo(err);
+      expect(global.newrelic.addPageAction).toHaveBeenCalledWith('INFO', {
+        message,
+      });
+    });
+
+    it('handles error object properly with custom attributes in object and param', () => {
+      const message = 'Test log';
+      const attrsObj = { a: 1, b: 'red', c: 3 };
+      const attrsParam = { x: 99, y: 'blue', z: 987 };
+      const err = { message, customAttributes: attrsObj };
+      service.logInfo(err, attrsParam);
+      expect(global.newrelic.addPageAction).toHaveBeenCalledWith('INFO', {
+        message, ...attrsObj, ...attrsParam,
       });
     });
   });

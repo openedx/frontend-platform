@@ -109,23 +109,32 @@ export default class NewRelicLoggingService {
   /**
    *
    *
-   * @param {*} message
+   * @param {*} infoStringOrErrorObject
    * @param {*} [customAttributes={}]
    * @memberof NewRelicLoggingService
    */
-  logInfo(message, customAttributes = {}) {
-    sendPageAction(pageActionNameInfo, message, customAttributes);
+  logInfo(infoStringOrErrorObject, customAttributes = {}) {
+    let message = infoStringOrErrorObject;
+    let customAttrs = customAttributes;
+    if (typeof infoStringOrErrorObject === 'object' && 'message' in infoStringOrErrorObject) {
+      /* Caller has passed in an error object to be logged as a page action. */
+      /* Extract the attributes and the message. */
+      const infoCustomAttributes = infoStringOrErrorObject.customAttributes || {};
+      customAttrs = { ...infoCustomAttributes, ...customAttributes };
+      message = infoStringOrErrorObject.message;
+    }
+    sendPageAction(pageActionNameInfo, message, customAttrs);
   }
 
   /**
    *
    *
-   * @param {*} error
+   * @param {*} errorStringOrObject
    * @param {*} [customAttributes={}]
    * @memberof NewRelicLoggingService
    */
-  logError(error, customAttributes = {}) {
-    const errorCustomAttributes = error.customAttributes || {};
+  logError(errorStringOrObject, customAttributes = {}) {
+    const errorCustomAttributes = errorStringOrObject.customAttributes || {};
     let allCustomAttributes = { ...errorCustomAttributes, ...customAttributes };
     if (Object.keys(allCustomAttributes).length === 0) {
       // noticeError expects undefined if there are no custom attributes.
@@ -137,13 +146,13 @@ export default class NewRelicLoggingService {
         Ignored errors are logged via adding a page action.
         Other errors are logged via noticeError and count as "JS Errors" for the application.
     */
-    const errorMessage = typeof error === 'string' ? error : error.message;
+    const errorMessage = errorStringOrObject.message || (typeof errorStringOrObject === 'string' ? errorStringOrObject : '');
     if (this.ignoredErrorRegexes && errorMessage.match(this.ignoredErrorRegexes)) {
       /* ignored error */
       sendPageAction(pageActionNameIgnoredError, errorMessage, allCustomAttributes);
     } else {
       /*  error! */
-      sendError(error, allCustomAttributes);
+      sendError(errorStringOrObject, allCustomAttributes);
     }
   }
 }
