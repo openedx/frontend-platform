@@ -16,6 +16,7 @@
  * });
  *
  * logInfo('Just so you know...');
+ * logInfo(new Error('Unimportant error'), { type: 'unimportant' });
  * logError('Uhoh!');
  * logError(new Error('Uhoh error!'));
  * ```
@@ -49,25 +50,25 @@ export function configure(LoggingService, options) {
 }
 
 /**
- * Logs a message to the 'info' log level.
+ * Logs a message to the 'info' log level. Can accept custom attributes as a property of the error
+ * object, or as an optional second parameter.
  *
- * @param {string} message
+ * @param {string|Error} infoStringOrErrorObject
  * @param {Object} [customAttributes={}]
  */
-export function logInfo(message, customAttributes) {
-  return service.logInfo(message, customAttributes);
+export function logInfo(infoStringOrErrorObject, customAttributes) {
+  return service.logInfo(infoStringOrErrorObject, customAttributes);
 }
 
 /**
  * Logs a message to the 'error' log level.  Can accept custom attributes as a property of the error
  * object, or as an optional second parameter.
  *
- * @param {string|Error} error
- * @param {Object} [error.customAttributes={}]
+ * @param {string|Error} errorStringOrObject
  * @param {Object} [customAttributes={}]
  */
-export function logError(error, customAttributes) {
-  return service.logError(error, customAttributes);
+export function logError(errorStringOrObject, customAttributes) {
+  return service.logError(errorStringOrObject, customAttributes);
 }
 
 /**
