@@ -202,6 +202,7 @@ class AxiosJwtAuthService {
 
     if (decodedAccessToken !== null) {
       this.setAuthenticatedUser({
+        email: decodedAccessToken.email,
         userId: decodedAccessToken.user_id,
         username: decodedAccessToken.preferred_username,
         roles: decodedAccessToken.roles || [],
