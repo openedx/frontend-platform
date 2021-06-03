@@ -1,15 +1,21 @@
 {
   "extends": [
     "config:base",
-    ":automergeLinters",
-    ":automergeTesters",
+    "schedule:weekly",
     ":automergeMinor",
-    ":noUnscheduledUpdates",
-    ":semanticCommits"
+    ":enableVulnerabilityAlerts",
+    ":rebaseStalePrs",
+    ":semanticCommits",
+    ":updateNotScheduled"
   ],
-  "rebaseStalePrs": true,
-  "schedule": [
-    "every weekend"
+  "packageRules": [
+    {
+      "matchDepTypes": [
+        "devDependencies",
+        "lockFileMaintenance"
+      ],
+      "automerge": true
+    }
   ],
   "timezone": "America/New_York"
 }
