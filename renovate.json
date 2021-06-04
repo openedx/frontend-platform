@@ -2,7 +2,9 @@
   "extends": [
     "config:base",
     "schedule:weekly",
+    ":automergeLinters",
     ":automergeMinor",
+    ":automergeTesters",
     ":enableVulnerabilityAlerts",
     ":rebaseStalePrs",
     ":semanticCommits",
@@ -12,7 +14,12 @@
     {
       "matchDepTypes": [
         "devDependencies",
-        "lockFileMaintenance"
+      ],
+      "matchUpdateTypes": [
+        "lockFileMaintenance",
+        "minor",
+        "patch",
+        "pin"
       ],
       "automerge": true
     }
