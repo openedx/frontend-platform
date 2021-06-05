@@ -13,7 +13,7 @@
   "packageRules": [
     {
       "matchDepTypes": [
-        "devDependencies",
+        "devDependencies"
       ],
       "matchUpdateTypes": [
         "lockFileMaintenance",
