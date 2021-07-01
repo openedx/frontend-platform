@@ -52,8 +52,7 @@ These steps will allow your application to accept translation strings. See `fron
 
       #. instead of ``export Foo``, ``export injectIntl(Foo)`` .
 
-   #. Define your messages using ``defineMessages``. This function doesn't actually do anything; it's just a hook for the translation pipeline to be able to find your translation strings. You can call ``defineMessages`` wherever you want, but if you have a lot of them you might want to move them to a separate file. Either ``MyAppName.messages.js`` (if your entire app has only a few strings) or ``SomeComponent.messages.js`` will work. Your file should look like the example below. For your own sanity, using a short camel-case string for the property name is fine as long as ``id`` is globally unique in the MFE.
-   make the property name the same as the ``id`` for each object. Example::
+   #. Define your messages using ``defineMessages``. This function doesn't actually do anything; it's just a hook for the translation pipeline to be able to find your translation strings. You can call ``defineMessages`` wherever you want, but if you have a lot of them you might want to move them to a separate file. Either ``MyAppName.messages.js`` (if your entire app has only a few strings) or ``SomeComponent.messages.js`` will work. Your file should look like the example below. For your own sanity, using a short camel-case string for the property name is fine as long as ``id`` is globally unique in the MFE. Example::
 
        import { defineMessages } from '@edx/frontend-platform/i18n';
 
