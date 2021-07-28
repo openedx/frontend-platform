@@ -1,4 +1,5 @@
-import 'babel-polyfill'; // eslint-disable-line import/no-extraneous-dependencies
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
