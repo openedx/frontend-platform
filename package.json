@@ -37,8 +37,8 @@
     "@edx/frontend-build": "5.6.14",
     "@edx/paragon": "14.16.10",
     "axios-mock-adapter": "1.19.0",
-    "babel-polyfill": "6.26.0",
     "codecov": "3.8.3",
+    "core-js": "3.15.2",
     "enzyme": "3.11.0",
     "enzyme-adapter-react-16": "1.15.6",
     "husky": "7.0.1",
@@ -49,7 +49,8 @@
     "react-dom": "16.14.0",
     "react-redux": "7.2.4",
     "react-router-dom": "5.2.0",
-    "redux": "4.1.0"
+    "redux": "4.1.0",
+    "regenerator-runtime": "0.13.9"
   },
   "dependencies": {
     "@cospired/i18n-iso-languages": "2.2.0",
