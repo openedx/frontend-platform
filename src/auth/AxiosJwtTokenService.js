@@ -100,10 +100,10 @@ export default class AxiosJwtTokenService {
     return this.refreshRequestPromises[this.tokenCookieName];
   }
 
-  async getJwtToken() {
+  async getJwtToken(forceRefresh = false) {
     try {
       const decodedJwtToken = this.decodeJwtCookie(this.tokenCookieName);
-      if (!AxiosJwtTokenService.isTokenExpired(decodedJwtToken)) {
+      if (!AxiosJwtTokenService.isTokenExpired(decodedJwtToken) && !forceRefresh) {
         return decodedJwtToken;
       }
     } catch (e) {
