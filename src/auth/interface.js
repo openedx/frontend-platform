@@ -217,8 +217,8 @@ export function setAuthenticatedUser(authUser) {
  * @returns {Promise<UserData>|Promise<null>} Resolves to the user's access token if they are
  * logged in.
  */
-export async function fetchAuthenticatedUser() {
-  return service.fetchAuthenticatedUser();
+export async function fetchAuthenticatedUser(options = {}) {
+  return service.fetchAuthenticatedUser(options);
 }
 
 /**

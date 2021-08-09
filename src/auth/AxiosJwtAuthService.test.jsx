@@ -772,6 +772,34 @@ describe('ensureAuthenticatedUser', () => {
   });
 });
 
+describe('fetchAuthenticatedUser', () => {
+  it('refreshes a missing jwt token and returns a user access token', () => {
+    setJwtCookieTo(null);
+    setJwtTokenRefreshResponseTo(200, jwtTokens.valid.encoded);
+    return service.fetchAuthenticatedUser().then((authenticatedUserAccessToken) => {
+      expect(authenticatedUserAccessToken).toEqual(jwtTokens.valid.formatted);
+      expectSingleCallToJwtTokenRefresh();
+    });
+  });
+
+  it('found a valid token from cache and no call for refresh', () => {
+    setJwtCookieTo(jwtTokens.valid.encoded);
+    return service.fetchAuthenticatedUser().then((authenticatedUserAccessToken) => {
+      expect(authenticatedUserAccessToken).toEqual(jwtTokens.valid.formatted);
+      expectNoCallToJwtTokenRefresh();
+    });
+  });
+
+  it('refreshes the token forcefully even if token is not yet expired', () => {
+    setJwtCookieTo(jwtTokens.valid.encoded);
+    setJwtTokenRefreshResponseTo(401, null);
+    return service.fetchAuthenticatedUser({ forceRefresh: true }).then((authenticatedUserAccessToken) => {
+      expect(authenticatedUserAccessToken).toEqual(null);
+      expectSingleCallToJwtTokenRefresh();
+    });
+  });
+});
+
 // These tests all make real network calls to https://httpbin.org, just as documented in the axios-cache-adapter
 // tests. axios-mock-adapter can not be used to mock requests with axios-cache-adapter.
 describe('Cache Functionality', () => {

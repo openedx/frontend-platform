@@ -197,8 +197,8 @@ class AxiosJwtAuthService {
    * @returns {Promise<UserData>|Promise<null>} Resolves to the user's access token if they are
    * logged in.
    */
-  async fetchAuthenticatedUser() {
-    const decodedAccessToken = await this.jwtTokenService.getJwtToken();
+  async fetchAuthenticatedUser(options = {}) {
+    const decodedAccessToken = await this.jwtTokenService.getJwtToken(options.forceRefresh || false);
 
     if (decodedAccessToken !== null) {
       this.setAuthenticatedUser({
@@ -208,6 +208,8 @@ class AxiosJwtAuthService {
         roles: decodedAccessToken.roles || [],
         administrator: decodedAccessToken.administrator,
       });
+    } else {
+      this.setAuthenticatedUser(null);
     }
 
     return this.getAuthenticatedUser();
