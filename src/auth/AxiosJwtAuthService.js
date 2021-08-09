@@ -208,6 +208,8 @@ class AxiosJwtAuthService {
         roles: decodedAccessToken.roles || [],
         administrator: decodedAccessToken.administrator,
       });
+    } else {
+      this.setAuthenticatedUser(null);
     }
 
     return this.getAuthenticatedUser();

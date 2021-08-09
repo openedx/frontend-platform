@@ -792,9 +792,9 @@ describe('fetchAuthenticatedUser', () => {
 
   it('refreshes the token forcefully even if token is not yet expired', () => {
     setJwtCookieTo(jwtTokens.valid.encoded);
-    setJwtTokenRefreshResponseTo(200, jwtTokens.valid.encoded);
+    setJwtTokenRefreshResponseTo(401, null);
     return service.fetchAuthenticatedUser({ forceRefresh: true }).then((authenticatedUserAccessToken) => {
-      expect(authenticatedUserAccessToken).toEqual(jwtTokens.valid.formatted);
+      expect(authenticatedUserAccessToken).toEqual(null);
       expectSingleCallToJwtTokenRefresh();
     });
   });
