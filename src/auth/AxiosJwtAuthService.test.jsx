@@ -100,9 +100,13 @@ const setJwtCookieTo = (jwtCookieValue) => {
   });
 };
 
-const setJwtTokenRefreshResponseTo = (status, jwtCookieValue) => {
+const setJwtTokenRefreshResponseTo = (status, jwtCookieValue, responseEpochSeconds = null) => {
   accessTokenAxiosMock.onPost().reply(() => {
     setJwtCookieTo(jwtCookieValue);
+    if (responseEpochSeconds) {
+      const data = { response_epoch_seconds: responseEpochSeconds, expires_epoch_seconds: responseEpochSeconds + 3600 };
+      return [status, data];
+    }
     return [status];
   });
 };
@@ -157,6 +161,24 @@ const expectRequestToHaveJwtAuth = (request) => {
 const expectRequestToHaveCsrfToken = (request) => {
   expect(request.headers['X-CSRFToken']).toEqual(mockCsrfToken);
 };
+
+expect.extend({
+  toBeWithinRange(received, floor, ceiling) {
+    const pass = received >= floor && received <= ceiling;
+    if (pass) {
+      return {
+        message: () =>
+          `expected ${received} not to be within range ${floor} - ${ceiling}`,
+        pass: true,
+      };
+    }
+    return {
+      message: () =>
+        `expected ${received} to be within range ${floor} - ${ceiling}`,
+      pass: false,
+    };
+  },
+});
 
 const { location } = global;
 const service = new AxiosJwtAuthService(authOptions);
@@ -494,6 +516,37 @@ describe('authenticatedHttpClient usage', () => {
               mockLoggingService.logError.mock.calls[0],
               '[frontend-auth] Access token is still null after successful refresh.',
               { axiosResponse: expect.any(Object) },
+            );
+          });
+        });
+      });
+    });
+
+    // This tests adding additional debug info for an unexpected error occurring in production.
+    describe('Unexpected case where token refresh succeeds with response time, but no new cookie is found', () => {
+      const browserDriftSeconds = 4;
+
+      beforeEach(() => {
+        setJwtCookieTo(null);
+        // set server time to be 4 seconds in future
+        const responseEpochSeconds = (Date.now() / 1000) + browserDriftSeconds;
+        // The JWT cookie is null despite a 200 response.
+        setJwtTokenRefreshResponseTo(200, null, responseEpochSeconds);
+      });
+
+      ['get', 'options', 'post', 'put', 'patch', 'delete'].forEach((method) => {
+        it(`${method.toUpperCase()}: throws an error and calls logError`, () => {
+          expect.hasAssertions();
+          return client[method](mockApiEndpointPath).catch(() => {
+            expectSingleCallToJwtTokenRefresh();
+            expectNoCallToCsrfTokenFetch();
+            expectLogFunctionToHaveBeenCalledWithMessage(
+              mockLoggingService.logError.mock.calls[0],
+              '[frontend-auth] Access token is still null after successful refresh.',
+              {
+                axiosResponse: expect.any(Object),
+                browserDriftSeconds: expect.toBeWithinRange(browserDriftSeconds - 0.1, browserDriftSeconds + 0.1),
+              },
             );
           });
         });

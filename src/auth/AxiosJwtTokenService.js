@@ -52,12 +52,18 @@ export default class AxiosJwtTokenService {
   }
 
   refresh() {
+    let responseServerEpochSeconds = 0;
+
     if (this.refreshRequestPromises[this.tokenCookieName] === undefined) {
       const makeRefreshRequest = async () => {
         let axiosResponse;
         try {
           try {
             axiosResponse = await this.httpClient.post(this.tokenRefreshEndpoint);
+            // eslint-disable-next-line max-len
+            if (axiosResponse.data && axiosResponse.data.response_epoch_seconds && axiosResponse.data.expires_epoch_seconds) {
+              responseServerEpochSeconds = axiosResponse.data.response_epoch_seconds;
+            }
           } catch (error) {
             processAxiosErrorAndThrow(error);
           }
@@ -77,6 +83,11 @@ export default class AxiosJwtTokenService {
           throw error;
         }
 
+        const browserEpochSeconds = Date.now() / 1000;
+        const browserDriftSeconds = responseServerEpochSeconds > 0
+          ? Math.abs(browserEpochSeconds - responseServerEpochSeconds)
+          : null;
+
         const decodedJwtToken = this.decodeJwtCookie();
 
         if (!decodedJwtToken) {
@@ -85,7 +96,7 @@ export default class AxiosJwtTokenService {
           // information on a similar situation that was happening
           // prior to this refactor in Oct 2019.
           const error = new Error('Access token is still null after successful refresh.');
-          error.customAttributes = { axiosResponse };
+          error.customAttributes = { axiosResponse, browserDriftSeconds, browserEpochSeconds };
           throw error;
         }
 
