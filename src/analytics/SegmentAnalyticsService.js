@@ -170,7 +170,7 @@ class SegmentAnalyticsService {
    * @returns {Promise} Promise that will resolve once the document readyState is complete
    */
   identifyAnonymousUser(traits) {
-    if (!this.segmentInitialized) {
+    if (!this.segmentInitialized || global.analytics.user === undefined) {
       return Promise.resolve();
     }
     // if we do not have an authenticated user (indicated by being in this method),
