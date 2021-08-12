@@ -170,7 +170,7 @@ class SegmentAnalyticsService {
    * @returns {Promise} Promise that will resolve once the document readyState is complete
    */
   identifyAnonymousUser(traits) {
-    if (!this.segmentInitialized || global.analytics.user === undefined) {
+    if (!this.segmentInitialized) {
       return Promise.resolve();
     }
     // if we do not have an authenticated user (indicated by being in this method),
@@ -186,6 +186,10 @@ class SegmentAnalyticsService {
         this.hasIdentifyBeenCalled = true;
         resolve();
       });
+
+      // if the segment domain is blocked on user's network/browser, this promis does not get
+      // resolved and user see a blank page, set timeout out to resolve the promise.
+      setTimeout(resolve, 2000);
     });
   }
 
