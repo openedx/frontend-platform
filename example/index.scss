@@ -2,3 +2,7 @@
 @import "@edx/brand/paragon/variables";
 @import "@edx/paragon/scss/core/core";
 @import "@edx/brand/paragon/overrides";
+
+body {
+  background-color: #ff0000 !important;
+}

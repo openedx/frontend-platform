@@ -58,6 +58,7 @@
     "@formatjs/intl-relativetimeformat": "10.0.1",
     "axios": "0.27.2",
     "axios-cache-interceptor": "0.10.7",
+    "classnames": "2.3.1",
     "form-urlencoded": "4.1.4",
     "glob": "7.2.3",
     "history": "4.10.1",

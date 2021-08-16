@@ -23,6 +23,7 @@ config.rules = {
     specialLink: ['to'],
     aspects: ['noHref', 'invalidHref', 'preferButton'],
   }],
+  'react/react-in-jsx-scope': ['error'],
 };
 
 module.exports = config;
