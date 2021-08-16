@@ -36,7 +36,7 @@
     "@edx/brand": "npm:@edx/brand-openedx@1.1.0",
     "@edx/frontend-build": "8.0.0",
     "@edx/paragon": "16.6.2",
-    "axios-mock-adapter": "1.19.0",
+    "axios-mock-adapter": "1.20.0",
     "codecov": "3.8.3",
     "core-js": "3.16.1",
     "enzyme": "3.11.0",
