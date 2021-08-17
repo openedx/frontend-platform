@@ -187,9 +187,13 @@ class SegmentAnalyticsService {
         resolve();
       });
 
-      // if the segment domain is blocked on user's network/browser, this promis does not get
+      // if the segment domain is blocked on user's network/browser, this promise does not get
       // resolved and user see a blank page, set timeout out to resolve the promise.
-      setTimeout(resolve, 2000);
+      setTimeout(() => {
+        // Other segment calls won't work if we are not identified. So let's just un-initialize ourselves.
+        this.segmentInitialized = false;
+        resolve();
+      }, 2000);
     });
   }
 
