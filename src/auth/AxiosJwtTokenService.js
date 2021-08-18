@@ -91,10 +91,10 @@ export default class AxiosJwtTokenService {
         const decodedJwtToken = this.decodeJwtCookie();
 
         if (!decodedJwtToken) {
-          // This is an unexpected case. The refresh endpoint should
-          // set the cookie that is needed. See ARCH-948 for more
-          // information on a similar situation that was happening
-          // prior to this refactor in Oct 2019.
+          // This is an unexpected case. The refresh endpoint should set the
+          //   cookie that is needed.
+          // For more details, see:
+          //   docs/decisions/0005-token-null-after-successful-refresh.rst
           const error = new Error('Access token is still null after successful refresh.');
           error.customAttributes = { axiosResponse, browserDriftSeconds, browserEpochSeconds };
           throw error;
