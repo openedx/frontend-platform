@@ -54,7 +54,7 @@
   },
   "dependencies": {
     "@cospired/i18n-iso-languages": "2.2.0",
-    "axios": "0.21.1",
+    "axios": "0.21.3",
     "axios-cache-adapter": "2.7.3",
     "form-urlencoded": "4.1.4",
     "glob": "7.1.7",
