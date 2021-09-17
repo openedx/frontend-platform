@@ -87,6 +87,11 @@ class SegmentAnalyticsService {
       // Create an async script element based on your key.
       const script = document.createElement('script');
       script.type = 'text/javascript';
+      script.onerror = () => {
+        this.segmentInitialized = false;
+        const event = new Event('segmentFailed');
+        document.dispatchEvent(event);
+      };
       script.async = true;
       script.src = `https://cdn.segment.com/analytics.js/v1/${key}/analytics.min.js`;
 
@@ -187,13 +192,10 @@ class SegmentAnalyticsService {
         resolve();
       });
 
-      // if the segment domain is blocked on user's network/browser, this promise does not get
-      // resolved and user see a blank page, set timeout out to resolve the promise.
-      setTimeout(() => {
-        // Other segment calls won't work if we are not identified. So let's just un-initialize ourselves.
-        this.segmentInitialized = false;
-        resolve();
-      }, 2000);
+      // this is added to handle a specific use-case where if a user has blocked the segment
+      // domain in their browser, this promise does not get resolved and user see a blank
+      // page. Dispatching this event in script.onerror callback in analytics.load.
+      document.addEventListener('segmentFailed', resolve);
     });
   }
 
