@@ -1,24 +1,24 @@
 language: node_js
 node_js: 12
 script:
-  - npm run lint
-  - npm run test
-  - npm run build
-  - npm run docs
+- npm run lint
+- npm run test
+- npm run build
+- npm run docs
 after_success:
-  - npx semantic-release
-  - codecov
+- npx semantic-release
+- codecov
 deploy:
   provider: pages
   skip_cleanup: true
-  github_token: $GH_TOKEN
+  github_token: "$GH_TOKEN"
   keep_history: true
-  local_dir: ./docs/api/@edx/frontend-platform/1.0.0-semantically-released
+  local_dir: "./docs/api/@edx/frontend-platform/1.0.0-semantically-released"
   on:
     branch: master
 env:
   global:
-  # GH_TOKEN
-  - secure: uxtnSZsDejbByvkraDb2AdMTzR69l3n6IVtv+uGHdFqc2OSZePjk++lVAh3XvSExla5d/OV28zV0YZS7rdBkUHZDR6VQuvqv+7N/CA6dWTOBJOP7BflGe84NITWSsDLk8YjerwWrP4KDEHjKDfWUUU4SFOVXsqT6vvt31pdHoeL95xZPZCYCErHDATmygFPISBgIZ24rrsWojBuCUqPl2pvJ401dNc9SUiz/iFUYMKM58ERpIq8VLTIW8Tz9BGVzrem9HlokjQtQKElVfbBBgG4QyfTJKPq3xq6d5vK4686IIMcsv8VH4EmPJBXH4Y4L+573oKnDhfk9prDaJfQuX+IzP9q7XYaGMNCDmC/VhgySmb0+Xu/xWd0wme39720LsW91HSJZiX976gEIqMYGDpe0x1n5cTkujrOJ1WUaj9YX3XNW671JIrn+PjPBgBwc1JrdKpaTFk1XLkM4DAWio3s8Oc+/j0c+UDkWbv4AVEJxbgGhRR7dSu6bQ0HHwc9jkGxi26gTTTCY8zu9ZE5Ci7uhXpZZvMM1ykyHZ5p5JjCu33S3jcmGTCqddsJFIUzXVvZXOj3ZdG2AMFOnSjdYieQpkeh2OTvXyHxsRwnUX4pe+QmfXfxHpzvyxiKdzwmmiIWSETVf7QyQ2cED7eYRFl80YKskUmhuugoKMXdtAFk=
   # NPM_TOKEN
   - secure: bdYMFoso8jgdxDJTA4Ecs2QFwqw5BngKkH0BSfY0O2wFDQ8Xybph7I5xhBrPqs1rTlfM42vfSEF+xDQUSZSCHkc5np8WLUMSWf86/4z6EPPjHIntqvrwUHVd749AbRTiELu09xkECqBXeD2SyxiuII4f6SEarmwrfcDgsPzuhtcFwGRqkG3JAZuzp4USyIrZNYUqgXt7N/Y7nEBl8OvhpnV/77jEPRL7E7wOwi3dLrYsjBcSY6NexoTzqlz8/89IQh2qYoWBsk6LKNuy9PLLpyCWOuTd4qkBvVdb1FZ8VlkyYSvnb1ByvNCpgrJgFdr9cpNsylH1dzbhYT+R+5nWIzyeKFO66SznEeXaPxevz2PgWd4+RPFZRcnDawYqT4RQLUzqwfO6E5foJ/XpcMGMMowgBka3aiBzLyjtHXOMDgKyHp8NbXFAaQs659v/afx5rQ/VvhbFIB/lT+DuxS7u2S4xqq2ZkS2LXMj8WkQLVczA2uSLZbAhKDV6lzn3PKZtSEtBd1u+7Oa0Z/wvdimwX0feCSl+dTtvsiAp2YU7rmgzuRrCO7EZpXSBjmAEDQmcWdFigd8qd3SzUPydTZRxXF/3JRB7GHdb8tHjKV6DrJkADpyUTaHY5CkOzNgZXaT6Ha6q2Ck+azjd1cdkuHbJ7qCc4VoIThycQRtpDRwfyu8=
+  # GH_TOKEN
+  - secure: rtvKN/svWG+IKNGPAw5cdHflTwBXL6E+HFQGOrAIqkA4c6H3a/Fwh8PUW+cRaZ+O0EPuXMlZkLwEIqU9J6cZvkvCU+u0e8r9Q+S9tpKMQgjWuay17iUryBP/8IPYWv9F6lU4jWn2SBYaqV5jvktwnqAyJVHw2hfY0R8GzJSR9aoIpmHSByqA08N+8AjO89vBfAVShsXAGHYIAVdoddgum07ITCB5W+0kdik1RWFPtPn2O/rnvXWWPqFWtYGa+b3oOkM7tkUYPEwyflE1oG7tF29NFbLchGdJaKQr4EQJB7gmqclicBJKH4xXiB59sTTqWVDVaW42g9UNXJi9gcme97YDoBBKdYR5Gi37bmUdp+sVWx9ljjYQ8Q15AkKg2RB3vbhX4n3gDX0X9M5BgpKITkP8TkcTVh8ikmvmG1y5aKDtLtayXlWWW7JGijovO52aA4Z8owsfz6lJL6eCH+wPa82gRJtfAiswomG1n/ANAAlcexwJxMa0w5/PdSaKwG2i+q8+J4DFrrnygY8R/4izOoKzYSCcrddl9tSQnMu9JmEPYOlzDKjtJ6guxdpDZHW/o8d+hFWty7ST1F8IwLQ1sa0tQwyA3PsdMbPKskrKgZDexZLhKMVTfCw8npxuPAVrPQBu5MtrXneN+0gYhG8yMd5qIZxXFoICN/4KfYVZ2lk=
