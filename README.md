@@ -77,6 +77,21 @@ initialize({
 });
 ```
 
+When using runtime configuration via `mergeConfig` noted above, `getConfig` must be called within a component's render lifecycle in order for the added keys and values to be returned in the configuration object. If `getConfig` is called outside of a component's render lifecycle, the custom configuration key/value pairs will not initially be part of the object returned by `getConfig`. For example:
+
+```jsx
+import { getConfig } from '@edx/frontend-platform/config';
+
+// The runtime configuration `CUSTOM_VARIABLE` added in the above code snippet will not appear here. This is
+// because `getConfig` is called before `mergeConfig` is executed to add the custom runtime configuration.
+console.log(getConfig().CUSTOM_VARIABLE); // returns undefined
+
+const ExampleComponent = () => {
+  // This returns the value as expected since it is called after `mergeConfig` has already executed.
+  console.log(getConfig().CUSTOM_VARIABLE)
+};
+```
+
 ### Service interfaces
 
 Each service (analytics, auth, i18n, logging) provided by frontend-platform has a API contract which all implementations of that service are guaranteed to fulfill.  Applications that use frontend-platform can use its configured services via a convenient set of exported functions.  An application that wants to use the service interfaces need only initialize them via the initialize() function, optionally providing custom service interfaces as desired (you probably won't need to).
