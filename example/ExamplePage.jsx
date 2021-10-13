@@ -47,8 +47,8 @@ class ExamplePage extends Component {
         {this.renderAuthenticatedUser()}
         <p>EXAMPLE_VAR env var came through: <strong>{getConfig().EXAMPLE_VAR}</strong></p>
         <p>JS_FILE_VAR var came through: <strong>{getConfig().JS_FILE_VAR}</strong></p>
-        <p>Visit <Link to="/authenticated">authenticated page</Link>.</p>
-        <p>Visit <Link to="/error_example">error page</Link>.</p>
+        <p>Visit the <Link to="/authenticated">authenticated page</Link>.</p>
+        <p>Visit the <Link to="/error_example">error page</Link>.</p>
       </div>
     );
   }
