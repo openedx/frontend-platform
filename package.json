@@ -6,7 +6,9 @@
   "publishConfig": {
     "access": "public"
   },
-  "sideEffects": false,
+  "sideEffects": [
+    "*.scss"
+  ],
   "scripts": {
     "build": "make build",
     "docs": "jsdoc -c jsdoc.json",
