@@ -5,18 +5,13 @@ import '@testing-library/jest-dom';
 
 import Plugin from './Plugin';
 import {
-  COMPONENT_PLUGIN, IFRAME_PLUGIN, PLUGIN_MOUNTED, PLUGIN_READY, PLUGIN_RESIZE,
+  IFRAME_PLUGIN, PLUGIN_MOUNTED, PLUGIN_READY, PLUGIN_RESIZE,
 } from './data/constants';
 import { IFRAME_FEATURE_POLICY } from './PluginIframe';
 
 const iframeConfig = {
   url: 'http://localhost/plugin1',
   type: IFRAME_PLUGIN,
-};
-
-const componentConfig = {
-  url: 'http://localhost/plugin1.js',
-  type: COMPONENT_PLUGIN,
 };
 
 // Mock ResizeObserver which is unavailable in the context of a test.
@@ -92,13 +87,5 @@ describe('Plugin', () => {
     fireEvent(window, readyEvent);
 
     expect(iframeElement.attributes.getNamedItem('class').value).toEqual('border border-0');
-  });
-
-  it('should render a PluginComponent when given a component config', () => {
-    const component = (
-      <Plugin plugin={componentConfig} fallback={<div>Fallback</div>} />
-    );
-
-    const result = render(component);
   });
 });

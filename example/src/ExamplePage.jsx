@@ -49,6 +49,7 @@ class ExamplePage extends Component {
         <p>JS_FILE_VAR var came through: <strong>{getConfig().JS_FILE_VAR}</strong></p>
         <p>Visit the <Link to="/authenticated">authenticated page</Link>.</p>
         <p>Visit the <Link to="/error_example">error page</Link>.</p>
+        <p>Visit the <Link to="/plugins">plugins page</Link>.</p>
       </div>
     );
   }

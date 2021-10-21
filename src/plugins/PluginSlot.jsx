@@ -15,7 +15,7 @@ const PluginSlot = forwardRef(({
       finalChildren.push(children);
     }
     plugins.forEach((plugin) => {
-      finalChildren.push(<Plugin plugin={plugin} {...pluginProps} />);
+      finalChildren.push(<Plugin key={plugin.url} plugin={plugin} {...pluginProps} />);
     });
   } else {
     finalChildren = children;
