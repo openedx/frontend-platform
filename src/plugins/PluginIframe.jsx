@@ -1,8 +1,20 @@
-import React from 'react';
+import React, {
+  useEffect, useState,
+} from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
-import { IFRAME_PLUGIN, LTI_PLUGIN, SCRIPT_PLUGIN } from './data/constants';
+import {
+  PLUGIN_MOUNTED,
+  PLUGIN_READY,
+  PLUGIN_RESIZE,
+} from './data/constants';
+import {
+  dispatchPluginEvent,
+  useElementSize,
+  usePluginEvent,
+} from './data/hooks';
+import { pluginShape } from './data/shapes';
 
 /**
  * Feature policy for iframe, allowing access to certain courseware-related media.
@@ -14,7 +26,7 @@ import { IFRAME_PLUGIN, LTI_PLUGIN, SCRIPT_PLUGIN } from './data/constants';
  * This policy was selected in conference with the edX Security Working Group.
  * Changes to it should be vetted by them (security@edx.org).
  */
-const IFRAME_FEATURE_POLICY = (
+export const IFRAME_FEATURE_POLICY = (
   'fullscreen; microphone *; camera *; midi *; geolocation *; encrypted-media *'
 );
 
@@ -23,28 +35,54 @@ export default function PluginIframe({
 }) {
   const { url } = plugin;
   const { title, scrolling } = props;
+  const [mounted, setMounted] = useState(false);
+  const [ready, setReady] = useState(false);
+
+  const [iframeRef, iframeElement, width, height] = useElementSize();
+
+  useEffect(() => {
+    if (mounted) {
+      dispatchPluginEvent(iframeElement, {
+        type: PLUGIN_RESIZE,
+        payload: {
+          width,
+          height,
+        },
+      }, url);
+    }
+  }, [iframeElement, mounted, width, height]);
+
+  usePluginEvent(iframeElement, PLUGIN_MOUNTED, () => {
+    setMounted(true);
+  });
+
+  usePluginEvent(iframeElement, PLUGIN_READY, () => {
+    setReady(true);
+  });
+
   return (
-    <iframe
-      title={title}
-      src={url}
-      allow={IFRAME_FEATURE_POLICY}
-      allowFullScreen
-      scrolling={scrolling}
-      referrerPolicy="origin" // The sent referrer will be limited to the origin of the referring page: its scheme, host, and port.
-      className={classNames(
-        'border border-0',
-      )}
-      {...props}
-    />
+    <>
+      <iframe
+        ref={iframeRef}
+        title={title}
+        src={url}
+        allow={IFRAME_FEATURE_POLICY}
+        scrolling={scrolling}
+        referrerPolicy="origin" // The sent referrer will be limited to the origin of the referring page: its scheme, host, and port.
+        className={classNames(
+          'border border-0',
+          { 'd-none': !ready },
+          className,
+        )}
+        {...props}
+      />
+      {!ready && fallback}
+    </>
   );
 }
 
 PluginIframe.propTypes = {
-  plugin: PropTypes.shape({
-    url: PropTypes.string.isRequired,
-    type: PropTypes.oneOf([SCRIPT_PLUGIN, IFRAME_PLUGIN, LTI_PLUGIN]).isRequired,
-    props: PropTypes.object,
-  }),
+  plugin: pluginShape,
   fallback: PropTypes.node,
   scrolling: PropTypes.oneOf(['auto', 'yes', 'no']),
   title: PropTypes.string,

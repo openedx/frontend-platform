@@ -19,8 +19,6 @@ export function loadDynamicScript(url) {
     element.async = true;
 
     element.onload = () => {
-      // eslint-disable-next-line no-console
-      console.log(`Dynamic Script Loaded: ${url}`);
       // We've successfully loaded the script, so record that we did it.
       scriptLoadsByUrl[url] = { element, count: 1 };
       resolve(url);

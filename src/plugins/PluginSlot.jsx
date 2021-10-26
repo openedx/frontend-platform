@@ -5,13 +5,21 @@ import { usePluginSlot } from './data/hooks';
 import Plugin from './Plugin';
 
 const PluginSlot = forwardRef(({
-  as, id, pluginAs, ...props
+  as, id, pluginProps, children, ...props
 }, ref) => {
-  const { plugins } = usePluginSlot(id);
+  const { plugins, keepDefault } = usePluginSlot(id);
 
-  const children = plugins.map((plugin) => (
-    <Plugin plugin={plugin} as={pluginAs} />
-  ));
+  let finalChildren = [];
+  if (plugins.length > 0) {
+    if (keepDefault) {
+      finalChildren.push(children);
+    }
+    plugins.forEach((plugin) => {
+      finalChildren.push(<Plugin plugin={plugin} {...pluginProps} />);
+    });
+  } else {
+    finalChildren = children;
+  }
 
   return React.createElement(
     as,
@@ -19,7 +27,7 @@ const PluginSlot = forwardRef(({
       ...props,
       ref,
     },
-    children,
+    finalChildren,
   );
 });
 
@@ -28,10 +36,11 @@ export default PluginSlot;
 PluginSlot.propTypes = {
   id: PropTypes.string.isRequired,
   as: PropTypes.elementType,
-  pluginAs: PropTypes.elementType,
+  children: PropTypes.node,
+  pluginProps: PropTypes.object, // eslint-disable-line
 };
 
 PluginSlot.defaultProps = {
   as: 'div',
-  pluginAs: null,
+  children: null,
 };

@@ -14,6 +14,7 @@ export default class PluginErrorBoundary extends Component {
 
   componentDidCatch(error, errorInfo) {
     // eslint-disable-next-line no-console
+    // TODO: Better logging here.
     console.error(error, errorInfo);
   }
 
