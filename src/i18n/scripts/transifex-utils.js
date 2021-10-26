@@ -42,7 +42,10 @@ if (messageObjects.length === 0) {
 
 if (process.argv[3] === '--comments') { // prepare to handle the translator notes
   const loggingPrefix = path.basename(`${__filename}`); // the name of this JS file
-  const bashScriptsPath = './node_modules/reactifex/bash_scripts';
+  const bashScriptsPath = (
+    process.argv[4] && process.argv[4] === '--v3ScriptsPath'
+      ? './node_modules/@edx/reactifex/bash_scripts'
+      : './node_modules/reactifex/bash_scripts');
 
   const hashFile = `${bashScriptsPath}/hashmap.json`;
   process.stdout.write(`${loggingPrefix}: reading hash file ${hashFile}\n`);
