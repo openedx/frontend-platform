@@ -6,7 +6,7 @@ script:
 - npm run build
 - npm run docs
 after_success:
-- npx semantic-release
+- npx semantic-release@17
 - codecov
 deploy:
   provider: pages
