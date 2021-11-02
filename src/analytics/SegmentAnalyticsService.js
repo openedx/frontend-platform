@@ -192,10 +192,18 @@ class SegmentAnalyticsService {
         resolve();
       });
 
-      // this is added to handle a specific use-case where if a user has blocked the segment
-      // domain in their browser, this promise does not get resolved and user see a blank
+      // this is added to handle a specific use-case where if a user has blocked the analytics
+      // tools in their browser, this promise does not get resolved and user sees a blank
       // page. Dispatching this event in script.onerror callback in analytics.load.
       document.addEventListener('segmentFailed', resolve);
+      // This is added to handle the google analytics blocked case which is injected into
+      // the DOM by segment.min.js.
+      setTimeout(() => {
+        if (!global.ga || !global.ga.create) {
+          this.segmentInitialized = false;
+          resolve();
+        }
+      }, 2000);
     });
   }
 
