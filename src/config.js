@@ -51,6 +51,7 @@ let config = {
   ENVIRONMENT,
   IGNORED_ERROR_REGEX: extractRegex(process.env.IGNORED_ERROR_REGEX),
   LANGUAGE_PREFERENCE_COOKIE_NAME: process.env.LANGUAGE_PREFERENCE_COOKIE_NAME,
+  LEARNING_BASE_URL: process.env.LEARNING_BASE_URL,
   LMS_BASE_URL: process.env.LMS_BASE_URL,
   LOGIN_URL: process.env.LOGIN_URL,
   LOGOUT_URL: process.env.LOGOUT_URL,
@@ -176,6 +177,7 @@ export function ensureConfig(keys, requester = 'unspecified application code') {
  * @property {string} ENVIRONMENT This is one of: development, production, or test.
  * @property {string} IGNORED_ERROR_REGEX
  * @property {string} LANGUAGE_PREFERENCE_COOKIE_NAME
+ * @property {string} LEARNING_BASE_URL
  * @property {string} LMS_BASE_URL
  * @property {string} LOGIN_URL
  * @property {string} LOGOUT_URL

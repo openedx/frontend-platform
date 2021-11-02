@@ -18,6 +18,7 @@ process.env.PUBLISHER_BASE_URL = 'http://localhost:18400';
 process.env.ECOMMERCE_BASE_URL = 'http://localhost:18130';
 process.env.LANGUAGE_PREFERENCE_COOKIE_NAME = 'openedx-language-preference';
 process.env.LMS_BASE_URL = 'http://localhost:18000';
+process.env.LEARNING_BASE_URL = 'http://localhost:2000';
 process.env.LOGIN_URL = 'http://localhost:18000/login';
 process.env.LOGOUT_URL = 'http://localhost:18000/logout';
 process.env.STUDIO_BASE_URL = 'http://localhost:18010';
