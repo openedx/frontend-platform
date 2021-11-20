@@ -1,0 +1,81 @@
+{
+  "name": "@edx/frontend-platform",
+  "version": "1.0.0-semantically-released",
+  "description": "Foundational application framework for Open edX micro-frontend applications.",
+  "main": "index.js",
+  "publishConfig": {
+    "access": "public"
+  },
+  "sideEffects": false,
+  "scripts": {
+    "build": "make build",
+    "docs": "jsdoc -c jsdoc.json",
+    "docs-watch": "nodemon -w src -w docs/template -w README.md -e js,jsx --exec npm run docs",
+    "lint": "fedx-scripts eslint --ext .js --ext .jsx .",
+    "snapshot": "fedx-scripts jest --updateSnapshot",
+    "start": "fedx-scripts webpack-dev-server --progress",
+    "test": "fedx-scripts jest --coverage"
+  },
+  "bin": {
+    "transifex-utils.js": "i18n/scripts/transifex-utils.js",
+    "transifex-Makefile": "i18n/scripts/Makefile"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/edx/frontend-platform.git"
+  },
+  "author": "edX",
+  "license": "AGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/edx/frontend-platform/issues"
+  },
+  "homepage": "https://github.com/edx/frontend-platform#readme",
+  "devDependencies": {
+    "@edx/brand": "npm:@edx/brand-openedx@1.1.0",
+    "@edx/frontend-build": "8.0.6",
+    "@edx/paragon": "16.15.1",
+    "axios-mock-adapter": "1.20.0",
+    "codecov": "3.8.3",
+    "core-js": "3.18.3",
+    "enzyme": "3.11.0",
+    "enzyme-adapter-react-16": "1.15.6",
+    "husky": "7.0.4",
+    "jsdoc": "3.6.7",
+    "nodemon": "2.0.15",
+    "prop-types": "15.7.2",
+    "react": "16.14.0",
+    "react-dom": "16.14.0",
+    "react-redux": "7.2.6",
+    "react-router-dom": "5.2.0",
+    "redux": "4.1.2",
+    "regenerator-runtime": "0.13.9"
+  },
+  "dependencies": {
+    "@cospired/i18n-iso-languages": "2.2.0",
+    "axios": "0.21.4",
+    "axios-cache-adapter": "2.7.3",
+    "form-urlencoded": "4.1.4",
+    "glob": "7.1.7",
+    "history": "4.10.1",
+    "i18n-iso-countries": "4.3.1",
+    "jwt-decode": "3.1.2",
+    "localforage": "1.9.0",
+    "localforage-memoryStorageDriver": "0.9.2",
+    "lodash.camelcase": "4.3.0",
+    "lodash.memoize": "4.1.2",
+    "lodash.merge": "4.6.2",
+    "lodash.snakecase": "4.1.1",
+    "pubsub-js": "1.9.3",
+    "react-intl": "2.9.0",
+    "universal-cookie": "4.0.4"
+  },
+  "peerDependencies": {
+    "@edx/paragon": ">= 10.0.0 <= ^16.0.0",
+    "prop-types": "^15.7.2",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
+    "react-redux": "^7.1.1",
+    "react-router-dom": "^5.0.1",
+    "redux": "^4.0.4"
+  }
+}
