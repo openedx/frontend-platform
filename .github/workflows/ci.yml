@@ -6,34 +6,37 @@ on:
       - master
   pull_request:
     branches:
-      - '**'
+      - "**"
 
 jobs:
   build:
     runs-on: ubuntu-20.04
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
 
-    - name: Setup Nodejs
-      uses: actions/setup-node@v1
-      with:
-        node-version: 12
+      - name: Setup Nodejs Env
+        run: echo "NODE_VER=`cat .nvmrc`" >> $GITHUB_ENV
 
-    - name: Install dependencies
-      run: npm ci
+      - name: Setup Nodejs
+        uses: dcodeIO/setup-node-nvm@v4
+        with:
+          node-version: "${{ env.NODE_VER }}"
 
-    - name: Lint
-      run: npm run lint
+      - name: Install dependencies
+        run: npm ci
 
-    - name: Test
-      run: npm run test
+      - name: Lint
+        run: npm run lint
 
-    - name: Build
-      run: npm run build
+      - name: Test
+        run: npm run test
 
-    - name: Docs
-      run: npm run docs
+      - name: Build
+        run: npm run build
 
-    - name: Run Coverage
-      uses: codecov/codecov-action@v2
+      - name: Docs
+        run: npm run docs
+
+      - name: Run Coverage
+        uses: codecov/codecov-action@v2

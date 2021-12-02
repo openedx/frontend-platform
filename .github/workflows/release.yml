@@ -14,10 +14,13 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Setup Node.js Env
+        run: echo "NODE_VER=`cat .nvmrc`" >> $GITHUB_ENV
+
       - name: Setup Node.js
-        uses: actions/setup-node@v1
+        uses: dcodeIO/setup-node-nvm@v4
         with:
-          node-version: 12
+          node-version: "${{ env.NODE_VER }}"
 
       - name: Install dependencies
         run: npm ci
