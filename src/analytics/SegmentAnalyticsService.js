@@ -199,7 +199,7 @@ class SegmentAnalyticsService {
       // This is added to handle the google analytics blocked case which is injected into
       // the DOM by segment.min.js.
       setTimeout(() => {
-        if (!global.ga || !global.ga.create) {
+        if (!global.ga || !global.ga.create || !global.google_tag_manager) {
           this.segmentInitialized = false;
           resolve();
         }
