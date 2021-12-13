@@ -214,7 +214,7 @@ var SegmentAnalyticsService = /*#__PURE__*/function () {
         // the DOM by segment.min.js.
 
         setTimeout(function () {
-          if (!global.ga || !global.ga.create) {
+          if (!global.ga || !global.ga.create || !global.google_tag_manager) {
             _this3.segmentInitialized = false;
             resolve();
           }
