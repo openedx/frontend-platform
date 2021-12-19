@@ -108,12 +108,17 @@ export async function initError(error) {
  * - Optionally redirecting to login if the application requires an authenticated user.
  * - Optionally loading additional user information via the application's user account data
  * endpoint.
+ * - When FAKE_AUTH is set to true, the function will mock an authticanted user
+ * (can be useful to run MFE without having to start LMS/CMS)
  *
  * @param {boolean} requireUser Whether or not we should redirect to login if a user is not
  * authenticated.
  * @param {boolean} hydrateUser Whether or not we should fetch additional user account data.
  */
 export async function auth(requireUser, hydrateUser) {
+  if (getConfig().FAKE_AUTH) {
+    return;
+  }
   if (requireUser) {
     await ensureAuthenticatedUser(global.location.href);
   } else {

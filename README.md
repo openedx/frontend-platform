@@ -137,3 +137,5 @@ NOTE: As of this writing, i18n is _not_ configurable.  The `initialize()` functi
 When making changes to frontend-platform, be sure to manually run the included example app located in `./example`. The example app includes 2 routes to test for both unauthenticated and authenticated users. To start the example app, run `npm start` from the root directory.
 
 If you want to test changes to frontend-platform against a micro-frontend locally, follow the directions here: https://github.com/edx/frontend-build#local-module-configuration-for-webpack
+
+To be able to run or test _without the need of having LMS in the background_. You can set the `FAKE_AUTH` env variable to `true`, in the `env.development` file. This will override the auth service flow, so there would be no need to run a backend service. 
