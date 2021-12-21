@@ -7,10 +7,7 @@
       "pkgRoot": "dist"
     },
     {
-      "path": "@semantic-release/github",
-      "assets": {
-        "path": "dist"
-      }
+      "path": "@semantic-release/github"
     }
   ],
   "analyzeCommits": "@semantic-release/commit-analyzer",
@@ -27,10 +24,7 @@
       "pkgRoot": "dist"
     },
     {
-      "path": "@semantic-release/github",
-      "assets": {
-        "path": "dist"
-      }
+      "path": "@semantic-release/github"
     }
   ],
   "success": [],
