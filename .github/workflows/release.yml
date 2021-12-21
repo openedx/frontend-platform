@@ -18,7 +18,7 @@ jobs:
         run: echo "NODE_VER=`cat .nvmrc`" >> $GITHUB_ENV
 
       - name: Setup Node.js
-        uses: dcodeIO/setup-node-nvm@v4
+        uses: actions/setup-node@v2
         with:
           node-version: "${{ env.NODE_VER }}"
 
@@ -28,14 +28,14 @@ jobs:
       - name: Create Build
         run: npm run build
 
-      - name: Release npm Package
-        uses: cycjimmy/semantic-release-action@v2
+      - name: Release to npm/Github
+        run: npx semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.SEMANTIC_RELEASE_GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.SEMANTIC_RELEASE_NPM_TOKEN }}
 
       - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@4.1.8
+        uses: JamesIves/github-pages-deploy-action@4
         with:
           branch: gh-pages # The branch the action should deploy to.
           folder: dist # The folder the action should deploy.
