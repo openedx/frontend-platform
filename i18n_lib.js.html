@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: i18n/lib.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body data-module="">
+
+<div id="main">
+    <h1 class="page-title">Source: i18n/lib.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import PropTypes from 'prop-types';
+import { addLocaleData } from 'react-intl';
+import arLocale from 'react-intl/locale-data/ar';
+import enLocale from 'react-intl/locale-data/en';
+import esLocale from 'react-intl/locale-data/es';
+import frLocale from 'react-intl/locale-data/fr';
+import zhLocale from 'react-intl/locale-data/zh';
+import caLocale from 'react-intl/locale-data/ca';
+import heLocale from 'react-intl/locale-data/he';
+import idLocale from 'react-intl/locale-data/id';
+import koLocale from 'react-intl/locale-data/ko';
+import plLocale from 'react-intl/locale-data/pl';
+import ptLocale from 'react-intl/locale-data/pt';
+import ruLocale from 'react-intl/locale-data/ru';
+import thLocale from 'react-intl/locale-data/th';
+import ukLocale from 'react-intl/locale-data/uk';
+import Cookies from 'universal-cookie';
+import merge from 'lodash.merge';
+
+const cookies = new Cookies();
+const supportedLocales = [
+  'ar', // Arabic
+  // NOTE: 'en' is not included in this list intentionally, since it's the fallback.
+  'es-419', // Spanish, Latin American
+  'fr', // French
+  'zh-cn', // Chinese, Simplified
+  'ca', // Catalan
+  'he', // Hebrew
+  'id', // Indonesian
+  'ko-kr', // Korean (Korea)
+  'pl', // Polish
+  'pt-br', // Portuguese (Brazil)
+  'ru', // Russian
+  'th', // Thai
+  'uk', // Ukrainian
+];
+const rtlLocales = [
+  'ar', // Arabic
+  'he', // Hebrew
+  'fa', // Farsi (not currently supported)
+  'ur', // Urdu (not currently supported)
+];
+
+let config = null;
+let loggingService = null;
+let messages = null;
+
+/**
+ *
+ * @ignore
+ * @returns {LoggingService}
+ *
+ */
+export const getLoggingService = () => loggingService;
+
+/**
+ * @memberof module:Internationalization
+ */
+export const LOCALE_TOPIC = 'LOCALE';
+
+/**
+ * @memberof module:Internationalization
+ */
+export const LOCALE_CHANGED = `${LOCALE_TOPIC}.CHANGED`;
+
+/**
+ *
+ * @memberof module:Internationalization
+ * @returns {Cookies}
+ */
+export function getCookies() {
+  return cookies;
+}
+
+addLocaleData([
+  ...arLocale,
+  ...enLocale,
+  ...esLocale,
+  ...frLocale,
+  ...zhLocale,
+  ...caLocale,
+  ...heLocale,
+  ...idLocale,
+  ...koLocale,
+  ...plLocale,
+  ...ptLocale,
+  ...ruLocale,
+  ...thLocale,
+  ...ukLocale,
+]);
+
+/**
+ * Some of our dependencies function on primary language subtags, rather than full locales.
+ * This function strips a locale down to that first subtag.  Depending on the code, this
+ * may be 2 or more characters.
+ *
+ * @param {string} code
+ * @memberof module:Internationalization
+ */
+export function getPrimaryLanguageSubtag(code) {
+  return code.split('-')[0];
+}
+
+/**
+ * Finds the closest supported locale to the one provided.  This is done in three steps:
+ *
+ * 1. Returning the locale itself if its exact language code is supported.
+ * 2. Returning the primary language subtag of the language code if it is supported (ar for ar-eg,
+ * for instance).
+ * 3. Returning 'en' if neither of the above produce a supported locale.
+ *
+ * @param {string} locale
+ * @returns {string}
+ * @memberof module:Internationalization
+ */
+export function findSupportedLocale(locale) {
+  if (messages[locale] !== undefined) {
+    return locale;
+  }
+
+  if (messages[getPrimaryLanguageSubtag(locale)] !== undefined) {
+    return getPrimaryLanguageSubtag(locale);
+  }
+
+  return 'en';
+}
+
+/**
+ * Get the locale from the cookie or, failing that, the browser setting.
+ * Gracefully fall back to a more general primary language subtag or to English (en)
+ * if we don't support that language.
+ *
+ * @param {string} locale If a locale is provided, returns the closest supported locale. Optional.
+ * @throws An error if i18n has not yet been configured.
+ * @returns {string}
+ * @memberof module:Internationalization
+ */
+export function getLocale(locale) {
+  if (messages === null) {
+    throw new Error('getLocale called before configuring i18n. Call configure with messages first.');
+  }
+  // 1. Explicit application request
+  if (locale !== undefined) {
+    return findSupportedLocale(locale);
+  }
+  // 2. User setting in cookie
+  const cookieLangPref = cookies
+    .get(config.LANGUAGE_PREFERENCE_COOKIE_NAME);
+  if (cookieLangPref) {
+    return findSupportedLocale(cookieLangPref.toLowerCase());
+  }
+  // 3. Browser language (default)
+  // Note that some browers prefer upper case for the region part of the locale, while others don't.
+  // Thus the toLowerCase, for consistency.
+  // https://developer.mozilla.org/en-US/docs/Web/API/NavigatorLanguage/language
+  return findSupportedLocale(global.navigator.language.toLowerCase());
+}
+
+/**
+ * Returns messages for the provided locale, or the user's preferred locale if no argument is
+ * provided.
+ *
+ * @param {string} [locale=getLocale()]
+ * @memberof module:Internationalization
+ */
+export function getMessages(locale = getLocale()) {
+  return messages[locale];
+}
+
+/**
+ * Determines if the provided locale is a right-to-left language.
+ *
+ * @param {string} locale
+ * @memberof module:Internationalization
+ */
+export function isRtl(locale) {
+  return rtlLocales.includes(locale);
+}
+
+/**
+ * Handles applying the RTL stylesheet and "dir=rtl" attribute to the html tag if the current locale
+ * is a RTL language.
+ *
+ * @memberof module:Internationalization
+ */
+export function handleRtl() {
+  if (isRtl(getLocale())) {
+    global.document.getElementsByTagName('html')[0].setAttribute('dir', 'rtl');
+  } else {
+    global.document.getElementsByTagName('html')[0].setAttribute('dir', 'ltr');
+  }
+}
+
+const messagesShape = {
+  ar: PropTypes.objectOf(PropTypes.string), // Arabic
+  en: PropTypes.objectOf(PropTypes.string),
+  'es-419': PropTypes.objectOf(PropTypes.string), // Spanish, Latin American
+  fr: PropTypes.objectOf(PropTypes.string), // French
+  'zh-cn': PropTypes.objectOf(PropTypes.string), // Chinese, Simplified
+  ca: PropTypes.objectOf(PropTypes.string), // Catalan
+  he: PropTypes.objectOf(PropTypes.string), // Hebrew
+  id: PropTypes.objectOf(PropTypes.string), // Indonesian
+  'ko-kr': PropTypes.objectOf(PropTypes.string), // Korean (Korea)
+  pl: PropTypes.objectOf(PropTypes.string), // Polish
+  'pt-br': PropTypes.objectOf(PropTypes.string), // Portuguese (Brazil)
+  ru: PropTypes.objectOf(PropTypes.string), // Russian
+  th: PropTypes.objectOf(PropTypes.string), // Thai
+  uk: PropTypes.objectOf(PropTypes.string), // Ukrainian
+};
+
+const optionsShape = {
+  config: PropTypes.object.isRequired,
+  loggingService: PropTypes.shape({
+    logError: PropTypes.func.isRequired,
+  }).isRequired,
+  messages: PropTypes.oneOfType([
+    PropTypes.shape(messagesShape),
+    PropTypes.arrayOf(PropTypes.shape(messagesShape)),
+  ]).isRequired,
+};
+
+/**
+ *
+ *
+ * @param {Array} [messagesArray=[]]
+ * @returns {Object}
+ * @memberof module:Internationalization
+ */
+export function mergeMessages(messagesArray = []) {
+  return Array.isArray(messagesArray) ? merge({}, ...messagesArray) : {};
+}
+
+/**
+ * Configures the i18n library with messages for your application.
+ *
+ * Logs a warning if it detects a locale it doesn't expect (as defined by the supportedLocales list
+ * above), or if an expected locale is not provided.
+ *
+ * @param {Object} options
+ * @param {LoggingService} options.loggingService
+ * @param {Object} options.config
+ * @param {Object} options.messages
+ * @memberof module:Internationalization
+ */
+export function configure(options) {
+  PropTypes.checkPropTypes(optionsShape, options, 'property', 'i18n');
+  // eslint-disable-next-line prefer-destructuring
+  loggingService = options.loggingService;
+  // eslint-disable-next-line prefer-destructuring
+  config = options.config;
+  messages = Array.isArray(options.messages) ? mergeMessages(options.messages) : options.messages;
+
+  if (config.ENVIRONMENT !== 'production') {
+    Object.keys(messages).forEach((key) => {
+      if (supportedLocales.indexOf(key) &lt; 0) {
+        console.warn(`Unexpected locale: ${key}`); // eslint-disable-line no-console
+      }
+    });
+
+    supportedLocales.forEach((key) => {
+      if (messages[key] === undefined) {
+        console.warn(`Missing locale: ${key}`); // eslint-disable-line no-console
+      }
+    });
+  }
+
+  handleRtl();
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><ul class="list-unstyled nav flex-column"><li class="module-section nav-item Analytics">
+                    <a href="module-Analytics.html" class="nav-link font-weight-bold">Analytics</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-Analytics.AnalyticsService.html">AnalyticsService</a></li><li><a href="module-Analytics.MockAnalyticsService.html">MockAnalyticsService</a></li><li><a href="module-Analytics.SegmentAnalyticsService.html">SegmentAnalyticsService</a></li><li><a href="module-Analytics.html#~configure">configure</a></li><li><a href="module-Analytics.html#~getAnalyticsService">getAnalyticsService</a></li><li><a href="module-Analytics.html#~identifyAnonymousUser">identifyAnonymousUser</a></li><li><a href="module-Analytics.html#~identifyAuthenticatedUser">identifyAuthenticatedUser</a></li><li><a href="module-Analytics.html#~resetAnalyticsService">resetAnalyticsService</a></li><li><a href="module-Analytics.html#~sendPageEvent">sendPageEvent</a></li><li><a href="module-Analytics.html#~sendTrackEvent">sendTrackEvent</a></li><li><a href="module-Analytics.html#~sendTrackingLogEvent">sendTrackingLogEvent</a></li>
+            </ul>
+        
+                </li><li class="module-section nav-item Auth">
+                    <a href="module-Auth.html" class="nav-link font-weight-bold">Auth</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-Auth.AuthService.html">AuthService</a></li><li><a href="module-Auth.AxiosJwtAuthService.html">AxiosJwtAuthService</a></li><li><a href="module-Auth.HttpClient.html">HttpClient</a></li><li><a href="module-Auth.MockAuthService.html">MockAuthService</a></li><li><a href="module-Auth.UserData.html">UserData</a></li><li><a href="module-Auth.html#~AUTHENTICATED_USER_TOPIC">AUTHENTICATED_USER_TOPIC</a></li><li><a href="module-Auth.html#~configure">configure</a></li><li><a href="module-Auth.html#~ensureAuthenticatedUser">ensureAuthenticatedUser</a></li><li><a href="module-Auth.html#~event:AUTHENTICATED_USER_CHANGED">AUTHENTICATED_USER_CHANGED</a></li><li><a href="module-Auth.html#~fetchAuthenticatedUser">fetchAuthenticatedUser</a></li><li><a href="module-Auth.html#~getAuthenticatedHttpClient">getAuthenticatedHttpClient</a></li><li><a href="module-Auth.html#~getAuthenticatedUser">getAuthenticatedUser</a></li><li><a href="module-Auth.html#~getAuthService">getAuthService</a></li><li><a href="module-Auth.html#~getHttpClient">getHttpClient</a></li><li><a href="module-Auth.html#~getLoginRedirectUrl">getLoginRedirectUrl</a></li><li><a href="module-Auth.html#~getLogoutRedirectUrl">getLogoutRedirectUrl</a></li><li><a href="module-Auth.html#~hydrateAuthenticatedUser">hydrateAuthenticatedUser</a></li><li><a href="module-Auth.html#~redirectToLogin">redirectToLogin</a></li><li><a href="module-Auth.html#~redirectToLogout">redirectToLogout</a></li><li><a href="module-Auth.html#~resetAuthService">resetAuthService</a></li><li><a href="module-Auth.html#~setAuthenticatedUser">setAuthenticatedUser</a></li>
+            </ul>
+        
+                </li><li class="module-section nav-item Config">
+                    <a href="module-Config.html" class="nav-link font-weight-bold">Config</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-Config.html#.ConfigDocument">ConfigDocument</a></li><li><a href="module-Config.html#~ensureConfig">ensureConfig</a></li><li><a href="module-Config.html#~getConfig">getConfig</a></li><li><a href="module-Config.html#~mergeConfig">mergeConfig</a></li><li><a href="module-Config.html#~setConfig">setConfig</a></li>
+            </ul>
+        
+                </li><li class="module-section nav-item Initialization">
+                    <a href="module-Initialization.html" class="nav-link font-weight-bold">Initialization</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-Initialization.html#~analytics">analytics</a></li><li><a href="module-Initialization.html#~auth">auth</a></li><li><a href="module-Initialization.html#~history">history</a></li><li><a href="module-Initialization.html#~initError">initError</a></li><li><a href="module-Initialization.html#~initialize">initialize</a></li>
+            </ul>
+        
+                </li><li class="module-section nav-item Internationalization">
+                    <a href="module-Internationalization.html" class="nav-link font-weight-bold">Internationalization</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-Internationalization.html#.configure">configure</a></li><li><a href="module-Internationalization.html#.findSupportedLocale">findSupportedLocale</a></li><li><a href="module-Internationalization.html#.getCookies">getCookies</a></li><li><a href="module-Internationalization.html#.getLocale">getLocale</a></li><li><a href="module-Internationalization.html#.getMessages">getMessages</a></li><li><a href="module-Internationalization.html#.getPrimaryLanguageSubtag">getPrimaryLanguageSubtag</a></li><li><a href="module-Internationalization.html#.handleRtl">handleRtl</a></li><li><a href="module-Internationalization.html#.isRtl">isRtl</a></li><li><a href="module-Internationalization.html#.LOCALE_CHANGED">LOCALE_CHANGED</a></li><li><a href="module-Internationalization.html#.LOCALE_TOPIC">LOCALE_TOPIC</a></li><li><a href="module-Internationalization.html#.mergeMessages">mergeMessages</a></li><li><a href="module-Internationalization.html#~defineMessages">defineMessages</a></li><li><a href="module-Internationalization-FormattedDate.html">FormattedDate</a></li><li><a href="module-Internationalization-FormattedMessage.html">FormattedMessage</a></li><li><a href="module-Internationalization-FormattedNumber.html">FormattedNumber</a></li><li><a href="module-Internationalization-FormattedPlural.html">FormattedPlural</a></li><li><a href="module-Internationalization-FormattedRelative.html">FormattedRelative</a></li><li><a href="module-Internationalization-FormattedTime.html">FormattedTime</a></li><li><a href="module-Internationalization-IntlProvider.html">IntlProvider</a></li><li><a href="module-Internationalization.html#~intlShape">intlShape</a></li>
+            </ul>
+        
+                </li><li class="module-section nav-item Logging">
+                    <a href="module-Logging.html" class="nav-link font-weight-bold">Logging</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-Logging.LoggingService.html">LoggingService</a></li><li><a href="module-Logging.MockLoggingService.html">MockLoggingService</a></li><li><a href="module-Logging.NewRelicLoggingService.html">NewRelicLoggingService</a></li><li><a href="module-Logging.html#~configure">configure</a></li><li><a href="module-Logging.html#~getLoggingService">getLoggingService</a></li><li><a href="module-Logging.html#~logError">logError</a></li><li><a href="module-Logging.html#~logInfo">logInfo</a></li><li><a href="module-Logging.html#~resetLoggingService">resetLoggingService</a></li>
+            </ul>
+        
+                </li><li class="module-section nav-item PubSub">
+                    <a href="module-PubSub.html" class="nav-link font-weight-bold">PubSub</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-PubSub.html#~publish">publish</a></li><li><a href="module-PubSub.html#~subscribe">subscribe</a></li><li><a href="module-PubSub.html#~unsubscribe">unsubscribe</a></li>
+            </ul>
+        
+                </li><li class="module-section nav-item React">
+                    <a href="module-React.html" class="nav-link font-weight-bold">React</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-React.html#.AppContext">AppContext</a></li><li><a href="module-React.html#.AppProvider">AppProvider</a></li><li><a href="module-React.html#.AuthenticatedPageRoute">AuthenticatedPageRoute</a></li><li><a href="module-React.ErrorBoundary.html">ErrorBoundary</a></li><li><a href="module-React.ErrorPage.html">ErrorPage</a></li><li><a href="module-React.html#.LoginRedirect">LoginRedirect</a></li><li><a href="module-React.html#.OptionalReduxProvider">OptionalReduxProvider</a></li><li><a href="module-React.html#.PageRoute">PageRoute</a></li><li><a href="module-React.html#.useAppEvent">useAppEvent</a></li>
+            </ul>
+        
+                </li><li class="module-section nav-item Testing">
+                    <a href="module-Testing.html" class="nav-link font-weight-bold">Testing</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-Testing.html#.initializeMockApp">initializeMockApp</a></li><li><a href="module-Testing.html#.messages">messages</a></li>
+            </ul>
+        
+                </li><li class="module-section nav-item Utilities">
+                    <a href="module-Utilities.html" class="nav-link font-weight-bold">Utilities</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-Utilities.html#~camelCaseObject">camelCaseObject</a></li><li><a href="module-Utilities.html#~convertKeyNames">convertKeyNames</a></li><li><a href="module-Utilities.html#~ensureDefinedConfig">ensureDefinedConfig</a></li><li><a href="module-Utilities.html#~getQueryParameters">getQueryParameters</a></li><li><a href="module-Utilities.html#~modifyObjectKeys">modifyObjectKeys</a></li><li><a href="module-Utilities.html#~snakeCaseObject">snakeCaseObject</a></li>
+            </ul>
+        
+                </li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Tue Dec 21 2021 19:24:55 GMT+0000 (Coordinated Universal Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

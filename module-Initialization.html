@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Initialization</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body data-module="Initialization">
+
+<div id="main">
+    <h1 class="page-title">Initialization</h1>
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        
+            
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description"><h4>Import members from <strong>@edx/frontend-platform</strong></h4>
+<p>The initialization module provides a function for managing an application's initialization
+lifecycle.  It also provides constants and default handler implementations.</p>
+<pre class="prettyprint source"><code>import {
+  initialize,
+  APP_INIT_ERROR,
+  APP_READY,
+  subscribe,
+} from '@edx/frontend-platform';
+import { AppProvider, ErrorPage, PageRoute } from '@edx/frontend-platform/react';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { Switch } from 'react-router-dom';
+
+subscribe(APP_READY, () => {
+  ReactDOM.render(
+    &lt;AppProvider store={configureStore()}>
+      &lt;Header />
+      &lt;main>
+        &lt;Switch>
+          &lt;PageRoute exact path=&quot;/&quot; component={PaymentPage} />
+        &lt;/Switch>
+      &lt;/main>
+      &lt;Footer />
+    &lt;/AppProvider>,
+    document.getElementById('root'),
+  );
+});
+
+subscribe(APP_INIT_ERROR, (error) => {
+  ReactDOM.render(&lt;ErrorPage message={error.message} />, document.getElementById('root'));
+});
+
+initialize({
+  messages: [appMessages],
+  requireAuthenticatedUser: true,
+  hydrateAuthenticatedUser: true,
+});
+
+</code></pre></div>
+        
+
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="initialize.js.html">initialize.js</a>, <a href="initialize.js.html#line1">line 1</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+<h4 class="name" id="~history"><span class="type-signature">(inner, constant) </span>history<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    <p>A browser history or memory history object created by the <a href="https://github.com/ReactTraining/history">history</a>
+package.  Applications are encouraged to use this history object, rather than creating their own,
+as behavior may be undefined when managing history via multiple mechanisms/instances. Note that
+in environments where browser history may be inaccessible due to <code>window</code> being undefined, this
+falls back to memory history.</p>
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="initialize.js.html">initialize.js</a>, <a href="initialize.js.html#line87">line 87</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~analytics"><span class="type-signature">(async, inner) </span>analytics<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>The default handler for the initialization lifecycle's <code>analytics</code> phase.</p>
+<p>The handler is responsible for identifying authenticated and anonymous users with the analytics
+service.  This is a pre-requisite for sending analytics events, thus, we do it during the
+initialization sequence so that analytics is ready once the application's UI code starts to load.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="initialize.js.html">initialize.js</a>, <a href="initialize.js.html#line139">line 139</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~auth"><span class="type-signature">(async, inner) </span>auth<span class="signature">(requireUser, hydrateUser)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>The default handler for the initialization lifecycle's <code>auth</code> phase.</p>
+<p>The handler has several responsibilities:</p>
+<ul>
+<li>Determining the user's authentication state (authenticated or anonymous)</li>
+<li>Optionally redirecting to login if the application requires an authenticated user.</li>
+<li>Optionally loading additional user information via the application's user account data
+endpoint.</li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>requireUser</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Whether or not we should redirect to login if a user is not
+authenticated.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>hydrateUser</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Whether or not we should fetch additional user account data.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="initialize.js.html">initialize.js</a>, <a href="initialize.js.html#line116">line 116</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~initError"><span class="type-signature">(async, inner) </span>initError<span class="signature">(error)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>The default handler for the initialization lifecycle's <code>initError</code> phase.  Logs the error to the
+LoggingService using <code>logError</code></p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>error</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="initialize.js.html">initialize.js</a>, <a href="initialize.js.html#line99">line 99</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li>{@link module:frontend-platform/logging~logError}</li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~initialize"><span class="type-signature">(async, inner) </span>initialize<span class="signature">(options<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Invokes the application initialization sequence.</p>
+<p>The sequence proceeds through a number of lifecycle phases, during which pertinent services are
+configured.</p>
+<p>Using the <code>handlers</code> option, lifecycle phase handlers can be overridden to perform custom
+functionality.  Note that while these override handlers <em>do</em> replace the default handler
+functionality for analytics, auth, and initError (the other phases have no default
+functionality), they do <em>not</em> override the configuration of the actual services that those
+handlers leverage.</p>
+<p>Some services can be overridden via the loggingService and analyticsService options.  The other
+services (auth and i18n) cannot currently be overridden.</p>
+<p>The following lifecycle phases exist:</p>
+<ul>
+<li>pubSub: A no-op by default.</li>
+<li>config: A no-op by default.</li>
+<li>logging: A no-op by default.</li>
+<li>auth: Uses the 'auth' handler defined above.</li>
+<li>analytics: Uses the 'analytics' handler defined above.</li>
+<li>i18n: A no-op by default.</li>
+<li>ready: A no-op by default.</li>
+<li>initError: Uses the 'initError' handler defined above.</li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>loggingService</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    NewRelicLoggingService
+                
+                </td>
+            
+
+            <td class="description last"><p>The <code>LoggingService</code> implementation
+to use.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>analyticsService</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    SegmentAnalyticsService
+                
+                </td>
+            
+
+            <td class="description last"><p>The <code>AnalyticsService</code>
+implementation to use.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>requireAuthenticatedUser</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last"><p>If true, turns on automatic login
+redirection for unauthenticated users.  Defaults to false, meaning that by default the
+application will allow anonymous/unauthenticated sessions.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>hydrateAuthenticatedUser</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last"><p>If true, makes an API call to the user
+account endpoint (<code>${App.config.LMS_BASE_URL}/api/user/v1/accounts/${username}</code>) to fetch
+detailed account information for the authenticated user. This data is merged into the return
+value of <code>getAuthenticatedUser</code>, overriding any duplicate keys that already exist. Defaults to
+false, meaning that no additional account information will be loaded.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>messages</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>A i18n-compatible messages object, or an array of such objects. If
+an array is provided, duplicate keys are resolved with the last-one-in winning.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>handlers</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    {}
+                
+                </td>
+            
+
+            <td class="description last"><p>An optional object of handlers which can be used to replace the
+default behavior of any part of the startup sequence. It can also be used to add additional
+initialization behavior before or after the rest of the sequence.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="initialize.js.html">initialize.js</a>, <a href="initialize.js.html#line208">line 208</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><ul class="list-unstyled nav flex-column"><li class="module-section nav-item Analytics">
+                    <a href="module-Analytics.html" class="nav-link font-weight-bold">Analytics</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-Analytics.AnalyticsService.html">AnalyticsService</a></li><li><a href="module-Analytics.MockAnalyticsService.html">MockAnalyticsService</a></li><li><a href="module-Analytics.SegmentAnalyticsService.html">SegmentAnalyticsService</a></li><li><a href="module-Analytics.html#~configure">configure</a></li><li><a href="module-Analytics.html#~getAnalyticsService">getAnalyticsService</a></li><li><a href="module-Analytics.html#~identifyAnonymousUser">identifyAnonymousUser</a></li><li><a href="module-Analytics.html#~identifyAuthenticatedUser">identifyAuthenticatedUser</a></li><li><a href="module-Analytics.html#~resetAnalyticsService">resetAnalyticsService</a></li><li><a href="module-Analytics.html#~sendPageEvent">sendPageEvent</a></li><li><a href="module-Analytics.html#~sendTrackEvent">sendTrackEvent</a></li><li><a href="module-Analytics.html#~sendTrackingLogEvent">sendTrackingLogEvent</a></li>
+            </ul>
+        
+                </li><li class="module-section nav-item Auth">
+                    <a href="module-Auth.html" class="nav-link font-weight-bold">Auth</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-Auth.AuthService.html">AuthService</a></li><li><a href="module-Auth.AxiosJwtAuthService.html">AxiosJwtAuthService</a></li><li><a href="module-Auth.HttpClient.html">HttpClient</a></li><li><a href="module-Auth.MockAuthService.html">MockAuthService</a></li><li><a href="module-Auth.UserData.html">UserData</a></li><li><a href="module-Auth.html#~AUTHENTICATED_USER_TOPIC">AUTHENTICATED_USER_TOPIC</a></li><li><a href="module-Auth.html#~configure">configure</a></li><li><a href="module-Auth.html#~ensureAuthenticatedUser">ensureAuthenticatedUser</a></li><li><a href="module-Auth.html#~event:AUTHENTICATED_USER_CHANGED">AUTHENTICATED_USER_CHANGED</a></li><li><a href="module-Auth.html#~fetchAuthenticatedUser">fetchAuthenticatedUser</a></li><li><a href="module-Auth.html#~getAuthenticatedHttpClient">getAuthenticatedHttpClient</a></li><li><a href="module-Auth.html#~getAuthenticatedUser">getAuthenticatedUser</a></li><li><a href="module-Auth.html#~getAuthService">getAuthService</a></li><li><a href="module-Auth.html#~getHttpClient">getHttpClient</a></li><li><a href="module-Auth.html#~getLoginRedirectUrl">getLoginRedirectUrl</a></li><li><a href="module-Auth.html#~getLogoutRedirectUrl">getLogoutRedirectUrl</a></li><li><a href="module-Auth.html#~hydrateAuthenticatedUser">hydrateAuthenticatedUser</a></li><li><a href="module-Auth.html#~redirectToLogin">redirectToLogin</a></li><li><a href="module-Auth.html#~redirectToLogout">redirectToLogout</a></li><li><a href="module-Auth.html#~resetAuthService">resetAuthService</a></li><li><a href="module-Auth.html#~setAuthenticatedUser">setAuthenticatedUser</a></li>
+            </ul>
+        
+                </li><li class="module-section nav-item Config">
+                    <a href="module-Config.html" class="nav-link font-weight-bold">Config</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-Config.html#.ConfigDocument">ConfigDocument</a></li><li><a href="module-Config.html#~ensureConfig">ensureConfig</a></li><li><a href="module-Config.html#~getConfig">getConfig</a></li><li><a href="module-Config.html#~mergeConfig">mergeConfig</a></li><li><a href="module-Config.html#~setConfig">setConfig</a></li>
+            </ul>
+        
+                </li><li class="module-section nav-item Initialization">
+                    <a href="module-Initialization.html" class="nav-link font-weight-bold">Initialization</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-Initialization.html#~analytics">analytics</a></li><li><a href="module-Initialization.html#~auth">auth</a></li><li><a href="module-Initialization.html#~history">history</a></li><li><a href="module-Initialization.html#~initError">initError</a></li><li><a href="module-Initialization.html#~initialize">initialize</a></li>
+            </ul>
+        
+                </li><li class="module-section nav-item Internationalization">
+                    <a href="module-Internationalization.html" class="nav-link font-weight-bold">Internationalization</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-Internationalization.html#.configure">configure</a></li><li><a href="module-Internationalization.html#.findSupportedLocale">findSupportedLocale</a></li><li><a href="module-Internationalization.html#.getCookies">getCookies</a></li><li><a href="module-Internationalization.html#.getLocale">getLocale</a></li><li><a href="module-Internationalization.html#.getMessages">getMessages</a></li><li><a href="module-Internationalization.html#.getPrimaryLanguageSubtag">getPrimaryLanguageSubtag</a></li><li><a href="module-Internationalization.html#.handleRtl">handleRtl</a></li><li><a href="module-Internationalization.html#.isRtl">isRtl</a></li><li><a href="module-Internationalization.html#.LOCALE_CHANGED">LOCALE_CHANGED</a></li><li><a href="module-Internationalization.html#.LOCALE_TOPIC">LOCALE_TOPIC</a></li><li><a href="module-Internationalization.html#.mergeMessages">mergeMessages</a></li><li><a href="module-Internationalization.html#~defineMessages">defineMessages</a></li><li><a href="module-Internationalization-FormattedDate.html">FormattedDate</a></li><li><a href="module-Internationalization-FormattedMessage.html">FormattedMessage</a></li><li><a href="module-Internationalization-FormattedNumber.html">FormattedNumber</a></li><li><a href="module-Internationalization-FormattedPlural.html">FormattedPlural</a></li><li><a href="module-Internationalization-FormattedRelative.html">FormattedRelative</a></li><li><a href="module-Internationalization-FormattedTime.html">FormattedTime</a></li><li><a href="module-Internationalization-IntlProvider.html">IntlProvider</a></li><li><a href="module-Internationalization.html#~intlShape">intlShape</a></li>
+            </ul>
+        
+                </li><li class="module-section nav-item Logging">
+                    <a href="module-Logging.html" class="nav-link font-weight-bold">Logging</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-Logging.LoggingService.html">LoggingService</a></li><li><a href="module-Logging.MockLoggingService.html">MockLoggingService</a></li><li><a href="module-Logging.NewRelicLoggingService.html">NewRelicLoggingService</a></li><li><a href="module-Logging.html#~configure">configure</a></li><li><a href="module-Logging.html#~getLoggingService">getLoggingService</a></li><li><a href="module-Logging.html#~logError">logError</a></li><li><a href="module-Logging.html#~logInfo">logInfo</a></li><li><a href="module-Logging.html#~resetLoggingService">resetLoggingService</a></li>
+            </ul>
+        
+                </li><li class="module-section nav-item PubSub">
+                    <a href="module-PubSub.html" class="nav-link font-weight-bold">PubSub</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-PubSub.html#~publish">publish</a></li><li><a href="module-PubSub.html#~subscribe">subscribe</a></li><li><a href="module-PubSub.html#~unsubscribe">unsubscribe</a></li>
+            </ul>
+        
+                </li><li class="module-section nav-item React">
+                    <a href="module-React.html" class="nav-link font-weight-bold">React</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-React.html#.AppContext">AppContext</a></li><li><a href="module-React.html#.AppProvider">AppProvider</a></li><li><a href="module-React.html#.AuthenticatedPageRoute">AuthenticatedPageRoute</a></li><li><a href="module-React.ErrorBoundary.html">ErrorBoundary</a></li><li><a href="module-React.ErrorPage.html">ErrorPage</a></li><li><a href="module-React.html#.LoginRedirect">LoginRedirect</a></li><li><a href="module-React.html#.OptionalReduxProvider">OptionalReduxProvider</a></li><li><a href="module-React.html#.PageRoute">PageRoute</a></li><li><a href="module-React.html#.useAppEvent">useAppEvent</a></li>
+            </ul>
+        
+                </li><li class="module-section nav-item Testing">
+                    <a href="module-Testing.html" class="nav-link font-weight-bold">Testing</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-Testing.html#.initializeMockApp">initializeMockApp</a></li><li><a href="module-Testing.html#.messages">messages</a></li>
+            </ul>
+        
+                </li><li class="module-section nav-item Utilities">
+                    <a href="module-Utilities.html" class="nav-link font-weight-bold">Utilities</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-Utilities.html#~camelCaseObject">camelCaseObject</a></li><li><a href="module-Utilities.html#~convertKeyNames">convertKeyNames</a></li><li><a href="module-Utilities.html#~ensureDefinedConfig">ensureDefinedConfig</a></li><li><a href="module-Utilities.html#~getQueryParameters">getQueryParameters</a></li><li><a href="module-Utilities.html#~modifyObjectKeys">modifyObjectKeys</a></li><li><a href="module-Utilities.html#~snakeCaseObject">snakeCaseObject</a></li>
+            </ul>
+        
+                </li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Tue Dec 21 2021 19:24:55 GMT+0000 (Coordinated Universal Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

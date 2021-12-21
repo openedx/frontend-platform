@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Open edX frontend-platform API Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body data-module="">
+
+<div id="main">
+    <h1 class="page-title">Open edX frontend-platform API Documentation</h1>
+
+    
+
+
+
+    
+
+
+
+
+
+
+
+
+
+    
+
+
+    <section>
+        <article><p><a href="https://github.com/edx/frontend-platform/actions/workflows/ci.yml"><img src="https://github.com/edx/frontend-platform/actions/workflows/ci.yml/badge.svg" alt="Build Status"></a>
+<a href="https://codecov.io/gh/edx/frontend-platform"><img src="https://img.shields.io/codecov/c/github/edx/frontend-platform" alt="Codecov"></a>
+<a href="https://www.npmjs.com/package/@edx/frontend-platform"><img src="https://img.shields.io/npm/v/@edx/frontend-platform.svg" alt="NPM Version"></a>
+<a href="https://www.npmjs.com/package/@edx/frontend-platform"><img src="https://img.shields.io/npm/dt/@edx/frontend-platform.svg" alt="npm_downloads"></a>
+<a href="https://github.com/edx/frontend-platform/blob/master/LICENSE"><img src="https://img.shields.io/npm/l/@edx/frontend-platform.svg" alt="license"></a>
+<a href="https://github.com/semantic-release/semantic-release"><img src="https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg" alt="semantic release"></a></p>
+<h1>Overview</h1>
+<p>See the <a href="https://openedx.github.io/frontend-platform/">GitHub Pages site for the complete documentation</a>.</p>
+<p>frontend-platform is a modest application framework for Open edX micro-frontend applications and their supporting libraries. It provides a number of foundational services that all Open edX micro-frontends should have:</p>
+<table>
+<thead>
+<tr>
+<th>Service</th>
+<th>Module location</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Analytics</td>
+<td>@edx/frontend-platform/analytics</td>
+</tr>
+<tr>
+<td>Logging</td>
+<td>@edx/frontend-platform/logging</td>
+</tr>
+<tr>
+<td>Authenticated API client (auth)</td>
+<td>@edx/frontend-platform/auth</td>
+</tr>
+<tr>
+<td>Internationalization (i18n)</td>
+<td>@edx/frontend-platform/i18n</td>
+</tr>
+<tr>
+<td>Misc (init, config, pubSub, utils)</td>
+<td>@edx/frontend-platform</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<p>In addition, frontend-platform provides an extensible application initialization lifecycle to help manage the configuration of the above services, freeing application developers to focus on feature development.</p>
+<h2>Getting started</h2>
+<h3>One-time setup if you have not ugpraded node/npm</h3>
+<p>IMPORTANT: There is now a new node/npm version being used by frontend-platform as of
+https://github.com/edx/frontend-platform/pull/259</p>
+<h4>Install nvm</h4>
+<p>This is highly recommended in order to be able to leverage different node/npm versions.
+For a period of time, different repositories may be using different versions of node/npm.</p>
+<p>Alternatively, please install node16 and npm8 for use with this repository.</p>
+<h4>Switch to node/npm version for this repo</h4>
+<p><code>nvm use</code>
+if you don't have the right node/npm versions, nvm will instruct you to install those</p>
+<h4>Clean out old node modules and reinstall</h4>
+<p>This step is needed because node now uses a different package lock format, and it's important to reinstall
+dependencies based on this new package file. Delete node_modules, and issue a <code>npm ci</code></p>
+<h3>Standard getting started steps</h3>
+<ol>
+<li><code>npm install</code></li>
+<li><code>npm start</code></li>
+<li>Open http://localhost:8080 to view the example app.</li>
+</ol>
+<h2>Architecture</h2>
+<p>The four foundational services listed above (analytics, auth, i18n, and logging) are provided as imports to applications via frontend-platform's API layer.  The initialization sequence creates an instance of each service and exposes its methods as functional exports, creating a layer of abstraction between service implementations and their usage in application code.</p>
+<p>Each type of service has a documented API contract which service implementations must fulfill. This allows different service implementations to be used as necessary without updates to consuming applications.</p>
+<h3>Service architecture</h3>
+<p>Internally, service implementations are strictly isolated from the rest of the platform.  They are classes that take their dependencies as arguments to their constructor.  This means, for instance, if analytics depends on logging, it takes a reference to an instance fulfilling the <code>LoggingService</code> interface as an option when it's instantiated.  It cannot import from the logging module directly.  Put another way, the default service implementations may be co-located with the service interfaces for convenience, but they can theoretically live in their own repository and it wouldn't require any refactoring.</p>
+<p>Likewise, platform code should not make use of service methods that are not part of the documented interface for the same reasons.</p>
+<h3>Application initialization</h3>
+<p>frontend-platform provides an <code>initialize()</code> function which bootstraps and configures an application.  The <code>initialize()</code> function uses a set of <a href="https://en.wikipedia.org/wiki/Convention_over_configuration">sensible defaults</a> unless otherwise specified, bootstrapping the application with services reflecting Open edX's best practices around analytics, authentication, internationalization, and logging.</p>
+<p>The initialization process proceeds in a series of phases, giving the initializing application code opportunities to hook into the process and do custom setup as desired:</p>
+<ul>
+<li>Before initialization</li>
+<li>Pub/Sub initialized</li>
+<li>Environment config document loaded</li>
+<li>Logging service initialized</li>
+<li>Authentication service initialized</li>
+<li>Analytics service initialized</li>
+<li>Internationalization service initialized</li>
+<li>Application ready</li>
+</ul>
+<p>Most applications won't need to do anything special at all.</p>
+<h3>Application configuration</h3>
+<p>When the application loads, a list of known environment variables is loaded from <code>process.env</code> into an object which it exposes via <code>getConfig</code> - the point here is primarily to isolate our code from usages of <code>process.env</code> which may not always be the way we choose to configure our apps.  The application initialization lifecycle supports runtime configuration as well via the <code>config</code> handler, documented in the <a href="https://edx.github.io/frontend-platform/module-Initialization.html#~initialize">initialize function</a>.  If you want to get a variable into the config that it’s not expecting, you can use <a href="https://edx.github.io/frontend-platform/module-Config.html#~mergeConfig"><code>mergeConfig</code></a> during initialization to add it in from <code>process.env</code>.</p>
+<p>Such an example might look like:</p>
+<pre class="prettyprint source"><code>initialize({
+  // ... other initialization options
+  handlers: {
+    config: () => {
+      mergeConfig({
+        CUSTOM_VARIABLE: process.env.CUSTOM_VARIABLE || null,
+      }, 'Custom app config');
+    },
+  },
+});
+</code></pre>
+<p>When using runtime configuration via <code>mergeConfig</code> noted above, <code>getConfig</code> must be called within a component's render lifecycle in order for the added keys and values to be returned in the configuration object. If <code>getConfig</code> is called outside of a component's render lifecycle, the custom configuration key/value pairs will not initially be part of the object returned by <code>getConfig</code>. For example:</p>
+<pre class="prettyprint source lang-jsx"><code>import { getConfig } from '@edx/frontend-platform/config';
+
+// The runtime configuration `CUSTOM_VARIABLE` added in the above code snippet will not appear here. This is
+// because `getConfig` is called before `mergeConfig` is executed to add the custom runtime configuration.
+console.log(getConfig().CUSTOM_VARIABLE); // returns undefined
+
+const ExampleComponent = () => {
+  // This returns the value as expected since it is called after `mergeConfig` has already executed.
+  console.log(getConfig().CUSTOM_VARIABLE)
+};
+</code></pre>
+<h3>Service interfaces</h3>
+<p>Each service (analytics, auth, i18n, logging) provided by frontend-platform has a API contract which all implementations of that service are guaranteed to fulfill.  Applications that use frontend-platform can use its configured services via a convenient set of exported functions.  An application that wants to use the service interfaces need only initialize them via the initialize() function, optionally providing custom service interfaces as desired (you probably won't need to).</p>
+<p><img src="service-interface.png" alt="Service interface"></p>
+<h3>Service implementations</h3>
+<p>This repository contains default service implementations for convenience.  These implementations are co-located with their consuming service interfaces for ease of development, though the two should remain <em>strictly</em> modular and separate.</p>
+<p>The included service implementations are:</p>
+<ul>
+<li>New Relic (logging)</li>
+<li>Segment (analytics)</li>
+<li>Axios/JWT (auth)</li>
+<li>React Intl (i18n)</li>
+</ul>
+<p>NOTE: As of this writing, i18n is <em>not</em> configurable.  The <code>initialize()</code> function does not allow applications to supply an alternate i18n implementation; this is because the interface and implementation for i18n has not yet been separated and modularized.</p>
+<h1>Local development &amp; testing locally</h1>
+<p>When making changes to frontend-platform, be sure to manually run the included example app located in <code>./example</code>. The example app includes 2 routes to test for both unauthenticated and authenticated users. To start the example app, run <code>npm start</code> from the root directory.</p>
+<p>If you want to test changes to frontend-platform against a micro-frontend locally, follow the directions here: https://github.com/edx/frontend-build#local-module-configuration-for-webpack</p></article>
+    </section>
+
+
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><ul class="list-unstyled nav flex-column"><li class="module-section nav-item Analytics">
+                    <a href="module-Analytics.html" class="nav-link font-weight-bold">Analytics</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-Analytics.AnalyticsService.html">AnalyticsService</a></li><li><a href="module-Analytics.MockAnalyticsService.html">MockAnalyticsService</a></li><li><a href="module-Analytics.SegmentAnalyticsService.html">SegmentAnalyticsService</a></li><li><a href="module-Analytics.html#~configure">configure</a></li><li><a href="module-Analytics.html#~getAnalyticsService">getAnalyticsService</a></li><li><a href="module-Analytics.html#~identifyAnonymousUser">identifyAnonymousUser</a></li><li><a href="module-Analytics.html#~identifyAuthenticatedUser">identifyAuthenticatedUser</a></li><li><a href="module-Analytics.html#~resetAnalyticsService">resetAnalyticsService</a></li><li><a href="module-Analytics.html#~sendPageEvent">sendPageEvent</a></li><li><a href="module-Analytics.html#~sendTrackEvent">sendTrackEvent</a></li><li><a href="module-Analytics.html#~sendTrackingLogEvent">sendTrackingLogEvent</a></li>
+            </ul>
+        
+                </li><li class="module-section nav-item Auth">
+                    <a href="module-Auth.html" class="nav-link font-weight-bold">Auth</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-Auth.AuthService.html">AuthService</a></li><li><a href="module-Auth.AxiosJwtAuthService.html">AxiosJwtAuthService</a></li><li><a href="module-Auth.HttpClient.html">HttpClient</a></li><li><a href="module-Auth.MockAuthService.html">MockAuthService</a></li><li><a href="module-Auth.UserData.html">UserData</a></li><li><a href="module-Auth.html#~AUTHENTICATED_USER_TOPIC">AUTHENTICATED_USER_TOPIC</a></li><li><a href="module-Auth.html#~configure">configure</a></li><li><a href="module-Auth.html#~ensureAuthenticatedUser">ensureAuthenticatedUser</a></li><li><a href="module-Auth.html#~event:AUTHENTICATED_USER_CHANGED">AUTHENTICATED_USER_CHANGED</a></li><li><a href="module-Auth.html#~fetchAuthenticatedUser">fetchAuthenticatedUser</a></li><li><a href="module-Auth.html#~getAuthenticatedHttpClient">getAuthenticatedHttpClient</a></li><li><a href="module-Auth.html#~getAuthenticatedUser">getAuthenticatedUser</a></li><li><a href="module-Auth.html#~getAuthService">getAuthService</a></li><li><a href="module-Auth.html#~getHttpClient">getHttpClient</a></li><li><a href="module-Auth.html#~getLoginRedirectUrl">getLoginRedirectUrl</a></li><li><a href="module-Auth.html#~getLogoutRedirectUrl">getLogoutRedirectUrl</a></li><li><a href="module-Auth.html#~hydrateAuthenticatedUser">hydrateAuthenticatedUser</a></li><li><a href="module-Auth.html#~redirectToLogin">redirectToLogin</a></li><li><a href="module-Auth.html#~redirectToLogout">redirectToLogout</a></li><li><a href="module-Auth.html#~resetAuthService">resetAuthService</a></li><li><a href="module-Auth.html#~setAuthenticatedUser">setAuthenticatedUser</a></li>
+            </ul>
+        
+                </li><li class="module-section nav-item Config">
+                    <a href="module-Config.html" class="nav-link font-weight-bold">Config</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-Config.html#.ConfigDocument">ConfigDocument</a></li><li><a href="module-Config.html#~ensureConfig">ensureConfig</a></li><li><a href="module-Config.html#~getConfig">getConfig</a></li><li><a href="module-Config.html#~mergeConfig">mergeConfig</a></li><li><a href="module-Config.html#~setConfig">setConfig</a></li>
+            </ul>
+        
+                </li><li class="module-section nav-item Initialization">
+                    <a href="module-Initialization.html" class="nav-link font-weight-bold">Initialization</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-Initialization.html#~analytics">analytics</a></li><li><a href="module-Initialization.html#~auth">auth</a></li><li><a href="module-Initialization.html#~history">history</a></li><li><a href="module-Initialization.html#~initError">initError</a></li><li><a href="module-Initialization.html#~initialize">initialize</a></li>
+            </ul>
+        
+                </li><li class="module-section nav-item Internationalization">
+                    <a href="module-Internationalization.html" class="nav-link font-weight-bold">Internationalization</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-Internationalization.html#.configure">configure</a></li><li><a href="module-Internationalization.html#.findSupportedLocale">findSupportedLocale</a></li><li><a href="module-Internationalization.html#.getCookies">getCookies</a></li><li><a href="module-Internationalization.html#.getLocale">getLocale</a></li><li><a href="module-Internationalization.html#.getMessages">getMessages</a></li><li><a href="module-Internationalization.html#.getPrimaryLanguageSubtag">getPrimaryLanguageSubtag</a></li><li><a href="module-Internationalization.html#.handleRtl">handleRtl</a></li><li><a href="module-Internationalization.html#.isRtl">isRtl</a></li><li><a href="module-Internationalization.html#.LOCALE_CHANGED">LOCALE_CHANGED</a></li><li><a href="module-Internationalization.html#.LOCALE_TOPIC">LOCALE_TOPIC</a></li><li><a href="module-Internationalization.html#.mergeMessages">mergeMessages</a></li><li><a href="module-Internationalization.html#~defineMessages">defineMessages</a></li><li><a href="module-Internationalization-FormattedDate.html">FormattedDate</a></li><li><a href="module-Internationalization-FormattedMessage.html">FormattedMessage</a></li><li><a href="module-Internationalization-FormattedNumber.html">FormattedNumber</a></li><li><a href="module-Internationalization-FormattedPlural.html">FormattedPlural</a></li><li><a href="module-Internationalization-FormattedRelative.html">FormattedRelative</a></li><li><a href="module-Internationalization-FormattedTime.html">FormattedTime</a></li><li><a href="module-Internationalization-IntlProvider.html">IntlProvider</a></li><li><a href="module-Internationalization.html#~intlShape">intlShape</a></li>
+            </ul>
+        
+                </li><li class="module-section nav-item Logging">
+                    <a href="module-Logging.html" class="nav-link font-weight-bold">Logging</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-Logging.LoggingService.html">LoggingService</a></li><li><a href="module-Logging.MockLoggingService.html">MockLoggingService</a></li><li><a href="module-Logging.NewRelicLoggingService.html">NewRelicLoggingService</a></li><li><a href="module-Logging.html#~configure">configure</a></li><li><a href="module-Logging.html#~getLoggingService">getLoggingService</a></li><li><a href="module-Logging.html#~logError">logError</a></li><li><a href="module-Logging.html#~logInfo">logInfo</a></li><li><a href="module-Logging.html#~resetLoggingService">resetLoggingService</a></li>
+            </ul>
+        
+                </li><li class="module-section nav-item PubSub">
+                    <a href="module-PubSub.html" class="nav-link font-weight-bold">PubSub</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-PubSub.html#~publish">publish</a></li><li><a href="module-PubSub.html#~subscribe">subscribe</a></li><li><a href="module-PubSub.html#~unsubscribe">unsubscribe</a></li>
+            </ul>
+        
+                </li><li class="module-section nav-item React">
+                    <a href="module-React.html" class="nav-link font-weight-bold">React</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-React.html#.AppContext">AppContext</a></li><li><a href="module-React.html#.AppProvider">AppProvider</a></li><li><a href="module-React.html#.AuthenticatedPageRoute">AuthenticatedPageRoute</a></li><li><a href="module-React.ErrorBoundary.html">ErrorBoundary</a></li><li><a href="module-React.ErrorPage.html">ErrorPage</a></li><li><a href="module-React.html#.LoginRedirect">LoginRedirect</a></li><li><a href="module-React.html#.OptionalReduxProvider">OptionalReduxProvider</a></li><li><a href="module-React.html#.PageRoute">PageRoute</a></li><li><a href="module-React.html#.useAppEvent">useAppEvent</a></li>
+            </ul>
+        
+                </li><li class="module-section nav-item Testing">
+                    <a href="module-Testing.html" class="nav-link font-weight-bold">Testing</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-Testing.html#.initializeMockApp">initializeMockApp</a></li><li><a href="module-Testing.html#.messages">messages</a></li>
+            </ul>
+        
+                </li><li class="module-section nav-item Utilities">
+                    <a href="module-Utilities.html" class="nav-link font-weight-bold">Utilities</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-Utilities.html#~camelCaseObject">camelCaseObject</a></li><li><a href="module-Utilities.html#~convertKeyNames">convertKeyNames</a></li><li><a href="module-Utilities.html#~ensureDefinedConfig">ensureDefinedConfig</a></li><li><a href="module-Utilities.html#~getQueryParameters">getQueryParameters</a></li><li><a href="module-Utilities.html#~modifyObjectKeys">modifyObjectKeys</a></li><li><a href="module-Utilities.html#~snakeCaseObject">snakeCaseObject</a></li>
+            </ul>
+        
+                </li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Tue Dec 21 2021 19:24:55 GMT+0000 (Coordinated Universal Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

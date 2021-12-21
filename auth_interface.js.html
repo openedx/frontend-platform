@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: auth/interface.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body data-module="">
+
+<div id="main">
+    <h1 class="page-title">Source: auth/interface.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * #### Import members from **@edx/frontend-platform/auth**
+ *
+ * Simplifies the process of making authenticated API requests to backend edX services by providing
+ * common authN/authZ client code that enables the login/logout flow and handles ensuring the
+ * presence of a valid [JWT cookie](https://github.com/edx/edx-platform/blob/master/openedx/core/djangoapps/oauth_dispatch/docs/decisions/0009-jwt-in-session-cookie.rst).
+ *
+ * The `initialize` function performs much of the auth configuration for you.  If, however, you're
+ * not using the `initialize` function, an authenticated API client can be created via:
+ *
+ * ```
+ * import {
+ *   configure,
+ *   fetchAuthenticatedUser,
+ *   getAuthenticatedHttpClient
+ * } from '@edx/frontend-platform/auth';
+ * import { getConfig } from '@edx/frontend-platform';
+ * import { getLoggingService } from '@edx/frontend-platform/logging';
+ *
+ * configure({
+ *   loggingService: getLoggingService(),
+ *   config: getConfig(),
+ * });
+ *
+ * const authenticatedUser = await fetchAuthenticatedUser(); // validates and decodes JWT token
+ * const authenticatedHttpClient = getAuthenticatedHttpClient();
+ * const response = await getAuthenticatedHttpClient().get(`https://example.com/api/user/data/${authenticatedUser.username}`); // fetching from an authenticated API using user data
+ * ```
+ *
+ * As shown in this example, auth depends on the configuration document and logging.
+ *
+ * NOTE: The documentation for AxiosJwtAuthService is nearly the same as that for the top-level
+ * auth interface, except that it contains some Axios-specific details.
+ *
+ * @module Auth
+ */
+import PropTypes from 'prop-types';
+import { publish } from '../pubSub';
+
+/**
+ * @constant
+ * @private
+ */
+export const AUTHENTICATED_USER_TOPIC = 'AUTHENTICATED_USER';
+
+/**
+ * Published when the authenticated user data changes.  This can happen when the authentication
+ * service determines that the user is authenticated or anonymous, as well as when we fetch
+ * additional user account data if the `hydrateAuthenticatedUser` flag has been set in the
+ * `initialize` function.
+ *
+ * @event
+ * @see {@link module:Initialization~initialize}
+ */
+export const AUTHENTICATED_USER_CHANGED = `${AUTHENTICATED_USER_TOPIC}.CHANGED`;
+
+const optionsShape = {
+  config: PropTypes.shape({
+    BASE_URL: PropTypes.string.isRequired,
+    LMS_BASE_URL: PropTypes.string.isRequired,
+    LOGIN_URL: PropTypes.string.isRequired,
+    LOGOUT_URL: PropTypes.string.isRequired,
+    REFRESH_ACCESS_TOKEN_ENDPOINT: PropTypes.string.isRequired,
+    ACCESS_TOKEN_COOKIE_NAME: PropTypes.string.isRequired,
+    CSRF_TOKEN_API_PATH: PropTypes.string.isRequired,
+  }).isRequired,
+  loggingService: PropTypes.shape({
+    logError: PropTypes.func.isRequired,
+    logInfo: PropTypes.func.isRequired,
+  }).isRequired,
+};
+
+const serviceShape = {
+  getAuthenticatedHttpClient: PropTypes.func.isRequired,
+  getHttpClient: PropTypes.func.isRequired,
+  getLoginRedirectUrl: PropTypes.func.isRequired,
+  redirectToLogin: PropTypes.func.isRequired,
+  getLogoutRedirectUrl: PropTypes.func.isRequired,
+  redirectToLogout: PropTypes.func.isRequired,
+  getAuthenticatedUser: PropTypes.func.isRequired,
+  setAuthenticatedUser: PropTypes.func.isRequired,
+  fetchAuthenticatedUser: PropTypes.func.isRequired,
+  ensureAuthenticatedUser: PropTypes.func.isRequired,
+  hydrateAuthenticatedUser: PropTypes.func.isRequired,
+};
+
+let service;
+
+/**
+ *
+ * @param {class} AuthService
+ * @param {*} options
+ * @returns {AuthService}
+ */
+export function configure(AuthService, options) {
+  PropTypes.checkPropTypes(optionsShape, options, 'property', 'Auth');
+  service = new AuthService(options);
+  PropTypes.checkPropTypes(serviceShape, service, 'property', 'AuthService');
+  return service;
+}
+
+/**
+ *
+ *
+ * @returns {AuthService}
+ */
+export function getAuthService() {
+  if (!service) {
+    throw Error('You must first configure the auth service.');
+  }
+
+  return service;
+}
+
+/**
+ *
+ */
+export function resetAuthService() {
+  service = null;
+}
+
+/**
+ * Gets the authenticated HTTP client for the service.
+ *
+ * @param {Object} [options] Optional options for how to configure the authenticated HTTP client
+ * @param {boolean} [options.useCache] Whether to use front end caching for all requests made with the returned client
+ *
+ * @returns {HttpClient}
+ */
+export function getAuthenticatedHttpClient(options = {}) {
+  return service.getAuthenticatedHttpClient(options);
+}
+
+/**
+ * Gets the unauthenticated HTTP client for the service.
+ *
+ * @param {Object} [options] Optional options for how to configure the authenticated HTTP client
+ * @param {boolean} [options.useCache] Whether to use front end caching for all requests made with the returned client
+ *
+ * @returns {HttpClient}
+ */
+export function getHttpClient(options = {}) {
+  return service.getHttpClient(options);
+}
+
+/**
+ * Builds a URL to the login page with a post-login redirect URL attached as a query parameter.
+ *
+ * ```
+ * const url = getLoginRedirectUrl('http://localhost/mypage');
+ * console.log(url); // http://localhost/login?next=http%3A%2F%2Flocalhost%2Fmypage
+ * ```
+ *
+ * @param {string} redirectUrl The URL the user should be redirected to after logging in.
+ */
+export function getLoginRedirectUrl(redirectUrl) {
+  return service.getLoginRedirectUrl(redirectUrl);
+}
+
+/**
+ * Redirects the user to the login page.
+ *
+ * @param {string} redirectUrl The URL the user should be redirected to after logging in.
+ */
+export function redirectToLogin(redirectUrl) {
+  return service.redirectToLogin(redirectUrl);
+}
+
+/**
+ * Builds a URL to the logout page with a post-logout redirect URL attached as a query parameter.
+ *
+ * ```
+ * const url = getLogoutRedirectUrl('http://localhost/mypage');
+ * console.log(url); // http://localhost/logout?redirect_url=http%3A%2F%2Flocalhost%2Fmypage
+ * ```
+ *
+ * @param {string} redirectUrl The URL the user should be redirected to after logging out.
+ */
+export function getLogoutRedirectUrl(redirectUrl) {
+  return service.getLogoutRedirectUrl(redirectUrl);
+}
+
+/**
+ * Redirects the user to the logout page.
+ *
+ * @param {string} redirectUrl The URL the user should be redirected to after logging out.
+ */
+export function redirectToLogout(redirectUrl) {
+  return service.redirectToLogout(redirectUrl);
+}
+
+/**
+ * If it exists, returns the user data representing the currently authenticated user. If the
+ * user is anonymous, returns null.
+ *
+ * @returns {UserData|null}
+ */
+export function getAuthenticatedUser() {
+  return service.getAuthenticatedUser();
+}
+
+/**
+ * Sets the authenticated user to the provided value.
+ *
+ * @param {UserData} authUser
+ * @emits AUTHENTICATED_USER_CHANGED
+ */
+export function setAuthenticatedUser(authUser) {
+  service.setAuthenticatedUser(authUser);
+  publish(AUTHENTICATED_USER_CHANGED);
+}
+
+/**
+ * Reads the authenticated user's access token. Resolves to null if the user is
+ * unauthenticated.
+ *
+ * @returns {Promise&lt;UserData>|Promise&lt;null>} Resolves to the user's access token if they are
+ * logged in.
+ */
+export async function fetchAuthenticatedUser(options = {}) {
+  return service.fetchAuthenticatedUser(options);
+}
+
+/**
+ * Ensures a user is authenticated. It will redirect to login when not
+ * authenticated.
+ *
+ * @param {string} [redirectUrl=config.BASE_URL] to return user after login when not
+ * authenticated.
+ * @returns {Promise&lt;UserData>}
+ */
+export async function ensureAuthenticatedUser(redirectUrl) {
+  return service.ensureAuthenticatedUser(redirectUrl);
+}
+
+/**
+ * Fetches additional user account information for the authenticated user and merges it into the
+ * existing authenticatedUser object, available via getAuthenticatedUser().
+ *
+ * ```
+ *  console.log(authenticatedUser); // Will be sparse and only contain basic information.
+ *  await hydrateAuthenticatedUser()
+ *  const authenticatedUser = getAuthenticatedUser();
+ *  console.log(authenticatedUser); // Will contain additional user information
+ * ```
+ *
+ * @emits AUTHENTICATED_USER_CHANGED
+ */
+export async function hydrateAuthenticatedUser() {
+  await service.hydrateAuthenticatedUser();
+  publish(AUTHENTICATED_USER_CHANGED);
+}
+
+/**
+ * @name AuthService
+ * @interface
+ * @memberof module:Auth
+ * @property {function} getAuthenticatedHttpClient
+ * @property {function} getHttpClient
+ * @property {function} getLoginRedirectUrl
+ * @property {function} redirectToLogin
+ * @property {function} getLogoutRedirectUrl
+ * @property {function} redirectToLogout
+ * @property {function} getAuthenticatedUser
+ * @property {function} setAuthenticatedUser
+ * @property {function} fetchAuthenticatedUser
+ * @property {function} ensureAuthenticatedUser
+ * @property {function} hydrateAuthenticatedUser
+ */
+
+/**
+ * A configured axios client. See axios docs for more
+ * info https://github.com/axios/axios. All the functions
+ * below accept isPublic and isCsrfExempt in the request
+ * config options. Setting these to true will prevent this
+ * client from attempting to refresh the jwt access token
+ * or a csrf token respectively.
+ *
+ * ```
+ *  // A public endpoint (no jwt token refresh)
+ *  apiClient.get('/path/to/endpoint', { isPublic: true });
+ * ```
+ *
+ * ```
+ *  // A csrf exempt endpoint
+ *  apiClient.post('/path/to/endpoint', { data }, { isCsrfExempt: true });
+ * ```
+ *
+ * @name HttpClient
+ * @interface
+ * @memberof module:Auth
+ * @property {function} get
+ * @property {function} head
+ * @property {function} options
+ * @property {function} delete (csrf protected)
+ * @property {function} post (csrf protected)
+ * @property {function} put (csrf protected)
+ * @property {function} patch (csrf protected)
+ */
+
+/**
+ * @name UserData
+ * @interface
+ * @memberof module:Auth
+ * @property {string} userId
+ * @property {string} username
+ * @property {Array} roles
+ * @property {boolean} administrator
+ */
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><ul class="list-unstyled nav flex-column"><li class="module-section nav-item Analytics">
+                    <a href="module-Analytics.html" class="nav-link font-weight-bold">Analytics</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-Analytics.AnalyticsService.html">AnalyticsService</a></li><li><a href="module-Analytics.MockAnalyticsService.html">MockAnalyticsService</a></li><li><a href="module-Analytics.SegmentAnalyticsService.html">SegmentAnalyticsService</a></li><li><a href="module-Analytics.html#~configure">configure</a></li><li><a href="module-Analytics.html#~getAnalyticsService">getAnalyticsService</a></li><li><a href="module-Analytics.html#~identifyAnonymousUser">identifyAnonymousUser</a></li><li><a href="module-Analytics.html#~identifyAuthenticatedUser">identifyAuthenticatedUser</a></li><li><a href="module-Analytics.html#~resetAnalyticsService">resetAnalyticsService</a></li><li><a href="module-Analytics.html#~sendPageEvent">sendPageEvent</a></li><li><a href="module-Analytics.html#~sendTrackEvent">sendTrackEvent</a></li><li><a href="module-Analytics.html#~sendTrackingLogEvent">sendTrackingLogEvent</a></li>
+            </ul>
+        
+                </li><li class="module-section nav-item Auth">
+                    <a href="module-Auth.html" class="nav-link font-weight-bold">Auth</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-Auth.AuthService.html">AuthService</a></li><li><a href="module-Auth.AxiosJwtAuthService.html">AxiosJwtAuthService</a></li><li><a href="module-Auth.HttpClient.html">HttpClient</a></li><li><a href="module-Auth.MockAuthService.html">MockAuthService</a></li><li><a href="module-Auth.UserData.html">UserData</a></li><li><a href="module-Auth.html#~AUTHENTICATED_USER_TOPIC">AUTHENTICATED_USER_TOPIC</a></li><li><a href="module-Auth.html#~configure">configure</a></li><li><a href="module-Auth.html#~ensureAuthenticatedUser">ensureAuthenticatedUser</a></li><li><a href="module-Auth.html#~event:AUTHENTICATED_USER_CHANGED">AUTHENTICATED_USER_CHANGED</a></li><li><a href="module-Auth.html#~fetchAuthenticatedUser">fetchAuthenticatedUser</a></li><li><a href="module-Auth.html#~getAuthenticatedHttpClient">getAuthenticatedHttpClient</a></li><li><a href="module-Auth.html#~getAuthenticatedUser">getAuthenticatedUser</a></li><li><a href="module-Auth.html#~getAuthService">getAuthService</a></li><li><a href="module-Auth.html#~getHttpClient">getHttpClient</a></li><li><a href="module-Auth.html#~getLoginRedirectUrl">getLoginRedirectUrl</a></li><li><a href="module-Auth.html#~getLogoutRedirectUrl">getLogoutRedirectUrl</a></li><li><a href="module-Auth.html#~hydrateAuthenticatedUser">hydrateAuthenticatedUser</a></li><li><a href="module-Auth.html#~redirectToLogin">redirectToLogin</a></li><li><a href="module-Auth.html#~redirectToLogout">redirectToLogout</a></li><li><a href="module-Auth.html#~resetAuthService">resetAuthService</a></li><li><a href="module-Auth.html#~setAuthenticatedUser">setAuthenticatedUser</a></li>
+            </ul>
+        
+                </li><li class="module-section nav-item Config">
+                    <a href="module-Config.html" class="nav-link font-weight-bold">Config</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-Config.html#.ConfigDocument">ConfigDocument</a></li><li><a href="module-Config.html#~ensureConfig">ensureConfig</a></li><li><a href="module-Config.html#~getConfig">getConfig</a></li><li><a href="module-Config.html#~mergeConfig">mergeConfig</a></li><li><a href="module-Config.html#~setConfig">setConfig</a></li>
+            </ul>
+        
+                </li><li class="module-section nav-item Initialization">
+                    <a href="module-Initialization.html" class="nav-link font-weight-bold">Initialization</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-Initialization.html#~analytics">analytics</a></li><li><a href="module-Initialization.html#~auth">auth</a></li><li><a href="module-Initialization.html#~history">history</a></li><li><a href="module-Initialization.html#~initError">initError</a></li><li><a href="module-Initialization.html#~initialize">initialize</a></li>
+            </ul>
+        
+                </li><li class="module-section nav-item Internationalization">
+                    <a href="module-Internationalization.html" class="nav-link font-weight-bold">Internationalization</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-Internationalization.html#.configure">configure</a></li><li><a href="module-Internationalization.html#.findSupportedLocale">findSupportedLocale</a></li><li><a href="module-Internationalization.html#.getCookies">getCookies</a></li><li><a href="module-Internationalization.html#.getLocale">getLocale</a></li><li><a href="module-Internationalization.html#.getMessages">getMessages</a></li><li><a href="module-Internationalization.html#.getPrimaryLanguageSubtag">getPrimaryLanguageSubtag</a></li><li><a href="module-Internationalization.html#.handleRtl">handleRtl</a></li><li><a href="module-Internationalization.html#.isRtl">isRtl</a></li><li><a href="module-Internationalization.html#.LOCALE_CHANGED">LOCALE_CHANGED</a></li><li><a href="module-Internationalization.html#.LOCALE_TOPIC">LOCALE_TOPIC</a></li><li><a href="module-Internationalization.html#.mergeMessages">mergeMessages</a></li><li><a href="module-Internationalization.html#~defineMessages">defineMessages</a></li><li><a href="module-Internationalization-FormattedDate.html">FormattedDate</a></li><li><a href="module-Internationalization-FormattedMessage.html">FormattedMessage</a></li><li><a href="module-Internationalization-FormattedNumber.html">FormattedNumber</a></li><li><a href="module-Internationalization-FormattedPlural.html">FormattedPlural</a></li><li><a href="module-Internationalization-FormattedRelative.html">FormattedRelative</a></li><li><a href="module-Internationalization-FormattedTime.html">FormattedTime</a></li><li><a href="module-Internationalization-IntlProvider.html">IntlProvider</a></li><li><a href="module-Internationalization.html#~intlShape">intlShape</a></li>
+            </ul>
+        
+                </li><li class="module-section nav-item Logging">
+                    <a href="module-Logging.html" class="nav-link font-weight-bold">Logging</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-Logging.LoggingService.html">LoggingService</a></li><li><a href="module-Logging.MockLoggingService.html">MockLoggingService</a></li><li><a href="module-Logging.NewRelicLoggingService.html">NewRelicLoggingService</a></li><li><a href="module-Logging.html#~configure">configure</a></li><li><a href="module-Logging.html#~getLoggingService">getLoggingService</a></li><li><a href="module-Logging.html#~logError">logError</a></li><li><a href="module-Logging.html#~logInfo">logInfo</a></li><li><a href="module-Logging.html#~resetLoggingService">resetLoggingService</a></li>
+            </ul>
+        
+                </li><li class="module-section nav-item PubSub">
+                    <a href="module-PubSub.html" class="nav-link font-weight-bold">PubSub</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-PubSub.html#~publish">publish</a></li><li><a href="module-PubSub.html#~subscribe">subscribe</a></li><li><a href="module-PubSub.html#~unsubscribe">unsubscribe</a></li>
+            </ul>
+        
+                </li><li class="module-section nav-item React">
+                    <a href="module-React.html" class="nav-link font-weight-bold">React</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-React.html#.AppContext">AppContext</a></li><li><a href="module-React.html#.AppProvider">AppProvider</a></li><li><a href="module-React.html#.AuthenticatedPageRoute">AuthenticatedPageRoute</a></li><li><a href="module-React.ErrorBoundary.html">ErrorBoundary</a></li><li><a href="module-React.ErrorPage.html">ErrorPage</a></li><li><a href="module-React.html#.LoginRedirect">LoginRedirect</a></li><li><a href="module-React.html#.OptionalReduxProvider">OptionalReduxProvider</a></li><li><a href="module-React.html#.PageRoute">PageRoute</a></li><li><a href="module-React.html#.useAppEvent">useAppEvent</a></li>
+            </ul>
+        
+                </li><li class="module-section nav-item Testing">
+                    <a href="module-Testing.html" class="nav-link font-weight-bold">Testing</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-Testing.html#.initializeMockApp">initializeMockApp</a></li><li><a href="module-Testing.html#.messages">messages</a></li>
+            </ul>
+        
+                </li><li class="module-section nav-item Utilities">
+                    <a href="module-Utilities.html" class="nav-link font-weight-bold">Utilities</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-Utilities.html#~camelCaseObject">camelCaseObject</a></li><li><a href="module-Utilities.html#~convertKeyNames">convertKeyNames</a></li><li><a href="module-Utilities.html#~ensureDefinedConfig">ensureDefinedConfig</a></li><li><a href="module-Utilities.html#~getQueryParameters">getQueryParameters</a></li><li><a href="module-Utilities.html#~modifyObjectKeys">modifyObjectKeys</a></li><li><a href="module-Utilities.html#~snakeCaseObject">snakeCaseObject</a></li>
+            </ul>
+        
+                </li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Tue Dec 21 2021 19:24:55 GMT+0000 (Coordinated Universal Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

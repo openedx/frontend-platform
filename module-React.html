@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: React</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body data-module="React">
+
+<div id="main">
+    <h1 class="page-title">React</h1>
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        
+            
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description"><h4>Import members from <strong>@edx/frontend-platform/react</strong></h4>
+<p>The React module provides a variety of React components, hooks, and contexts for use in an
+application.</p></div>
+        
+
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="react_index.js.html">react/index.js</a>, <a href="react_index.js.html#line1">line 1</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Classes</h3>
+
+        <dl>
+            <dt><a href="module-React.ErrorBoundary.html">ErrorBoundary</a></dt>
+            <dd></dd>
+        
+            <dt><a href="module-React.ErrorPage.html">ErrorPage</a></dt>
+            <dd></dd>
+        </dl>
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+<h4 class="name" id=".AppContext"><span class="type-signature">(static, constant) </span>AppContext<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    <p><code>AppContext</code> provides data from <code>App</code> in a way that React components can readily consume, even
+if it's mutable data. <code>AppContext</code> contains the following data structure:</p>
+<pre class="prettyprint source"><code>{
+  authenticatedUser: &lt;THE App.authenticatedUser OBJECT>,
+  config: &lt;THE App.config OBJECT>
+}
+</code></pre>
+<p>If the <code>App.authenticatedUser</code> or <code>App.config</code> data changes, <code>AppContext</code> will be updated
+accordingly and pass those changes onto React components using the context.</p>
+<p><code>AppContext</code> is used in a React application like any other `<a href="https://reactjs.org/docs/context.html">React Context</a></p>
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="react_AppContext.jsx.html">react/AppContext.jsx</a>, <a href="react_AppContext.jsx.html#line19">line 19</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".AppProvider"><span class="type-signature">(static) </span>AppProvider<span class="signature">(props)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>A wrapper component for React-based micro-frontends to initialize a number of common data/
+context providers.</p>
+<pre class="prettyprint source"><code>subscribe(APP_READY, () => {
+  ReactDOM.render(
+    &lt;AppProvider>
+      &lt;HelloWorld />
+    &lt;/AppProvider>
+  )
+});
+</code></pre>
+<p>This will provide the following to HelloWorld:</p>
+<ul>
+<li>An error boundary as described above.</li>
+<li>An <code>AppContext</code> provider for React context data.</li>
+<li>IntlProvider for @edx/frontend-i18n internationalization</li>
+<li>Optionally a redux <code>Provider</code>. Will only be included if a <code>store</code> property is passed to
+<code>AppProvider</code>.</li>
+<li>A <code>Router</code> for react-router.</li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>props</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>store</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>A redux store.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="react_AppProvider.jsx.html">react/AppProvider.jsx</a>, <a href="react_AppProvider.jsx.html#line47">line 47</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".AuthenticatedPageRoute"><span class="type-signature">(static) </span>AuthenticatedPageRoute<span class="signature">(props)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>A react-router route that redirects to the login page when the route becomes active and the user
+is not authenticated.  If the application has been initialized with <code>requireAuthenticatedUser</code>
+false, an authenticatedPageRoute can be used to protect a subset of the application's routes,
+rather than the entire application.</p>
+<p>It can optionally accept an override URL to redirect to instead of the login page.</p>
+<p>Like a <code>PageRoute</code>, also calls <code>sendPageEvent</code> when the route becomes active.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>props</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>redirectUrl</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The URL anonymous users should be redirected to, rather than
+viewing the route's contents.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="react_AuthenticatedPageRoute.jsx.html">react/AuthenticatedPageRoute.jsx</a>, <a href="react_AuthenticatedPageRoute.jsx.html#line26">line 26</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li>PageRoute</li>
+        
+            <li>{@link module:frontend-platform/analytics~sendPageEvent}</li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".LoginRedirect"><span class="type-signature">(static) </span>LoginRedirect<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>A React component that, when rendered, redirects to the login page as a side effect.  Uses
+<code>redirectToLogin</code> to perform the redirect.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="react_LoginRedirect.jsx.html">react/LoginRedirect.jsx</a>, <a href="react_LoginRedirect.jsx.html#line11">line 11</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li>{@link module:frontend-platform/auth~redirectToLogin}</li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".OptionalReduxProvider"><span class="type-signature">(static) </span>OptionalReduxProvider<span class="signature">(props)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>props</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="react_OptionalReduxProvider.jsx.html">react/OptionalReduxProvider.jsx</a>, <a href="react_OptionalReduxProvider.jsx.html#line9">line 9</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".PageRoute"><span class="type-signature">(static) </span>PageRoute<span class="signature">(props)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>A react-router Route component that calls <code>sendPageEvent</code> when it becomes active.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>props</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="react_PageRoute.jsx.html">react/PageRoute.jsx</a>, <a href="react_PageRoute.jsx.html#line13">line 13</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li>{@link module:frontend-platform/analytics~sendPageEvent}</li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".useAppEvent"><span class="type-signature">(static) </span>useAppEvent<span class="signature">(type, callback)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>A React hook that allows functional components to subscribe to application events.  This should
+be used sparingly - for the most part, Context should be used higher-up in the application to
+provide necessary data to a given component, rather than utilizing a non-React-like Pub/Sub
+mechanism.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>type</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>callback</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="react_hooks.js.html">react/hooks.js</a>, <a href="react_hooks.js.html#line15">line 15</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><ul class="list-unstyled nav flex-column"><li class="module-section nav-item Analytics">
+                    <a href="module-Analytics.html" class="nav-link font-weight-bold">Analytics</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-Analytics.AnalyticsService.html">AnalyticsService</a></li><li><a href="module-Analytics.MockAnalyticsService.html">MockAnalyticsService</a></li><li><a href="module-Analytics.SegmentAnalyticsService.html">SegmentAnalyticsService</a></li><li><a href="module-Analytics.html#~configure">configure</a></li><li><a href="module-Analytics.html#~getAnalyticsService">getAnalyticsService</a></li><li><a href="module-Analytics.html#~identifyAnonymousUser">identifyAnonymousUser</a></li><li><a href="module-Analytics.html#~identifyAuthenticatedUser">identifyAuthenticatedUser</a></li><li><a href="module-Analytics.html#~resetAnalyticsService">resetAnalyticsService</a></li><li><a href="module-Analytics.html#~sendPageEvent">sendPageEvent</a></li><li><a href="module-Analytics.html#~sendTrackEvent">sendTrackEvent</a></li><li><a href="module-Analytics.html#~sendTrackingLogEvent">sendTrackingLogEvent</a></li>
+            </ul>
+        
+                </li><li class="module-section nav-item Auth">
+                    <a href="module-Auth.html" class="nav-link font-weight-bold">Auth</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-Auth.AuthService.html">AuthService</a></li><li><a href="module-Auth.AxiosJwtAuthService.html">AxiosJwtAuthService</a></li><li><a href="module-Auth.HttpClient.html">HttpClient</a></li><li><a href="module-Auth.MockAuthService.html">MockAuthService</a></li><li><a href="module-Auth.UserData.html">UserData</a></li><li><a href="module-Auth.html#~AUTHENTICATED_USER_TOPIC">AUTHENTICATED_USER_TOPIC</a></li><li><a href="module-Auth.html#~configure">configure</a></li><li><a href="module-Auth.html#~ensureAuthenticatedUser">ensureAuthenticatedUser</a></li><li><a href="module-Auth.html#~event:AUTHENTICATED_USER_CHANGED">AUTHENTICATED_USER_CHANGED</a></li><li><a href="module-Auth.html#~fetchAuthenticatedUser">fetchAuthenticatedUser</a></li><li><a href="module-Auth.html#~getAuthenticatedHttpClient">getAuthenticatedHttpClient</a></li><li><a href="module-Auth.html#~getAuthenticatedUser">getAuthenticatedUser</a></li><li><a href="module-Auth.html#~getAuthService">getAuthService</a></li><li><a href="module-Auth.html#~getHttpClient">getHttpClient</a></li><li><a href="module-Auth.html#~getLoginRedirectUrl">getLoginRedirectUrl</a></li><li><a href="module-Auth.html#~getLogoutRedirectUrl">getLogoutRedirectUrl</a></li><li><a href="module-Auth.html#~hydrateAuthenticatedUser">hydrateAuthenticatedUser</a></li><li><a href="module-Auth.html#~redirectToLogin">redirectToLogin</a></li><li><a href="module-Auth.html#~redirectToLogout">redirectToLogout</a></li><li><a href="module-Auth.html#~resetAuthService">resetAuthService</a></li><li><a href="module-Auth.html#~setAuthenticatedUser">setAuthenticatedUser</a></li>
+            </ul>
+        
+                </li><li class="module-section nav-item Config">
+                    <a href="module-Config.html" class="nav-link font-weight-bold">Config</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-Config.html#.ConfigDocument">ConfigDocument</a></li><li><a href="module-Config.html#~ensureConfig">ensureConfig</a></li><li><a href="module-Config.html#~getConfig">getConfig</a></li><li><a href="module-Config.html#~mergeConfig">mergeConfig</a></li><li><a href="module-Config.html#~setConfig">setConfig</a></li>
+            </ul>
+        
+                </li><li class="module-section nav-item Initialization">
+                    <a href="module-Initialization.html" class="nav-link font-weight-bold">Initialization</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-Initialization.html#~analytics">analytics</a></li><li><a href="module-Initialization.html#~auth">auth</a></li><li><a href="module-Initialization.html#~history">history</a></li><li><a href="module-Initialization.html#~initError">initError</a></li><li><a href="module-Initialization.html#~initialize">initialize</a></li>
+            </ul>
+        
+                </li><li class="module-section nav-item Internationalization">
+                    <a href="module-Internationalization.html" class="nav-link font-weight-bold">Internationalization</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-Internationalization.html#.configure">configure</a></li><li><a href="module-Internationalization.html#.findSupportedLocale">findSupportedLocale</a></li><li><a href="module-Internationalization.html#.getCookies">getCookies</a></li><li><a href="module-Internationalization.html#.getLocale">getLocale</a></li><li><a href="module-Internationalization.html#.getMessages">getMessages</a></li><li><a href="module-Internationalization.html#.getPrimaryLanguageSubtag">getPrimaryLanguageSubtag</a></li><li><a href="module-Internationalization.html#.handleRtl">handleRtl</a></li><li><a href="module-Internationalization.html#.isRtl">isRtl</a></li><li><a href="module-Internationalization.html#.LOCALE_CHANGED">LOCALE_CHANGED</a></li><li><a href="module-Internationalization.html#.LOCALE_TOPIC">LOCALE_TOPIC</a></li><li><a href="module-Internationalization.html#.mergeMessages">mergeMessages</a></li><li><a href="module-Internationalization.html#~defineMessages">defineMessages</a></li><li><a href="module-Internationalization-FormattedDate.html">FormattedDate</a></li><li><a href="module-Internationalization-FormattedMessage.html">FormattedMessage</a></li><li><a href="module-Internationalization-FormattedNumber.html">FormattedNumber</a></li><li><a href="module-Internationalization-FormattedPlural.html">FormattedPlural</a></li><li><a href="module-Internationalization-FormattedRelative.html">FormattedRelative</a></li><li><a href="module-Internationalization-FormattedTime.html">FormattedTime</a></li><li><a href="module-Internationalization-IntlProvider.html">IntlProvider</a></li><li><a href="module-Internationalization.html#~intlShape">intlShape</a></li>
+            </ul>
+        
+                </li><li class="module-section nav-item Logging">
+                    <a href="module-Logging.html" class="nav-link font-weight-bold">Logging</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-Logging.LoggingService.html">LoggingService</a></li><li><a href="module-Logging.MockLoggingService.html">MockLoggingService</a></li><li><a href="module-Logging.NewRelicLoggingService.html">NewRelicLoggingService</a></li><li><a href="module-Logging.html#~configure">configure</a></li><li><a href="module-Logging.html#~getLoggingService">getLoggingService</a></li><li><a href="module-Logging.html#~logError">logError</a></li><li><a href="module-Logging.html#~logInfo">logInfo</a></li><li><a href="module-Logging.html#~resetLoggingService">resetLoggingService</a></li>
+            </ul>
+        
+                </li><li class="module-section nav-item PubSub">
+                    <a href="module-PubSub.html" class="nav-link font-weight-bold">PubSub</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-PubSub.html#~publish">publish</a></li><li><a href="module-PubSub.html#~subscribe">subscribe</a></li><li><a href="module-PubSub.html#~unsubscribe">unsubscribe</a></li>
+            </ul>
+        
+                </li><li class="module-section nav-item React">
+                    <a href="module-React.html" class="nav-link font-weight-bold">React</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-React.html#.AppContext">AppContext</a></li><li><a href="module-React.html#.AppProvider">AppProvider</a></li><li><a href="module-React.html#.AuthenticatedPageRoute">AuthenticatedPageRoute</a></li><li><a href="module-React.ErrorBoundary.html">ErrorBoundary</a></li><li><a href="module-React.ErrorPage.html">ErrorPage</a></li><li><a href="module-React.html#.LoginRedirect">LoginRedirect</a></li><li><a href="module-React.html#.OptionalReduxProvider">OptionalReduxProvider</a></li><li><a href="module-React.html#.PageRoute">PageRoute</a></li><li><a href="module-React.html#.useAppEvent">useAppEvent</a></li>
+            </ul>
+        
+                </li><li class="module-section nav-item Testing">
+                    <a href="module-Testing.html" class="nav-link font-weight-bold">Testing</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-Testing.html#.initializeMockApp">initializeMockApp</a></li><li><a href="module-Testing.html#.messages">messages</a></li>
+            </ul>
+        
+                </li><li class="module-section nav-item Utilities">
+                    <a href="module-Utilities.html" class="nav-link font-weight-bold">Utilities</a>
+                    
+            <ul class="list-unstyled px-3 pb-4 bg-light">
+                <li><a href="module-Utilities.html#~camelCaseObject">camelCaseObject</a></li><li><a href="module-Utilities.html#~convertKeyNames">convertKeyNames</a></li><li><a href="module-Utilities.html#~ensureDefinedConfig">ensureDefinedConfig</a></li><li><a href="module-Utilities.html#~getQueryParameters">getQueryParameters</a></li><li><a href="module-Utilities.html#~modifyObjectKeys">modifyObjectKeys</a></li><li><a href="module-Utilities.html#~snakeCaseObject">snakeCaseObject</a></li>
+            </ul>
+        
+                </li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Tue Dec 21 2021 19:24:55 GMT+0000 (Coordinated Universal Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
