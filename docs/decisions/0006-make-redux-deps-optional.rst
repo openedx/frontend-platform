@@ -14,8 +14,13 @@ However, they are still required to install these dependencies due to the usage 
 react-redux and redux are peerDependencies. To be precise, the OptionalReduxProvider used by AppProvider is what uses the
 react-redux Provider in case a store prop is passed to AppProvider.
 
-However, it's only optional from a code perspecitve, it's not optional from a dependency perspective right now.
+Specifically, if an app like frontend-app-learner-portal-enterprise were to uninstall the redux and
+react-redux dependencies, it fails with an error during module loading like this::
 
+    ERROR in ./node_modules/@edx/frontend-platform/react/OptionalReduxProvider.js 3:0-39
+    Module not found: Error: Can't resolve 'react-redux' in 'frontend-app-learner-portal-enterprise/node_modules/@edx/frontend-platform/react'
+
+Therefore, redux and react-redux are only optional from a code perspecitve, not from a dependency perspective right now.
 This means there is extra overhead and confusion on seeing 'redux' and 'react-redux' in such projects, when they are not leveraging the `store` feature of AppProvider.
 
 It will be great to be able to not have to include redux and react-redux as dependencies in such cases.
