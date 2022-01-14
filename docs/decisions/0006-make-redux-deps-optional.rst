@@ -35,13 +35,13 @@ In addition, since the `OptionalReduxProvider` makes use of the import of react-
 a missing package react-redux does not cause a failure. Instead it can simply detect the absence of the package
 and return, something like this
 
-```
-if (store === null || !Provider) {
-    return (
-      <>{children}</>
-    );
-  }
-```
+
+    if (store === null || !Provider) {
+        return (
+        <>{children}</>
+        );
+    }
+
 
 Consequences
 --------
