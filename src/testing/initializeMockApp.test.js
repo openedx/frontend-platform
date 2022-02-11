@@ -47,6 +47,7 @@ describe('initializeMockApp', () => {
       username: 'Mock User',
       roles: [],
       administrator: false,
+      name: 'mock tester',
     });
     ensureAuthenticatedUser();
 
