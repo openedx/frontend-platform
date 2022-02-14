@@ -184,7 +184,25 @@ Create your pipeline job on Jenkins
 
      * Note that the Jenkins machine uses UTC.
 
+#. Test your change locally.
+
+   * Clone https://github.com/openedx/ecommerce-scripts.
+
+   * Create virtualenv for python.
+
+   * Install requirements based on the ``requirements`` section on the `tools-edx-jenkins/translation-jobs.yml <https://github.com/edx/edx-internal/blob/master/tools-edx-jenkins/translation-jobs.yml>`__. It should be something similiar to ``pip install -r transifex/requirements/microfrontend-common.txt``.
+
+   * Run the script that you try to create the jobs.
+
+     * Examples: ``python transifex/pull.py https://github.com/edx/edx-platform.git edx/sustaining-team``. You might be required to setup environment variable ``GITHUB_ACCESS_TOKEN`` with your personal github account.
+
+       * For ``push_translations``, you might also need transifex authentication. If the project hasn't been created on the Transifex, it is necessary to push first. If there are problems with transifex auth or priviledge, you should proceed to the next step and run push job from jenkins instead. 
+
+       * For ``pull_translations``, it should try to create a pull request and merge it to the repo.
+
 #. Open a pull request with your change, then `open a devops ticket <https://openedx.atlassian.net/servicedesk/customer/portal/3>`_ requesting them to review your pull request and rerun the seed job. Only devops can merge pull requests in this repo.
+
+   * For ``edx.org``, you can create the job by build https://tools-edx-jenkins.edx.org/job/Seed%20Jobs/job/Translation%20Seed%20Jobs/. (You need to connect to the edX VPN)
 
 #. Connect to the edX VPN to see your two new jobs at https://tools-edx-jenkins.edx.org/job/translations/ . ``push_translations`` extracts the strings from your repo and pushes them to Transifex. ``pull_translations`` pulls the translated strings from Transifex and checks them into your repo. You can test these jobs out by running them manually.
 
