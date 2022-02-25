@@ -737,6 +737,7 @@ describe('hydrateAuthenticatedUser', () => {
       username: 'the_user',
       roles: [],
       administrator: false,
+      name: 'test user',
     });
     axiosMock.onGet(`${authOptions.config.LMS_BASE_URL}/api/user/v1/accounts/the_user`).reply(200, {
       additional: 'data',
@@ -749,6 +750,7 @@ describe('hydrateAuthenticatedUser', () => {
       roles: [],
       administrator: false,
       additional: 'data',
+      name: 'test user',
     });
   });
 });

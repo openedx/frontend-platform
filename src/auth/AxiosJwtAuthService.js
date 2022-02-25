@@ -207,6 +207,7 @@ class AxiosJwtAuthService {
         username: decodedAccessToken.preferred_username,
         roles: decodedAccessToken.roles || [],
         administrator: decodedAccessToken.administrator,
+        name: decodedAccessToken.name,
       });
     } else {
       this.setAuthenticatedUser(null);
