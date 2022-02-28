@@ -42,7 +42,7 @@
     "husky": "7.0.4",
     "jsdoc": "3.6.10",
     "nodemon": "2.0.15",
-    "prop-types": "15.7.2",
+    "prop-types": "15.8.1",
     "react": "16.14.0",
     "react-dom": "16.14.0",
     "react-redux": "7.2.6",
