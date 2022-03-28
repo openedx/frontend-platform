@@ -33,7 +33,7 @@
   "devDependencies": {
     "@edx/brand": "npm:@edx/brand-openedx@1.1.0",
     "@edx/frontend-build": "9.1.2",
-    "@edx/paragon": "19.10.1",
+    "@edx/paragon": "19.13.2",
     "axios-mock-adapter": "1.20.0",
     "codecov": "3.8.3",
     "core-js": "3.21.1",
