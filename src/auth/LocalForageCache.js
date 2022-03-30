@@ -30,6 +30,11 @@ export default async function configureCache() {
       maxAge: 5 * 60 * 1000,
       store: forageStore,
       exclude: { query: false },
+      invalidate: async (config, request) => {
+        if (request.clearCacheEntry) {
+          await config.store.removeItem(config.uuid);
+        }
+      },
     },
   });
 }

@@ -860,6 +860,7 @@ describe('Cache Functionality', () => {
     beforeEach(() => {
       setJwtCookieTo(null);
       setJwtTokenRefreshResponseTo(200, jwtTokens.valid.encoded);
+      cachedClient.cache.clear();
     });
 
     it('Cached GET: does not refresh JWT on second request with valid JWT', async () => {
@@ -873,6 +874,18 @@ describe('Cache Functionality', () => {
       expectNoCallToCsrfTokenFetch();
       expectRequestToHaveJwtAuth(response2.config);
       expect(response2.request.fromCache).toEqual(true);
+    });
+
+    it('Cached GET: clears cached entry if clearCacheEntry = true', async () => {
+      const response1 = await cachedClient.get('https://httpbin.org/get');
+      // Verify first request was not pulled from cache
+      expect(response1.request.fromCache).toEqual(undefined);
+
+      const response2 = await cachedClient.get('https://httpbin.org/get');
+      expect(response2.request.fromCache).toEqual(true);
+
+      const response3 = await cachedClient.get('https://httpbin.org/get', { clearCacheEntry: true });
+      expect(response3.request.fromCache).toEqual(undefined);
     });
 
     it('Always refreshes the JWT on GET requests with invalid JWT', async () => {
