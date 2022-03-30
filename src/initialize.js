@@ -50,7 +50,7 @@ import {
   publish,
 } from './pubSub';
 // eslint-disable-next-line import/no-cycle
-import { getConfig } from './config';
+import { getConfig, setConfig, mergeConfig } from './config';
 import {
   configure as configureLogging, getLoggingService, NewRelicLoggingService, logError,
 } from './logging';
@@ -76,6 +76,7 @@ import {
   APP_ANALYTICS_INITIALIZED,
   APP_READY, APP_INIT_ERROR,
 } from './constants';
+import { getHttpConfig } from './initialize/data';
 
 /**
  * A browser history or memory history object created by the [history](https://github.com/ReactTraining/history)
@@ -128,6 +129,31 @@ export async function auth(requireUser, hydrateUser) {
   }
 }
 
+export async function configTenant() {
+  try {
+    const tenant = window.location.hostname;
+    const data = await getHttpConfig(tenant);
+
+    if (document.querySelector('link[rel="shortcut icon"]') && data.common?.FAVICON_URL) {
+      document.querySelector('link[rel="shortcut icon"]').href = data.common.FAVICON_URL;
+    }
+    const mfeRef = window.location.pathname.split('/')[1];
+    const additionalConfig = data[mfeRef] ? data[mfeRef] : null;
+    mergeConfig({
+      BASE_URL: `${window.location.host}${mfeRef && ('/' + mfeRef)}`,
+      ...data?.common,
+      ...additionalConfig
+    })
+
+  } catch (e) {
+    // This is an option set some basic values an display the error page with the default message
+    // or we can redirect the user with history.goBack()
+    setConfig({
+      BASE_URL: `${window.location.host}`,
+      LANGUAGE_PREFERENCE_COOKIE_NAME: 'openedx-language-preference',
+    })
+  }
+}
 /**
  * The default handler for the initialization lifecycle's `analytics` phase.
  *
@@ -149,6 +175,7 @@ function applyOverrideHandlers(overrides) {
   const noOp = async () => { };
   return {
     pubSub: noOp,
+    configTenant,
     config: noOp,
     logging: noOp,
     auth,
@@ -221,7 +248,7 @@ export async function initialize({
     publish(APP_PUBSUB_INITIALIZED);
 
     // Configuration
-    await handlers.config();
+    getConfig().MULTITENANT_API ? await handlers.configTenant() : await handlers.config();
     publish(APP_CONFIG_INITIALIZED);
 
     // Logging
@@ -229,6 +256,7 @@ export async function initialize({
       config: getConfig(),
     });
     await handlers.logging();
+
     publish(APP_LOGGING_INITIALIZED);
 
     // Authentication
