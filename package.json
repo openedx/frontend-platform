@@ -14,7 +14,8 @@
     "lint": "fedx-scripts eslint --ext .js --ext .jsx .",
     "snapshot": "fedx-scripts jest --updateSnapshot",
     "start": "fedx-scripts webpack-dev-server --progress",
-    "test": "fedx-scripts jest --coverage"
+    "test": "fedx-scripts jest --coverage",
+    "test:watch": "npm run test -- --watch"
   },
   "bin": {
     "transifex-utils.js": "i18n/scripts/transifex-utils.js",
@@ -32,7 +33,7 @@
   "homepage": "https://github.com/edx/frontend-platform#readme",
   "devDependencies": {
     "@edx/brand": "npm:@edx/brand-openedx@1.1.0",
-    "@edx/frontend-build": "9.1.2",
+    "@edx/frontend-build": "9.1.4",
     "@edx/paragon": "19.13.2",
     "axios-mock-adapter": "1.20.0",
     "codecov": "3.8.3",
