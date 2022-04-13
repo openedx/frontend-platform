@@ -11,6 +11,7 @@ Enzyme.configure({ adapter: new Adapter() });
 // Jest does not use webpack so we need to set these so for testing
 process.env.ACCESS_TOKEN_COOKIE_NAME = 'edx-jwt-cookie-header-payload';
 process.env.BASE_URL = 'localhost:8080';
+process.env.COMMERCE_COORDINATOR_BASE_URL = 'http://localhost:8140';
 process.env.CREDENTIALS_BASE_URL = 'http://localhost:18150';
 process.env.CSRF_TOKEN_API_PATH = '/csrf/api/v1/token';
 process.env.DISCOVERY_API_BASE_URL = 'http://localhost:18381';

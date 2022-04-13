@@ -43,6 +43,7 @@ let config = {
   ACCESS_TOKEN_COOKIE_NAME: process.env.ACCESS_TOKEN_COOKIE_NAME,
   BASE_URL: process.env.BASE_URL,
   PUBLIC_PATH: process.env.PUBLIC_PATH || '/',
+  COMMERCE_COORDINATOR_BASE_URL: process.env.COMMERCE_COORDINATOR_BASE_URL,
   CREDENTIALS_BASE_URL: process.env.CREDENTIALS_BASE_URL,
   CSRF_TOKEN_API_PATH: process.env.CSRF_TOKEN_API_PATH,
   DISCOVERY_API_BASE_URL: process.env.DISCOVERY_API_BASE_URL,
@@ -169,6 +170,7 @@ export function ensureConfig(keys, requester = 'unspecified application code') {
  * @memberof module:Config
  * @property {string} ACCESS_TOKEN_COOKIE_NAME
  * @property {string} BASE_URL The URL of the current application.
+ * @property {string} COMMERCE_COORDINATOR_BASE_URL
  * @property {string} CREDENTIALS_BASE_URL
  * @property {string} CSRF_TOKEN_API_PATH
  * @property {string} DISCOVERY_API_BASE_URL
