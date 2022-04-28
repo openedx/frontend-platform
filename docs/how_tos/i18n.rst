@@ -40,7 +40,7 @@ These steps will allow your application to accept translation strings. See `fron
         description="header above the shipping address form"
        />
 
-     For additional help, including adding interprolated variables, see the `FormattedMessage documentation <https://github.com/yahoo/react-intl/wiki/Components#formattedmessage>`__. It can also handle plurals.
+     For additional help, including adding interprolated variables, see the `FormattedMessage documentation <https://formatjs.io/docs/react-intl/components#formattedmessage>`__. It can also handle plurals.
 
 #. For places in your code where you need a display string, and it has to be a plain JavaScript string (e.g., a button label), you will need to do the following:
 
@@ -235,6 +235,56 @@ Load up your translation files
       <IntlProvider locale={this.props.locale} messages={}>
 
 #. As of this writing, ``frontend-platform/i18n`` reads the locale from the user language preference cookie, or, if none is found, from the browser's language setting. You can verify everything is working by changing your language preference in your account settings. If you are not logged in, you can change your browser language to one of the languages you have translations for.
+
+
+********************
+Migrating to react-intl@5
+********************
+
+Initially ``frontend-platform`` used ``react-intl@2`` but as a part of its ``2.0.0`` release the version has been upgraded to ``react-intl@5``. If your application
+used ``frontend-platform`` < ``2.0.0`` and you decided to upgrade, here's a list of breaking changes that you will need to consider during the upgrade:
+
+* ``FormattedRelative`` component has been renamed to ``FormattedRelativeTime`` (and ``formatRelative`` to ``formatRelativeTime``) with changes to its API, read more `here <https://formatjs.io/docs/react-intl/upgrade-guide-3x/#formattedrelativetime>`_
+
+* Message Format syntax has been changed. See `Message Format Syntax Changes <https://formatjs.io/docs/react-intl/upgrade-guide-3x#message-format-syntax-changes>`_ for more details.
+
+* All tags specified must have corresponding values and will throw error if it's missing, e.g::
+
+    new IntlMessageFormat('a<b>strong</b>').format({
+      b: (...chunks) => <strong>{chunks}</strong>,
+    })
+
+* Formatting self-closing tags is not supported anymore.
+
+* XML/HTML tags are escaped using apostrophe just like other ICU constructs.
+
+* Rich text formatting callback function is no longer variadic
+
+  * Before::
+
+      new IntlMessageFormat('a<b>strong</b>').format({
+        b: (...chunks) => <strong>{chunks}</strong>,
+      })
+
+  * After::
+
+      new IntlMessageFormat('a<b>strong</b>').format({
+        b: chunks => <strong>{chunks}</strong>,
+      })
+
+* ``FormattedMessage`` render prop is no longer variadic
+
+  * Before::
+
+      <FormattedMessage defaultMessage="a<b>strong</b>">
+        {(...chunks) => <b>{chunks}</b>}
+      </FormattedMessage>
+
+  * After::
+
+      <FormattedMessage defaultMessage="a<b>strong</b>">
+        {chunks => <b>{chunks}</b>}
+      </FormattedMessage>
 
 ********************
 For more information
