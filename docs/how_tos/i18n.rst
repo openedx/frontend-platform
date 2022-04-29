@@ -286,6 +286,8 @@ used ``frontend-platform`` < ``2.0.0`` and you decided to upgrade, here's a list
         {chunks => <b>{chunks}</b>}
       </FormattedMessage>
 
+* ``IntlProvider.getChildContext`` has been removed which was used for testing purposes. Use ``createIntl`` instead to create a standalone ``intl`` object outside of React. See `Testing with React Intl <https://formatjs.io/docs/guides/testing>`_ for more details.
+
 ********************
 For more information
 ********************
