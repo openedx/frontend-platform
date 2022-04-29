@@ -41,6 +41,8 @@ function extractRegex(envVar) {
 const ENVIRONMENT = process.env.NODE_ENV;
 let config = {
   ACCESS_TOKEN_COOKIE_NAME: process.env.ACCESS_TOKEN_COOKIE_NAME,
+  ACCOUNT_PROFILE_URL: process.env.ACCOUNT_PROFILE_URL,
+  ACCOUNT_SETTINGS_URL: process.env.ACCOUNT_SETTINGS_URL,
   BASE_URL: process.env.BASE_URL,
   PUBLIC_PATH: process.env.PUBLIC_PATH || '/',
   CREDENTIALS_BASE_URL: process.env.CREDENTIALS_BASE_URL,
@@ -168,6 +170,8 @@ export function ensureConfig(keys, requester = 'unspecified application code') {
  * @name ConfigDocument
  * @memberof module:Config
  * @property {string} ACCESS_TOKEN_COOKIE_NAME
+ * @property {string} ACCOUNT_PROFILE_URL
+ * @property {string} ACCOUNT_SETTINGS_URL
  * @property {string} BASE_URL The URL of the current application.
  * @property {string} CREDENTIALS_BASE_URL
  * @property {string} CSRF_TOKEN_API_PATH
