@@ -62,19 +62,19 @@ export default function AppProvider({ store, children }) {
   });
 
   return (
-    <ErrorBoundary>
-      <AppContext.Provider
-        value={{ authenticatedUser, config, locale }}
-      >
-        <IntlProvider locale={locale} messages={getMessages()}>
+    <IntlProvider locale={locale} messages={getMessages()}>
+      <ErrorBoundary>
+        <AppContext.Provider
+          value={{ authenticatedUser, config, locale }}
+        >
           <OptionalReduxProvider store={store}>
             <Router history={history}>
               <>{children}</>
             </Router>
           </OptionalReduxProvider>
-        </IntlProvider>
-      </AppContext.Provider>
-    </ErrorBoundary>
+        </AppContext.Provider>
+      </ErrorBoundary>
+    </IntlProvider>
   );
 }
 

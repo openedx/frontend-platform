@@ -4,6 +4,7 @@ import { mount } from 'enzyme';
 import ErrorBoundary from './ErrorBoundary';
 
 import { logError } from '../logging';
+import { IntlProvider } from '../i18n';
 
 jest.mock('../logging');
 
@@ -36,13 +37,15 @@ describe('ErrorBoundary', () => {
     };
 
     const component = (
-      <ErrorBoundary>
-        <ExplodingComponent />
-      </ErrorBoundary>
+      <IntlProvider locale="en" messages={{}}>
+        <ErrorBoundary>
+          <ExplodingComponent />
+        </ErrorBoundary>
+      </IntlProvider>
     );
     mount(component);
 
     expect(logError).toHaveBeenCalledTimes(1);
-    expect(logError).toHaveBeenCalledWith(new Error('booyah'), { stack: '\n    in ExplodingComponent\n    in ErrorBoundary (created by WrapperComponent)\n    in WrapperComponent' });
+    expect(logError).toHaveBeenCalledWith(new Error('booyah'), { stack: '\n    in ExplodingComponent\n    in ErrorBoundary\n    in IntlProvider (created by WrapperComponent)\n    in WrapperComponent' });
   });
 });
