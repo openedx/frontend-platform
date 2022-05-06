@@ -28,23 +28,40 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>import PropTypes from 'prop-types';
-import { addLocaleData } from 'react-intl';
-import arLocale from 'react-intl/locale-data/ar';
-import enLocale from 'react-intl/locale-data/en';
-import esLocale from 'react-intl/locale-data/es';
-import frLocale from 'react-intl/locale-data/fr';
-import zhLocale from 'react-intl/locale-data/zh';
-import caLocale from 'react-intl/locale-data/ca';
-import heLocale from 'react-intl/locale-data/he';
-import idLocale from 'react-intl/locale-data/id';
-import koLocale from 'react-intl/locale-data/ko';
-import plLocale from 'react-intl/locale-data/pl';
-import ptLocale from 'react-intl/locale-data/pt';
-import ruLocale from 'react-intl/locale-data/ru';
-import thLocale from 'react-intl/locale-data/th';
-import ukLocale from 'react-intl/locale-data/uk';
 import Cookies from 'universal-cookie';
 import merge from 'lodash.merge';
+
+import '@formatjs/intl-pluralrules/polyfill';
+import '@formatjs/intl-pluralrules/locale-data/ar';
+import '@formatjs/intl-pluralrules/locale-data/en';
+import '@formatjs/intl-pluralrules/locale-data/es';
+import '@formatjs/intl-pluralrules/locale-data/fr';
+import '@formatjs/intl-pluralrules/locale-data/zh';
+import '@formatjs/intl-pluralrules/locale-data/ca';
+import '@formatjs/intl-pluralrules/locale-data/he';
+import '@formatjs/intl-pluralrules/locale-data/id';
+import '@formatjs/intl-pluralrules/locale-data/ko';
+import '@formatjs/intl-pluralrules/locale-data/pl';
+import '@formatjs/intl-pluralrules/locale-data/pt';
+import '@formatjs/intl-pluralrules/locale-data/ru';
+import '@formatjs/intl-pluralrules/locale-data/th';
+import '@formatjs/intl-pluralrules/locale-data/uk';
+
+import '@formatjs/intl-relativetimeformat/polyfill';
+import '@formatjs/intl-relativetimeformat/locale-data/ar';
+import '@formatjs/intl-relativetimeformat/locale-data/en';
+import '@formatjs/intl-relativetimeformat/locale-data/es';
+import '@formatjs/intl-relativetimeformat/locale-data/fr';
+import '@formatjs/intl-relativetimeformat/locale-data/zh';
+import '@formatjs/intl-relativetimeformat/locale-data/ca';
+import '@formatjs/intl-relativetimeformat/locale-data/he';
+import '@formatjs/intl-relativetimeformat/locale-data/id';
+import '@formatjs/intl-relativetimeformat/locale-data/ko';
+import '@formatjs/intl-relativetimeformat/locale-data/pl';
+import '@formatjs/intl-relativetimeformat/locale-data/pt';
+import '@formatjs/intl-relativetimeformat/locale-data/ru';
+import '@formatjs/intl-relativetimeformat/locale-data/th';
+import '@formatjs/intl-relativetimeformat/locale-data/uk';
 
 const cookies = new Cookies();
 const supportedLocales = [
@@ -75,10 +92,21 @@ let loggingService = null;
 let messages = null;
 
 /**
+ * @memberof module:Internationalization
+ *
+ * Prior versions of react-intl (our primary implementation of the i18n service) included a
+ * PropTypes-based 'shape' for its `intl` object.  This has since been removed.  For legacy
+ * compatibility, we include an `intlShape` export that is set to PropTypes.object.  Usage of this
+ * export is deprecated.
+ *
+ * @deprecated
+ */
+export const intlShape = PropTypes.object;
+
+/**
  *
  * @ignore
  * @returns {LoggingService}
- *
  */
 export const getLoggingService = () => loggingService;
 
@@ -100,23 +128,6 @@ export const LOCALE_CHANGED = `${LOCALE_TOPIC}.CHANGED`;
 export function getCookies() {
   return cookies;
 }
-
-addLocaleData([
-  ...arLocale,
-  ...enLocale,
-  ...esLocale,
-  ...frLocale,
-  ...zhLocale,
-  ...caLocale,
-  ...heLocale,
-  ...idLocale,
-  ...koLocale,
-  ...plLocale,
-  ...ptLocale,
-  ...ruLocale,
-  ...thLocale,
-  ...ukLocale,
-]);
 
 /**
  * Some of our dependencies function on primary language subtags, rather than full locales.
@@ -337,7 +348,7 @@ export function configure(options) {
                     <a href="module-Internationalization.html" class="nav-link font-weight-bold">Internationalization</a>
                     
             <ul class="list-unstyled px-3 pb-4 bg-light">
-                <li><a href="module-Internationalization.html#.configure">configure</a></li><li><a href="module-Internationalization.html#.findSupportedLocale">findSupportedLocale</a></li><li><a href="module-Internationalization.html#.getCookies">getCookies</a></li><li><a href="module-Internationalization.html#.getLocale">getLocale</a></li><li><a href="module-Internationalization.html#.getMessages">getMessages</a></li><li><a href="module-Internationalization.html#.getPrimaryLanguageSubtag">getPrimaryLanguageSubtag</a></li><li><a href="module-Internationalization.html#.handleRtl">handleRtl</a></li><li><a href="module-Internationalization.html#.isRtl">isRtl</a></li><li><a href="module-Internationalization.html#.LOCALE_CHANGED">LOCALE_CHANGED</a></li><li><a href="module-Internationalization.html#.LOCALE_TOPIC">LOCALE_TOPIC</a></li><li><a href="module-Internationalization.html#.mergeMessages">mergeMessages</a></li><li><a href="module-Internationalization.html#~defineMessages">defineMessages</a></li><li><a href="module-Internationalization-FormattedDate.html">FormattedDate</a></li><li><a href="module-Internationalization-FormattedMessage.html">FormattedMessage</a></li><li><a href="module-Internationalization-FormattedNumber.html">FormattedNumber</a></li><li><a href="module-Internationalization-FormattedPlural.html">FormattedPlural</a></li><li><a href="module-Internationalization-FormattedRelative.html">FormattedRelative</a></li><li><a href="module-Internationalization-FormattedTime.html">FormattedTime</a></li><li><a href="module-Internationalization-IntlProvider.html">IntlProvider</a></li><li><a href="module-Internationalization.html#~intlShape">intlShape</a></li>
+                <li><a href="module-Internationalization.html#.configure">configure</a></li><li><a href="module-Internationalization.html#.findSupportedLocale">findSupportedLocale</a></li><li><a href="module-Internationalization.html#.getCookies">getCookies</a></li><li><a href="module-Internationalization.html#.getLocale">getLocale</a></li><li><a href="module-Internationalization.html#.getMessages">getMessages</a></li><li><a href="module-Internationalization.html#.getPrimaryLanguageSubtag">getPrimaryLanguageSubtag</a></li><li><a href="module-Internationalization.html#.handleRtl">handleRtl</a></li><li><a href="module-Internationalization.html#.isRtl">isRtl</a></li><li><a href="module-Internationalization.html#.LOCALE_CHANGED">LOCALE_CHANGED</a></li><li><a href="module-Internationalization.html#.LOCALE_TOPIC">LOCALE_TOPIC</a></li><li><a href="module-Internationalization.html#.mergeMessages">mergeMessages</a></li><li><a href="module-Internationalization.html#~defineMessages">defineMessages</a></li><li><a href="module-Internationalization-FormattedDate.html">FormattedDate</a></li><li><a href="module-Internationalization-FormattedMessage.html">FormattedMessage</a></li><li><a href="module-Internationalization-FormattedNumber.html">FormattedNumber</a></li><li><a href="module-Internationalization-FormattedPlural.html">FormattedPlural</a></li><li><a href="module-Internationalization-FormattedRelativeTime.html">FormattedRelativeTime</a></li><li><a href="module-Internationalization-FormattedTime.html">FormattedTime</a></li><li><a href="module-Internationalization-IntlProvider.html">IntlProvider</a></li>
             </ul>
         
                 </li><li class="module-section nav-item Logging">
@@ -381,7 +392,7 @@ export function configure(options) {
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Mon May 02 2022 13:53:42 GMT+0000 (Coordinated Universal Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Fri May 06 2022 10:05:56 GMT+0000 (Coordinated Universal Time)
 </footer>
 
 <script> prettyPrint(); </script>
