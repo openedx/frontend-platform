@@ -18,8 +18,7 @@
     "test:watch": "npm run test -- --watch"
   },
   "bin": {
-    "transifex-utils.js": "i18n/scripts/transifex-utils.js",
-    "transifex-Makefile": "i18n/scripts/Makefile"
+    "transifex-utils.js": "i18n/scripts/transifex-utils.js"
   },
   "repository": {
     "type": "git",
