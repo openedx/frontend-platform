@@ -191,6 +191,7 @@ function applyOverrideHandlers(overrides) {
  * to use.
  * @param {*} [options.analyticsService=SegmentAnalyticsService] The `AnalyticsService`
  * implementation to use.
+ * @param {*} [options.authMiddleware=[]] An array of middleware to apply to http clients in the auth service.
  * @param {*} [options.requireAuthenticatedUser=false] If true, turns on automatic login
  * redirection for unauthenticated users.  Defaults to false, meaning that by default the
  * application will allow anonymous/unauthenticated sessions.
@@ -209,6 +210,7 @@ export async function initialize({
   loggingService = NewRelicLoggingService,
   analyticsService = SegmentAnalyticsService,
   authService = AxiosJwtAuthService,
+  authMiddleware = [],
   requireAuthenticatedUser: requireUser = false,
   hydrateAuthenticatedUser: hydrateUser = false,
   messages,
@@ -235,7 +237,9 @@ export async function initialize({
     configureAuth(authService, {
       loggingService: getLoggingService(),
       config: getConfig(),
+      middleware: authMiddleware,
     });
+
     await handlers.auth(requireUser, hydrateUser);
     publish(APP_AUTH_INITIALIZED);
 

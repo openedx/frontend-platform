@@ -85,6 +85,7 @@ describe('initialize', () => {
     expect(configureAuth).toHaveBeenCalledWith(AxiosJwtAuthService, {
       loggingService: getLoggingService(),
       config,
+      middleware: [],
     });
     expect(configureAnalytics).toHaveBeenCalledWith(SegmentAnalyticsService, {
       config,
