@@ -220,6 +220,36 @@ afterEach(() => {
   global.location = location;
 });
 
+describe('applyMiddleware', () => {
+  it('should apply all middleware to the http clients in the service', () => {
+    const clients = [
+      service.authenticatedHttpClient, service.httpClient,
+      service.cachedAuthenticatedHttpClient, service.cachedHttpClient,
+    ].filter(Boolean);
+
+    const middleware1 = jest.fn();
+    const middleware2 = jest.fn();
+
+    service.applyMiddleware([middleware1, middleware2]);
+    expect(middleware1).toHaveBeenCalledTimes(clients.length);
+    expect(middleware2).toHaveBeenCalledTimes(clients.length);
+  });
+
+  it('throws an error and calls logError', () => {
+    const error = new Error('middleware error');
+    const middleware = jest.fn(() => { throw error; });
+
+    try {
+      service.applyMiddleware([middleware]);
+    } catch (e) {
+      expectLogFunctionToHaveBeenCalledWithMessage(
+        mockLoggingService.logError.mock.calls[0],
+        `[frontend-auth] ${error.message}`,
+      );
+    }
+  });
+});
+
 describe('getAuthenticatedHttpClient', () => {
   beforeEach(() => {
     console.error = jest.fn();
