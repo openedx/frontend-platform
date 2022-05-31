@@ -30,13 +30,41 @@ import {
 import { configure as configureAnalytics, SegmentAnalyticsService } from './analytics';
 import { configure as configureI18n } from './i18n';
 import { getConfig } from './config';
+import configureCache from './auth/LocalForageCache';
 
 jest.mock('./logging');
 jest.mock('./auth');
 jest.mock('./analytics');
 jest.mock('./i18n');
+jest.mock('./auth/LocalForageCache');
 
 let config = null;
+const newConfig = {
+  SITE_NAME: 'Test Case',
+  LOGO_URL: 'http://test.example.com:18000/theme/logo.png',
+  LOGO_TRADEMARK_URL: 'http://test.example.com:18000/theme/logo.png',
+  LOGO_WHITE_URL: 'http://test.example.com:18000/theme/logo.png',
+  INFO_EMAIL: 'openedx@example.com',
+  ACCESS_TOKEN_COOKIE_NAME: 'edx-jwt-cookie-header-payload',
+  FAVICON_URL: 'http://test.example.com:18000/theme/favicon.ico',
+  CSRF_TOKEN_API_PATH: '/csrf/api/v1/token',
+  DISCOVERY_API_BASE_URL: 'http://test.example.com:18381',
+  PUBLISHER_BASE_URL: 'http://test.example.com:18400',
+  ECOMMERCE_BASE_URL: 'http://test.example.com:18130',
+  LANGUAGE_PREFERENCE_COOKIE_NAME: 'openedx-language-preference',
+  LEARNING_BASE_URL: 'http://test.example.com:2000',
+  LMS_BASE_URL: 'http://test.example.com:18000',
+  LOGIN_URL: 'http://test.example.com:18000/login',
+  LOGOUT_URL: 'http://test.example.com:18000/logout',
+  STUDIO_BASE_URL: 'http://studio.example.com:18010',
+  MARKETING_SITE_BASE_URL: 'http://test.example.com:18000',
+  ORDER_HISTORY_URL: 'http://test.example.com:1996/orders',
+  REFRESH_ACCESS_TOKEN_ENDPOINT: 'http://test.example.com:18000/login_refresh',
+  SEGMENT_KEY: '',
+  USER_INFO_COOKIE_NAME: 'edx-user-info',
+  IGNORED_ERROR_REGEX: '',
+  CREDENTIALS_BASE_URL: 'http://test.example.com:18150',
+};
 describe('initialize', () => {
   beforeEach(() => {
     config = getConfig();
@@ -239,5 +267,41 @@ describe('initialize', () => {
     expect(overrideHandlers.i18n).not.toHaveBeenCalled();
     expect(overrideHandlers.ready).not.toHaveBeenCalled();
     expect(overrideHandlers.initError).toHaveBeenCalledWith(new Error('uhoh!'));
+  });
+
+  it('should initialze the app with runtime configuration', async () => {
+    config.MFE_CONFIG_API_URL = 'http://localhost:18000/api/mfe/v1/config';
+
+    configureCache.mockReturnValueOnce(new Promise((resolve) => {
+      resolve({ get: () => ({ data: newConfig }) });
+    }));
+
+    const messages = { i_am: 'a message' };
+    await initialize({ messages });
+
+    expect(configureCache).toHaveBeenCalled();
+    expect(configureLogging).toHaveBeenCalledWith(NewRelicLoggingService, { config });
+    expect(configureAuth).toHaveBeenCalledWith(AxiosJwtAuthService, {
+      loggingService: getLoggingService(),
+      config,
+      middleware: [],
+    });
+    expect(configureAnalytics).toHaveBeenCalledWith(SegmentAnalyticsService, {
+      config,
+      loggingService: getLoggingService(),
+      httpClient: getAuthenticatedHttpClient(),
+    });
+    expect(configureI18n).toHaveBeenCalledWith({
+      messages,
+      config,
+      loggingService: getLoggingService(),
+    });
+
+    expect(fetchAuthenticatedUser).toHaveBeenCalled();
+    expect(ensureAuthenticatedUser).not.toHaveBeenCalled();
+    expect(hydrateAuthenticatedUser).not.toHaveBeenCalled();
+    expect(logError).not.toHaveBeenCalled();
+    expect(config.SITE_NAME).toBe(newConfig.SITE_NAME);
+    expect(config.LOGIN_URL).toBe(newConfig.LOGIN_URL);
   });
 });

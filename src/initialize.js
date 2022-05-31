@@ -50,7 +50,9 @@ import {
   publish,
 } from './pubSub';
 // eslint-disable-next-line import/no-cycle
-import { getConfig } from './config';
+import {
+  getConfig, mergeConfig, setConfig,
+} from './config';
 import {
   configure as configureLogging, getLoggingService, NewRelicLoggingService, logError,
 } from './logging';
@@ -76,6 +78,7 @@ import {
   APP_ANALYTICS_INITIALIZED,
   APP_READY, APP_INIT_ERROR,
 } from './constants';
+import configureCache from './auth/LocalForageCache';
 
 /**
  * A browser history or memory history object created by the [history](https://github.com/ReactTraining/history)
@@ -128,6 +131,28 @@ export async function auth(requireUser, hydrateUser) {
   }
 }
 
+/*
+ * Set or overrides configuration through an API.
+ * This method allows runtime configuration.
+ * Set a basic configuration when an error happen and allow initError.
+ */
+
+export async function runtimeConfig() {
+  const apiConfig = { headers: { accept: 'application/json' } };
+  try {
+    const apiService = await configureCache();
+    const url = getConfig().MFE_CONFIG_API_URL;
+    const { data } = await apiService.get(url, apiConfig);
+    mergeConfig(data);
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('Error with config API', error.message);
+    setConfig({
+      BASE_URL: `${window.location.host}`,
+      LANGUAGE_PREFERENCE_COOKIE_NAME: 'openedx-language-preference',
+    });
+  }
+}
 /**
  * The default handler for the initialization lifecycle's `analytics` phase.
  *
@@ -223,7 +248,7 @@ export async function initialize({
     publish(APP_PUBSUB_INITIALIZED);
 
     // Configuration
-    await handlers.config();
+    if (getConfig().MFE_CONFIG_API_URL) { await runtimeConfig(); } else { await handlers.config(); }
     publish(APP_CONFIG_INITIALIZED);
 
     // Logging
