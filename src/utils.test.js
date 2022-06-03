@@ -4,6 +4,7 @@ import {
   snakeCaseObject,
   convertKeyNames,
   getQueryParameters,
+  parseUrlQueryParams,
 } from '.';
 
 describe('modifyObjectKeys', () => {
@@ -111,5 +112,31 @@ describe('getQueryParameters', () => {
       foo: 'bar',
       baz: '1',
     });
+  });
+});
+
+describe('parseUrlQueryParams', () => {
+  it('should return a url with one query param', () => {
+    const apiUrl = 'http//mainsite.com/api';
+    const param = [{
+      name: 'foo',
+      value: 'bar',
+    }];
+    const parseUrl = `${apiUrl}?${param[0].name}=${param[0].value}`;
+    expect(parseUrlQueryParams(apiUrl, param)).toBe(parseUrl);
+  });
+
+  it('should return a url with two query params', () => {
+    const apiUrl = 'http//mainsite.com/api';
+    const params = [{
+      name: 'foo',
+      value: 'bar',
+    },
+    {
+      name: 'biz',
+      value: 'buz',
+    }];
+    const parseUrl = `${apiUrl}?${params[0].name}=${params[0].value}&${params[1].name}=${params[1].value}`;
+    expect(parseUrlQueryParams(apiUrl, params)).toBe(parseUrl);
   });
 });

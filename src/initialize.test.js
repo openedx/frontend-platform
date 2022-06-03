@@ -40,31 +40,41 @@ jest.mock('./auth/LocalForageCache');
 
 let config = null;
 const newConfig = {
-  SITE_NAME: 'Test Case',
-  LOGO_URL: 'http://test.example.com:18000/theme/logo.png',
-  LOGO_TRADEMARK_URL: 'http://test.example.com:18000/theme/logo.png',
-  LOGO_WHITE_URL: 'http://test.example.com:18000/theme/logo.png',
-  INFO_EMAIL: 'openedx@example.com',
-  ACCESS_TOKEN_COOKIE_NAME: 'edx-jwt-cookie-header-payload',
-  FAVICON_URL: 'http://test.example.com:18000/theme/favicon.ico',
-  CSRF_TOKEN_API_PATH: '/csrf/api/v1/token',
-  DISCOVERY_API_BASE_URL: 'http://test.example.com:18381',
-  PUBLISHER_BASE_URL: 'http://test.example.com:18400',
-  ECOMMERCE_BASE_URL: 'http://test.example.com:18130',
-  LANGUAGE_PREFERENCE_COOKIE_NAME: 'openedx-language-preference',
-  LEARNING_BASE_URL: 'http://test.example.com:2000',
-  LMS_BASE_URL: 'http://test.example.com:18000',
-  LOGIN_URL: 'http://test.example.com:18000/login',
-  LOGOUT_URL: 'http://test.example.com:18000/logout',
-  STUDIO_BASE_URL: 'http://studio.example.com:18010',
-  MARKETING_SITE_BASE_URL: 'http://test.example.com:18000',
-  ORDER_HISTORY_URL: 'http://test.example.com:1996/orders',
-  REFRESH_ACCESS_TOKEN_ENDPOINT: 'http://test.example.com:18000/login_refresh',
-  SEGMENT_KEY: '',
-  USER_INFO_COOKIE_NAME: 'edx-user-info',
-  IGNORED_ERROR_REGEX: '',
-  CREDENTIALS_BASE_URL: 'http://test.example.com:18150',
+  common: {
+    SITE_NAME: 'Test Case',
+    LOGO_URL: 'http://test.example.com:18000/theme/logo.png',
+    LOGO_TRADEMARK_URL: 'http://test.example.com:18000/theme/logo.png',
+    LOGO_WHITE_URL: 'http://test.example.com:18000/theme/logo.png',
+    ACCESS_TOKEN_COOKIE_NAME: 'edx-jwt-cookie-header-payload',
+    FAVICON_URL: 'http://test.example.com:18000/theme/favicon.ico',
+    CSRF_TOKEN_API_PATH: '/csrf/api/v1/token',
+    DISCOVERY_API_BASE_URL: 'http://test.example.com:18381',
+    PUBLISHER_BASE_URL: 'http://test.example.com:18400',
+    ECOMMERCE_BASE_URL: 'http://test.example.com:18130',
+    LANGUAGE_PREFERENCE_COOKIE_NAME: 'openedx-language-preference',
+    LEARNING_BASE_URL: 'http://test.example.com:2000',
+    LMS_BASE_URL: 'http://test.example.com:18000',
+    LOGIN_URL: 'http://test.example.com:18000/login',
+    LOGOUT_URL: 'http://test.example.com:18000/logout',
+    STUDIO_BASE_URL: 'http://studio.example.com:18010',
+    MARKETING_SITE_BASE_URL: 'http://test.example.com:18000',
+    ORDER_HISTORY_URL: 'http://test.example.com:1996/orders',
+    REFRESH_ACCESS_TOKEN_ENDPOINT: 'http://test.example.com:18000/login_refresh',
+    SEGMENT_KEY: '',
+    USER_INFO_COOKIE_NAME: 'edx-user-info',
+    IGNORED_ERROR_REGEX: '',
+    CREDENTIALS_BASE_URL: 'http://test.example.com:18150',
+  },
+  auth: {
+    INFO_EMAIL: 'openedx@example.com',
+    ACTIVATION_EMAIL_SUPPORT_LINK: 'http//support.test.com',
+  },
+  learning: {
+    LEGACY_THEME_NAME: 'example',
+    DISCUSSIONS_MFE_BASE_URL: 'http://test.example.com:2002',
+  },
 };
+
 describe('initialize', () => {
   beforeEach(() => {
     config = getConfig();
@@ -271,9 +281,13 @@ describe('initialize', () => {
 
   it('should initialze the app with runtime configuration', async () => {
     config.MFE_CONFIG_API_URL = 'http://localhost:18000/api/mfe/v1/config';
-
-    configureCache.mockReturnValueOnce(new Promise((resolve) => {
-      resolve({ get: () => ({ data: newConfig }) });
+    config.PUBLIC_PATH = '/auth/';
+    configureCache.mockReturnValueOnce(Promise.resolve({
+      get: (url) => {
+        const params = new URL(url).search;
+        const mfe = new URLSearchParams(params).get('mfe');
+        return ({ data: { ...newConfig.common, ...newConfig[mfe] } });
+      },
     }));
 
     const messages = { i_am: 'a message' };
@@ -301,7 +315,46 @@ describe('initialize', () => {
     expect(ensureAuthenticatedUser).not.toHaveBeenCalled();
     expect(hydrateAuthenticatedUser).not.toHaveBeenCalled();
     expect(logError).not.toHaveBeenCalled();
-    expect(config.SITE_NAME).toBe(newConfig.SITE_NAME);
-    expect(config.LOGIN_URL).toBe(newConfig.LOGIN_URL);
+    expect(config.SITE_NAME).toBe(newConfig.common.SITE_NAME);
+    expect(config.INFO_EMAIL).toBe(newConfig.auth.INFO_EMAIL);
+    expect(Object.values(config).includes(newConfig.learning.DISCUSSIONS_MFE_BASE_URL)).toBeFalsy();
+  });
+
+  it('should initialze the default error when runtime configuration fails', async (done) => {
+    config.MFE_CONFIG_API_URL = 'http://localhost:18000/api/mfe/v1/config';
+    console.error = jest.fn();
+    configureCache.mockReturnValueOnce(Promise.reject(new Error('Api fails')));
+
+    const overrideHandlers = {
+      pubSub: jest.fn(),
+      config: jest.fn(),
+      logging: jest.fn(),
+      auth: jest.fn(() => {
+        if (Object.values(getConfig()).length === 1) { throw new Error('uhoh!'); }
+      }),
+      analytics: jest.fn(),
+      i18n: jest.fn(),
+      ready: jest.fn(),
+    };
+
+    function errorHandler(eventName, data) {
+      expect(eventName).toEqual(APP_INIT_ERROR);
+      expect(data).toEqual(new Error('uhoh!'));
+      done();
+    }
+    subscribe(APP_INIT_ERROR, errorHandler);
+
+    const messages = { i_am: 'a message' };
+    await initialize({
+      messages,
+      handlers: overrideHandlers,
+    });
+    expect(configureCache).toHaveBeenCalled();
+    expect(console.error).toHaveBeenCalledWith('Error with config API', 'Api fails');
+    expect(overrideHandlers.auth).toHaveBeenCalled();
+    expect(overrideHandlers.analytics).not.toHaveBeenCalled();
+    expect(overrideHandlers.i18n).not.toHaveBeenCalled();
+    expect(overrideHandlers.ready).not.toHaveBeenCalled();
+    expect(logError).toHaveBeenCalledWith(new Error('uhoh!'));
   });
 });

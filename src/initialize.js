@@ -79,6 +79,7 @@ import {
   APP_READY, APP_INIT_ERROR,
 } from './constants';
 import configureCache from './auth/LocalForageCache';
+import { parseUrlQueryParams } from './utils';
 
 /**
  * A browser history or memory history object created by the [history](https://github.com/ReactTraining/history)
@@ -134,22 +135,25 @@ export async function auth(requireUser, hydrateUser) {
 /*
  * Set or overrides configuration through an API.
  * This method allows runtime configuration.
- * Set a basic configuration when an error happen and allow initError.
+ * Set a basic configuration when an error happen and allow initError and display the ErrorPage.
  */
 
 export async function runtimeConfig() {
-  const apiConfig = { headers: { accept: 'application/json' } };
   try {
+    const apiConfig = { headers: { accept: 'application/json' } };
     const apiService = await configureCache();
-    const url = getConfig().MFE_CONFIG_API_URL;
+
+    const url = parseUrlQueryParams(getConfig().MFE_CONFIG_API_URL, [
+      { name: 'mfe', value: (getConfig().PUBLIC_PATH.slice(1, -1) || window.location.host.split('.')[0]) },
+    ]);
+
     const { data } = await apiService.get(url, apiConfig);
     mergeConfig(data);
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Error with config API', error.message);
     setConfig({
-      BASE_URL: `${window.location.host}`,
-      LANGUAGE_PREFERENCE_COOKIE_NAME: 'openedx-language-preference',
+      BASE_URL: window.location.host,
     });
   }
 }
