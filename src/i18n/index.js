@@ -72,6 +72,7 @@
  */
 
 export {
+  createIntl,
   FormattedDate,
   FormattedTime,
   FormattedRelativeTime,
@@ -80,6 +81,7 @@ export {
   FormattedMessage,
   defineMessages,
   IntlProvider,
+  useIntl,
 } from 'react-intl';
 
 export {
