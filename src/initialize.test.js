@@ -279,7 +279,7 @@ describe('initialize', () => {
     expect(overrideHandlers.initError).toHaveBeenCalledWith(new Error('uhoh!'));
   });
 
-  it('should initialze the app with runtime configuration', async () => {
+  it('should initialize the app with runtime configuration', async () => {
     config.MFE_CONFIG_API_URL = 'http://localhost:18000/api/mfe/v1/config';
     config.PUBLIC_PATH = '/auth/';
     configureCache.mockReturnValueOnce(Promise.resolve({
@@ -320,7 +320,7 @@ describe('initialize', () => {
     expect(Object.values(config).includes(newConfig.learning.DISCUSSIONS_MFE_BASE_URL)).toBeFalsy();
   });
 
-  it('should initialze the default error when runtime configuration fails', async (done) => {
+  it('should initialize the default error when runtime configuration fails', async (done) => {
     config.MFE_CONFIG_API_URL = 'http://localhost:18000/api/mfe/v1/config';
     console.error = jest.fn();
     configureCache.mockReturnValueOnce(Promise.reject(new Error('Api fails')));
