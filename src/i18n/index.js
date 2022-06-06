@@ -24,6 +24,12 @@
  */
 
 /**
+ * @name createIntl
+ * @kind function
+ * @see {@link https://formatjs.io/docs/react-intl/api#createIntl Intl}
+ */
+
+/**
  * @name FormattedDate
  * @kind class
  * @see {@link https://formatjs.io/docs/react-intl/components/#formatteddate Intl}
@@ -69,6 +75,12 @@
  * @name defineMessages
  * @kind function
  * @see {@link https://formatjs.io/docs/react-intl/api#definemessagesdefinemessage Intl}
+ */
+
+/**
+ * @name useIntl
+ * @kind function
+ * @see {@link https://formatjs.io/docs/react-intl/api#useIntl Intl}
  */
 
 export {
