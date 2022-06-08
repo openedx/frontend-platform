@@ -51,7 +51,7 @@ import {
 } from './pubSub';
 // eslint-disable-next-line import/no-cycle
 import {
-  getConfig, mergeConfig, setConfig,
+  getConfig, mergeConfig,
 } from './config';
 import {
   configure as configureLogging, getLoggingService, NewRelicLoggingService, logError,
@@ -131,7 +131,6 @@ export async function auth(requireUser, hydrateUser) {
     hydrateAuthenticatedUser();
   }
 }
-
 /*
  * Set or overrides configuration through an API.
  * This method allows runtime configuration.
@@ -140,23 +139,25 @@ export async function auth(requireUser, hydrateUser) {
 
 export async function runtimeConfig() {
   try {
-    const apiConfig = { headers: { accept: 'application/json' } };
-    const apiService = await configureCache();
+    const { MFE_CONFIG_API_URL, PUBLIC_PATH } = getConfig();
 
-    const url = parseUrlQueryParams(getConfig().MFE_CONFIG_API_URL, [
-      { name: 'mfe', value: (getConfig().PUBLIC_PATH.slice(1, -1) || window.location.host.split('.')[0]) },
-    ]);
+    if (MFE_CONFIG_API_URL) {
+      const apiConfig = { headers: { accept: 'application/json' } };
+      const apiService = await configureCache();
 
-    const { data } = await apiService.get(url, apiConfig);
-    mergeConfig(data);
+      const url = parseUrlQueryParams(MFE_CONFIG_API_URL, [
+        { name: 'mfe', value: (PUBLIC_PATH.slice(1, -1) || window.location.host.split('.')[0]) },
+      ]);
+
+      const { data } = await apiService.get(url, apiConfig);
+      mergeConfig(data);
+    }
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Error with config API', error.message);
-    setConfig({
-      BASE_URL: window.location.host,
-    });
   }
 }
+
 /**
  * The default handler for the initialization lifecycle's `analytics` phase.
  *
@@ -252,7 +253,8 @@ export async function initialize({
     publish(APP_PUBSUB_INITIALIZED);
 
     // Configuration
-    if (getConfig().MFE_CONFIG_API_URL) { await runtimeConfig(); } else { await handlers.config(); }
+    await handlers.config();
+    await runtimeConfig();
     publish(APP_CONFIG_INITIALIZED);
 
     // Logging

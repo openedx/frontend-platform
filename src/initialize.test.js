@@ -320,41 +320,39 @@ describe('initialize', () => {
     expect(Object.values(config).includes(newConfig.learning.DISCUSSIONS_MFE_BASE_URL)).toBeFalsy();
   });
 
-  it('should initialize the default error when runtime configuration fails', async (done) => {
+  it('should initialize the app with the build config when runtime configuration fails', async () => {
     config.MFE_CONFIG_API_URL = 'http://localhost:18000/api/mfe/v1/config';
+    // eslint-disable-next-line no-console
     console.error = jest.fn();
     configureCache.mockReturnValueOnce(Promise.reject(new Error('Api fails')));
-
-    const overrideHandlers = {
-      pubSub: jest.fn(),
-      config: jest.fn(),
-      logging: jest.fn(),
-      auth: jest.fn(() => {
-        if (Object.values(getConfig()).length === 1) { throw new Error('uhoh!'); }
-      }),
-      analytics: jest.fn(),
-      i18n: jest.fn(),
-      ready: jest.fn(),
-    };
-
-    function errorHandler(eventName, data) {
-      expect(eventName).toEqual(APP_INIT_ERROR);
-      expect(data).toEqual(new Error('uhoh!'));
-      done();
-    }
-    subscribe(APP_INIT_ERROR, errorHandler);
 
     const messages = { i_am: 'a message' };
     await initialize({
       messages,
-      handlers: overrideHandlers,
     });
+
     expect(configureCache).toHaveBeenCalled();
+    // eslint-disable-next-line no-console
     expect(console.error).toHaveBeenCalledWith('Error with config API', 'Api fails');
-    expect(overrideHandlers.auth).toHaveBeenCalled();
-    expect(overrideHandlers.analytics).not.toHaveBeenCalled();
-    expect(overrideHandlers.i18n).not.toHaveBeenCalled();
-    expect(overrideHandlers.ready).not.toHaveBeenCalled();
-    expect(logError).toHaveBeenCalledWith(new Error('uhoh!'));
+    expect(configureLogging).toHaveBeenCalledWith(NewRelicLoggingService, { config });
+    expect(configureAuth).toHaveBeenCalledWith(AxiosJwtAuthService, {
+      loggingService: getLoggingService(),
+      config,
+      middleware: [],
+    });
+    expect(configureAnalytics).toHaveBeenCalledWith(SegmentAnalyticsService, {
+      config,
+      loggingService: getLoggingService(),
+      httpClient: getAuthenticatedHttpClient(),
+    });
+    expect(configureI18n).toHaveBeenCalledWith({
+      messages,
+      config,
+      loggingService: getLoggingService(),
+    });
+    expect(fetchAuthenticatedUser).toHaveBeenCalled();
+    expect(ensureAuthenticatedUser).not.toHaveBeenCalled();
+    expect(hydrateAuthenticatedUser).not.toHaveBeenCalled();
+    expect(logError).not.toHaveBeenCalled();
   });
 });
