@@ -281,7 +281,7 @@ describe('initialize', () => {
 
   it('should initialize the app with runtime configuration', async () => {
     config.MFE_CONFIG_API_URL = 'http://localhost:18000/api/mfe/v1/config';
-    config.PUBLIC_PATH = '/auth/';
+    config.APP_ID = 'auth';
     configureCache.mockReturnValueOnce(Promise.resolve({
       get: (url) => {
         const params = new URL(url).search;
