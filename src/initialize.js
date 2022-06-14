@@ -79,7 +79,6 @@ import {
   APP_READY, APP_INIT_ERROR,
 } from './constants';
 import configureCache from './auth/LocalForageCache';
-import { parseUrlQueryParams } from './utils';
 
 /**
  * A browser history or memory history object created by the [history](https://github.com/ReactTraining/history)
@@ -145,9 +144,9 @@ export async function runtimeConfig() {
       const apiConfig = { headers: { accept: 'application/json' } };
       const apiService = await configureCache();
 
-      const url = parseUrlQueryParams(MFE_CONFIG_API_URL, [
-        { name: 'mfe', value: (PUBLIC_PATH.slice(1, -1) || window.location.host.split('.')[0]) },
-      ]);
+      const params = new URLSearchParams();
+      params.append('mfe', (PUBLIC_PATH.slice(1, -1) || window.location.host.split('.')[0]));
+      const url = `${MFE_CONFIG_API_URL}?${params.toString()}`;
 
       const { data } = await apiService.get(url, apiConfig);
       mergeConfig(data);
@@ -217,25 +216,25 @@ function applyOverrideHandlers(overrides) {
  * - initError: Uses the 'initError' handler defined above.
  *
  * @param {Object} [options]
- * @param {*} [options.loggingService=NewRelicLoggingService] The `LoggingService` implementation
- * to use.
- * @param {*} [options.analyticsService=SegmentAnalyticsService] The `AnalyticsService`
- * implementation to use.
- * @param {*} [options.authMiddleware=[]] An array of middleware to apply to http clients in the auth service.
- * @param {*} [options.requireAuthenticatedUser=false] If true, turns on automatic login
- * redirection for unauthenticated users.  Defaults to false, meaning that by default the
- * application will allow anonymous/unauthenticated sessions.
- * @param {*} [options.hydrateAuthenticatedUser=false] If true, makes an API call to the user
- * account endpoint (`${App.config.LMS_BASE_URL}/api/user/v1/accounts/${username}`) to fetch
- * detailed account information for the authenticated user. This data is merged into the return
- * value of `getAuthenticatedUser`, overriding any duplicate keys that already exist. Defaults to
- * false, meaning that no additional account information will be loaded.
- * @param {*} [options.messages] A i18n-compatible messages object, or an array of such objects. If
- * an array is provided, duplicate keys are resolved with the last-one-in winning.
- * @param {*} [options.handlers={}] An optional object of handlers which can be used to replace the
- * default behavior of any part of the startup sequence. It can also be used to add additional
- * initialization behavior before or after the rest of the sequence.
- */
+        * @param {*} [options.loggingService=NewRelicLoggingService] The `LoggingService` implementation
+        * to use.
+        * @param {*} [options.analyticsService=SegmentAnalyticsService] The `AnalyticsService`
+        * implementation to use.
+        * @param {*} [options.authMiddleware=[]] An array of middleware to apply to http clients in the auth service.
+        * @param {*} [options.requireAuthenticatedUser=false] If true, turns on automatic login
+        * redirection for unauthenticated users.  Defaults to false, meaning that by default the
+        * application will allow anonymous/unauthenticated sessions.
+        * @param {*} [options.hydrateAuthenticatedUser=false] If true, makes an API call to the user
+        * account endpoint (`${App.config.LMS_BASE_URL}/api/user/v1/accounts/${username}`) to fetch
+        * detailed account information for the authenticated user. This data is merged into the return
+        * value of `getAuthenticatedUser`, overriding any duplicate keys that already exist. Defaults to
+        * false, meaning that no additional account information will be loaded.
+        * @param {*} [options.messages] A i18n-compatible messages object, or an array of such objects. If
+        * an array is provided, duplicate keys are resolved with the last-one-in winning.
+        * @param {*} [options.handlers={ }] An optional object of handlers which can be used to replace the
+        * default behavior of any part of the startup sequence. It can also be used to add additional
+        * initialization behavior before or after the rest of the sequence.
+        */
 export async function initialize({
   loggingService = NewRelicLoggingService,
   analyticsService = SegmentAnalyticsService,

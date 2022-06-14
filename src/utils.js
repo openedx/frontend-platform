@@ -165,17 +165,3 @@ export function ensureDefinedConfig(object, requester) {
     }
   });
 }
-
-/**
- * This function helps to parse api query params
- *
- * @param {String} mainURI
- * @param {Array} queryParams Array with object with strings to set query name and value
- *  {name: '', value, ''}
- */
-
-export function parseUrlQueryParams(mainURI, queryParams = []) {
-  const params = new URLSearchParams();
-  queryParams.forEach(queryObj => params.append(queryObj.name, queryObj.value));
-  return `${mainURI}?${params.toString()}`;
-}
