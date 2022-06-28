@@ -24,9 +24,8 @@ jobs:
         with:
           node-version: "${{ matrix.node }}"
 
-      # this is a temporary "hack" to unblock CI/releases, as ideally we should avoid needing to pin NPM to a specific verison minor version. by doing
-      # so, we are basically just deferring clean up of peer dependencies for a later time. it also introduces confusion in that engineers should keep
-      # their local NPM versions in sync with CI, which can be a nuisance.
+      # This is a temporary "hack" to unblock CI/releases, as ideally we should avoid needing to pin NPM to a specific verison minor version. By doing
+      # so, we are basically deferring clean up of peer dependencies to a later time. See https://github.com/npm/cli/issues/4664 for more details.
       - name: Pin NPM version
         run: npm install -g npm@${{ matrix.npm }}
 
