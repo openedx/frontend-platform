@@ -24,7 +24,9 @@ jobs:
         with:
           node-version: "${{ matrix.node }}"
 
-      - name: Install npm 8.5.x
+      # This is a temporary "hack" to unblock CI/releases, as ideally we should avoid needing to pin NPM to a specific minor version. By doing
+      # so, we are basically deferring clean up of peer dependencies to a later time. See https://github.com/npm/cli/issues/4664 for more details.
+      - name: Pin NPM version
         run: npm install -g npm@${{ matrix.npm }}
 
       - name: Install dependencies
