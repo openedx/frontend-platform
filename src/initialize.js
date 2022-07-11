@@ -50,7 +50,9 @@ import {
   publish,
 } from './pubSub';
 // eslint-disable-next-line import/no-cycle
-import { getConfig } from './config';
+import {
+  getConfig, mergeConfig,
+} from './config';
 import {
   configure as configureLogging, getLoggingService, NewRelicLoggingService, logError,
 } from './logging';
@@ -76,6 +78,7 @@ import {
   APP_ANALYTICS_INITIALIZED,
   APP_READY, APP_INIT_ERROR,
 } from './constants';
+import configureCache from './auth/LocalForageCache';
 
 /**
  * A browser history or memory history object created by the [history](https://github.com/ReactTraining/history)
@@ -125,6 +128,32 @@ export async function auth(requireUser, hydrateUser) {
     // critical data is returned as part of fetch/ensureAuthenticatedUser above, and anything else
     // is a nice-to-have for application code.
     hydrateAuthenticatedUser();
+  }
+}
+/*
+ * Set or overrides configuration through an API.
+ * This method allows runtime configuration.
+ * Set a basic configuration when an error happen and allow initError and display the ErrorPage.
+ */
+
+export async function runtimeConfig() {
+  try {
+    const { MFE_CONFIG_API_URL, APP_ID } = getConfig();
+
+    if (MFE_CONFIG_API_URL) {
+      const apiConfig = { headers: { accept: 'application/json' } };
+      const apiService = await configureCache();
+
+      const params = new URLSearchParams();
+      params.append('mfe', APP_ID);
+      const url = `${MFE_CONFIG_API_URL}?${params.toString()}`;
+
+      const { data } = await apiService.get(url, apiConfig);
+      mergeConfig(data);
+    }
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('Error with config API', error.message);
   }
 }
 
@@ -224,6 +253,7 @@ export async function initialize({
 
     // Configuration
     await handlers.config();
+    await runtimeConfig();
     publish(APP_CONFIG_INITIALIZED);
 
     // Logging
