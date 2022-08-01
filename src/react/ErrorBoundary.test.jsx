@@ -2,38 +2,18 @@ import React from 'react';
 import { mount } from 'enzyme';
 
 import ErrorBoundary from './ErrorBoundary';
-import { initialize } from '..';
+import { initializeMockApp } from '..';
 
 describe('ErrorBoundary', () => {
-  const logError = jest.fn();
-  const logInfo = jest.fn();
+  let logError = jest.fn();
 
   beforeEach(async () => {
     // This is a gross hack to suppress error logs in the invalid parentSelector test
     jest.spyOn(console, 'error');
     global.console.error.mockImplementation(() => {});
 
-    await initialize({
-      loggingService: jest.fn(() => ({
-        logError,
-        logInfo,
-      })),
-      messages: {
-        ar: {},
-        'es-419': {},
-        fr: {},
-        'zh-cn': {},
-        ca: {},
-        he: {},
-        id: {},
-        'ko-kr': {},
-        pl: {},
-        'pt-br': {},
-        ru: {},
-        th: {},
-        uk: {},
-      },
-    });
+    const { loggingService } = initializeMockApp();
+    logError = loggingService.logError;
   });
 
   afterEach(() => {
