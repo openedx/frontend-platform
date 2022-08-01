@@ -11,7 +11,6 @@ import {
 } from '@edx/frontend-platform/react';
 import { APP_INIT_ERROR, APP_READY, initialize } from '@edx/frontend-platform';
 import { subscribe } from '@edx/frontend-platform/pubSub';
-import { IntlProvider } from '@edx/frontend-platform/i18n';
 
 import './index.scss';
 import ExamplePage from './ExamplePage';
@@ -33,7 +32,7 @@ subscribe(APP_READY, () => {
 });
 
 subscribe(APP_INIT_ERROR, (error) => {
-  ReactDOM.render(<IntlProvider><ErrorPage message={error.message} /></IntlProvider>, document.getElementById('root'));
+  ReactDOM.render(<ErrorPage message={error.message} />, document.getElementById('root'));
 });
 
 initialize({
