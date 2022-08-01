@@ -13,8 +13,6 @@ describe('ErrorBoundary', () => {
     jest.spyOn(console, 'error');
     global.console.error.mockImplementation(() => {});
 
-    jest.clearAllMocks();
-
     await initialize({
       loggingService: jest.fn(() => ({
         logError,
@@ -40,6 +38,7 @@ describe('ErrorBoundary', () => {
 
   afterEach(() => {
     global.console.error.mockRestore();
+    jest.clearAllMocks();
   });
 
   it('should render children if no error', () => {
