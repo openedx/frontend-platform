@@ -32,7 +32,7 @@
   "homepage": "https://github.com/edx/frontend-platform#readme",
   "devDependencies": {
     "@edx/brand": "npm:@edx/brand-openedx@1.1.0",
-    "@edx/frontend-build": "9.2.2",
+    "@edx/frontend-build": "11.0.2",
     "@edx/paragon": "20.2.0",
     "axios-mock-adapter": "1.20.0",
     "core-js": "3.21.1",
