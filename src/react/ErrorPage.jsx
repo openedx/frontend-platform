@@ -1,10 +1,17 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
   Button, Container, Row, Col,
 } from '@edx/paragon';
 
-import { FormattedMessage } from '../i18n';
+import { useAppEvent } from './hooks';
+import {
+  FormattedMessage,
+  IntlProvider,
+  getMessages,
+  getLocale,
+  LOCALE_CHANGED,
+} from '../i18n';
 
 /**
  * An error page that displays a generic message for unexpected errors.  Also contains a "Try
@@ -13,15 +20,22 @@ import { FormattedMessage } from '../i18n';
  * @memberof module:React
  * @extends {Component}
  */
-class ErrorPage extends Component {
-  /* istanbul ignore next */
-  reload() {
-    global.location.reload();
-  }
+function ErrorPage({
+  message,
+}) {
+  const [locale, setLocale] = useState(getLocale());
 
-  render() {
-    const { message } = this.props;
-    return (
+  useAppEvent(LOCALE_CHANGED, () => {
+    setLocale(getLocale());
+  });
+
+  /* istanbul ignore next */
+  const reload = () => {
+    global.location.reload();
+  };
+
+  return (
+    <IntlProvider locale={locale} messages={getMessages()}>
       <Container fluid className="py-5 justify-content-center align-items-start text-center">
         <Row>
           <Col>
@@ -37,7 +51,7 @@ class ErrorPage extends Component {
                 <p>{message}</p>
               </div>
             )}
-            <Button onClick={this.reload}>
+            <Button onClick={reload}>
               <FormattedMessage
                 id="unexpected.error.button.text"
                 defaultMessage="Try again"
@@ -47,8 +61,8 @@ class ErrorPage extends Component {
           </Col>
         </Row>
       </Container>
-    );
-  }
+    </IntlProvider>
+  );
 }
 
 ErrorPage.propTypes = {

@@ -2,21 +2,23 @@ import React from 'react';
 import { mount } from 'enzyme';
 
 import ErrorBoundary from './ErrorBoundary';
-
-import { logError } from '../logging';
-import { IntlProvider } from '../i18n';
-
-jest.mock('../logging');
+import { initializeMockApp } from '..';
 
 describe('ErrorBoundary', () => {
-  beforeEach(() => {
+  let logError = jest.fn();
+
+  beforeEach(async () => {
     // This is a gross hack to suppress error logs in the invalid parentSelector test
     jest.spyOn(console, 'error');
     global.console.error.mockImplementation(() => {});
+
+    const { loggingService } = initializeMockApp();
+    logError = loggingService.logError;
   });
 
   afterEach(() => {
     global.console.error.mockRestore();
+    jest.clearAllMocks();
   });
 
   it('should render children if no error', () => {
@@ -37,15 +39,14 @@ describe('ErrorBoundary', () => {
     };
 
     const component = (
-      <IntlProvider locale="en" messages={{}}>
-        <ErrorBoundary>
-          <ExplodingComponent />
-        </ErrorBoundary>
-      </IntlProvider>
+      <ErrorBoundary>
+        <ExplodingComponent />
+      </ErrorBoundary>
     );
+
     mount(component);
 
     expect(logError).toHaveBeenCalledTimes(1);
-    expect(logError).toHaveBeenCalledWith(new Error('booyah'), { stack: '\n    in ExplodingComponent\n    in ErrorBoundary\n    in IntlProvider (created by WrapperComponent)\n    in WrapperComponent' });
+    expect(logError).toHaveBeenCalledWith(new Error('booyah'), { stack: '\n    in ExplodingComponent\n    in ErrorBoundary (created by WrapperComponent)\n    in WrapperComponent' });
   });
 });
