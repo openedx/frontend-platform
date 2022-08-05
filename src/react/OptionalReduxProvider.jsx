@@ -8,9 +8,7 @@ import { Provider } from 'react-redux';
  */
 export default function OptionalReduxProvider({ store, children }) {
   if (store === null) {
-    return (
-      <>{children}</>
-    );
+    return children;
   }
 
   return (

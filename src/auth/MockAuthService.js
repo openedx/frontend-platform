@@ -256,7 +256,7 @@ class MockAuthService {
     }
 
     return this.getAuthenticatedUser();
-  })
+  });
 
   /**
    * A Jest mock function (jest.fn())

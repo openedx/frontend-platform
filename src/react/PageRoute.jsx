@@ -22,7 +22,7 @@ export default function PageRoute(props) {
     if (match) {
       sendPageEvent();
     }
-  }, [JSON.stringify(match)]);
+  }, [match]);
 
   return (
     <Route {...props} />

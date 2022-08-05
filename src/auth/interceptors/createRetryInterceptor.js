@@ -52,7 +52,7 @@ const createRetryInterceptor = (options = {}) => {
       try {
         const backoffDelay = getBackoffMilliseconds(nthRetry);
         // Delay (wrapped in a promise so we can await the setTimeout)
-        await new Promise(resolve => setTimeout(resolve, backoffDelay));
+        await new Promise(resolve => { setTimeout(resolve, backoffDelay); });
         // Make retry request
         retryResponse = await httpClient.request(config);
       } catch (e) {
