@@ -61,13 +61,13 @@ export default function AppProvider({ store, children }) {
     setLocale(getLocale());
   });
 
+  const appContextValue = useMemo(() => ({ authenticatedUser, config, locale }), [authenticatedUser, config, locale]);
+
   return (
     <IntlProvider locale={locale} messages={getMessages()}>
       <ErrorBoundary>
         <AppContext.Provider
-          value={
-            useMemo(() => ({ authenticatedUser, config, locale }), [authenticatedUser, config, locale])
-          }
+          value={appContextValue}
         >
           <OptionalReduxProvider store={store}>
             <Router history={history}>
