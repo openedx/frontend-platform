@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-constructed-context-values */
 import React from 'react';
 import { mount } from 'enzyme';
 import { Router, Route } from 'react-router-dom';

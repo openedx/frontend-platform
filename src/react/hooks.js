@@ -19,5 +19,5 @@ export const useAppEvent = (type, callback) => {
     return function cleanup() {
       unsubscribe(subscriptionToken);
     };
-  }, []);
+  }, [callback, type]);
 };

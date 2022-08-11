@@ -14,16 +14,16 @@ import { getPrimaryLanguageSubtag } from './lib';
  */
 
 // LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/ar.json'));
-LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/en.json'));
-LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/es.json'));
-LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/fr.json'));
+LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/en'));
+LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/es'));
+LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/fr'));
 // LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/zh.json'));
 // LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/ca.json'));
 // LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/he.json'));
 // LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/id.json'));
 // LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/ko.json'));
-LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/pl.json'));
-LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/pt.json'));
+LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/pl'));
+LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/pt'));
 // LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/ru.json'));
 // LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/th.json'));
 // LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/uk.json'));
