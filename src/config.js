@@ -69,6 +69,7 @@ let config = {
   FAVICON_URL: process.env.FAVICON_URL,
   MFE_CONFIG_API_URL: process.env.MFE_CONFIG_API_URL,
   APP_ID: process.env.APP_ID,
+  SUPPORT_URL: process.env.SUPPORT_URL,
 };
 
 /**
@@ -197,4 +198,5 @@ export function ensureConfig(keys, requester = 'unspecified application code') {
  * @property {string} FAVICON_URL
  * @property {string} MFE_CONFIG_API_URL
  * @property {string} APP_ID
+ * @property {string} SUPPORT_URL
  */
