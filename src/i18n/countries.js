@@ -1,3 +1,4 @@
+/* eslint-disable import/extensions */
 import COUNTRIES, { langs as countryLangs } from 'i18n-iso-countries';
 
 import { getPrimaryLanguageSubtag } from './lib';
@@ -10,20 +11,20 @@ import { getPrimaryLanguageSubtag } from './lib';
  * TODO: When we start dynamically loading translations only for the current locale, change this.
  */
 
-COUNTRIES.registerLocale(require('i18n-iso-countries/langs/ar'));
-COUNTRIES.registerLocale(require('i18n-iso-countries/langs/en'));
-COUNTRIES.registerLocale(require('i18n-iso-countries/langs/es'));
-COUNTRIES.registerLocale(require('i18n-iso-countries/langs/fr'));
-COUNTRIES.registerLocale(require('i18n-iso-countries/langs/zh'));
-COUNTRIES.registerLocale(require('i18n-iso-countries/langs/ca'));
-COUNTRIES.registerLocale(require('i18n-iso-countries/langs/he'));
-COUNTRIES.registerLocale(require('i18n-iso-countries/langs/id'));
-COUNTRIES.registerLocale(require('i18n-iso-countries/langs/ko'));
-COUNTRIES.registerLocale(require('i18n-iso-countries/langs/pl'));
-COUNTRIES.registerLocale(require('i18n-iso-countries/langs/pt'));
-COUNTRIES.registerLocale(require('i18n-iso-countries/langs/ru'));
+COUNTRIES.registerLocale(require('i18n-iso-countries/langs/ar.json'));
+COUNTRIES.registerLocale(require('i18n-iso-countries/langs/en.json'));
+COUNTRIES.registerLocale(require('i18n-iso-countries/langs/es.json'));
+COUNTRIES.registerLocale(require('i18n-iso-countries/langs/fr.json'));
+COUNTRIES.registerLocale(require('i18n-iso-countries/langs/zh.json'));
+COUNTRIES.registerLocale(require('i18n-iso-countries/langs/ca.json'));
+COUNTRIES.registerLocale(require('i18n-iso-countries/langs/he.json'));
+COUNTRIES.registerLocale(require('i18n-iso-countries/langs/id.json'));
+COUNTRIES.registerLocale(require('i18n-iso-countries/langs/ko.json'));
+COUNTRIES.registerLocale(require('i18n-iso-countries/langs/pl.json'));
+COUNTRIES.registerLocale(require('i18n-iso-countries/langs/pt.json'));
+COUNTRIES.registerLocale(require('i18n-iso-countries/langs/ru.json'));
 // COUNTRIES.registerLocale(require('i18n-iso-countries/langs/th.json')); // Doesn't exist in lib.
-COUNTRIES.registerLocale(require('i18n-iso-countries/langs/uk'));
+COUNTRIES.registerLocale(require('i18n-iso-countries/langs/uk.json'));
 
 /**
  * Provides a lookup table of country IDs to country names for the current locale.
