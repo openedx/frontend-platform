@@ -22,6 +22,11 @@
         "pin"
       ],
       "automerge": true
+    },
+    {
+      "matchPackagePatterns": ["@edx"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": true
     }
   ],
   "timezone": "America/New_York"
