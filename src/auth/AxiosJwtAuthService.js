@@ -72,10 +72,10 @@ class AxiosJwtAuthService {
         this.cachedAuthenticatedHttpClient = this.authenticatedHttpClient;
         this.cachedHttpClient = this.httpClient;
         logFrontendAuthError(this.loggingService, `configureCache failed with error: ${e.message}`);
+      }).finally(() => {
+        this.middleware = options.middleware;
+        this.applyMiddleware(options.middleware);
       });
-
-    this.middleware = options.middleware;
-    this.applyMiddleware(options.middleware);
   }
 
   /**
