@@ -280,9 +280,9 @@ describe('getAuthenticatedHttpClient', () => {
     expect(client1).not.toBeNull();
     expect(client2).not.toBeNull();
 
-    // the cached client should have ``cache`` property if configured properly
-    expect(client1).toHaveProperty('cache');
-    expect(client2).not.toHaveProperty('cache');
+    // the cached client should have ``storage`` property if configured properly
+    expect(client1).toHaveProperty('storage');
+    expect(client2).not.toHaveProperty('storage');
   });
 });
 
@@ -883,62 +883,82 @@ describe('fetchAuthenticatedUser', () => {
   });
 });
 
-// These tests all make real network calls to https://httpbin.org, just as documented in the axios-cache-adapter
-// tests. axios-mock-adapter can not be used to mock requests with axios-cache-adapter.
+// These tests all make real network calls to http://httpbin.org.
 describe('Cache Functionality', () => {
+  const getUrl = 'http://httpbin.org/get';
+  const postUrl = 'http://httpbin.org/post';
+  const requestId = 'get-httpbin';
+
+  const getWithRequestId = async (config = {}) => cachedClient.get(getUrl, {
+    id: requestId,
+    ...config,
+  });
+
+  const postWithRequestId = async (config = {}) => cachedClient.post(postUrl, {
+    id: requestId,
+    ...config,
+  });
+
   describe('No JWT Token Found on Load', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       setJwtCookieTo(null);
       setJwtTokenRefreshResponseTo(200, jwtTokens.valid.encoded);
-      cachedClient.cache.clear();
+
+      // Remove cache for previous requests
+      await cachedClient.storage.remove(requestId);
     });
 
     it('Cached GET: does not refresh JWT on second request with valid JWT', async () => {
-      const response1 = await cachedClient.get('https://httpbin.org/get');
-      // Verify first request was not pulled from cache
-      expect(response1.request.fromCache).toEqual(undefined);
+      const response1 = await getWithRequestId();
 
-      const response2 = await cachedClient.get('https://httpbin.org/get');
+      // Verify first request was not pulled from cache
+      expect(response1.cached).toEqual(false);
+
+      const response2 = await getWithRequestId();
       expectSingleCallToJwtTokenRefresh();
       // Like the uncached, client the CSRF token shouldn't be fetched either
       expectNoCallToCsrfTokenFetch();
       expectRequestToHaveJwtAuth(response2.config);
-      expect(response2.request.fromCache).toEqual(true);
+      expect(response2.cached).toEqual(true);
     });
 
-    it('Cached GET: clears cached entry if clearCacheEntry = true', async () => {
-      const response1 = await cachedClient.get('https://httpbin.org/get');
+    it('Cached GET: clears cached entry if cache.override = true', async () => {
+      const response1 = await getWithRequestId();
       // Verify first request was not pulled from cache
-      expect(response1.request.fromCache).toEqual(undefined);
+      expect(response1.cached).toEqual(false);
 
-      const response2 = await cachedClient.get('https://httpbin.org/get');
-      expect(response2.request.fromCache).toEqual(true);
+      const response2 = await getWithRequestId();
+      expect(response2.cached).toEqual(true);
 
-      const response3 = await cachedClient.get('https://httpbin.org/get', { clearCacheEntry: true });
-      expect(response3.request.fromCache).toEqual(undefined);
+      const response3 = await getWithRequestId({
+        cache: {
+          override: true,
+        },
+      });
+      expect(response3.cached).toEqual(false);
     });
 
     it('Always refreshes the JWT on GET requests with invalid JWT', async () => {
-      const response1 = await cachedClient.get('https://httpbin.org/get');
+      const response1 = await getWithRequestId();
       setJwtCookieTo(null);
       setJwtTokenRefreshResponseTo(200, jwtTokens.valid.encoded);
       expectRequestToHaveJwtAuth(response1.config);
 
-      const response2 = await cachedClient.get('https://httpbin.org/get');
+      const response2 = await getWithRequestId();
       expect(accessTokenAxiosMock.history.post.length).toBe(2);
       // Like the uncached client, the CSRF token shouldn't be fetched either
       expectNoCallToCsrfTokenFetch();
       expectRequestToHaveJwtAuth(response2.config);
-      expect(response2.request.fromCache).toEqual(true);
+      expect(response2.cached).toEqual(true);
     });
 
     it('Always refreshes the JWT on POST requests', async () => {
-      const response1 = await cachedClient.post('https://httpbin.org/post');
+      const response1 = await postWithRequestId();
       setJwtCookieTo(null);
       setJwtTokenRefreshResponseTo(200, jwtTokens.valid.encoded);
       expectRequestToHaveJwtAuth(response1.config);
 
-      const response2 = await cachedClient.post('https://httpbin.org/post');
+      const response2 = await postWithRequestId();
       expectRequestToHaveJwtAuth(response2.config);
       // Verify the JWT got refreshed for both requests that do not have a JWT
       expect(accessTokenAxiosMock.history.post.length).toBe(2);
@@ -950,8 +970,8 @@ describe('Cache Functionality', () => {
 
     it('Parallel GET Requests: refresh the jwt token only once', async () => {
       const responses = await Promise.all([
-        cachedClient.get('https://httpbin.org/get'),
-        cachedClient.get('https://httpbin.org/get'),
+        getWithRequestId(),
+        getWithRequestId(),
       ]);
 
       expectSingleCallToJwtTokenRefresh();
@@ -962,8 +982,8 @@ describe('Cache Functionality', () => {
 
     it('Parallel POST Requests: refresh the jwt and csrf tokens only once', async () => {
       const responses = await Promise.all([
-        cachedClient.post('https://httpbin.org/post'),
-        cachedClient.post('https://httpbin.org/post'),
+        postWithRequestId(),
+        postWithRequestId(),
       ]);
       expectSingleCallToJwtTokenRefresh();
       expectSingleCallToCsrfTokenFetch();
@@ -1006,7 +1026,7 @@ describe('Cache Functionality', () => {
 
     it('GET request: does not attempt to refresh the jwt token', async () => {
       setJwtCookieTo(jwtTokens.valid.encoded);
-      const response = await cachedClient.get('https://httpbin.org/get');
+      const response = await getWithRequestId();
       expectNoCallToJwtTokenRefresh();
       expectNoCallToCsrfTokenFetch();
       expectRequestToHaveJwtAuth(response.config);
@@ -1015,7 +1035,9 @@ describe('Cache Functionality', () => {
     ['post', 'put', 'patch', 'delete'].forEach((method) => {
       it(`${method.toUpperCase()}: refreshes the csrf token but does not attempt to refresh the jwt token`, async () => {
         setJwtCookieTo(jwtTokens.valid.encoded);
-        const response = await cachedClient[method](`https://httpbin.org/${method}`);
+        const response = await cachedClient[method](`https://httpbin.org/${method}`, {
+          id: requestId,
+        });
         expectNoCallToJwtTokenRefresh();
         expectSingleCallToCsrfTokenFetch();
         expectRequestToHaveJwtAuth(response.config);
@@ -1035,7 +1057,9 @@ describe('Cache Functionality', () => {
         it(`${method.toUpperCase()}: throws an error and calls logError`, async () => {
           expect.hasAssertions();
           try {
-            await cachedClient[method](`https://httpbin.org/${method}`);
+            await cachedClient[method](`https://httpbin.org/${method}`, {
+              id: requestId,
+            });
           } catch (err) {
             expectSingleCallToJwtTokenRefresh();
             expectNoCallToCsrfTokenFetch();

@@ -31,6 +31,7 @@
   },
   "homepage": "https://github.com/edx/frontend-platform#readme",
   "devDependencies": {
+    "@edx/browserslist-config": "^1.1.0",
     "@edx/brand": "npm:@edx/brand-openedx@1.1.0",
     "@edx/frontend-build": "^12.0.3",
     "@edx/paragon": "20.2.0",
@@ -53,8 +54,8 @@
     "@cospired/i18n-iso-languages": "2.2.0",
     "@formatjs/intl-pluralrules": "4.3.3",
     "@formatjs/intl-relativetimeformat": "10.0.1",
-    "axios": "0.26.1",
-    "axios-cache-adapter": "2.7.3",
+    "axios": "0.27.2",
+    "axios-cache-interceptor": "0.10.7",
     "form-urlencoded": "4.1.4",
     "glob": "7.2.0",
     "history": "4.10.1",
