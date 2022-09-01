@@ -53,7 +53,7 @@
     "@cospired/i18n-iso-languages": "2.2.0",
     "@formatjs/intl-pluralrules": "4.3.3",
     "@formatjs/intl-relativetimeformat": "10.0.1",
-    "axios": "0.26.1",
+    "axios": "0.27.2",
     "axios-cache-adapter": "2.7.3",
     "form-urlencoded": "4.1.4",
     "glob": "7.2.0",
