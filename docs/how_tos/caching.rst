@@ -49,7 +49,7 @@ The examples below demonstrate how to configure commonly used caching behavior o
 Overriding the request id
 =========================
 
-Every request passed through the axios-cache-interceptor interceptor has an id. Each request id is responsible for binding a request to its cache,
+Every request passed through the axios-cache-interceptor interceptor has an id. Each request id is responsible for binding a request to its cache
 for referencing (or invalidating) it later.
 
   const { id: requestId} = cachedHttpClient.get('/courses/', {
