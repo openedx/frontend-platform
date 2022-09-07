@@ -43,7 +43,7 @@ e.g.
 
 By default the response for a GET request will be stored in IndexedDB for 5 minutes and that cached value will get invalidated on any POST, PUT, PATCH, or DELETE request made to the same url. The caching layer also works with the standard cache-control headers: max-age, no-cache, and no-store
 
-Each request can also override the default cache configurations. `The How To document about caching <https://github.com/edx/frontend-platform/blob/master/docs/how_tos/caching.rst>`_ has more detailed examples about how this caching layer can be used.
+Each request can also override the default cache configurations. `The How To document about caching <https://github.com/openedx/frontend-platform/blob/master/docs/how_tos/caching.rst>`_ has more detailed examples about how this caching layer can be used.
 
 
 Implementation Details
@@ -78,7 +78,7 @@ Having a frontend-platform caching solution be widely available to micro fronten
 Adoption
 --------
 
-As of this writing, only a few HTTP requests within `frontend-app-learner-portal-enterprise <http://github.com/edx/frontend-app-learner-portal-enterprise>`_ have adopted using the cached clients. Usage of the cache clients is on an opt-in basis where micro frontends determine whether or not using the front end cache clients suits their needs.
+As of this writing, only a few HTTP requests within `frontend-app-learner-portal-enterprise <http://github.com/openedx/frontend-app-learner-portal-enterprise>`_ have adopted using the cached clients. Usage of the cache clients is on an opt-in basis where micro frontends determine whether or not using the front end cache clients suits their needs.
 
 
 Consequences
