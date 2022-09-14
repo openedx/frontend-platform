@@ -22,14 +22,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/edx/frontend-platform.git"
+    "url": "git+https://github.com/openedx/frontend-platform.git"
   },
   "author": "edX",
   "license": "AGPL-3.0",
   "bugs": {
-    "url": "https://github.com/edx/frontend-platform/issues"
+    "url": "https://github.com/openedx/frontend-platform/issues"
   },
-  "homepage": "https://github.com/edx/frontend-platform#readme",
+  "homepage": "https://github.com/openedx/frontend-platform#readme",
   "devDependencies": {
     "@edx/browserslist-config": "^1.1.0",
     "@edx/brand": "npm:@edx/brand-openedx@1.1.0",

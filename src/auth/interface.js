@@ -3,7 +3,7 @@
  *
  * Simplifies the process of making authenticated API requests to backend edX services by providing
  * common authN/authZ client code that enables the login/logout flow and handles ensuring the
- * presence of a valid [JWT cookie](https://github.com/edx/edx-platform/blob/master/openedx/core/djangoapps/oauth_dispatch/docs/decisions/0009-jwt-in-session-cookie.rst).
+ * presence of a valid [JWT cookie](https://github.com/openedx/edx-platform/blob/master/openedx/core/djangoapps/oauth_dispatch/docs/decisions/0009-jwt-in-session-cookie.rst).
  *
  * The `initialize` function performs much of the auth configuration for you.  If, however, you're
  * not using the `initialize` function, an authenticated API client can be created via:
