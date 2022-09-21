@@ -7,6 +7,8 @@
     "access": "public"
   },
   "sideEffects": false,
+  "browserslist": ["extends @edx/browserslist-config"],
+
   "scripts": {
     "build": "make build",
     "docs": "jsdoc -c jsdoc.json",
