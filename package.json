@@ -7,7 +7,7 @@
     "access": "public"
   },
   "sideEffects": false,
-  "browserslist": ["extends @edx/browserslist-config"], 
+  "browserslist": ["extends @edx/browserslist-config"],
 
   "scripts": {
     "build": "make build",
