@@ -188,6 +188,7 @@ describe('lib', () => {
       expect(isRtl('ar')).toBe(true);
       expect(isRtl('he')).toBe(true);
       expect(isRtl('fa')).toBe(true);
+      expect(isRtl('fa-ir')).toBe(true);
       expect(isRtl('ur')).toBe(true);
     });
 
