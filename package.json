@@ -48,7 +48,7 @@
     "react-redux": "7.2.9",
     "react-router-dom": "5.3.4",
     "redux": "4.2.0",
-    "regenerator-runtime": "0.13.9"
+    "regenerator-runtime": "0.13.10"
   },
   "dependencies": {
     "@cospired/i18n-iso-languages": "2.2.0",
