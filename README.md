@@ -132,8 +132,24 @@ The included service implementations are:
 
 NOTE: As of this writing, i18n is _not_ configurable.  The `initialize()` function does not allow applications to supply an alternate i18n implementation; this is because the interface and implementation for i18n has not yet been separated and modularized.
 
-# Local development & testing locally
+# Local Development & Testing Locally
 
 When making changes to frontend-platform, be sure to manually run the included example app located in `./example`. The example app includes 2 routes to test for both unauthenticated and authenticated users. To start the example app, run `npm start` from the root directory.
 
 If you want to test changes to frontend-platform against a micro-frontend locally, follow the directions here: https://github.com/openedx/frontend-build#local-module-configuration-for-webpack
+
+# Production Deployment Strategy
+
+For any MFE built on top of the frontend-platform, the deployment strategy will be something like the following:
+
+1. Run the build script with environment variables on the command line to pass in any relevant config. Example:
+
+   ```bash
+   NODE_ENV=development BASE_URL=open.edx.org ETC=etc npm run build
+   ```
+
+   This will create a dist/ directory that contains the deployable artifacts.
+
+2. Copy the contents of dist/ to a web server.
+
+3. Configure the platform to point at your MFE. (details on this coming soon)
