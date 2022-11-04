@@ -115,24 +115,20 @@ describe('Analytics', () => {
     });
 
     describe('analytics identifyAnonymousUser', () => {
-      it('calls Segment identify on success - no previous segment user', () => {
+      it('does not call segment reset for no previous segment user', () => {
         window.analytics.user = () => ({ id: () => null });
         const testTraits = { anything: 'Yay!' };
         identifyAnonymousUser(testTraits);
 
         expect(window.analytics.reset.mock.calls.length).toBe(0);
-        expect(window.analytics.identify.mock.calls.length).toBe(1);
-        expect(window.analytics.identify).toBeCalledWith(testTraits);
       });
 
-      it('calls Segment identify on success - previous segment user', () => {
+      it('calls segment reset for a previous segment user', () => {
         window.analytics.user = () => ({ id: () => 7 });
         const testTraits = { anything: 'Yay!' };
         identifyAnonymousUser(testTraits);
 
         expect(window.analytics.reset.mock.calls.length).toBe(1);
-        expect(window.analytics.identify.mock.calls.length).toBe(1);
-        expect(window.analytics.identify).toBeCalledWith(testTraits);
       });
     });
 
