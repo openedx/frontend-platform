@@ -1,0 +1,22 @@
+name: NPM Deprecate
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to deprecate'
+        required: true
+      message:
+        description: 'Reason for deprecation'
+        required: true
+
+jobs:
+  deprecate:
+    name: Deprecate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check NPM authentication
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.SEMANTIC_RELEASE_NPM_TOKEN }}" >> .npmrc
+          npm whoami
+      - name: NPM deprecate
+        run: npm deprecate @edx/frontend-platform@"${{ github.event.inputs.version }}" "${{ github.event.inputs.message }}"

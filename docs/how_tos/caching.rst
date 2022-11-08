@@ -33,19 +33,29 @@ Both server and client caching can be combined to provide best of both worlds. R
 How do I use client caching with ``@edx/frontend-platform?``
 ************************************************************
 
-The ``@edx/frontend-platform`` package supports an Axios HTTP client that uses client caching under the hood through the use of `axios-cache-adapter <https://www.npmjs.com/package/axios-cache-adapter>`_. 
+The ``@edx/frontend-platform`` package supports an Axios HTTP client that uses client caching under the hood through the use of `axios-cache-interceptor <https://www.npmjs.com/package/axios-cache-interceptor>`_.
 
-``axios-cache-adapter`` is configured to use `localForage <https://www.npmjs.com/package/localforage>`_ as its store; ``localForage`` is a package that provides a similar API to browser's localStorage, except is asynchronous (non-blocking). ``localForage`` is configured to prefer using IndexedDB, falling back to localStorage if browser support for IndexedDB is lacking. If all else fails, an in-memory store is used instead. IndexedDB is more performant and may contain a broader range (and volume) of data in comparison to localStorage (see `browser support <https://caniuse.com/indexeddb>`_ for IndexedDB).
+Currently, `localForage <https://www.npmjs.com/package/localforage>`_ is configured to be the underlying storage; ``localForage`` is a package that provides a similar API to browser's localStorage, except is asynchronous (non-blocking). ``localForage`` is configured to prefer using IndexedDB, falling back to localStorage if browser support for IndexedDB is lacking. If all else fails, an in-memory store is used instead. IndexedDB is more performant and may contain a broader range (and volume) of data in comparison to localStorage (see `browser support <https://caniuse.com/indexeddb>`_ for IndexedDB).
 
 When importing an HTTP client from ``@edx/frontend-platform``, you may specify options for how you wish to configure the HTTP client::
 
   import { getAuthenticatedHttpClient } from '@edx/frontend-platform';
-  
+
   // ``cachedHttpClient`` is configured to use client caching under the hood.
   const cachedHttpClient = getAuthenticatedHttpClient({ useCache: true });
-  
-The examples below demonstrate how to configure the caching behavior on a per-request basis. For more details about how to configure the caching behavior, you may refer to the `axios-cache-adapter documentation <https://www.npmjs.com/package/axios-cache-adapter>`_.
-  
+
+The examples below demonstrate how to configure commonly used caching behavior on a per-request basis. For more use-cases, you may refer to the `axios-cache-interceptor documentation <https://axios-cache-interceptor.js.org/#/pages/per-request-configuration>`_.
+
+Overriding the request id
+=========================
+
+Every request passed through the axios-cache-interceptor interceptor has an id. Each request id is responsible for binding a request to its cache
+for referencing (or invalidating) it later.
+
+  const { id: requestId} = cachedHttpClient.get('/courses/', {
+    id: 'custom-id'
+  });
+
 Modify expiry behavior for a single request
 ===========================================
 
@@ -53,22 +63,31 @@ By default, API requests using the cached HTTP client will be cached for 5 minut
 
   cachedHttpClient.get('/courses/', {
     cache: {
-      maxAge: 15 * 60 * 1000, // 15 minutes instead of the default 5.
+      ttl: 15 * 60 * 1000, // 15 minutes instead of the default 5.
     },
   });
-  
+
 Invalidate cache for a single request
 =====================================
 
 In certain situations, it may be necessary to invalidate cached data to force a true network request to the server::
 
-  cachedHttpClient.get('/courses/', { clearCacheEntry: true });
-  
+  cachedHttpClient.get('/courses/', {
+    cache: {
+      override: true, // This will replace the cache when the response arrives.
+    },
+  });
+
+To remove the cache of a request::
+
+    await axios.storage.remove('list-posts');
+
+
 Check if response is served from network or from cache
 ======================================================
 
 If there is a need to know whether a response was served from the network (i.e., server) or from the local client cache, you may refer to the ``response.request`` object::
 
   cachedHttpClient.get('/courses/').then((response) => {
-    console.log(response.request.fromCache); // will be true if served from the client cache
+    console.log(response.cached); // will be true if served from the client cache, false otherwise
   });

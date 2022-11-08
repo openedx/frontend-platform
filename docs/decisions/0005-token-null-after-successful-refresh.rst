@@ -39,7 +39,7 @@ Several failed hypotheses have been tested to determine why this is happening:
 
   * Only a small subset of the errors (~0.8%) had a time difference of >5 minutes.
 
-  * See https://github.com/edx/frontend-platform/pull/207
+  * See https://github.com/openedx/frontend-platform/pull/207
 
 Additional Data
 ---------------

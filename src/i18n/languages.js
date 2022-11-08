@@ -1,3 +1,4 @@
+/* eslint-disable import/extensions */
 import LANGUAGES, { langs as languageLangs } from '@cospired/i18n-iso-languages';
 
 import { getPrimaryLanguageSubtag } from './lib';

@@ -112,6 +112,27 @@ class MockAuthService {
   /**
    * A Jest mock function (jest.fn())
    *
+   * Applies middleware to the axios instances in this service.
+   *
+   * @param {Array} middleware Middleware to apply.
+   */
+  applyMiddleware(middleware = []) {
+    const clients = [
+      this.authenticatedHttpClient, this.httpClient,
+      this.cachedAuthenticatedHttpClient, this.cachedHttpClient,
+    ];
+    try {
+      (middleware).forEach((middlewareFn) => {
+        clients.forEach((client) => client && middlewareFn(client));
+      });
+    } catch (error) {
+      throw new Error(`Failed to apply middleware: ${error.message}.`);
+    }
+  }
+
+  /**
+   * A Jest mock function (jest.fn())
+   *
    * Gets the authenticated HTTP client instance, which is an axios client wrapped in
    * MockAdapter from axios-mock-adapter.
    *
@@ -235,7 +256,7 @@ class MockAuthService {
     }
 
     return this.getAuthenticatedUser();
-  })
+  });
 
   /**
    * A Jest mock function (jest.fn())

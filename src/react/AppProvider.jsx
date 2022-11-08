@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Router } from 'react-router-dom';
 
@@ -61,20 +61,22 @@ export default function AppProvider({ store, children }) {
     setLocale(getLocale());
   });
 
+  const appContextValue = useMemo(() => ({ authenticatedUser, config, locale }), [authenticatedUser, config, locale]);
+
   return (
-    <ErrorBoundary>
-      <AppContext.Provider
-        value={{ authenticatedUser, config, locale }}
-      >
-        <IntlProvider locale={locale} messages={getMessages()}>
+    <IntlProvider locale={locale} messages={getMessages()}>
+      <ErrorBoundary>
+        <AppContext.Provider
+          value={appContextValue}
+        >
           <OptionalReduxProvider store={store}>
             <Router history={history}>
-              <>{children}</>
+              {children}
             </Router>
           </OptionalReduxProvider>
-        </IntlProvider>
-      </AppContext.Provider>
-    </ErrorBoundary>
+        </AppContext.Provider>
+      </ErrorBoundary>
+    </IntlProvider>
   );
 }
 

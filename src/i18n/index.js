@@ -18,78 +18,86 @@
  *
  *
  * @module Internationalization
- * @see {@link https://github.com/edx/frontend-platform/blob/master/docs/how_tos/i18n.rst}
- * @see {@link https://github.com/formatjs/react-intl/blob/master/docs/Components.md|React Intl} for components exported from this module.
+ * @see {@link https://github.com/openedx/frontend-platform/blob/master/docs/how_tos/i18n.rst}
+ * @see {@link https://formatjs.io/docs/react-intl/components/ Intl} for components exported from this module.
  *
+ */
+
+/**
+ * @name createIntl
+ * @kind function
+ * @see {@link https://formatjs.io/docs/react-intl/api#createIntl Intl}
  */
 
 /**
  * @name FormattedDate
  * @kind class
- * @see {@link https://github.com/formatjs/react-intl/blob/master/docs/Components.md#formatteddate|React Intl}
+ * @see {@link https://formatjs.io/docs/react-intl/components/#formatteddate Intl}
  */
 
 /**
  * @name FormattedTime
  * @kind class
- * @see {@link https://github.com/formatjs/react-intl/blob/master/docs/Components.md#formatteddate|React Intl}
+ * @see {@link https://formatjs.io/docs/react-intl/components/#formattedtime Intl}
  */
 
 /**
- * @name FormattedRelative
+ * @name FormattedRelativeTime
  * @kind class
- * @see {@link https://github.com/formatjs/react-intl/blob/master/docs/Components.md#formattedrelative|React Intl}
+ * @see {@link https://formatjs.io/docs/react-intl/components/#formattedrelativetime Intl}
  */
 
 /**
  * @name FormattedNumber
  * @kind class
- * @see {@link https://github.com/formatjs/react-intl/blob/master/docs/Components.md#formattednumber|React Intl}
+ * @see {@link https://formatjs.io/docs/react-intl/components/#formattednumber Intl}
  */
 
 /**
  * @name FormattedPlural
  * @kind class
- * @see {@link https://github.com/formatjs/react-intl/blob/master/docs/Components.md#formattedplural|React Intl}
+ * @see {@link https://formatjs.io/docs/react-intl/components/#formattedplural Intl}
  */
 
 /**
  * @name FormattedMessage
  * @kind class
- * @see {@link https://github.com/formatjs/react-intl/blob/master/docs/Components.md#formattedmessage|React Intl}
+ * @see {@link https://formatjs.io/docs/react-intl/components/#formattedmessage Intl}
  */
 
 /**
  * @name IntlProvider
  * @kind class
- * @see {@link https://github.com/formatjs/react-intl/blob/master/docs/Components.md#intlprovider|React Intl}
- */
-
-/**
- * @name intlShape
- * @kind constant
- * @see {@link https://github.com/formatjs/react-intl/blob/master/docs/API.md#intlshape|React Intl}
+ * @see {@link https://formatjs.io/docs/react-intl/components/#intlprovider Intl}
  */
 
 /**
  * @name defineMessages
  * @kind function
- * @see {@link https://github.com/formatjs/react-intl/blob/master/docs/API.md#definemessages|React Intl}
+ * @see {@link https://formatjs.io/docs/react-intl/api#definemessagesdefinemessage Intl}
+ */
+
+/**
+ * @name useIntl
+ * @kind function
+ * @see {@link https://formatjs.io/docs/react-intl/api#useIntl Intl}
  */
 
 export {
-  intlShape,
+  createIntl,
   FormattedDate,
   FormattedTime,
-  FormattedRelative,
+  FormattedRelativeTime,
   FormattedNumber,
   FormattedPlural,
   FormattedMessage,
   defineMessages,
   IntlProvider,
+  useIntl,
 } from 'react-intl';
 
 export {
+  intlShape,
   configure,
   getPrimaryLanguageSubtag,
   getLocale,

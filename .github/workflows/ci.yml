@@ -14,14 +14,20 @@ jobs:
     strategy:
       matrix:
         node: [16]
+        npm: [8.5.x]
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup Nodejs
         uses: actions/setup-node@v2
         with:
           node-version: "${{ matrix.node }}"
+
+      # This is a temporary "hack" to unblock CI/releases, as ideally we should avoid needing to pin NPM to a specific minor version. By doing
+      # so, we are basically deferring clean up of peer dependencies to a later time. See https://github.com/npm/cli/issues/4664 for more details.
+      - name: Pin NPM version
+        run: npm install -g npm@${{ matrix.npm }}
 
       - name: Install dependencies
         run: npm ci
@@ -39,4 +45,4 @@ jobs:
         run: npm run docs
 
       - name: Run Coverage
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3

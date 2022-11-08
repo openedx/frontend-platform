@@ -22,6 +22,7 @@ export default function PageRoute(props) {
     if (match) {
       sendPageEvent();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(match)]);
 
   return (

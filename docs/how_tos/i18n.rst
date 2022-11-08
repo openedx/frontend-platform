@@ -15,11 +15,11 @@ This is a step by step guide to making your React app ready to accept translatio
 Internationalize your application with react-intl
 *************************************************
 
-These steps will allow your application to accept translation strings. See `frontend-app-account <https://github.com/edx/frontend-app-account/>`_ for an example app to follow.
+These steps will allow your application to accept translation strings. See `frontend-app-account <https://github.com/openedx/frontend-app-account/>`_ for an example app to follow.
 
 #. Add ``@edx/frontend-platform`` as a dependency to your ``package.json`` . (If you are actually writing a consumable component, add ``@edx/frontend-platform`` as both a dev dependency and peer dependency instead.)  ``@edx/frontend-platform/i18n`` is a wrapper around ``react-intl`` that adds some shims. You should only access the ``react-intl`` functions and elements exposed by ``@edx/frontend-platform/i18n``. (They have the same names as in ``react-intl``.)
 
-#. In ``App.js``, wrap your entire app in an ``IntlProvider`` element. See `Load up your translation files`_ for details. (Consumable components: Don't do this step, except possibly in tests. Your consuming application will do it for you. Instead, update your `README like this example <https://github.com/edx/frontend-component-footer/blame/master/README.rst#L23-L27>`__.)
+#. In ``App.js``, wrap your entire app in an ``IntlProvider`` element. See `Load up your translation files`_ for details. (Consumable components: Don't do this step, except possibly in tests. Your consuming application will do it for you. Instead, update your `README like this example <https://github.com/openedx/frontend-component-footer/blame/master/README.rst#L23-L27>`__.)
 
 #. For places in your code where you need a display string, and it's okay if it's a React element (generally, most messages): use a ``FormattedMessage``.
 
@@ -40,7 +40,7 @@ These steps will allow your application to accept translation strings. See `fron
         description="header above the shipping address form"
        />
 
-     For additional help, including adding interprolated variables, see the `FormattedMessage documentation <https://github.com/yahoo/react-intl/wiki/Components#formattedmessage>`__. It can also handle plurals.
+     For additional help, including adding interprolated variables, see the `FormattedMessage documentation <https://formatjs.io/docs/react-intl/components#formattedmessage>`__. It can also handle plurals.
 
 #. For places in your code where you need a display string, and it has to be a plain JavaScript string (e.g., a button label), you will need to do the following:
 
@@ -95,9 +95,9 @@ In your repo, create and commit a file named ``.tx/config``::
 Set up the pipeline tools
 *************************
 
-The pipeline jobs live in the `ecommerce-scripts <https://github.com/edx/ecommerce-scripts/tree/master/transifex>`__ repo, but you don't have to modify them. They will interact with your repo through ``make`` targets.
+The pipeline jobs live in the `ecommerce-scripts <https://github.com/openedx/ecommerce-scripts/tree/master/transifex>`__ repo, but you don't have to modify them. They will interact with your repo through ``make`` targets.
 
-#. Copy the `frontend-app-account Makefile <https://github.com/edx/frontend-app-account/blob/master/Makefile>`__ to your project.
+#. Copy the `frontend-app-account Makefile <https://github.com/openedx/frontend-app-account/blob/master/Makefile>`__ to your project.
 
    * Modify the ``transifex_resource`` variable with your own Transifex resource name.
 
@@ -166,7 +166,7 @@ The pipeline jobs live in the `ecommerce-scripts <https://github.com/edx/ecommer
 Create empty translation files in your repo
 *******************************************
 
-#. You must commit an empty language file for each language, or the ``pull`` job will fail. Each file is named ``src/i18n/messages/LANG_CODE.json`` and consists of an empty JSON object (``{}``). See this `example code with empty language files <https://github.com/edx/frontend-component-footer/commit/46772ecc0e8de2ce1815607fdf2e8f2867dc83cf>`__.
+#. You must commit an empty language file for each language, or the ``pull`` job will fail. Each file is named ``src/i18n/messages/LANG_CODE.json`` and consists of an empty JSON object (``{}``). See this `example code with empty language files <https://github.com/openedx/frontend-component-footer/commit/46772ecc0e8de2ce1815607fdf2e8f2867dc83cf>`__.
 
 ***********************************
 Create your pipeline job on Jenkins
@@ -194,7 +194,7 @@ Create your pipeline job on Jenkins
 
    * Run the script that you try to create the jobs.
 
-     * Examples: ``python transifex/pull.py https://github.com/edx/edx-platform.git edx/sustaining-team``. You might be required to setup environment variable ``GITHUB_ACCESS_TOKEN`` with your personal github account.
+     * Examples: ``python transifex/pull.py https://github.com/openedx/edx-platform.git edx/sustaining-team``. You might be required to setup environment variable ``GITHUB_ACCESS_TOKEN`` with your personal github account.
 
        * For ``push_translations``, you might also need transifex authentication. If the project hasn't been created on the Transifex, it is necessary to push first. If there are problems with transifex auth or priviledge, you should proceed to the next step and run push job from jenkins instead. 
 
@@ -218,7 +218,7 @@ Load up your translation files
 
 #. Your pipeline job should have updated several translation files in ``src/i18n/messages/LANG_CODE.json`` .
 
-#. Create ``src/i18n/index.js`` using `frontend-app-account's index.js <https://github.com/edx/frontend-app-account/blob/master/src/i18n/index.js>`_ as a model.
+#. Create ``src/i18n/index.js`` using `frontend-app-account's index.js <https://github.com/openedx/frontend-app-account/blob/master/src/i18n/index.js>`_ as a model.
 
 #. In ``App.jsx``, make the following changes::
 
@@ -236,12 +236,64 @@ Load up your translation files
 
 #. As of this writing, ``frontend-platform/i18n`` reads the locale from the user language preference cookie, or, if none is found, from the browser's language setting. You can verify everything is working by changing your language preference in your account settings. If you are not logged in, you can change your browser language to one of the languages you have translations for.
 
+
+********************
+Migrating to react-intl@5
+********************
+
+Initially ``frontend-platform`` used ``react-intl@2`` but as a part of its ``2.0.0`` release the version has been upgraded to ``react-intl@5``. If your application
+used ``frontend-platform`` < ``2.0.0`` and you decided to upgrade, here's a list of breaking changes that you will need to consider during the upgrade:
+
+* ``FormattedRelative`` component has been renamed to ``FormattedRelativeTime`` (and ``formatRelative`` to ``formatRelativeTime``) with changes to its API, read more `here <https://formatjs.io/docs/react-intl/upgrade-guide-3x/#formattedrelativetime>`_
+
+* Message Format syntax has been changed. See `Message Format Syntax Changes <https://formatjs.io/docs/react-intl/upgrade-guide-3x#message-format-syntax-changes>`_ for more details.
+
+* All tags specified must have corresponding values and will throw error if it's missing, e.g::
+
+    new IntlMessageFormat('a<b>strong</b>').format({
+      b: (...chunks) => <strong>{chunks}</strong>,
+    })
+
+* Formatting self-closing tags is not supported anymore.
+
+* XML/HTML tags are escaped using apostrophe just like other ICU constructs.
+
+* Rich text formatting callback function is no longer variadic
+
+  * Before::
+
+      new IntlMessageFormat('a<b>strong</b>').format({
+        b: (...chunks) => <strong>{chunks}</strong>,
+      })
+
+  * After::
+
+      new IntlMessageFormat('a<b>strong</b>').format({
+        b: chunks => <strong>{chunks}</strong>,
+      })
+
+* ``FormattedMessage`` render prop is no longer variadic
+
+  * Before::
+
+      <FormattedMessage defaultMessage="a<b>strong</b>">
+        {(...chunks) => <b>{chunks}</b>}
+      </FormattedMessage>
+
+  * After::
+
+      <FormattedMessage defaultMessage="a<b>strong</b>">
+        {chunks => <b>{chunks}</b>}
+      </FormattedMessage>
+
+* ``IntlProvider.getChildContext`` has been removed which was used for testing purposes. Use ``createIntl`` instead to create a standalone ``intl`` object outside of React. See `Testing with React Intl <https://formatjs.io/docs/guides/testing>`_ for more details.
+
 ********************
 For more information
 ********************
 
-* `ADR for react-intl <https://github.com/edx/paragon/blob/master/docs/decisions/0002-react-i18n.rst>`_
+* `ADR for react-intl <https://github.com/openedx/paragon/blob/master/docs/decisions/0002-react-i18n.rst>`_
 
 * `Working i18n notes <https://openedx.atlassian.net/wiki/spaces/LOC/pages/946503833/i18n+for+React>`_
 
-* `studio-frontend i18n guide <https://github.com/edx/studio-frontend/tree/master/src/data/i18n>`_
+* `studio-frontend i18n guide <https://github.com/openedx/studio-frontend/tree/master/src/data/i18n>`_

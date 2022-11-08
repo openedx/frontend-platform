@@ -72,7 +72,30 @@ class AxiosJwtAuthService {
         this.cachedAuthenticatedHttpClient = this.authenticatedHttpClient;
         this.cachedHttpClient = this.httpClient;
         logFrontendAuthError(this.loggingService, `configureCache failed with error: ${e.message}`);
+      }).finally(() => {
+        this.middleware = options.middleware;
+        this.applyMiddleware(options.middleware);
       });
+  }
+
+  /**
+   * Applies middleware to the axios instances in this service.
+   *
+   * @param {Array} middleware Middleware to apply.
+   */
+  applyMiddleware(middleware = []) {
+    const clients = [
+      this.authenticatedHttpClient, this.httpClient,
+      this.cachedAuthenticatedHttpClient, this.cachedHttpClient,
+    ];
+    try {
+      (middleware).forEach((middlewareFn) => {
+        clients.forEach((client) => client && middlewareFn(client));
+      });
+    } catch (error) {
+      logFrontendAuthError(this.loggingService, error);
+      throw error;
+    }
   }
 
   /**
@@ -89,6 +112,7 @@ class AxiosJwtAuthService {
     if (options.useCache) {
       return this.cachedAuthenticatedHttpClient;
     }
+
     return this.authenticatedHttpClient;
   }
 
@@ -104,6 +128,7 @@ class AxiosJwtAuthService {
     if (options.useCache) {
       return this.cachedHttpClient;
     }
+
     return this.httpClient;
   }
 

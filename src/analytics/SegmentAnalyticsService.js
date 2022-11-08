@@ -174,7 +174,7 @@ class SegmentAnalyticsService {
    * @param {*} [traits]
    * @returns {Promise} Promise that will resolve once the document readyState is complete
    */
-  identifyAnonymousUser(traits) {
+  identifyAnonymousUser(traits) { // eslint-disable-line no-unused-vars
     if (!this.segmentInitialized) {
       return Promise.resolve();
     }
@@ -187,7 +187,9 @@ class SegmentAnalyticsService {
         if (global.analytics.user().id()) {
           global.analytics.reset();
         }
-        global.analytics.identify(traits);
+        // We don’t need to call `identify` for anonymous users and can just make the value of
+        // hasIdentifyBeenCalled true. Segment automatically assigns them an anonymousId, so
+        // just calling `page` and `track` works fine without identify.
         this.hasIdentifyBeenCalled = true;
         resolve();
       });
