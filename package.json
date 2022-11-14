@@ -34,7 +34,7 @@
     "@edx/browserslist-config": "1.1.1",
     "@edx/brand": "npm:@edx/brand-openedx@1.1.0",
     "@edx/frontend-build": "12.3.0",
-    "@edx/paragon": "20.18.0",
+    "@edx/paragon": "20.18.1",
     "axios-mock-adapter": "1.21.2",
     "core-js": "3.26.1",
     "enzyme": "3.11.0",
