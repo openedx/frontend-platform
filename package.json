@@ -42,7 +42,6 @@
     "husky": "7.0.4",
     "jsdoc": "3.6.11",
     "nodemon": "2.0.20",
-    "prop-types": "15.8.1",
     "react": "16.14.0",
     "react-dom": "16.14.0",
     "react-redux": "7.2.9",
@@ -58,6 +57,7 @@
     "axios-cache-interceptor": "0.10.7",
     "form-urlencoded": "4.1.4",
     "glob": "7.2.3",
+    "prop-types": "15.8.1",
     "history": "4.10.1",
     "i18n-iso-countries": "4.3.1",
     "jwt-decode": "3.1.2",
@@ -73,7 +73,6 @@
   },
   "peerDependencies": {
     "@edx/paragon": ">= 10.0.0 < 21.0.0",
-    "prop-types": "^15.7.2",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "react-redux": "^7.1.1",
