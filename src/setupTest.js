@@ -10,6 +10,8 @@ Enzyme.configure({ adapter: new Adapter() });
 // These configuration values are usually set in webpack's EnvironmentPlugin however
 // Jest does not use webpack so we need to set these so for testing
 process.env.ACCESS_TOKEN_COOKIE_NAME = 'edx-jwt-cookie-header-payload';
+process.env.ACCOUNT_PROFILE_URL = 'http://localhost:1995';
+process.env.ACCOUNT_SETTINGS_URL = 'http://localhost:1997';
 process.env.BASE_URL = 'localhost:8080';
 process.env.CREDENTIALS_BASE_URL = 'http://localhost:18150';
 process.env.CSRF_TOKEN_API_PATH = '/csrf/api/v1/token';
