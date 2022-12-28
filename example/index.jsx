@@ -1,6 +1,7 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 
+import { Routes } from 'react-router-dom';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {
@@ -19,13 +20,15 @@ import AuthenticatedPage from './AuthenticatedPage';
 subscribe(APP_READY, () => {
   ReactDOM.render(
     <AppProvider>
-      <PageRoute path="/" element={ExamplePage} />
-      <PageRoute
-        exact
-        path="/error_example"
-        element={() => <ErrorPage message="Test error message" />}
-      />
-      <AuthenticatedPageRoute path="/authenticated" element={AuthenticatedPage} />
+      <Routes>
+        <PageRoute path="/" element={<ExamplePage />} />
+        <PageRoute
+          exact
+          path="/error_example"
+          element={<ErrorPage message="Test error message" />}
+        />
+        <AuthenticatedPageRoute path="/authenticated" element={<AuthenticatedPage />} />
+      </Routes>
     </AppProvider>,
     document.getElementById('root'),
   );

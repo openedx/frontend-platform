@@ -72,7 +72,7 @@ export default function AppProvider({ store, children }) {
           value={appContextValue}
         >
           <OptionalReduxProvider store={store}>
-            <Router history={history}>
+            <Router location={history.location} navigator={history}>
               {children}
             </Router>
           </OptionalReduxProvider>
