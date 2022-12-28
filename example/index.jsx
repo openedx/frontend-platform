@@ -19,13 +19,13 @@ import AuthenticatedPage from './AuthenticatedPage';
 subscribe(APP_READY, () => {
   ReactDOM.render(
     <AppProvider>
-      <PageRoute exact path="/" component={ExamplePage} />
+      <PageRoute path="/" element={ExamplePage} />
       <PageRoute
         exact
         path="/error_example"
-        component={() => <ErrorPage message="Test error message" />}
+        element={() => <ErrorPage message="Test error message" />}
       />
-      <AuthenticatedPageRoute exact path="/authenticated" component={AuthenticatedPage} />
+      <AuthenticatedPageRoute path="/authenticated" element={AuthenticatedPage} />
     </AppProvider>,
     document.getElementById('root'),
   );

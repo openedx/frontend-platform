@@ -14,16 +14,16 @@
  * import { AppProvider, ErrorPage, PageRoute } from '@edx/frontend-platform/react';
  * import React from 'react';
  * import ReactDOM from 'react-dom';
- * import { Switch } from 'react-router-dom';
+ * import { Switch, Routes } from 'react-router-dom';
  *
  * subscribe(APP_READY, () => {
  *   ReactDOM.render(
  *     <AppProvider store={configureStore()}>
  *       <Header />
  *       <main>
- *         <Switch>
- *           <PageRoute exact path="/" component={PaymentPage} />
- *         </Switch>
+ *         <Routes>
+ *           <PageRoute path="/" element={PaymentPage} />
+ *         </Routes>
  *       </main>
  *       <Footer />
  *     </AppProvider>,

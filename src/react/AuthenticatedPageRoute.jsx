@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-import { useRouteMatch } from 'react-router-dom';
+import { useMatch } from 'react-router-dom';
 
 import AppContext from './AppContext';
 import PageRoute from './PageRoute';
@@ -26,15 +26,13 @@ import { getLoginRedirectUrl } from '../auth';
 export default function AuthenticatedPageRoute({ redirectUrl, ...props }) {
   const { authenticatedUser } = useContext(AppContext);
 
-  const match = useRouteMatch({
+  const match = useMatch({
     // eslint-disable-next-line react/prop-types
     path: props.path,
     // eslint-disable-next-line react/prop-types
-    exact: props.exact,
+    caseSensitive: props.caseSensitive,
     // eslint-disable-next-line react/prop-types
-    strict: props.strict,
-    // eslint-disable-next-line react/prop-types
-    sensitive: props.sensitive,
+    end: props.end,
   });
 
   if (authenticatedUser === null) {

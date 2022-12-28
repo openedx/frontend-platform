@@ -42,8 +42,8 @@ describe('AuthenticatedPageRoute', () => {
         }}
       >
         <Router history={history}>
-          <Route exact path="/" component={() => <p>Anonymous</p>} />
-          <AuthenticatedPageRoute path="/authenticated" component={() => <p>Authenticated</p>} />
+          <Route path="/" element={() => <p>Anonymous</p>} />
+          <AuthenticatedPageRoute path="/authenticated" element={() => <p>Authenticated</p>} />
         </Router>
       </AppContext.Provider>
     );
@@ -66,8 +66,8 @@ describe('AuthenticatedPageRoute', () => {
         }}
       >
         <Router history={history}>
-          <Route exact path="/" component={() => <p>Anonymous</p>} />
-          <AuthenticatedPageRoute redirectUrl="http://localhost/elsewhere" path="/authenticated" component={() => <p>Authenticated</p>} />
+          <Route path="/" element={() => <p>Anonymous</p>} />
+          <AuthenticatedPageRoute redirectUrl="http://localhost/elsewhere" path="/authenticated" element={() => <p>Authenticated</p>} />
         </Router>
       </AppContext.Provider>
     );
@@ -89,8 +89,8 @@ describe('AuthenticatedPageRoute', () => {
         }}
       >
         <Router history={history}>
-          <Route exact path="/" component={() => <p>Anonymous</p>} />
-          <AuthenticatedPageRoute path="/authenticated" component={() => <p>Authenticated</p>} />
+          <Route path="/" element={() => <p>Anonymous</p>} />
+          <AuthenticatedPageRoute path="/authenticated" element={() => <p>Authenticated</p>} />
         </Router>
       </AppContext.Provider>
     );
@@ -113,8 +113,8 @@ describe('AuthenticatedPageRoute', () => {
         }}
       >
         <Router history={history}>
-          <Route exact path="/" component={() => <p>Anonymous</p>} />
-          <AuthenticatedPageRoute path="/authenticated" component={() => <p>Authenticated</p>} />
+          <Route path="/" element={() => <p>Anonymous</p>} />
+          <AuthenticatedPageRoute path="/authenticated" element={() => <p>Authenticated</p>} />
         </Router>
       </AppContext.Provider>
     );

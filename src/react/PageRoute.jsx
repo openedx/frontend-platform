@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect } from 'react';
-import { Route, useRouteMatch } from 'react-router-dom';
+import { Route, useMatch } from 'react-router-dom';
 import { sendPageEvent } from '../analytics';
 
 /**
@@ -11,11 +11,10 @@ import { sendPageEvent } from '../analytics';
  * @param {Object} props
  */
 export default function PageRoute(props) {
-  const match = useRouteMatch({
+  const match = useMatch({
     path: props.path,
-    exact: props.exact,
-    strict: props.strict,
-    sensitive: props.sensitive,
+    caseSensitive: props.caseSensitive,
+    end: props.end,
   });
 
   useEffect(() => {
