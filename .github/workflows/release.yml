@@ -14,18 +14,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Node.js Env
-        run: echo "NODE_VER=`cat .nvmrc`" >> $GITHUB_ENV
-
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "${{ env.NODE_VER }}"
-
-      # This is a temporary "hack" to unblock CI/releases, as ideally we should avoid needing to pin NPM to a specific minor version. By doing
-      # so, we are basically deferring clean up of peer dependencies to a later time. See https://github.com/npm/cli/issues/4664 for more details.
-      - name: Pin NPM version
-        run: npm install -g npm@8.5.x
+          node-version: 18
 
       - name: Install dependencies
         run: npm ci
