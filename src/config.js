@@ -72,6 +72,7 @@ let config = {
   MFE_CONFIG_API_URL: process.env.MFE_CONFIG_API_URL,
   APP_ID: process.env.APP_ID,
   SUPPORT_URL: process.env.SUPPORT_URL,
+  THEME_OVERRIDE_URL: process.env.THEME_OVERRIDE_URL,
 };
 
 /**
@@ -203,4 +204,5 @@ export function ensureConfig(keys, requester = 'unspecified application code') {
  * @property {string} MFE_CONFIG_API_URL
  * @property {string} APP_ID
  * @property {string} SUPPORT_URL
+ * @property {string} THEME_OVERRIDE_URL
  */
