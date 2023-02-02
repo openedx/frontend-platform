@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Router } from 'react-router-dom';
 
@@ -48,6 +48,7 @@ export default function AppProvider({ store, children }) {
   const [config, setConfig] = useState(getConfig());
   const [authenticatedUser, setAuthenticatedUser] = useState(getAuthenticatedUser());
   const [locale, setLocale] = useState(getLocale());
+  const [themeLoaded, setThemeLoaded] = useState(false);
 
   useAppEvent(AUTHENTICATED_USER_CHANGED, () => {
     setAuthenticatedUser(getAuthenticatedUser());
@@ -61,7 +62,27 @@ export default function AppProvider({ store, children }) {
     setLocale(getLocale());
   });
 
+  useEffect(() => {
+    if (config.THEME_OVERRIDE_URL) {
+      const themeLink = document.createElement('link');
+      themeLink.href = config.THEME_OVERRIDE_URL;
+      themeLink.rel = 'stylesheet';
+      themeLink.type = 'text/css';
+      themeLink.onload = () => setThemeLoaded(true);
+      themeLink.onerror = () => setThemeLoaded(true);
+
+      document.head.appendChild(themeLink);
+
+      return () => document.head.removeChild(themeLink);
+    }
+    setThemeLoaded(true);
+  }, [config.THEME_OVERRIDE_URL]);
+
   const appContextValue = useMemo(() => ({ authenticatedUser, config, locale }), [authenticatedUser, config, locale]);
+
+  if (!themeLoaded) {
+    return null;
+  }
 
   return (
     <IntlProvider locale={locale} messages={getMessages()}>
@@ -81,8 +102,7 @@ export default function AppProvider({ store, children }) {
 }
 
 AppProvider.propTypes = {
-  // eslint-disable-next-line react/forbid-prop-types
-  store: PropTypes.object,
+  store: PropTypes.shape({}),
   children: PropTypes.node.isRequired,
 };
 
