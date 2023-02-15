@@ -184,6 +184,12 @@ export const useAppTheme = ({
     }
 
     // the core theme and light theme variant is still loading, do nothing.
+    const hasDefaultThemeConfig = (coreThemeUrl && themeVariantUrls[APP_THEME_LIGHT]);
+    if (!hasDefaultThemeConfig) {
+      // no theme URLs to load, set loading to false.
+      dispatch(appThemeActions.setAppThemeLoaded(true));
+    }
+
     const isDefaultThemeLoaded = (isCoreThemeLoaded && isLightVariantLoaded);
     if (!isDefaultThemeLoaded) {
       return;
@@ -196,6 +202,7 @@ export const useAppTheme = ({
     isCoreThemeLoaded,
     isLightVariantLoaded,
     themeVariantUrls,
+    coreThemeUrl,
   ]);
 
   return [appThemeState, dispatch];
