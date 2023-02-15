@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Router } from 'react-router-dom';
 
@@ -6,7 +6,14 @@ import OptionalReduxProvider from './OptionalReduxProvider';
 
 import ErrorBoundary from './ErrorBoundary';
 import AppContext from './AppContext';
-import { useAppEvent } from './hooks';
+import {
+  useAppEvent,
+  useAppTheme,
+} from './hooks';
+import {
+  APP_THEME_CORE,
+  APP_THEME_LIGHT,
+} from './constants';
 import { getAuthenticatedUser, AUTHENTICATED_USER_CHANGED } from '../auth';
 import { getConfig } from '../config';
 import { CONFIG_CHANGED } from '../constants';
@@ -48,7 +55,6 @@ export default function AppProvider({ store, children }) {
   const [config, setConfig] = useState(getConfig());
   const [authenticatedUser, setAuthenticatedUser] = useState(getAuthenticatedUser());
   const [locale, setLocale] = useState(getLocale());
-  const [themeLoaded, setThemeLoaded] = useState(false);
 
   useAppEvent(AUTHENTICATED_USER_CHANGED, () => {
     setAuthenticatedUser(getAuthenticatedUser());
@@ -62,25 +68,26 @@ export default function AppProvider({ store, children }) {
     setLocale(getLocale());
   });
 
-  useEffect(() => {
-    if (config.THEME_OVERRIDE_URL) {
-      const themeLink = document.createElement('link');
-      themeLink.href = config.THEME_OVERRIDE_URL;
-      themeLink.rel = 'stylesheet';
-      themeLink.type = 'text/css';
-      themeLink.onload = () => setThemeLoaded(true);
-      themeLink.onerror = () => setThemeLoaded(true);
+  const [appThemeState, appThemeDispatch] = useAppTheme({
+    themeUrls: {
+      [APP_THEME_CORE]: config.APP_THEME_CORE_URL,
+      variants: {
+        [APP_THEME_LIGHT]: config.APP_THEME_LIGHT_URL,
+      },
+    },
+  });
 
-      document.head.appendChild(themeLink);
+  const appContextValue = useMemo(() => ({
+    authenticatedUser,
+    config,
+    locale,
+    appTheme: {
+      state: appThemeState,
+      dispatch: appThemeDispatch,
+    },
+  }), [authenticatedUser, config, locale, appThemeState, appThemeDispatch]);
 
-      return () => document.head.removeChild(themeLink);
-    }
-    setThemeLoaded(true);
-  }, [config.THEME_OVERRIDE_URL]);
-
-  const appContextValue = useMemo(() => ({ authenticatedUser, config, locale }), [authenticatedUser, config, locale]);
-
-  if (!themeLoaded) {
+  if (!appThemeState?.isThemeLoaded) {
     return null;
   }
 

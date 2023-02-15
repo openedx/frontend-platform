@@ -72,7 +72,9 @@ let config = {
   MFE_CONFIG_API_URL: process.env.MFE_CONFIG_API_URL,
   APP_ID: process.env.APP_ID,
   SUPPORT_URL: process.env.SUPPORT_URL,
-  THEME_OVERRIDE_URL: process.env.THEME_OVERRIDE_URL,
+  APP_THEME_CORE_URL: process.env.APP_THEME_CORE_URL,
+  APP_THEME_LIGHT_URL: process.env.APP_THEME_LIGHT_URL,
+  APP_THEME_DARK_URL: process.env.APP_THEME_DARK_URL,
 };
 
 /**

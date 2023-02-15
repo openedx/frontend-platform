@@ -130,12 +130,12 @@ export async function auth(requireUser, hydrateUser) {
     hydrateAuthenticatedUser();
   }
 }
+
 /*
  * Set or overrides configuration through an API.
  * This method allows runtime configuration.
  * Set a basic configuration when an error happen and allow initError and display the ErrorPage.
  */
-
 export async function runtimeConfig() {
   try {
     const { MFE_CONFIG_API_URL, APP_ID } = getConfig();
@@ -183,6 +183,7 @@ function applyOverrideHandlers(overrides) {
     auth,
     analytics,
     i18n: noOp,
+    theme: noOp, // TODO: implement this
     ready: noOp,
     initError,
     ...overrides, // This will override any same-keyed handlers from above.
