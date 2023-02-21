@@ -1,7 +1,8 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Router } from 'react-router-dom';
 
+import { sendTrackEvent } from '@edx/frontend-platform/analytics';
 import OptionalReduxProvider from './OptionalReduxProvider';
 
 import ErrorBoundary from './ErrorBoundary';
@@ -48,6 +49,18 @@ export default function AppProvider({ store, children }) {
   const [config, setConfig] = useState(getConfig());
   const [authenticatedUser, setAuthenticatedUser] = useState(getAuthenticatedUser());
   const [locale, setLocale] = useState(getLocale());
+  const colorThemeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+  const [isDarkTheme, setIsDarkTheme] = useState(colorThemeMediaQuery.matches);
+  const mediaQueryListener = (e) => setIsDarkTheme(e.matches);
+
+  useEffect(() => {
+    colorThemeMediaQuery.addEventListener('change', mediaQueryListener);
+    return () => colorThemeMediaQuery.removeEventListener('change', mediaQueryListener);
+  }, [colorThemeMediaQuery]);
+
+  sendTrackEvent('openedx.ui.frontend-platform.prefers-color-scheme.selected', {
+    preferredColorScheme: isDarkTheme ? 'dark' : 'light',
+  });
 
   useAppEvent(AUTHENTICATED_USER_CHANGED, () => {
     setAuthenticatedUser(getAuthenticatedUser());
