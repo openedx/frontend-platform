@@ -3,6 +3,22 @@ import { createStore } from 'redux';
 import { mount } from 'enzyme';
 import AppProvider from './AppProvider';
 import { initialize } from '../initialize';
+import { configure, sendTrackEvent, SegmentAnalyticsService } from '../analytics/index';
+
+const mockLoggingService = {
+  logError: jest.fn(),
+  logInfo: jest.fn(),
+};
+
+Object.defineProperty(window, 'matchMedia', {
+  value: jest.fn().mockImplementation(() => ({ addEventListener: jest.fn() })),
+});
+
+const mockAuthApiClient = () => {};
+mockAuthApiClient.post = jest.fn().mockResolvedValue(undefined);
+
+// SegmentAnalyticsService inserts a script before the first script element in the document.
+document.body.innerHTML = '<script id="stub" />';
 
 jest.mock('../auth', () => ({
   configure: () => {},
@@ -10,12 +26,6 @@ jest.mock('../auth', () => ({
   fetchAuthenticatedUser: () => null,
   getAuthenticatedHttpClient: () => ({}),
   AUTHENTICATED_USER_CHANGED: 'user_changed',
-}));
-
-jest.mock('../analytics', () => ({
-  configure: () => {},
-  identifyAnonymousUser: jest.fn(),
-  identifyAuthenticatedUser: jest.fn(),
 }));
 
 describe('AppProvider', () => {
@@ -40,6 +50,34 @@ describe('AppProvider', () => {
         th: {},
         uk: {},
       },
+    });
+  });
+
+  describe('creating mock analytics and sending a color scheme', () => {
+    beforeEach(() => {
+      const service = configure(SegmentAnalyticsService, {
+        loggingService: mockLoggingService,
+        httpClient: mockAuthApiClient,
+        config: { LMS_BASE_URL: 'https://example.com', SEGMENT_KEY: 'test-key' },
+      });
+
+      window.analytics.track = jest.fn();
+
+      expect(service.segmentInitialized).toBe(true);
+    });
+
+    function testSendTrackEvent() {
+      const testName = 'prefers-color-scheme';
+      const testProperties = { preferredColorScheme: 'light' };
+
+      sendTrackEvent(testName, testProperties);
+
+      expect(window.analytics.track.mock.calls.length).toBe(1);
+      expect(window.analytics.track).toBeCalledWith(testName, testProperties);
+    }
+
+    it('sending a user device color scheme', () => {
+      testSendTrackEvent();
     });
   });
 

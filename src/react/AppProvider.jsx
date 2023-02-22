@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Router } from 'react-router-dom';
 
-import { sendTrackEvent } from '@edx/frontend-platform/analytics';
+import { sendTrackEvent } from '../analytics/index';
 import OptionalReduxProvider from './OptionalReduxProvider';
 
 import ErrorBoundary from './ErrorBoundary';
