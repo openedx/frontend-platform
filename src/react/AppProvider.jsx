@@ -49,18 +49,28 @@ export default function AppProvider({ store, children }) {
   const [config, setConfig] = useState(getConfig());
   const [authenticatedUser, setAuthenticatedUser] = useState(getAuthenticatedUser());
   const [locale, setLocale] = useState(getLocale());
-  const colorThemeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-  const [isDarkTheme, setIsDarkTheme] = useState(colorThemeMediaQuery.matches);
-  const mediaQueryListener = (e) => setIsDarkTheme(e.matches);
 
   useEffect(() => {
-    colorThemeMediaQuery.addEventListener('change', mediaQueryListener);
-    return () => colorThemeMediaQuery.removeEventListener('change', mediaQueryListener);
-  }, [colorThemeMediaQuery]);
+    const trackColorSchemeChoice = ((query) => {
+      let preferredColorScheme = 'light';
 
-  sendTrackEvent('openedx.ui.frontend-platform.prefers-color-scheme.selected', {
-    preferredColorScheme: isDarkTheme ? 'dark' : 'light',
-  });
+      if (query.matches) {
+        preferredColorScheme = 'dark';
+      }
+
+      sendTrackEvent('openedx.ui.frontend-platform.prefers-color-scheme.selected', {
+        preferredColorScheme,
+      });
+    });
+
+    const colorSchemeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+    // send user's initial choice
+    trackColorSchemeChoice(colorSchemeQuery);
+
+    colorSchemeQuery.addEventListener('change', trackColorSchemeChoice);
+    return () => colorSchemeQuery.removeEventListener('change', trackColorSchemeChoice);
+  }, []);
 
   useAppEvent(AUTHENTICATED_USER_CHANGED, () => {
     setAuthenticatedUser(getAuthenticatedUser());

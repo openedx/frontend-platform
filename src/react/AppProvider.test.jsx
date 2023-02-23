@@ -11,7 +11,7 @@ const mockLoggingService = {
 };
 
 Object.defineProperty(window, 'matchMedia', {
-  value: jest.fn().mockImplementation(() => ({ addEventListener: jest.fn() })),
+  value: jest.fn().mockImplementation(() => ({ addEventListener: jest.fn(), matches: true })),
 });
 
 const mockAuthApiClient = () => {};
@@ -66,9 +66,8 @@ describe('AppProvider', () => {
       expect(service.segmentInitialized).toBe(true);
     });
 
-    function testSendTrackEvent() {
+    function testSendTrackEvent(testProperties) {
       const testName = 'prefers-color-scheme';
-      const testProperties = { preferredColorScheme: 'light' };
 
       sendTrackEvent(testName, testProperties);
 
@@ -76,8 +75,13 @@ describe('AppProvider', () => {
       expect(window.analytics.track).toBeCalledWith(testName, testProperties);
     }
 
-    it('sending a user device color scheme', () => {
-      testSendTrackEvent();
+    it('sending a user device color scheme light', () => {
+      const testProperties = 'light';
+      testSendTrackEvent(testProperties);
+    });
+    it('sending a user device color scheme dark', () => {
+      const testProperties = 'dark';
+      testSendTrackEvent(testProperties);
     });
   });
 
