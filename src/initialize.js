@@ -175,7 +175,7 @@ export async function analytics() {
 }
 
 function applyOverrideHandlers(overrides) {
-  const noOp = async () => { };
+  const noOp = async () => {};
   return {
     pubSub: noOp,
     config: noOp,
@@ -211,6 +211,7 @@ function applyOverrideHandlers(overrides) {
  * - logging: A no-op by default.
  * - auth: Uses the 'auth' handler defined above.
  * - analytics: Uses the 'analytics' handler defined above.
+ * - theme: Uses the 'theme' handler defined above.
  * - i18n: A no-op by default.
  * - ready: A no-op by default.
  * - initError: Uses the 'initError' handler defined above.
@@ -269,7 +270,6 @@ export async function initialize({
       config: getConfig(),
       middleware: authMiddleware,
     });
-
     await handlers.auth(requireUser, hydrateUser);
     publish(APP_AUTH_INITIALIZED);
 
