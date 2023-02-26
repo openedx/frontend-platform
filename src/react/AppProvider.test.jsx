@@ -3,15 +3,9 @@ import { createStore } from 'redux';
 import { mount } from 'enzyme';
 import AppProvider from './AppProvider';
 import { initialize } from '../initialize';
-import { configure, sendTrackEvent, SegmentAnalyticsService } from '../analytics/index';
-
-const mockLoggingService = {
-  logError: jest.fn(),
-  logInfo: jest.fn(),
-};
 
 Object.defineProperty(window, 'matchMedia', {
-  value: jest.fn().mockImplementation(() => ({ addEventListener: jest.fn(), matches: true })),
+  value: jest.fn().mockImplementation(() => ({ addEventListener: jest.fn() })),
 });
 
 const mockAuthApiClient = () => {};
@@ -50,38 +44,6 @@ describe('AppProvider', () => {
         th: {},
         uk: {},
       },
-    });
-  });
-
-  describe('creating mock analytics and sending a color scheme', () => {
-    beforeEach(() => {
-      const service = configure(SegmentAnalyticsService, {
-        loggingService: mockLoggingService,
-        httpClient: mockAuthApiClient,
-        config: { LMS_BASE_URL: 'https://example.com', SEGMENT_KEY: 'test-key' },
-      });
-
-      window.analytics.track = jest.fn();
-
-      expect(service.segmentInitialized).toBe(true);
-    });
-
-    function testSendTrackEvent(testProperties) {
-      const testName = 'prefers-color-scheme';
-
-      sendTrackEvent(testName, testProperties);
-
-      expect(window.analytics.track.mock.calls.length).toBe(1);
-      expect(window.analytics.track).toBeCalledWith(testName, testProperties);
-    }
-
-    it('sending a user device color scheme light', () => {
-      const testProperties = 'light';
-      testSendTrackEvent(testProperties);
-    });
-    it('sending a user device color scheme dark', () => {
-      const testProperties = 'dark';
-      testSendTrackEvent(testProperties);
     });
   });
 

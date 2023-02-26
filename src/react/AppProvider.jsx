@@ -1,13 +1,12 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Router } from 'react-router-dom';
 
-import { sendTrackEvent } from '../analytics/index';
 import OptionalReduxProvider from './OptionalReduxProvider';
 
 import ErrorBoundary from './ErrorBoundary';
 import AppContext from './AppContext';
-import { useAppEvent } from './hooks';
+import { useAppEvent, useTrackColorSchemeChoice } from './hooks';
 import { getAuthenticatedUser, AUTHENTICATED_USER_CHANGED } from '../auth';
 import { getConfig } from '../config';
 import { CONFIG_CHANGED } from '../constants';
@@ -50,27 +49,7 @@ export default function AppProvider({ store, children }) {
   const [authenticatedUser, setAuthenticatedUser] = useState(getAuthenticatedUser());
   const [locale, setLocale] = useState(getLocale());
 
-  useEffect(() => {
-    const trackColorSchemeChoice = ((query) => {
-      let preferredColorScheme = 'light';
-
-      if (query.matches) {
-        preferredColorScheme = 'dark';
-      }
-
-      sendTrackEvent('openedx.ui.frontend-platform.prefers-color-scheme.selected', {
-        preferredColorScheme,
-      });
-    });
-
-    const colorSchemeQuery = window.matchMedia('(prefers-color-scheme: dark)');
-
-    // send user's initial choice
-    trackColorSchemeChoice(colorSchemeQuery);
-
-    colorSchemeQuery.addEventListener('change', trackColorSchemeChoice);
-    return () => colorSchemeQuery.removeEventListener('change', trackColorSchemeChoice);
-  }, []);
+  useTrackColorSchemeChoice('frontend-platform');
 
   useAppEvent(AUTHENTICATED_USER_CHANGED, () => {
     setAuthenticatedUser(getAuthenticatedUser());
