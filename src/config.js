@@ -72,8 +72,8 @@ let config = {
   MFE_CONFIG_API_URL: process.env.MFE_CONFIG_API_URL,
   APP_ID: process.env.APP_ID,
   SUPPORT_URL: process.env.SUPPORT_URL,
-  APP_THEME_CORE_URL: process.env.APP_THEME_CORE_URL,
-  APP_THEME_LIGHT_URL: process.env.APP_THEME_LIGHT_URL,
+  PARAGON_THEME_CORE_URL: process.env.PARAGON_THEME_CORE_URL,
+  PARAGON_THEME_VARIANTS_LIGHT_URL: process.env.PARAGON_THEME_VARIANTS_LIGHT_URL,
 };
 
 /**
@@ -205,6 +205,6 @@ export function ensureConfig(keys, requester = 'unspecified application code') {
  * @property {string} MFE_CONFIG_API_URL
  * @property {string} APP_ID
  * @property {string} SUPPORT_URL
- * @property {string} APP_THEME_CORE_URL
- * @property {string} APP_THEME_LIGHT_URL
+ * @property {string} PARAGON_THEME_CORE_URL
+ * @property {string} PARAGON_THEME_VARIANTS_LIGHT_URL
  */

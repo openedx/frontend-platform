@@ -2,8 +2,11 @@ import {
   useCallback, useEffect, useState, useReducer,
 } from 'react';
 import { subscribe, unsubscribe } from '../pubSub';
-import { APP_THEME_CORE, APP_THEME_LIGHT } from './constants';
-import { appThemeReducer, appThemeActions } from './reducers';
+import {
+  PARAGON_THEME_CORE,
+  PARAGON_THEME_VARIANT_LIGHT,
+} from './constants';
+import { paragonThemeReducer, paragonThemeActions } from './reducers';
 
 /**
  * A React hook that allows functional components to subscribe to application events.  This should
@@ -25,9 +28,9 @@ export const useAppEvent = (type, callback) => {
   }, [callback, type]);
 };
 
-const initialAppThemeState = {
+const initialParagonThemeState = {
   isThemeLoaded: false,
-  themeVariant: APP_THEME_LIGHT,
+  themeVariant: PARAGON_THEME_VARIANT_LIGHT,
 };
 
 /**
@@ -38,12 +41,12 @@ const initialAppThemeState = {
  * @param {string} args.coreThemeUrl The url of the core theme CSS.
  * @param {string} args.onLoad A callback function called when the core theme CSS is loaded.
  */
-export const useAppThemeCore = ({
+export const useParagonThemeCore = ({
   coreThemeUrl,
   onLoad,
 }) => {
   useEffect(() => {
-    // If the config for the core theme url, do nothing.
+    // If there is no config for the core theme url, do nothing.
     if (!coreThemeUrl) {
       return;
     }
@@ -77,10 +80,10 @@ export const useAppThemeCore = ({
  * @param {object} args.themeVariantUrls An object representing the URLs for each supported theme variant, e.g.: `{ light: 'https://path/to/light.css' }`.
  * @param {string} args.onLoad A callback function called when the core theme CSS is loaded.
  */
-const useAppThemeVariants = ({
+const useParagonThemeVariants = ({
   themeVariantUrls,
   currentThemeVariant,
-  onLoadVariantLight,
+  onLoadThemeVariantLight,
 }) => {
   useEffect(() => {
     /**
@@ -94,8 +97,8 @@ const useAppThemeVariants = ({
      * based on the current theme variant.
      */
     const setThemeVariantLoaded = (themeVariant) => {
-      if (themeVariant === APP_THEME_LIGHT) {
-        onLoadVariantLight();
+      if (themeVariant === PARAGON_THEME_VARIANT_LIGHT) {
+        onLoadThemeVariantLight();
       }
     };
 
@@ -103,6 +106,7 @@ const useAppThemeVariants = ({
      * Iterate over each theme variant URL and inject it into the HTML document if it doesn't already exist.
      */
     Object.entries(themeVariantUrls).forEach(([themeVariant, themeVariantUrl]) => {
+      // If there is no config for the theme variant URL, set the theme variant to loaded and continue.
       if (!themeVariantUrl) {
         setThemeVariantLoaded(themeVariant);
         return;
@@ -124,7 +128,26 @@ const useAppThemeVariants = ({
         themeVariantLink.rel = stylesheetRelForVariant;
       }
     });
-  }, [themeVariantUrls, currentThemeVariant, onLoadVariantLight]);
+  }, [themeVariantUrls, currentThemeVariant, onLoadThemeVariantLight]);
+};
+
+/**
+ * TODO
+ * @param {*} config
+ * @returns
+ */
+const getParagonThemeUrls = (config) => {
+  if (config.PARAGON_THEME_URLS) {
+    return config.PARAGON_THEME_URLS;
+  }
+  return {
+    [PARAGON_THEME_CORE]: config.PARAGON_THEME_CORE_URL,
+    // [PARAGON_THEME_CORE]: undefined,
+    variants: {
+      [PARAGON_THEME_VARIANT_LIGHT]: config.PARAGON_THEME_VARIANTS_LIGHT_URL,
+      // [PARAGON_THEME_VARIANT_LIGHT]: undefined,
+    },
+  };
 };
 
 /**
@@ -146,65 +169,66 @@ const useAppThemeVariants = ({
  * @returns An array containing 2 elements: 1) an object containing the app
  *  theme state, and 2) a dispatch function to mutate the app theme state.
  */
-export const useAppTheme = ({
-  themeUrls: {
-    [APP_THEME_CORE]: coreThemeUrl,
+export const useParagonTheme = (config) => {
+  const paragonThemeUrls = getParagonThemeUrls(config);
+  const {
+    core: coreThemeUrl,
     variants: themeVariantUrls,
-  },
-}) => {
-  const [appThemeState, dispatch] = useReducer(appThemeReducer, initialAppThemeState);
+  } = paragonThemeUrls;
+
+  const [themeState, dispatch] = useReducer(paragonThemeReducer, initialParagonThemeState);
 
   const [isCoreThemeLoaded, setIsCoreThemeLoaded] = useState(false);
-  const [isLightVariantLoaded, setIsLightVariantLoaded] = useState(false);
+  const [isLightThemeVariantLoaded, setIsLightThemeVariantLoaded] = useState(false);
 
-  const onThemeCoreLoad = useCallback(() => {
+  const onLoadThemeCore = useCallback(() => {
     setIsCoreThemeLoaded(true);
   }, []);
 
   const onLoadThemeVariantLight = useCallback(() => {
-    setIsLightVariantLoaded(true);
+    setIsLightThemeVariantLoaded(true);
   }, []);
 
   // load the core theme CSS
-  useAppThemeCore({
+  useParagonThemeCore({
     coreThemeUrl,
-    onLoad: onThemeCoreLoad,
+    onLoad: onLoadThemeCore,
   });
 
   // load the theme variant(s) CSS
-  useAppThemeVariants({
+  useParagonThemeVariants({
     themeVariantUrls,
-    onLoadVariantLight: onLoadThemeVariantLight,
-    currentThemeVariant: appThemeState.themeVariant,
+    onLoadThemeVariantLight,
+    currentThemeVariant: themeState.themeVariant,
   });
 
   useEffect(() => {
     // theme is already loaded, do nothing
-    if (appThemeState.isThemeLoaded) {
+    if (themeState.isThemeLoaded) {
       return;
     }
 
     // the core theme and light theme variant is still loading, do nothing.
-    const hasDefaultThemeConfig = (coreThemeUrl && themeVariantUrls[APP_THEME_LIGHT]);
+    const hasDefaultThemeConfig = (coreThemeUrl && themeVariantUrls[PARAGON_THEME_VARIANT_LIGHT]);
     if (!hasDefaultThemeConfig) {
       // no theme URLs to load, set loading to false.
-      dispatch(appThemeActions.setAppThemeLoaded(true));
+      dispatch(paragonThemeActions.setParagonThemeLoaded(true));
     }
 
-    const isDefaultThemeLoaded = (isCoreThemeLoaded && isLightVariantLoaded);
+    const isDefaultThemeLoaded = (isCoreThemeLoaded && isLightThemeVariantLoaded);
     if (!isDefaultThemeLoaded) {
       return;
     }
 
     // All application theme URLs are loaded
-    dispatch(appThemeActions.setAppThemeLoaded(true));
+    dispatch(paragonThemeActions.setParagonThemeLoaded(true));
   }, [
-    appThemeState.isThemeLoaded,
+    themeState.isThemeLoaded,
     isCoreThemeLoaded,
-    isLightVariantLoaded,
+    isLightThemeVariantLoaded,
     themeVariantUrls,
     coreThemeUrl,
   ]);
 
-  return [appThemeState, dispatch];
+  return [themeState, dispatch];
 };
