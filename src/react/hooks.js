@@ -24,25 +24,18 @@ export const useAppEvent = (type, callback) => {
 };
 
 /**
- * A React hook that allows components to receive data about the current color scheme
- * of the user's device (light, dark) and update if it has changed.
+ * A React hook that tracks user's preferred color scheme (light or dark) and sends respective
+ * event to the tracking service.
  *
  * @memberof module:React
- * @param {string} eventName
  */
-export const useTrackColorSchemeChoice = (eventName) => {
+export const useTrackColorSchemeChoice = () => {
   useEffect(() => {
-    const trackColorSchemeChoice = (({ matches }) => {
-      let preferredColorScheme = 'dark';
+    const trackColorSchemeChoice = ({ matches }) => {
+      const preferredColorScheme = matches ? 'dark' : 'light';
 
-      if (matches) {
-        preferredColorScheme = 'light';
-      }
-
-      sendTrackEvent(`openedx.ui.${eventName}.prefers-color-scheme.selected`, {
-        preferredColorScheme,
-      });
-    });
+      sendTrackEvent('openedx.ui.frontend-platform.prefers-color-scheme.selected', { preferredColorScheme });
+    };
 
     const colorSchemeQuery = window.matchMedia('(prefers-color-scheme: dark)');
 
@@ -51,5 +44,5 @@ export const useTrackColorSchemeChoice = (eventName) => {
 
     colorSchemeQuery.addEventListener('change', trackColorSchemeChoice);
     return () => colorSchemeQuery.removeEventListener('change', trackColorSchemeChoice);
-  }, [eventName]);
+  }, []);
 };

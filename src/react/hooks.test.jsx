@@ -1,59 +1,51 @@
-import React from 'react';
-import { mount } from 'enzyme';
-import { configure, SegmentAnalyticsService } from '../analytics';
+import { renderHook } from '@testing-library/react-hooks';
 import { useTrackColorSchemeChoice } from './hooks';
+import { sendTrackEvent } from '../analytics';
 
-const mockLoggingService = {
-  logError: jest.fn(),
-  logInfo: jest.fn(),
-};
+jest.mock('../analytics');
 
-let matchesValue;
+const mockAddEventListener = jest.fn();
+let matchesMock;
 
 Object.defineProperty(window, 'matchMedia', {
-  value: jest.fn().mockImplementation(() => ({ addEventListener: jest.fn(), matches: matchesValue })),
+  value: jest.fn(() => ({
+    addEventListener: mockAddEventListener,
+    matches: matchesMock,
+  })),
 });
 
-const mockAuthApiClient = () => {};
-mockAuthApiClient.post = jest.fn().mockResolvedValue(undefined);
-
-// SegmentAnalyticsService inserts a script before the first script element in the document.
-document.body.innerHTML = '<script id="stub" />';
-
-function FakeComponent() {
-  useTrackColorSchemeChoice('frontend-platform');
-
-  return null;
-}
-
-describe('creating mock analytics and sending a color scheme', () => {
-  const nameEvent = 'openedx.ui.frontend-platform.prefers-color-scheme.selected';
-
-  beforeEach(() => {
-    const service = configure(SegmentAnalyticsService, {
-      loggingService: mockLoggingService,
-      httpClient: mockAuthApiClient,
-      config: { LMS_BASE_URL: 'https://example.com', SEGMENT_KEY: 'test-key' },
-    });
-
-    window.analytics.track = jest.fn();
-
-    expect(service.segmentInitialized).toBe(true);
+describe('useTrackColorSchemeChoice hook', () => {
+  afterEach(() => {
+    mockAddEventListener.mockClear();
+    sendTrackEvent.mockClear();
   });
 
-  it('sending a user device color scheme dark', () => {
-    mount(<FakeComponent />);
-    matchesValue = true;
+  it('sends dark preferred color schema event if query matches', async () => {
+    matchesMock = true;
+    renderHook(() => useTrackColorSchemeChoice());
 
-    expect(window.analytics.track.mock.calls.length).toBe(1);
-    expect(window.analytics.track).toBeCalledWith(nameEvent, { preferredColorScheme: 'dark' });
+    expect(sendTrackEvent).toHaveBeenCalledTimes(1);
+    expect(sendTrackEvent).toHaveBeenCalledWith(
+      'openedx.ui.frontend-platform.prefers-color-scheme.selected',
+      { preferredColorScheme: 'dark' },
+    );
   });
 
-  it('sending a user device color scheme light', () => {
-    mount(<FakeComponent />);
-    matchesValue = false;
+  it('sends light preferred color schema event if query does not match', async () => {
+    matchesMock = false;
+    renderHook(() => useTrackColorSchemeChoice());
 
-    expect(window.analytics.track.mock.calls.length).toBe(1);
-    expect(window.analytics.track).toBeCalledWith(nameEvent, { preferredColorScheme: 'light' });
+    expect(sendTrackEvent).toHaveBeenCalledTimes(1);
+    expect(sendTrackEvent).toHaveBeenCalledWith(
+      'openedx.ui.frontend-platform.prefers-color-scheme.selected',
+      { preferredColorScheme: 'light' },
+    );
+  });
+
+  it('adds change event listener to matchMedia query', async () => {
+    renderHook(() => useTrackColorSchemeChoice());
+
+    expect(mockAddEventListener).toHaveBeenCalledTimes(1);
+    expect(mockAddEventListener).toHaveBeenCalledWith('change', expect.any(Function));
   });
 });

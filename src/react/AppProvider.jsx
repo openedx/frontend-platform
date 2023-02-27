@@ -49,7 +49,7 @@ export default function AppProvider({ store, children }) {
   const [authenticatedUser, setAuthenticatedUser] = useState(getAuthenticatedUser());
   const [locale, setLocale] = useState(getLocale());
 
-  useTrackColorSchemeChoice('frontend-platform');
+  useTrackColorSchemeChoice();
 
   useAppEvent(AUTHENTICATED_USER_CHANGED, () => {
     setAuthenticatedUser(getAuthenticatedUser());

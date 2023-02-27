@@ -4,22 +4,23 @@ import { mount } from 'enzyme';
 import AppProvider from './AppProvider';
 import { initialize } from '../initialize';
 
-Object.defineProperty(window, 'matchMedia', {
-  value: jest.fn().mockImplementation(() => ({ addEventListener: jest.fn() })),
-});
-
-const mockAuthApiClient = () => {};
-mockAuthApiClient.post = jest.fn().mockResolvedValue(undefined);
-
-// SegmentAnalyticsService inserts a script before the first script element in the document.
-document.body.innerHTML = '<script id="stub" />';
-
 jest.mock('../auth', () => ({
   configure: () => {},
   getAuthenticatedUser: () => null,
   fetchAuthenticatedUser: () => null,
   getAuthenticatedHttpClient: () => ({}),
   AUTHENTICATED_USER_CHANGED: 'user_changed',
+}));
+
+jest.mock('../analytics', () => ({
+  configure: () => {},
+  identifyAnonymousUser: jest.fn(),
+  identifyAuthenticatedUser: jest.fn(),
+}));
+
+jest.mock('./hooks', () => ({
+  ...jest.requireActual('./hooks'),
+  useTrackColorSchemeChoice: jest.fn(),
 }));
 
 describe('AppProvider', () => {
