@@ -1,6 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 import { useEffect } from 'react';
 import { subscribe, unsubscribe } from '../pubSub';
+import { sendTrackEvent } from '../analytics';
 
 /**
  * A React hook that allows functional components to subscribe to application events.  This should
@@ -20,4 +21,28 @@ export const useAppEvent = (type, callback) => {
       unsubscribe(subscriptionToken);
     };
   }, [callback, type]);
+};
+
+/**
+ * A React hook that tracks user's preferred color scheme (light or dark) and sends respective
+ * event to the tracking service.
+ *
+ * @memberof module:React
+ */
+export const useTrackColorSchemeChoice = () => {
+  useEffect(() => {
+    const trackColorSchemeChoice = ({ matches }) => {
+      const preferredColorScheme = matches ? 'dark' : 'light';
+
+      sendTrackEvent('openedx.ui.frontend-platform.prefers-color-scheme.selected', { preferredColorScheme });
+    };
+
+    const colorSchemeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+    // send user's initial choice
+    trackColorSchemeChoice(colorSchemeQuery);
+
+    colorSchemeQuery.addEventListener('change', trackColorSchemeChoice);
+    return () => colorSchemeQuery.removeEventListener('change', trackColorSchemeChoice);
+  }, []);
 };

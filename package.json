@@ -31,10 +31,11 @@
   },
   "homepage": "https://github.com/openedx/frontend-platform#readme",
   "devDependencies": {
-    "@edx/browserslist-config": "1.1.1",
     "@edx/brand": "npm:@edx/brand-openedx@1.2.0",
+    "@edx/browserslist-config": "1.1.1",
     "@edx/frontend-build": "12.4.16",
     "@edx/paragon": "20.28.4",
+    "@testing-library/react-hooks": "^8.0.1",
     "axios-mock-adapter": "1.21.2",
     "core-js": "3.29.0",
     "enzyme": "3.11.0",
