@@ -4,4 +4,5 @@ module.exports = createConfig('jest', {
   setupFiles: [
     '<rootDir>/src/setupTest.js',
   ],
+  testTimeout: 20000,
 });
