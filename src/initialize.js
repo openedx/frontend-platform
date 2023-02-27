@@ -211,7 +211,6 @@ function applyOverrideHandlers(overrides) {
  * - logging: A no-op by default.
  * - auth: Uses the 'auth' handler defined above.
  * - analytics: Uses the 'analytics' handler defined above.
- * - theme: Uses the 'theme' handler defined above.
  * - i18n: A no-op by default.
  * - ready: A no-op by default.
  * - initError: Uses the 'initError' handler defined above.
