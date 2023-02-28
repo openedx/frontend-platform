@@ -5,11 +5,13 @@ import { sendTrackEvent } from '../analytics';
 jest.mock('../analytics');
 
 const mockAddEventListener = jest.fn();
+const mockRemoveEventListener = jest.fn();
 let matchesMock;
 
 Object.defineProperty(window, 'matchMedia', {
   value: jest.fn(() => ({
     addEventListener: mockAddEventListener,
+    removeEventListener: mockRemoveEventListener,
     matches: matchesMock,
   })),
 });
@@ -17,6 +19,7 @@ Object.defineProperty(window, 'matchMedia', {
 describe('useTrackColorSchemeChoice hook', () => {
   afterEach(() => {
     mockAddEventListener.mockClear();
+    mockRemoveEventListener.mockClear();
     sendTrackEvent.mockClear();
   });
 
