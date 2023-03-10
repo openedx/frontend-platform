@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { Router } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 
 import OptionalReduxProvider from './OptionalReduxProvider';
 
@@ -10,7 +10,6 @@ import { useAppEvent, useTrackColorSchemeChoice } from './hooks';
 import { getAuthenticatedUser, AUTHENTICATED_USER_CHANGED } from '../auth';
 import { getConfig } from '../config';
 import { CONFIG_CHANGED } from '../constants';
-import { history } from '../initialize';
 import {
   getLocale,
   getMessages,
@@ -72,9 +71,9 @@ export default function AppProvider({ store, children }) {
           value={appContextValue}
         >
           <OptionalReduxProvider store={store}>
-            <Router location={history.location} navigator={history}>
+            <BrowserRouter>
               {children}
-            </Router>
+            </BrowserRouter>
           </OptionalReduxProvider>
         </AppContext.Provider>
       </ErrorBoundary>

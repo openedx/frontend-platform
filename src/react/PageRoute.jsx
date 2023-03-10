@@ -25,6 +25,8 @@ export default function PageRoute(props) {
   }, [JSON.stringify(match)]);
 
   return (
-    <Route {...props} />
+    <>
+      <Route {...props} />
+    </>
   );
 }

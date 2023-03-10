@@ -14,7 +14,7 @@
     "lint": "fedx-scripts eslint --ext .js --ext .jsx .",
     "snapshot": "fedx-scripts jest --updateSnapshot",
     "start": "fedx-scripts webpack-dev-server --progress",
-    "test": "fedx-scripts jest --coverage",
+    "test": "fedx-scripts jest",
     "test:watch": "npm run test -- --watch"
   },
   "bin": {
@@ -47,7 +47,7 @@
     "react": "16.14.0",
     "react-dom": "16.14.0",
     "react-redux": "7.2.9",
-    "react-router-dom": "^6.0.0",
+    "react-router-dom": "^6.6.1",
     "redux": "4.2.1",
     "regenerator-runtime": "0.13.11"
   },

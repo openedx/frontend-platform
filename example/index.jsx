@@ -1,17 +1,18 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 
-import { Routes } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { APP_INIT_ERROR, APP_READY, initialize } from '@edx/frontend-platform';
+import { subscribe } from '@edx/frontend-platform/pubSub';
+
 import {
   AppProvider,
   AuthenticatedPageRoute,
   ErrorPage,
   PageRoute,
-} from '@edx/frontend-platform/react';
-import { APP_INIT_ERROR, APP_READY, initialize } from '@edx/frontend-platform';
-import { subscribe } from '@edx/frontend-platform/pubSub';
+} from '../src/react';
 
 import './index.scss';
 import ExamplePage from './ExamplePage';
@@ -21,13 +22,12 @@ subscribe(APP_READY, () => {
   ReactDOM.render(
     <AppProvider>
       <Routes>
-        <PageRoute path="/" element={<ExamplePage />} />
-        <PageRoute
-          exact
+        <Route path="/" element={<ExamplePage />} />
+        <Route
           path="/error_example"
           element={<ErrorPage message="Test error message" />}
         />
-        <AuthenticatedPageRoute path="/authenticated" element={<AuthenticatedPage />} />
+        <Route path="/authenticated" element={<AuthenticatedPageRoute><AuthenticatedPage /></AuthenticatedPageRoute>} />
       </Routes>
     </AppProvider>,
     document.getElementById('root'),
