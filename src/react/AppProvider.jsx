@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
 
 import OptionalReduxProvider from './OptionalReduxProvider';
 
@@ -71,9 +71,9 @@ export default function AppProvider({ store, children }) {
           value={appContextValue}
         >
           <OptionalReduxProvider store={store}>
-            <BrowserRouter>
+            <Router>
               {children}
-            </BrowserRouter>
+            </Router>
           </OptionalReduxProvider>
         </AppContext.Provider>
       </ErrorBoundary>

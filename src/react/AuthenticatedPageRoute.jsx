@@ -1,8 +1,9 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-import { Navigate, useLocation } from 'react-router-dom';
+import { useMatch } from 'react-router-dom';
 
 import AppContext from './AppContext';
+import PageRoute from './PageRoute';
 import { getLoginRedirectUrl } from '../auth';
 
 /**
@@ -22,22 +23,40 @@ import { getLoginRedirectUrl } from '../auth';
  * @param {string} props.redirectUrl The URL anonymous users should be redirected to, rather than
  * viewing the route's contents.
  */
-export default function AuthenticatedPageRoute({ redirectUrl, children }) {
+export default function AuthenticatedPageRoute({ redirectUrl, children, ...props }) {
+  const match = useMatch({
+    path: props.path,
+    // eslint-disable-next-line react/prop-types
+    caseSensitive: props.sensitive,
+    // eslint-disable-next-line react/prop-types
+    end: props.strict,
+    // eslint-disable-next-line react/prop-types
+    exact: props.exact,
+  });
+
   const { authenticatedUser } = useContext(AppContext);
   if (authenticatedUser === null) {
-    const destination = redirectUrl || getLoginRedirectUrl(global.location.href);
-    global.location.assign(destination);
+    if (match) {
+      const destination = redirectUrl || getLoginRedirectUrl(global.location.href);
+      global.location.assign(destination);
+    }
     return null;
   }
 
-  return children;
+  return (
+    <PageRoute {...props}>
+      {children}
+    </PageRoute>
+  );
 }
 
 AuthenticatedPageRoute.propTypes = {
   redirectUrl: PropTypes.string,
   children: PropTypes.node.isRequired,
+  path: PropTypes.string,
 };
 
 AuthenticatedPageRoute.defaultProps = {
   redirectUrl: null,
+  path: '/authenticated',
 };

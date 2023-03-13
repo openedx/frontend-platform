@@ -22,10 +22,10 @@ subscribe(APP_READY, () => {
   ReactDOM.render(
     <AppProvider>
       <Routes>
-        <Route path="/" element={<ExamplePage />} />
+        <Route path="/" element={<PageRoute path="/"><ExamplePage /></PageRoute>} />
         <Route
           path="/error_example"
-          element={<ErrorPage message="Test error message" />}
+          element={<PageRoute path="/error_example"><ErrorPage message="Test error message" /></PageRoute>}
         />
         <Route path="/authenticated" element={<AuthenticatedPageRoute><AuthenticatedPage /></AuthenticatedPageRoute>} />
       </Routes>
