@@ -10,7 +10,7 @@ metadata:
     - url: "https://github.com/openedx/frontend-platform"
       title: "Frontend Platform"
       icon: "Code"
-    - url: "https://github.com/openedx/frontend-platform#readme"
+    - url: "https://openedx.github.io/frontend-platform/"
       title: "Documentation"
       icon: "Article"
   annotations:
