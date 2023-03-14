@@ -80,7 +80,7 @@ describe('lib', () => {
         messages: {},
       });
 
-      expect(console.warn).toHaveBeenCalledTimes(13);
+      expect(console.warn).toHaveBeenCalledTimes(15);
       expect(console.warn).toHaveBeenCalledWith('Missing locale: ar');
       expect(console.warn).toHaveBeenCalledWith('Missing locale: es-419');
       expect(console.warn).toHaveBeenCalledWith('Missing locale: fr');
