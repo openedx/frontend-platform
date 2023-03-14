@@ -80,7 +80,7 @@ describe('lib', () => {
         messages: {},
       });
 
-      expect(console.warn).toHaveBeenCalledTimes(13);
+      expect(console.warn).toHaveBeenCalledTimes(15);
       expect(console.warn).toHaveBeenCalledWith('Missing locale: ar');
       expect(console.warn).toHaveBeenCalledWith('Missing locale: es-419');
       expect(console.warn).toHaveBeenCalledWith('Missing locale: fr');
@@ -188,6 +188,7 @@ describe('lib', () => {
       expect(isRtl('ar')).toBe(true);
       expect(isRtl('he')).toBe(true);
       expect(isRtl('fa')).toBe(true);
+      expect(isRtl('fa-ir')).toBe(true);
       expect(isRtl('ur')).toBe(true);
     });
 

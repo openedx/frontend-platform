@@ -39,6 +39,8 @@ const supportedLocales = [
   'ar', // Arabic
   // NOTE: 'en' is not included in this list intentionally, since it's the fallback.
   'es-419', // Spanish, Latin American
+  'fa', // Farsi
+  'fa-ir', // Farsi, Iran
   'fr', // French
   'zh-cn', // Chinese, Simplified
   'ca', // Catalan
@@ -55,6 +57,7 @@ const rtlLocales = [
   'ar', // Arabic
   'he', // Hebrew
   'fa', // Farsi (not currently supported)
+  'fa-ir', // Farsi Iran
   'ur', // Urdu (not currently supported)
 ];
 
