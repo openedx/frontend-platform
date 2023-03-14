@@ -11,10 +11,10 @@
  *   APP_READY,
  *   subscribe,
  * } from '@edx/frontend-platform';
- * import { AppProvider, ErrorPage, PageRoute } from '@edx/frontend-platform/react';
+ * import { AppProvider, ErrorPage, PageWrap } from '@edx/frontend-platform/react';
  * import React from 'react';
  * import ReactDOM from 'react-dom';
- * import { Switch, Routes } from 'react-router-dom';
+ * import { Routes, Route } from 'react-router-dom';
  *
  * subscribe(APP_READY, () => {
  *   ReactDOM.render(
@@ -22,7 +22,7 @@
  *       <Header />
  *       <main>
  *         <Routes>
- *           <PageRoute path="/" element={PaymentPage} />
+ *           <Route path="/" element={<PageWrap><PaymentPage /></PageWrap>} />
  *         </Routes>
  *       </main>
  *       <Footer />

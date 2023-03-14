@@ -11,7 +11,7 @@ import {
   AppProvider,
   AuthenticatedPageRoute,
   ErrorPage,
-  PageRoute,
+  PageWrap,
 } from '../src/react';
 
 import './index.scss';
@@ -22,10 +22,10 @@ subscribe(APP_READY, () => {
   ReactDOM.render(
     <AppProvider>
       <Routes>
-        <Route path="/" element={<PageRoute path="/"><ExamplePage /></PageRoute>} />
+        <Route path="/" element={<PageWrap><ExamplePage /></PageWrap>} />
         <Route
           path="/error_example"
-          element={<PageRoute path="/error_example"><ErrorPage message="Test error message" /></PageRoute>}
+          element={<PageWrap><ErrorPage message="Test error message" /></PageWrap>}
         />
         <Route path="/authenticated" element={<AuthenticatedPageRoute><AuthenticatedPage /></AuthenticatedPageRoute>} />
       </Routes>

@@ -1,9 +1,8 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-import { useMatch } from 'react-router-dom';
 
 import AppContext from './AppContext';
-import PageRoute from './PageRoute';
+import PageWrap from './PageWrap';
 import { getLoginRedirectUrl } from '../auth';
 
 /**
@@ -14,49 +13,36 @@ import { getLoginRedirectUrl } from '../auth';
  *
  * It can optionally accept an override URL to redirect to instead of the login page.
  *
- * Like a `PageRoute`, also calls `sendPageEvent` when the route becomes active.
+ * Like a `PageWrap`, also calls `sendPageEvent` when the route becomes active.
  *
- * @see PageRoute
+ * @see PageWrap
  * @see {@link module:frontend-platform/analytics~sendPageEvent}
  * @memberof module:React
  * @param {Object} props
  * @param {string} props.redirectUrl The URL anonymous users should be redirected to, rather than
  * viewing the route's contents.
  */
-export default function AuthenticatedPageRoute({ redirectUrl, children, ...props }) {
-  const match = useMatch({
-    path: props.path,
-    // eslint-disable-next-line react/prop-types
-    caseSensitive: props.sensitive,
-    // eslint-disable-next-line react/prop-types
-    end: props.strict,
-    // eslint-disable-next-line react/prop-types
-    exact: props.exact,
-  });
-
+export default function AuthenticatedPageRoute({ redirectUrl, children }) {
   const { authenticatedUser } = useContext(AppContext);
   if (authenticatedUser === null) {
-    if (match) {
-      const destination = redirectUrl || getLoginRedirectUrl(global.location.href);
-      global.location.assign(destination);
-    }
+    const destination = redirectUrl || getLoginRedirectUrl(global.location.href);
+    global.location.assign(destination);
+
     return null;
   }
 
   return (
-    <PageRoute {...props}>
+    <PageWrap>
       {children}
-    </PageRoute>
+    </PageWrap>
   );
 }
 
 AuthenticatedPageRoute.propTypes = {
   redirectUrl: PropTypes.string,
   children: PropTypes.node.isRequired,
-  path: PropTypes.string,
 };
 
 AuthenticatedPageRoute.defaultProps = {
   redirectUrl: null,
-  path: '/authenticated',
 };
