@@ -59,6 +59,7 @@ import {
 import {
   configure as configureAnalytics, SegmentAnalyticsService, identifyAnonymousUser, identifyAuthenticatedUser,
 } from './analytics';
+import { configureGoogleAnalytics, GoogleAnalyticsService } from './google-analytics';
 import {
   getAuthenticatedHttpClient,
   configure as configureAuth,
@@ -238,6 +239,7 @@ function applyOverrideHandlers(overrides) {
 export async function initialize({
   loggingService = NewRelicLoggingService,
   analyticsService = SegmentAnalyticsService,
+  googleAnalyticsService = GoogleAnalyticsService,
   authService = AxiosJwtAuthService,
   authMiddleware = [],
   requireAuthenticatedUser: requireUser = false,
@@ -279,6 +281,11 @@ export async function initialize({
       loggingService: getLoggingService(),
       httpClient: getAuthenticatedHttpClient(),
     });
+
+    configureGoogleAnalytics(googleAnalyticsService, {
+      config: getConfig(),
+    });
+
     await handlers.analytics();
     publish(APP_ANALYTICS_INITIALIZED);
 
