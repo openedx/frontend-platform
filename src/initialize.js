@@ -221,6 +221,8 @@ function applyOverrideHandlers(overrides) {
  * to use.
  * @param {*} [options.analyticsService=SegmentAnalyticsService] The `AnalyticsService`
  * implementation to use.
+ * @param {*} [options.googleAnalyticsService=GoogleAnalyticsService] The `GoogleAnalyticsService`
+ * implementation to use.
  * @param {*} [options.authMiddleware=[]] An array of middleware to apply to http clients in the auth service.
  * @param {*} [options.requireAuthenticatedUser=false] If true, turns on automatic login
  * redirection for unauthenticated users.  Defaults to false, meaning that by default the

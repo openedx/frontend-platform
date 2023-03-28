@@ -11,13 +11,14 @@ See the [GitHub Pages site for the complete documentation](https://openedx.githu
 
 frontend-platform is a modest application framework for Open edX micro-frontend applications and their supporting libraries. It provides a number of foundational services that all Open edX micro-frontends should have:
 
-| Service                            | Module location                  |
-|------------------------------------|----------------------------------|
-| Analytics                          | @edx/frontend-platform/analytics |
-| Logging                            | @edx/frontend-platform/logging   |
-| Authenticated API client (auth)    | @edx/frontend-platform/auth      |
-| Internationalization (i18n)        | @edx/frontend-platform/i18n      |
-| Misc (init, config, pubSub, utils) | @edx/frontend-platform           |
+| Service                            | Module location                         |
+|------------------------------------|-----------------------------------------|
+| Analytics                          | @edx/frontend-platform/analytics        |
+| Google Analytics 4                 | @edx/frontend-platform/google-analytics |
+| Logging                            | @edx/frontend-platform/logging          |
+| Authenticated API client (auth)    | @edx/frontend-platform/auth             |
+| Internationalization (i18n)        | @edx/frontend-platform/i18n             |
+| Misc (init, config, pubSub, utils) | @edx/frontend-platform                  |
 
 -------------------------------------------------------------------------
 
@@ -52,7 +53,7 @@ dependencies based on this new package file. Delete node_modules, and issue a `n
 
 ## Architecture
 
-The four foundational services listed above (analytics, auth, i18n, and logging) are provided as imports to applications via frontend-platform's API layer.  The initialization sequence creates an instance of each service and exposes its methods as functional exports, creating a layer of abstraction between service implementations and their usage in application code.
+The five foundational services listed above (analytics, google-analytics, auth, i18n, and logging) are provided as imports to applications via frontend-platform's API layer.  The initialization sequence creates an instance of each service and exposes its methods as functional exports, creating a layer of abstraction between service implementations and their usage in application code.
 
 Each type of service has a documented API contract which service implementations must fulfill. This allows different service implementations to be used as necessary without updates to consuming applications.
 
@@ -74,6 +75,7 @@ The initialization process proceeds in a series of phases, giving the initializi
 - Logging service initialized
 - Authentication service initialized
 - Analytics service initialized
+- Google Analytics Service initialized
 - Internationalization service initialized
 - Application ready
 
@@ -115,7 +117,7 @@ const ExampleComponent = () => {
 
 ### Service interfaces
 
-Each service (analytics, auth, i18n, logging) provided by frontend-platform has a API contract which all implementations of that service are guaranteed to fulfill.  Applications that use frontend-platform can use its configured services via a convenient set of exported functions.  An application that wants to use the service interfaces need only initialize them via the initialize() function, optionally providing custom service interfaces as desired (you probably won't need to).
+Each service (analytics, google-analytics, auth, i18n, logging) provided by frontend-platform has a API contract which all implementations of that service are guaranteed to fulfill.  Applications that use frontend-platform can use its configured services via a convenient set of exported functions.  An application that wants to use the service interfaces need only initialize them via the initialize() function, optionally providing custom service interfaces as desired (you probably won't need to).
 
 ![Service interface](service-interface.png)
 
@@ -127,6 +129,7 @@ The included service implementations are:
 
 - New Relic (logging)
 - Segment (analytics)
+- Google Analytics 4 (google-analytics)
 - Axios/JWT (auth)
 - React Intl (i18n)
 

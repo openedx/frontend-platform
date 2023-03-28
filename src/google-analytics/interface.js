@@ -36,7 +36,7 @@ let googleService;
  * @returns {GoogleAnalyticsService}
  */
 export function configure(GoogleAnalyticsService, options) {
-  PropTypes.checkPropTypes(googleOptionsShape, options, 'property', 'Analytics');
+  PropTypes.checkPropTypes(googleOptionsShape, options, 'property', 'GoogleAnalytics');
   googleService = new GoogleAnalyticsService(options);
   return googleService;
 }
