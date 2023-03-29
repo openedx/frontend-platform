@@ -36,7 +36,7 @@
     "@edx/frontend-build": "12.7.0",
     "@edx/paragon": "20.28.5",
     "@testing-library/react-hooks": "^8.0.1",
-    "axios-mock-adapter": "1.21.2",
+    "axios-mock-adapter": "^1.21.3",
     "core-js": "3.29.1",
     "enzyme": "3.11.0",
     "enzyme-adapter-react-16": "1.15.7",
