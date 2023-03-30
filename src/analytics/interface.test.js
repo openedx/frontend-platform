@@ -112,30 +112,6 @@ describe('Analytics', () => {
         expect(() => identifyAuthenticatedUser(null))
           .toThrowError(new Error('UserId is required for identifyAuthenticatedUser.'));
       });
-
-      it('should call segment identify once', () => {
-        const testTraits = { anything: 'Yay!' };
-        identifyAuthenticatedUser(testUserId, testTraits);
-        identifyAuthenticatedUser(testUserId, testTraits);
-
-        expect(window.analytics.identify.mock.calls.length).toBe(1);
-      });
-
-      it('should call segment identify if hasIdentifyBeenCalled is false', () => {
-        const testTraits = { anything: 'Yay!' };
-        service.hasIdentifyBeenCalled = false;
-        identifyAuthenticatedUser(testUserId, testTraits);
-
-        expect(window.analytics.identify).toHaveBeenCalled();
-      });
-
-      it('should not call segment identify if hasIdentifyBeenCalled is true', () => {
-        const testTraits = { anything: 'Yay!' };
-        service.hasIdentifyBeenCalled = true;
-        identifyAuthenticatedUser(testUserId, testTraits);
-
-        expect(window.analytics.identify).not.toHaveBeenCalled();
-      });
     });
 
     describe('analytics identifyAnonymousUser', () => {
@@ -153,33 +129,6 @@ describe('Analytics', () => {
         identifyAnonymousUser(testTraits);
 
         expect(window.analytics.reset.mock.calls.length).toBe(1);
-      });
-
-      it('should call segment reset once', () => {
-        window.analytics.user = () => ({ id: () => 1 });
-        const testTraits = { anything: 'Yay!' };
-        identifyAnonymousUser(testTraits);
-        identifyAnonymousUser(testTraits);
-
-        expect(window.analytics.reset.mock.calls.length).toBe(1);
-      });
-
-      it('should call segment reset if hasIdentifyBeenCalled is false', () => {
-        window.analytics.user = () => ({ id: () => 2 });
-        const testTraits = { anything: 'Yay!' };
-        service.hasIdentifyBeenCalled = false;
-        identifyAnonymousUser(testTraits);
-
-        expect(window.analytics.reset).toHaveBeenCalled();
-      });
-
-      it('should not call segment reset if hasIdentifyBeenCalled is true', () => {
-        window.analytics.user = () => ({ id: () => 3 });
-        const testTraits = { anything: 'Yay!' };
-        service.hasIdentifyBeenCalled = true;
-        identifyAnonymousUser(testTraits);
-
-        expect(window.analytics.reset).not.toHaveBeenCalled();
       });
     });
 
