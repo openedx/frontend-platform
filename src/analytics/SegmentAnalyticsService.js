@@ -157,10 +157,6 @@ class SegmentAnalyticsService {
    * @param {*} [traits]
    */
   identifyAuthenticatedUser(userId, traits) {
-    if (this.hasIdentifyBeenCalled) {
-      return;
-    }
-
     if (!userId) {
       throw new Error('UserId is required for identifyAuthenticatedUser.');
     }
@@ -179,10 +175,6 @@ class SegmentAnalyticsService {
    * @returns {Promise} Promise that will resolve once the document readyState is complete
    */
   identifyAnonymousUser(traits) { // eslint-disable-line no-unused-vars
-    if (this.hasIdentifyBeenCalled) {
-      return Promise.resolve();
-    }
-
     if (!this.segmentInitialized) {
       return Promise.resolve();
     }
