@@ -157,6 +157,9 @@ export async function runtimeConfig() {
   }
 }
 
+export async function loadExternalScripts (a: [], {config}) => {a.forEach(a => a.loadScript())}
+
+
 /**
  * The default handler for the initialization lifecycle's `analytics` phase.
  *
@@ -240,6 +243,7 @@ export async function initialize({
   analyticsService = SegmentAnalyticsService,
   authService = AxiosJwtAuthService,
   authMiddleware = [],
+  externalScripts = [GoogleAnalyticsLoader],
   requireAuthenticatedUser: requireUser = false,
   hydrateAuthenticatedUser: hydrateUser = false,
   messages,
@@ -255,6 +259,10 @@ export async function initialize({
     await handlers.config();
     await runtimeConfig();
     publish(APP_CONFIG_INITIALIZED);
+
+    loadExternalScripts(externalScripts, {
+      config: getConfig(),
+    });
 
     // Logging
     configureLogging(loggingService, {
