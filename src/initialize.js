@@ -158,7 +158,7 @@ export async function runtimeConfig() {
   }
 }
 
-export async function loadExternalScripts(externalScripts, data) {
+export function loadExternalScripts(externalScripts, data) {
   externalScripts.forEach(ExternalScript => {
     const script = new ExternalScript(data);
     script.loadScript();
