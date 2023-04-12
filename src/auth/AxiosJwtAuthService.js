@@ -250,7 +250,7 @@ class AxiosJwtAuthService {
    * @returns {Promise<UserData>}
    */
   async ensureAuthenticatedUser(redirectUrl = this.config.BASE_URL) {
-    await this.fetchAuthenticatedUser();
+    await this.fetchAuthenticatedUser({ forceRefresh: true });
 
     if (this.getAuthenticatedUser() === null) {
       const isRedirectFromLoginPage = global.document.referrer
