@@ -4,7 +4,6 @@ const fs = require('jsdoc/fs');
 const helper = require('jsdoc/util/templateHelper');
 const logger = require('jsdoc/util/logger');
 const path = require('jsdoc/path');
-const taffy = require('taffydb').taffy;
 const template = require('jsdoc/template');
 const util = require('util');
 
@@ -408,11 +407,11 @@ function buildNav(members) {
 }
 
 /**
-    @param {TAFFY} taffyData See <http://taffydb.com/>.
+    @param {object} memberData
     @param {object} opts
     @param {Tutorial} tutorials
  */
-exports.publish = (taffyData, opts, tutorials) => {
+exports.publish = (memberData, opts, tutorials) => {
     let classes;
     let conf;
     let externals;
@@ -436,7 +435,7 @@ exports.publish = (taffyData, opts, tutorials) => {
     let staticFileScanner;
     let templatePath;
 
-    data = taffyData;
+    data = memberData;
 
     conf = env.conf.templates || {};
     conf.default = conf.default || {};
@@ -645,21 +644,13 @@ exports.publish = (taffyData, opts, tutorials) => {
             }]
         ).concat(files), indexUrl);
 
-    // set up the lists that we'll use to generate pages
-    classes = taffy(members.classes);
-    modules = taffy(members.modules);
-    namespaces = taffy(members.namespaces);
-    mixins = taffy(members.mixins);
-    externals = taffy(members.externals);
-    interfaces = taffy(members.interfaces);
-
     Object.keys(helper.longnameToUrl).forEach(longname => {
-        const myClasses = helper.find(classes, {longname: longname});
-        const myExternals = helper.find(externals, {longname: longname});
-        const myInterfaces = helper.find(interfaces, {longname: longname});
-        const myMixins = helper.find(mixins, {longname: longname});
-        const myModules = helper.find(modules, {longname: longname});
-        const myNamespaces = helper.find(namespaces, {longname: longname});
+        const myClasses = members.classes.filter(obj => obj.longname === longname);
+        const myExternals = members.externals.filter(obj => obj.longname === longname);
+        const myInterfaces = members.interfaces.filter(obj => obj.longname === longname);
+        const myMixins = members.mixins.filter(obj => obj.longname === longname);
+        const myModules = members.modules.filter(obj => obj.longname === longname);
+        const myNamespaces = members.namespaces.filter(obj => obj.longname === longname);
 
         const trimModuleName = (moduleName) => {
             if (moduleName.includes('module:')) {
