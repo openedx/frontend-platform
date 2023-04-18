@@ -59,6 +59,7 @@ import {
 import {
   configure as configureAnalytics, SegmentAnalyticsService, identifyAnonymousUser, identifyAuthenticatedUser,
 } from './analytics';
+import { GoogleAnalyticsLoader } from './scripts';
 import {
   getAuthenticatedHttpClient,
   configure as configureAuth,
@@ -157,6 +158,13 @@ export async function runtimeConfig() {
   }
 }
 
+export function loadExternalScripts(externalScripts, data) {
+  externalScripts.forEach(ExternalScript => {
+    const script = new ExternalScript(data);
+    script.loadScript();
+  });
+}
+
 /**
  * The default handler for the initialization lifecycle's `analytics` phase.
  *
@@ -221,6 +229,8 @@ function applyOverrideHandlers(overrides) {
  * @param {*} [options.analyticsService=SegmentAnalyticsService] The `AnalyticsService`
  * implementation to use.
  * @param {*} [options.authMiddleware=[]] An array of middleware to apply to http clients in the auth service.
+ * @param {*} [options.externalScripts=[GoogleAnalyticsLoader]] An array of externalScripts.
+ * By default added GoogleAnalyticsLoader.
  * @param {*} [options.requireAuthenticatedUser=false] If true, turns on automatic login
  * redirection for unauthenticated users.  Defaults to false, meaning that by default the
  * application will allow anonymous/unauthenticated sessions.
@@ -240,6 +250,7 @@ export async function initialize({
   analyticsService = SegmentAnalyticsService,
   authService = AxiosJwtAuthService,
   authMiddleware = [],
+  externalScripts = [GoogleAnalyticsLoader],
   requireAuthenticatedUser: requireUser = false,
   hydrateAuthenticatedUser: hydrateUser = false,
   messages,
@@ -255,6 +266,10 @@ export async function initialize({
     await handlers.config();
     await runtimeConfig();
     publish(APP_CONFIG_INITIALIZED);
+
+    loadExternalScripts(externalScripts, {
+      config: getConfig(),
+    });
 
     // Logging
     configureLogging(loggingService, {
