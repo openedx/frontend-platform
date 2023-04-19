@@ -43,7 +43,7 @@
     "enzyme-adapter-react-16": "1.15.7",
     "husky": "8.0.3",
     "jsdoc": "^4.0.0",
-    "nodemon": "2.0.21",
+    "nodemon": "2.0.22",
     "prop-types": "15.8.1",
     "react": "16.14.0",
     "react-dom": "16.14.0",
