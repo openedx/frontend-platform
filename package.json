@@ -11,6 +11,8 @@
   ],
   "scripts": {
     "build": "make build",
+    "start": "npm --prefix example start",
+    "start:plugins": "npm --prefix example-plugin-app start",
     "docs": "jsdoc -c jsdoc.json",
     "docs-watch": "nodemon -w src -w docs/template -w README.md -e js,jsx --exec npm run docs",
     "lint": "fedx-scripts eslint --ext .js --ext .jsx .",
