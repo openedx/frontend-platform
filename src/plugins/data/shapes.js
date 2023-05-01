@@ -7,5 +7,6 @@ export const pluginShape = PropTypes.shape({
   module: PropTypes.string,
   url: PropTypes.string.isRequired,
   type: PropTypes.oneOf([COMPONENT_PLUGIN, IFRAME_PLUGIN]).isRequired,
-  props: PropTypes.object,
+  // This is a place for us to put any generic props we want to pass to the component.  We need it.
+  props: PropTypes.object, // eslint-disable-line react/forbid-prop-types
 });

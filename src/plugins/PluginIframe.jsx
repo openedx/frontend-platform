@@ -50,7 +50,7 @@ export default function PluginIframe({
         },
       }, url);
     }
-  }, [iframeElement, mounted, width, height]);
+  }, [iframeElement, mounted, width, height, url]);
 
   usePluginEvent(iframeElement, PLUGIN_MOUNTED, () => {
     setMounted(true);

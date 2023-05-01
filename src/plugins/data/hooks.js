@@ -85,7 +85,7 @@ export function useElementSize() {
 
   const measuredRef = useCallback(_element => {
     setElement(_element);
-  });
+  }, []);
 
   useEffect(() => {
     observerRef.current = new ResizeObserver(() => {
