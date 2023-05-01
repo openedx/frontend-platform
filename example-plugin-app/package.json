@@ -12,13 +12,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "core-js": "3.18.1",
-    "react": "16.14.0",
-    "react-dom": "16.14.0",
-    "react-router-dom": "5.2.0",
-    "regenerator-runtime": "0.13.9"
+    "core-js": "^3.29.1",
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0",
+    "react-router-dom": "^5.3.4",
+    "regenerator-runtime": "^0.13.11"
   },
   "devDependencies": {
-    "@edx/frontend-build": "^8.0.6"
+    "@edx/frontend-build": "^12.7.0"
   }
 }
