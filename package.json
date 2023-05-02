@@ -34,7 +34,7 @@
   "devDependencies": {
     "@edx/brand": "npm:@edx/brand-openedx@1.2.0",
     "@edx/browserslist-config": "1.2.0",
-    "@edx/frontend-build": "12.7.0",
+    "@edx/frontend-build": "12.8.16",
     "@edx/paragon": "^20.30.1",
     "@testing-library/react-hooks": "^8.0.1",
     "axios-mock-adapter": "^1.21.3",
