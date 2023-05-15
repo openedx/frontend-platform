@@ -1,0 +1,4 @@
+{
+  "learning.accessExpiration.deadline": "Mejora de categoría antes del {fecha} para obtener acceso ilimitado al curso mientras exista en el sitio.",
+  "learning.accessExpiration.header": "El acceso a tomar el curso de forma gratuita expira el {fecha}"
+}

@@ -9,7 +9,7 @@
 
 See the [GitHub Pages site for the complete documentation](https://openedx.github.io/frontend-platform/).
 
-frontend-platform is a modest application framework for Open edX micro-frontend applications and their supporting libraries. It provides a number of foundational services that all Open edX micro-frontends should have:
+frontend-platform is a modest application framework for Open edX micro-frontend applications and their supporting libraries. It provides several foundational services that all Open edX micro-frontends should have:
 
 | Service                            | Module location                  |
 |------------------------------------|----------------------------------|
@@ -25,13 +25,13 @@ In addition, frontend-platform provides an extensible application initialization
 
 ## Getting started
 
-### One-time setup if you have not ugpraded node/npm
+### One-time setup if you have not upgraded node/npm
 IMPORTANT: There is now a new node/npm version being used by frontend-platform as of
 https://github.com/openedx/frontend-platform/pull/259
 
 #### Install nvm
-This is highly recommended in order to be able to leverage different node/npm versions.
-For a period of time, different repositories may be using different versions of node/npm.
+This is highly recommended to be able to leverage different node/npm versions.
+For a some time, different repositories may be using different versions of node/npm.
 
 Alternatively, please install node16 and npm8 for use with this repository.
 
@@ -41,7 +41,7 @@ if you don't have the right node/npm versions, nvm will instruct you to install 
 
 #### Clean out old node modules and reinstall
 This step is needed because node now uses a different package lock format, and it's important to reinstall
-dependencies based on this new package file. Delete node_modules, and issue a `npm ci`
+dependencies based on this new package file. Delete node_modules, and issue an `npm ci`
 
 
 ### Standard getting started steps
@@ -83,7 +83,7 @@ Most applications won't need to do anything special at all.
 
 When the application loads, a list of known environment variables is loaded from `process.env` into an object which it exposes via `getConfig` - the point here is primarily to isolate our code from usages of `process.env` which may not always be the way we choose to configure our apps.  The application initialization lifecycle supports runtime configuration as well via the `config` handler, documented in the [initialize function](https://edx.github.io/frontend-platform/module-Initialization.html#~initialize).  If you want to get a variable into the config that it’s not expecting, you can use [`mergeConfig`](https://edx.github.io/frontend-platform/module-Config.html#~mergeConfig) during initialization to add it in from `process.env`.
 
-Such an example might look like:
+Such an example might look like this:
 
 ```
 initialize({
@@ -98,7 +98,7 @@ initialize({
 });
 ```
 
-When using runtime configuration via `mergeConfig` noted above, `getConfig` must be called within a component's render lifecycle in order for the added keys and values to be returned in the configuration object. If `getConfig` is called outside of a component's render lifecycle, the custom configuration key/value pairs will not initially be part of the object returned by `getConfig`. For example:
+When using runtime configuration via `mergeConfig` noted above, `getConfig` must be called within a component's render lifecycle for the added keys and values to be returned in the configuration object. If `getConfig` is called outside of a component's render lifecycle, the custom configuration key/value pairs will not initially be part of the object returned by `getConfig`. For example:
 
 ```jsx
 import { getConfig } from '@edx/frontend-platform/config';
@@ -108,14 +108,14 @@ import { getConfig } from '@edx/frontend-platform/config';
 console.log(getConfig().CUSTOM_VARIABLE); // returns undefined
 
 const ExampleComponent = () => {
-  // This returns the value as expected since it is called after `mergeConfig` has already executed.
+  // This returns the value as expected since it is called after `mergeConfig` has already been executed.
   console.log(getConfig().CUSTOM_VARIABLE)
 };
 ```
 
 ### Service interfaces
 
-Each service (analytics, auth, i18n, logging) provided by frontend-platform has a API contract which all implementations of that service are guaranteed to fulfill.  Applications that use frontend-platform can use its configured services via a convenient set of exported functions.  An application that wants to use the service interfaces need only initialize them via the initialize() function, optionally providing custom service interfaces as desired (you probably won't need to).
+Each service (analytics, auth, i18n, logging) provided by frontend-platform has an API contract which all implementations of that service are guaranteed to fulfill.  Applications that use frontend-platform can use its configured services via a convenient set of exported functions.  An application that wants to use the service interfaces need only initialize them via the initialize() function, optionally providing custom service interfaces as desired (you probably won't need to).
 
 ![Service interface](service-interface.png)
 
