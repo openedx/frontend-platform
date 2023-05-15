@@ -41,6 +41,16 @@ function sendError(error, customAttributes) {
   }
 }
 
+function setCustomAttribute(name, value) {
+  if (process.env.NODE_ENV === 'development') {
+    console.log(name, value); // eslint-disable-line
+  }
+  if (window && typeof window.newrelic !== 'undefined') {
+    // https://docs.newrelic.com/docs/browser/new-relic-browser/browser-apis/setcustomattribute/
+    window.newrelic.setCustomAttribute(name, value);
+  }
+}
+
 /**
  * The NewRelicLoggingService is a concrete implementation of the logging service interface that
  * sends messages to NewRelic that can be seen in NewRelic Browser and NewRelic Insights. When in
@@ -67,7 +77,8 @@ function sendError(error, customAttributes) {
  * ```
  *
  * You can also add your own custom metrics as an additional argument, or see the code to find
- * other standard custom attributes.
+ * other standard custom attributes. By default, userId is added (via setCustomAttribute) for logged
+ * in users via the auth service (AuthAxiosJwtService).
  *
  * Requires the NewRelic Browser JavaScript snippet.
  *
@@ -156,5 +167,15 @@ export default class NewRelicLoggingService {
       /*  error! */
       sendError(errorStringOrObject, allCustomAttributes);
     }
+  }
+
+  /**
+   * Sets a custom attribute that will be included with all subsequent log messages.
+   *
+   * @param {string} name
+   * @param {string|number|null} value
+   */
+  setCustomAttribute(name, value) {
+    setCustomAttribute(name, value);
   }
 }

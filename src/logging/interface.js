@@ -72,6 +72,16 @@ export function logError(errorStringOrObject, customAttributes) {
 }
 
 /**
+ * Sets a custom attribute that will be included with all subsequent log messages.
+ *
+ * @param {string} name
+ * @param {string|number|null} value
+ */
+export function setCustomAttribute(name, value) {
+  return service.setCustomAttribute(name, value);
+}
+
+/**
  *
  * @throws {Error} Thrown if the logging service has not yet been configured via {@link configure}.
  * @returns {LoggingService}
