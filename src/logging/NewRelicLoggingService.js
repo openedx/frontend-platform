@@ -23,7 +23,7 @@ const pageActionNameIgnoredError = 'IGNORED_ERROR';
 
 function sendPageAction(actionName, message, customAttributes) {
   if (process.env.NODE_ENV === 'development') {
-    console.log(message, customAttributes); // eslint-disable-line
+    console.log(actionName, message, customAttributes); // eslint-disable-line
   }
   if (window && typeof window.newrelic !== 'undefined') {
     window.newrelic.addPageAction(actionName, { message, ...customAttributes });
