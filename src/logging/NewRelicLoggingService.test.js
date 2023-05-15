@@ -3,6 +3,7 @@ import NewRelicLoggingService, { MAX_ERROR_LENGTH } from './NewRelicLoggingServi
 global.newrelic = {
   addPageAction: jest.fn(),
   noticeError: jest.fn(),
+  setCustomAttribute: jest.fn(),
 };
 
 let service = null;
@@ -137,6 +138,17 @@ describe('NewRelicLoggingService', () => {
       };
       service.logError(error);
       expect(global.newrelic.noticeError).toHaveBeenCalledWith(expectedError, undefined);
+    });
+  });
+
+  describe('setCustomAttribute', () => {
+    beforeEach(() => {
+      global.newrelic.setCustomAttribute.mockReset();
+    });
+
+    it('calls New Relic client with name and value', () => {
+      service.setCustomAttribute('foo', 'bar');
+      expect(global.newrelic.setCustomAttribute).toHaveBeenCalledWith('foo', 'bar');
     });
   });
 

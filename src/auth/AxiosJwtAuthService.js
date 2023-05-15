@@ -234,8 +234,13 @@ class AxiosJwtAuthService {
         administrator: decodedAccessToken.administrator,
         name: decodedAccessToken.name,
       });
+      // Sets userId as a custom attribute that will be included with all subsequent log messages.
+      // Very helpful for debugging.
+      this.loggingService.setCustomAttribute('userId', decodedAccessToken.user_id);
     } else {
       this.setAuthenticatedUser(null);
+      // Intentionally not setting `userId` in the logging service here because it would be useful
+      // to know the previously logged in user for debugging refresh issues.
     }
 
     return this.getAuthenticatedUser();

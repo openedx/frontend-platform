@@ -7,6 +7,7 @@ import AxiosJwtAuthService from './AxiosJwtAuthService';
 const mockLoggingService = {
   logInfo: jest.fn(),
   logError: jest.fn(),
+  setCustomAttribute: jest.fn(),
 };
 
 const authOptions = {
@@ -204,6 +205,7 @@ beforeEach(() => {
   };
   mockLoggingService.logInfo.mockReset();
   mockLoggingService.logError.mockReset();
+  mockLoggingService.setCustomAttribute.mockReset();
   service.getCsrfTokenService().clearCsrfTokenCache();
   axiosMock.onGet('/unauthorized').reply(401);
   axiosMock.onGet('/forbidden').reply(403);
@@ -861,6 +863,7 @@ describe('fetchAuthenticatedUser', () => {
     setJwtTokenRefreshResponseTo(200, jwtTokens.valid.encoded);
     return service.fetchAuthenticatedUser().then((authenticatedUserAccessToken) => {
       expect(authenticatedUserAccessToken).toEqual(jwtTokens.valid.formatted);
+      expect(mockLoggingService.setCustomAttribute).toHaveBeenCalledWith('userId', jwtTokens.valid.formatted.userId);
       expectSingleCallToJwtTokenRefresh();
     });
   });
@@ -878,6 +881,7 @@ describe('fetchAuthenticatedUser', () => {
     setJwtTokenRefreshResponseTo(401, null);
     return service.fetchAuthenticatedUser({ forceRefresh: true }).then((authenticatedUserAccessToken) => {
       expect(authenticatedUserAccessToken).toEqual(null);
+      expect(mockLoggingService.setCustomAttribute).not.toHaveBeenCalled();
       expectSingleCallToJwtTokenRefresh();
     });
   });

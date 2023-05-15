@@ -19,6 +19,13 @@ class MockLoggingService {
    * @memberof MockLoggingService
    */
   logError = jest.fn();
+
+  /**
+   * Implemented as a jest.fn()
+   *
+   * @memberof MockLoggingService
+   */
+  setCustomAttribute = jest.fn();
 }
 
 export default MockLoggingService;
