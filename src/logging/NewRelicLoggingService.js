@@ -26,6 +26,7 @@ function sendPageAction(actionName, message, customAttributes) {
     console.log(actionName, message, customAttributes); // eslint-disable-line
   }
   if (window && typeof window.newrelic !== 'undefined') {
+    // https://docs.newrelic.com/docs/browser/new-relic-browser/browser-apis/addpageaction/
     window.newrelic.addPageAction(actionName, { message, ...customAttributes });
   }
 }
@@ -35,6 +36,7 @@ function sendError(error, customAttributes) {
     console.error(error, customAttributes); // eslint-disable-line
   }
   if (window && typeof window.newrelic !== 'undefined') {
+    // https://docs.newrelic.com/docs/browser/new-relic-browser/browser-apis/noticeerror/
     window.newrelic.noticeError(fixErrorLength(error), customAttributes);
   }
 }
