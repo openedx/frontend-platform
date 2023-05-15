@@ -2,7 +2,6 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import { Route, Routes, MemoryRouter } from 'react-router-dom';
-import { createBrowserHistory } from 'history';
 import { getAuthenticatedUser, getLoginRedirectUrl } from '../auth';
 import AuthenticatedPageRoute from './AuthenticatedPageRoute';
 import AppContext from './AppContext';
@@ -14,18 +13,15 @@ jest.mock('../auth');
 
 describe('AuthenticatedPageRoute', () => {
   const { location } = global;
-  let history;
 
   beforeEach(() => {
     delete global.location;
     global.location = {
       assign: jest.fn(),
-      href: '',
     };
     sendPageEvent.mockReset();
     getLoginRedirectUrl.mockReset();
     getAuthenticatedUser.mockReset();
-    history = createBrowserHistory();
   });
 
   afterEach(() => {
@@ -80,7 +76,6 @@ describe('AuthenticatedPageRoute', () => {
         </MemoryRouter>
       </AppContext.Provider>
     );
-    history.push('/authenticated');
     mount(component);
     expect(getLoginRedirectUrl).not.toHaveBeenCalled();
     expect(sendPageEvent).not.toHaveBeenCalled();
@@ -105,7 +100,6 @@ describe('AuthenticatedPageRoute', () => {
         </MemoryRouter>
       </AppContext.Provider>
     );
-    history.push('/');
     const wrapper = mount(component);
 
     expect(getLoginRedirectUrl).not.toHaveBeenCalled();
@@ -131,7 +125,6 @@ describe('AuthenticatedPageRoute', () => {
         </MemoryRouter>
       </AppContext.Provider>
     );
-    history.push('/authenticated');
     const wrapper = mount(component);
     expect(getLoginRedirectUrl).not.toHaveBeenCalled();
     expect(global.location.assign).not.toHaveBeenCalled();
