@@ -9,8 +9,8 @@ import AppContext from './AppContext';
 import {
   useAppEvent,
   useParagonTheme,
+  useTrackColorSchemeChoice,
 } from './hooks';
-import { useAppEvent, useTrackColorSchemeChoice } from './hooks';
 import { getAuthenticatedUser, AUTHENTICATED_USER_CHANGED } from '../auth';
 import { getConfig } from '../config';
 import { CONFIG_CHANGED } from '../constants';
