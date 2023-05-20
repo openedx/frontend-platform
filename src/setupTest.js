@@ -31,6 +31,8 @@ process.env.FAVICON_URL = 'https://edx-cdn.org/v3/default/favicon.ico';
 process.env.MFE_CONFIG_API_URL = '';
 process.env.APP_ID = '';
 process.env.SUPPORT_URL = 'https://support.edx.org';
+process.env.PARAGON_THEME_CORE_URL = '';
+process.env.PARAGON_THEME_VARIANTS_LIGHT_URL = '';
 
 /* Auth test variables
 
