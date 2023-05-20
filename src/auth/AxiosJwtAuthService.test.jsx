@@ -7,6 +7,7 @@ import AxiosJwtAuthService from './AxiosJwtAuthService';
 const mockLoggingService = {
   logInfo: jest.fn(),
   logError: jest.fn(),
+  setCustomAttribute: jest.fn(),
 };
 
 const authOptions = {
@@ -78,7 +79,7 @@ Object.keys(jwtTokens).forEach((jwtTokenName) => {
 const mockCsrfToken = 'thetokenvalue';
 const mockApiEndpointPath = `${process.env.BASE_URL}/api/v1/test`;
 
-global.location = { ...global.location, assign: jest.fn() };
+global.location ??= { ...global.location, assign: jest.fn() };
 
 const mockCookies = new Cookies();
 
@@ -204,6 +205,7 @@ beforeEach(() => {
   };
   mockLoggingService.logInfo.mockReset();
   mockLoggingService.logError.mockReset();
+  mockLoggingService.setCustomAttribute.mockReset();
   service.getCsrfTokenService().clearCsrfTokenCache();
   axiosMock.onGet('/unauthorized').reply(401);
   axiosMock.onGet('/forbidden').reply(403);
@@ -861,6 +863,7 @@ describe('fetchAuthenticatedUser', () => {
     setJwtTokenRefreshResponseTo(200, jwtTokens.valid.encoded);
     return service.fetchAuthenticatedUser().then((authenticatedUserAccessToken) => {
       expect(authenticatedUserAccessToken).toEqual(jwtTokens.valid.formatted);
+      expect(mockLoggingService.setCustomAttribute).toHaveBeenCalledWith('userId', jwtTokens.valid.formatted.userId);
       expectSingleCallToJwtTokenRefresh();
     });
   });
@@ -878,6 +881,7 @@ describe('fetchAuthenticatedUser', () => {
     setJwtTokenRefreshResponseTo(401, null);
     return service.fetchAuthenticatedUser({ forceRefresh: true }).then((authenticatedUserAccessToken) => {
       expect(authenticatedUserAccessToken).toEqual(null);
+      expect(mockLoggingService.setCustomAttribute).not.toHaveBeenCalled();
       expectSingleCallToJwtTokenRefresh();
     });
   });
@@ -885,9 +889,9 @@ describe('fetchAuthenticatedUser', () => {
 
 // These tests all make real network calls to http://httpbin.org.
 describe('Cache Functionality', () => {
-  const getUrl = 'http://httpbin.org/get';
-  const postUrl = 'http://httpbin.org/post';
-  const requestId = 'get-httpbin';
+  const getUrl = 'https://jsonplaceholder.typicode.com/posts/1';
+  const postUrl = 'https://jsonplaceholder.typicode.com/posts';
+  const requestId = 'get-jsonplaceholder-posts';
 
   const getWithRequestId = async (config = {}) => cachedClient.get(getUrl, {
     id: requestId,
@@ -895,7 +899,6 @@ describe('Cache Functionality', () => {
   });
 
   const postWithRequestId = async (config = {}) => cachedClient.post(postUrl, {
-    id: requestId,
     ...config,
   });
 
@@ -1001,7 +1004,7 @@ describe('Cache Functionality', () => {
     });
 
     it('GET request: refreshes the jwt token', async () => {
-      const response = await cachedClient.get('https://httpbin.org/get');
+      const response = await cachedClient.get(getUrl);
       expectSingleCallToJwtTokenRefresh();
       expectNoCallToCsrfTokenFetch();
       expectRequestToHaveJwtAuth(response.config);
@@ -1009,7 +1012,7 @@ describe('Cache Functionality', () => {
 
     ['post', 'put', 'patch', 'delete'].forEach((method) => {
       it(`${method.toUpperCase()}: refreshes the csrf and jwt tokens`, async () => {
-        const response = await cachedClient[method](`https://httpbin.org/${method}`);
+        const response = await cachedClient[method](method === 'post' ? postUrl : getUrl);
         expectSingleCallToJwtTokenRefresh();
         expectSingleCallToCsrfTokenFetch();
         expectRequestToHaveJwtAuth(response.config);
@@ -1035,7 +1038,7 @@ describe('Cache Functionality', () => {
     ['post', 'put', 'patch', 'delete'].forEach((method) => {
       it(`${method.toUpperCase()}: refreshes the csrf token but does not attempt to refresh the jwt token`, async () => {
         setJwtCookieTo(jwtTokens.valid.encoded);
-        const response = await cachedClient[method](`https://httpbin.org/${method}`, {
+        const response = await cachedClient[method](method === 'post' ? postUrl : getUrl, {
           id: requestId,
         });
         expectNoCallToJwtTokenRefresh();
@@ -1057,7 +1060,7 @@ describe('Cache Functionality', () => {
         it(`${method.toUpperCase()}: throws an error and calls logError`, async () => {
           expect.hasAssertions();
           try {
-            await cachedClient[method](`https://httpbin.org/${method}`, {
+            await cachedClient[method](getUrl, {
               id: requestId,
             });
           } catch (err) {

@@ -18,6 +18,11 @@ jest.mock('../analytics', () => ({
   identifyAuthenticatedUser: jest.fn(),
 }));
 
+jest.mock('./hooks', () => ({
+  ...jest.requireActual('./hooks'),
+  useTrackColorSchemeChoice: jest.fn(),
+}));
+
 describe('AppProvider', () => {
   beforeEach(async () => {
     await initialize({

@@ -2,6 +2,7 @@ import {
   useCallback, useEffect, useState, useReducer,
 } from 'react';
 import { subscribe, unsubscribe } from '../pubSub';
+import { sendTrackEvent } from '../analytics';
 import {
   PARAGON_THEME_CORE,
   PARAGON_THEME_VARIANT_LIGHT,
@@ -26,6 +27,32 @@ export const useAppEvent = (type, callback) => {
       unsubscribe(subscriptionToken);
     };
   }, [callback, type]);
+};
+
+/**
+ * A React hook that tracks user's preferred color scheme (light or dark) and sends respective
+ * event to the tracking service.
+ *
+ * @memberof module:React
+ */
+export const useTrackColorSchemeChoice = () => {
+  useEffect(() => {
+    const trackColorSchemeChoice = ({ matches }) => {
+      const preferredColorScheme = matches ? 'dark' : 'light';
+      sendTrackEvent('openedx.ui.frontend-platform.prefers-color-scheme.selected', { preferredColorScheme });
+    };
+    const colorSchemeQuery = window.matchMedia?.('(prefers-color-scheme: dark)');
+    if (colorSchemeQuery) {
+      // send user's initial choice
+      trackColorSchemeChoice(colorSchemeQuery);
+      colorSchemeQuery.addEventListener('change', trackColorSchemeChoice);
+    }
+    return () => {
+      if (colorSchemeQuery) {
+        colorSchemeQuery.removeEventListener('change', trackColorSchemeChoice);
+      }
+    };
+  }, []);
 };
 
 const initialParagonThemeState = {

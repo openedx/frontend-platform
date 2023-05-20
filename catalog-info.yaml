@@ -1,0 +1,21 @@
+# This file records information about this repo. Its use is described in OEP-55:
+# https://open-edx-proposals.readthedocs.io/en/latest/processes/oep-0055-proc-project-maintainers.html
+
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: 'frontend-platform'
+  description: "A modest application framework for Open edX micro-frontend applications and their supporting libraries"
+  links:
+    - url: "https://github.com/openedx/frontend-platform"
+      title: "Frontend Platform"
+      icon: "Code"
+    - url: "https://openedx.github.io/frontend-platform/"
+      title: "Documentation"
+      icon: "Article"
+  annotations:
+    openedx.org/arch-interest-groups: "jmbowman"
+spec:
+  owner: group:fed-bom
+  type: 'library'
+  lifecycle: 'production'
