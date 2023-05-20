@@ -79,11 +79,19 @@ export const useParagonThemeCore = ({
     }
     let coreThemeLink = document.head.querySelector(`link[href='${coreThemeUrl}']`);
     if (!coreThemeLink) {
+      // find existing links
+      const existingLinks = document.head.querySelectorAll('link[data-paragon-theme-core="true"]');
+
+      // create new link
       coreThemeLink = document.createElement('link');
       coreThemeLink.href = coreThemeUrl;
       coreThemeLink.rel = 'stylesheet';
+      coreThemeLink.dataset.paragonThemeCore = true;
       coreThemeLink.onload = () => {
         onLoad();
+        existingLinks.forEach((link) => {
+          link.remove();
+        });
       };
       document.head.insertAdjacentElement(
         'afterbegin',
@@ -141,11 +149,19 @@ const useParagonThemeVariants = ({
       let themeVariantLink = document.head.querySelector(`link[href='${themeVariantUrl}']`);
       const stylesheetRelForVariant = generateStylesheetRelAttr(themeVariant);
       if (!themeVariantLink) {
+        // find existing links
+        const existingLinks = document.head.querySelectorAll(`link[data-paragon-theme-variant='${themeVariant}']`);
+
+        // create new link
         themeVariantLink = document.createElement('link');
         themeVariantLink.href = themeVariantUrl;
         themeVariantLink.rel = stylesheetRelForVariant;
+        themeVariantLink.dataset.paragonThemeVariant = themeVariant;
         themeVariantLink.onload = () => {
           setThemeVariantLoaded(themeVariant);
+          existingLinks.forEach((link) => {
+            link.remove();
+          });
         };
         document.head.insertAdjacentElement(
           'afterbegin',
@@ -158,21 +174,27 @@ const useParagonThemeVariants = ({
   }, [themeVariantUrls, currentThemeVariant, onLoadThemeVariantLight]);
 };
 
+const handleParagonVersionSubsitution = (url) => {
+  if (!url || !url.includes('$paragonVersion') || !PARAGON_VERSION) {
+    return url;
+  }
+  return url.replace('$paragonVersion', PARAGON_VERSION);
+};
+
 /**
  * TODO
  * @param {*} config
- * @returns
+ * @returns An object containing the URLs for the theme's core CSS and any theme variants.
  */
 const getParagonThemeUrls = (config) => {
-  if (config.PARAGON_THEME_URLS) {
-    return config.PARAGON_THEME_URLS;
-  }
+  const coreCssUrl = config.PARAGON_THEME_URLS?.[PARAGON_THEME_CORE] ?? config.PARAGON_THEME_CORE_URL;
+  const lightThemeVariantCssUrl = (
+    config.PARAGON_THEME_URLS?.variants?.[PARAGON_THEME_VARIANT_LIGHT] ?? config.PARAGON_THEME_VARIANTS_LIGHT_URL
+  );
   return {
-    [PARAGON_THEME_CORE]: config.PARAGON_THEME_CORE_URL,
-    // [PARAGON_THEME_CORE]: undefined,
+    [PARAGON_THEME_CORE]: handleParagonVersionSubsitution(coreCssUrl),
     variants: {
-      [PARAGON_THEME_VARIANT_LIGHT]: config.PARAGON_THEME_VARIANTS_LIGHT_URL,
-      // [PARAGON_THEME_VARIANT_LIGHT]: undefined,
+      [PARAGON_THEME_VARIANT_LIGHT]: handleParagonVersionSubsitution(lightThemeVariantCssUrl),
     },
   };
 };
