@@ -6,7 +6,10 @@ import OptionalReduxProvider from './OptionalReduxProvider';
 
 import ErrorBoundary from './ErrorBoundary';
 import AppContext from './AppContext';
-import { useAppEvent, useTrackColorSchemeChoice } from './hooks';
+import {
+  useAppEvent,
+  useParagonTheme,
+} from './hooks';
 import { getAuthenticatedUser, AUTHENTICATED_USER_CHANGED } from '../auth';
 import { getConfig } from '../config';
 import { CONFIG_CHANGED } from '../constants';
@@ -49,8 +52,6 @@ export default function AppProvider({ store, children, wrapWithRouter }) {
   const [authenticatedUser, setAuthenticatedUser] = useState(getAuthenticatedUser());
   const [locale, setLocale] = useState(getLocale());
 
-  useTrackColorSchemeChoice();
-
   useAppEvent(AUTHENTICATED_USER_CHANGED, () => {
     setAuthenticatedUser(getAuthenticatedUser());
   });
@@ -63,7 +64,21 @@ export default function AppProvider({ store, children, wrapWithRouter }) {
     setLocale(getLocale());
   });
 
-  const appContextValue = useMemo(() => ({ authenticatedUser, config, locale }), [authenticatedUser, config, locale]);
+  const [paragonThemeState, paragonThemeDispatch] = useParagonTheme(config);
+
+  const appContextValue = useMemo(() => ({
+    authenticatedUser,
+    config,
+    locale,
+    paragonTheme: {
+      state: paragonThemeState,
+      dispatch: paragonThemeDispatch,
+    },
+  }), [authenticatedUser, config, locale, paragonThemeState, paragonThemeDispatch]);
+
+  if (!paragonThemeState?.isThemeLoaded) {
+    return null;
+  }
 
   return (
     <IntlProvider locale={locale} messages={getMessages()}>
@@ -87,8 +102,7 @@ export default function AppProvider({ store, children, wrapWithRouter }) {
 }
 
 AppProvider.propTypes = {
-  // eslint-disable-next-line react/forbid-prop-types
-  store: PropTypes.object,
+  store: PropTypes.shape({}),
   children: PropTypes.node.isRequired,
   wrapWithRouter: PropTypes.bool,
 };
