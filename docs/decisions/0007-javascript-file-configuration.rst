@@ -9,12 +9,13 @@ Draft
 Context
 -------
 
-Our webpack build process allows us to set environment variables on the command line or via .env
-files.  These environment variables are available in the application via ``process.env``.
+Our webpack build process allows us to set environment variables on the command
+line or via .env files.  These environment variables are available in the
+application via ``process.env``.
 
-The implementation of this uses templatization and string interpolation to replace any instance of
-``process.env.XXXX`` with the value of the environment variable named ``XXXX``.  As an example, in our
-source code we may write::
+The implementation of this uses templatization and string interpolation to
+replace any instance of ``process.env.XXXX`` with the value of the environment
+variable named ``XXXX``.  As an example, in our source code we may write::
 
     const LMS_BASE_URL = process.env.LMS_BASE_URL;
 
@@ -22,14 +23,16 @@ After the build process runs, the compiled source code will instead read::
 
     const LMS_BASE_URL = 'http://localhost:18000';
 
-Put another way, `process.env` is not actually an object available at runtime, it's a templatization
-token that helps the build replace it with a string literal.
+Put another way, `process.env` is not actually an object available at runtime,
+it's a templatization token that helps the build replace it with a string
+literal.
 
 This approach has several important limitations:
 
-- There's no way to add variables without hard-coding process.env.XXXX somewhere in the file,
-  complicating our ability to add additional application-specific configuration without explicitly
-  merging it into the configuration document after it's been created in frontend-platform.
+- There's no way to add variables without hard-coding process.env.XXXX
+  somewhere in the file, complicating our ability to add additional
+  application-specific configuration without explicitly merging it into the
+  configuration document after it's been created in frontend-platform.
 - The method can *only* handle strings.
 
   Other data types are converted to strings::
@@ -53,21 +56,24 @@ This approach has several important limitations:
 
   This is not good!
 
-- It makes it very difficult to supply array and object configuration variables, and unreasonable to
-  supply class or function config since we'd have to ``eval()`` them.
+- It makes it very difficult to supply array and object configuration
+  variables, and unreasonable to supply class or function config since we'd
+  have to ``eval()`` them.
 
-Related to all this, frontend-platform has long hand the ability to replace the implementations of
-its analytics, auth, and logging services, but no way to actually *configure* the app with a new
-implementation.  Because of the above limitations, there's no reasonable way to configure a
-JavaScript class via environment variables.
+Related to all this, frontend-platform has long had the ability to replace the
+implementations of its analytics, auth, and logging services, but no way to
+actually *configure* the app with a new implementation.  Because of the above
+limitations, there's no reasonable way to configure a JavaScript class via
+environment variables.
 
 Decision
 --------
 
-For the above reasons, we will deprecate environment variable configuration in favor of JavaScript
-file configuration.
+For the above reasons, we will deprecate environment variable configuration in
+favor of JavaScript file configuration.
 
-This method makes use of an ``env.config.js`` file to supply configuration variables to an application::
+This method makes use of an ``env.config.js`` file to supply configuration
+variables to an application::
 
     const config = {
       LMS_BASE_URL: 'http://localhost:18000',
@@ -78,34 +84,61 @@ This method makes use of an ``env.config.js`` file to supply configuration varia
 
     export default config;
 
-This file is imported by the frontend-build webpack build process if it exists, and expected by
-frontend-platform as part of its initialization process. If the file doesn't exist, frontend-build
-falls back to importing an empty object for backwards compatibility.  This functionality already exists
-today in frontend-build in preparation for using it here in frontend-platform.
+This file is imported by the frontend-build webpack build process if it exists,
+and expected by frontend-platform as part of its initialization process. If the
+file doesn't exist, frontend-build falls back to importing an empty object for
+backwards compatibility.  This functionality already exists today in
+frontend-build in preparation for using it here in frontend-platform.
 
 This interdependency creates a peerDependency for frontend-platform on `frontend-build v8.1.0 <frontend_build_810_>`_ or
 later.
 
-Using a JavaScript file for configuration is standard practice in the JavaScript/node community.
-Babel, webpack, eslint, Jest, etc., all accept configuration via JavaScript files (which we take
-advantage of in frontend-build), so there is ample precedent for using a .js file for configuration.
+Using a JavaScript file for configuration is standard practice in the
+JavaScript/node community.  Babel, webpack, eslint, Jest, etc., all accept
+configuration via JavaScript files (which we take advantage of in
+frontend-build), so there is ample precedent for using a .js file for
+configuration.
 
-In order to achieve deprecation of environment variable configuration, we will follow the
-deprecation process described in `OEP-21: Deprecation and Removal <oep21_>`_.  In addition, we will
-add build-time warnings to frontend-build indicating the deprecation of environment
-variable configuration.  Practically speaking, this will mean adjusting build processes throughout
-the community and in common tools like Tutor.
+In order to achieve deprecation of environment variable configuration, we will
+follow the deprecation process described in
+`OEP-21: Deprecation and Removal <oep21_>`_. In addition, we will add
+build-time warnings to frontend-build indicating the deprecation of environment
+variable configuration.  Practically speaking, this will mean adjusting build
+processes throughout the community and in common tools like Tutor.
+
+Relationship to runtime configuration
+*************************************
+
+JavaScript file configuration is compatible with runtime MFE configuration.
+frontend-platform loads configuration in a predictable order:
+
+- environment variable config
+- optional handlers (used to merge MFE-specific config in via additional
+  process.env variables)
+- JS file config
+- runtime config
+
+In the end, runtime config wins. That said, JS file config solves some use
+cases that runtime config can't solve around extensibility and customization.
+
+In the future if we deprecate environment variable config, it's likely that
+we keep both JS file config and runtime configuration around.  JS file config
+primarily to handle extensibility, and runtime config for everything else.
+
 
 Rejected Alternatives
 ---------------------
 
-Another option was to use JSON files for this purpose.  This solves some of our issues (limited use
-of non-string primitive data types) but is otherwise not nearly as expressive for flexible as using
-a JavaScript file directly.  Anecdotally, in the past frontend-build used JSON versions of many of
-its configuration files (Babel, eslint, jest) but over time they were all converted to JavaScript
-files so we could express more complicated configuration needs.  Since one of the primary use cases
-and reasons we need a new configuration method is to allow developers to supply alternate implementations
-of frontend-platform's core services (analytics, logging), JSON was a effectively a non-starter.
+Another option was to use JSON files for this purpose.  This solves some of our
+issues (limited use of non-string primitive data types) but is otherwise not
+nearly as expressive or flexible as using a JavaScript file directly.
+Anecdotally, in the past frontend-build used JSON versions of many of
+its configuration files (Babel, eslint, jest) but over time they were all
+converted to JavaScript files so we could express more complicated
+configuration needs.  Since one of the primary use cases and reasons we need a
+new configuration method is to allow developers to supply alternate
+implementations of frontend-platform's core services (analytics, logging), JSON
+was effectively a non-starter.
 
 .. _oep21: https://docs.openedx.org/projects/openedx-proposals/en/latest/processes/oep-0021-proc-deprecation.html
 .. _frontend_build_810: https://github.com/openedx/frontend-build/releases/tag/v8.1.0
