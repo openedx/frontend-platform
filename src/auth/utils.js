@@ -78,7 +78,7 @@ const processAxiosError = (axiosErrorObject) => {
     };
     // This case occurs most likely because of intermittent internet connection issues
     // but it also, though less often, catches CORS or server configuration problems.
-    error.message = `Axios Error (Request): (Possible local connectivity issue.) See custom attributes for details.`;
+    error.message = 'Axios Error (Request): (Possible local connectivity issue.) See custom attributes for details.';
   } else {
     error.customAttributes = {
       ...error.customAttributes,
@@ -87,7 +87,7 @@ const processAxiosError = (axiosErrorObject) => {
       httpErrorRequestUrl,
       httpErrorRequestMethod,
     };
-    error.message = `Axios Error (Config): See custom attributes for details.`;
+    error.message = 'Axios Error (Config): See custom attributes for details.';
   }
 
   return error;

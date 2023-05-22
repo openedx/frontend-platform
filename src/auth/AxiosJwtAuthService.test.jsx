@@ -469,7 +469,7 @@ describe('authenticatedHttpClient usage', () => {
             expectNoCallToCsrfTokenFetch();
             expectLogFunctionToHaveBeenCalledWithMessage(
               mockLoggingService.logError.mock.calls[0],
-              '[frontend-auth] Axios Error (Response): 403 http://localhost:18000/login_refresh (empty response)',
+              '[frontend-auth] Axios Error (Response): 403 - See custom attributes for details.',
               {
                 httpErrorRequestMethod: 'post',
                 httpErrorResponseData: '(empty response)',
@@ -498,7 +498,7 @@ describe('authenticatedHttpClient usage', () => {
           expectNoCallToCsrfTokenFetch();
           expectLogFunctionToHaveBeenCalledWithMessage(
             mockLoggingService.logError.mock.calls[0],
-            '[frontend-auth] Axios Error (Config): timeout of 0ms exceeded post http://localhost:18000/login_refresh',
+            '[frontend-auth] Axios Error (Config): See custom attributes for details.',
             {
               httpErrorRequestMethod: 'post',
               httpErrorMessage: 'timeout of 0ms exceeded',
@@ -698,7 +698,7 @@ describe('authenticatedHttpClient usage', () => {
       return client.get('/unauthorized').catch(() => {
         expectLogFunctionToHaveBeenCalledWithMessage(
           mockLoggingService.logInfo.mock.calls[0],
-          'Axios Error (Response): 401 /unauthorized (empty response)',
+          'Axios Error (Response): 401 - See custom attributes for details.',
           {
             httpErrorRequestMethod: 'get',
             httpErrorStatus: 401,
@@ -717,7 +717,7 @@ describe('authenticatedHttpClient usage', () => {
       return client.get('/forbidden').catch(() => {
         expectLogFunctionToHaveBeenCalledWithMessage(
           mockLoggingService.logInfo.mock.calls[0],
-          'Axios Error (Response): 403 /forbidden (empty response)',
+          'Axios Error (Response): 403 - See custom attributes for details.',
           {
             httpErrorRequestMethod: 'get',
             httpErrorStatus: 403,
@@ -1064,7 +1064,7 @@ describe('Cache Functionality', () => {
             expectNoCallToCsrfTokenFetch();
             expectLogFunctionToHaveBeenCalledWithMessage(
               mockLoggingService.logError.mock.calls[0],
-              '[frontend-auth] Axios Error (Response): 403 http://localhost:18000/login_refresh (empty response)',
+              '[frontend-auth] Axios Error (Response): 403 - See custom attributes for details.',
               {
                 httpErrorRequestMethod: 'post',
                 httpErrorResponseData: '(empty response)',
