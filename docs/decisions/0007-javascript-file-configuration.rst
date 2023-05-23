@@ -4,7 +4,7 @@ Promote JavaScript file configuration and deprecate environment variable configu
 Status
 ------
 
-Draft
+Accepted
 
 Context
 -------

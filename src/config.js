@@ -22,7 +22,7 @@
  * away.  There are two methods of supplying build-time configuration: environment variables and a
  * JavaScript file.
  *
- * ######Environment Variables
+ * ###### Environment Variables
  *
  * A set list of required config variables can be supplied as
  * command-line environment variables during the build process.
