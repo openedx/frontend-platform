@@ -39,5 +39,4 @@ describe('initialize with constant js file config', () => {
 
     expect(config.JS_FILE_VAR).toEqual('JS_FILE_VAR_VALUE_CONSTANT');
   });
-
 });
