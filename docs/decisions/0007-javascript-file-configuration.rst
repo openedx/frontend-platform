@@ -113,7 +113,7 @@ JavaScript file configuration is compatible with runtime MFE configuration.
 frontend-platform loads configuration in a predictable order:
 
 - environment variable config
-- optional handlers (used to merge MFE-specific config in via additional
+- optional handlers (commonly used to merge MFE-specific config in via additional
   process.env variables)
 - JS file config
 - runtime config
@@ -124,7 +124,6 @@ cases that runtime config can't solve around extensibility and customization.
 In the future if we deprecate environment variable config, it's likely that
 we keep both JS file config and runtime configuration around.  JS file config
 primarily to handle extensibility, and runtime config for everything else.
-
 
 Rejected Alternatives
 ---------------------
