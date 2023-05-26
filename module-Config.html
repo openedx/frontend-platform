@@ -37,21 +37,97 @@
         
             <div class="description"><h4>Import members from <strong>@edx/frontend-platform</strong></h4>
 <p>The configuration module provides utilities for working with an application's configuration
-document (ConfigDocument).  This module uses <code>process.env</code> to import configuration variables
-from the command-line build process.  It can be dynamically extended at run-time using a
-<code>config</code> initialization handler.  Please see the Initialization documentation for more
-information on handlers and initialization phases.</p>
-<pre class="prettyprint source"><code>import { getConfig } from '@edx/frontend-platform';
+document (ConfigDocument).  Configuration variables can be supplied to the
+application in four different ways.  They are applied in the following order:</p>
+<ul>
+<li>Build-time Configuration
+<ul>
+<li>Environment Variables</li>
+<li>JavaScript File</li>
+</ul>
+</li>
+<li>Runtime Configuration</li>
+</ul>
+<p>Last one in wins.  Variables with the same name defined via the later methods will override any
+defined using an earlier method.  i.e., if a variable is defined in Runtime Configuration, that
+will override the same variable defined in either Build-time Configuration method (environment
+variables or JS file).  Configuration defined in a JS file will override environment variables.</p>
+<h5>Build-time Configuration</h5>
+<p>Build-time configuration methods add config variables into the app when it is built by webpack.
+This saves the app an API call and means it has all the information it needs to initialize right
+away.  There are two methods of supplying build-time configuration: environment variables and a
+JavaScript file.</p>
+<h6>Environment Variables</h6>
+<p>A set list of required config variables can be supplied as
+command-line environment variables during the build process.</p>
+<p>As a simple example, these are supplied on the command-line before invoking <code>npm run build</code>:</p>
+<pre class="prettyprint source"><code>LMS_BASE_URL=http://localhost:18000 npm run build
+</code></pre>
+<p>Note that additional variables <em>cannot</em> be supplied via this method without using the <code>config</code>
+initialization handler.  The app won't pick them up and they'll appear <code>undefined</code>.</p>
+<p>This configuration method is being deprecated in favor of JavaScript File Configuration.</p>
+<h6>JavaScript File Configuration</h6>
+<p>Configuration variables can be supplied in an optional file named env.config.js.  This file must
+export either an Object containing configuration variables or a function.  The function must
+return an Object containing configuration variables or, alternately, a promise which resolves to
+an Object.</p>
+<p>Using a function or async function allows the configuration to be resolved at runtime (because
+the function will be executed at runtime).  This is not common, and the capability is included
+for the sake of flexibility.</p>
+<p>JavaScript File Configuration is well-suited to extensibility use cases or component overrides,
+in that the configuration file can depend on any installed JavaScript module.  It is also the
+preferred way of doing build-time configuration if runtime configuration isn't used by your
+deployment of the platform.</p>
+<p>Exporting a config object:</p>
+<pre class="prettyprint source"><code>const config = {
+  LMS_BASE_URL: 'http://localhost:18000'
+};
 
-const {
-  BASE_URL,
-  LMS_BASE_URL,
-  LOGIN_URL,
-  LOGIN_URL,
-  REFRESH_ACCESS_TOKEN_ENDPOINT,
-  ACCESS_TOKEN_COOKIE_NAME,
-  CSRF_TOKEN_API_PATH,
-} = getConfig();
+export default config;
+</code></pre>
+<p>Exporting a function that returns an object:</p>
+<pre class="prettyprint source"><code>function getConfig() {
+  return {
+    LMS_BASE_URL: 'http://localhost:18000'
+  };
+}
+</code></pre>
+<p>Exporting a function that returns a promise that resolves to an object:</p>
+<pre class="prettyprint source"><code>function getAsyncConfig() {
+  return new Promise((resolve, reject) => {
+    resolve({
+      LMS_BASE_URL: 'http://localhost:18000'
+    });
+  });
+}
+
+export default getAsyncConfig;
+</code></pre>
+<h5>Runtime Configuration</h5>
+<p>Configuration variables can also be supplied using the &quot;runtime configuration&quot; method, taking
+advantage of the Micro-frontend Config API in edx-platform. More information on this API can be
+found in the ADR which introduced it:</p>
+<p>https://github.com/openedx/edx-platform/blob/master/lms/djangoapps/mfe_config_api/docs/decisions/0001-mfe-config-api.rst</p>
+<p>The runtime configuration method can be enabled by supplying a MFE_CONFIG_API_URL via one of the other
+two configuration methods above.</p>
+<p>Runtime configuration is particularly useful if you need to supply different configurations to
+a single deployment of a micro-frontend, for instance.  It is also a perfectly valid alternative
+to build-time configuration, though it introduces an additional API call to edx-platform on MFE
+initialization.</p>
+<h5>Initialization Config Handler</h5>
+<p>The configuration document can be extended by
+applications at run-time using a <code>config</code> initialization handler.  Please see the Initialization
+documentation for more information on handlers and initialization phases.</p>
+<pre class="prettyprint source"><code>initialize({
+  handlers: {
+    config: () => {
+      mergeConfig({
+        CUSTOM_VARIABLE: 'custom value',
+        LMS_BASE_URL: 'http://localhost:18001' // You can override variables, but this is uncommon.
+      }, 'App config override handler');
+    },
+  },
+});
 </code></pre></div>
         
 
@@ -127,7 +203,10 @@ const {
 
 <div class="description">
     <p>An object describing the current application configuration.</p>
-<p>The implementation loads this document via <code>process.env</code> variables.</p>
+<p>In its most basic form, the initialization process loads this document via <code>process.env</code>
+variables.  There are other ways to add configuration variables to the ConfigDocument as
+documented above (JavaScript File Configuration, Runtime Configuration, and the Initialization
+Config Handler)</p>
 <pre class="prettyprint source"><code>{
   BASE_URL: process.env.BASE_URL,
   // ... other vars
@@ -915,7 +994,7 @@ time.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="config.js.html">config.js</a>, <a href="config.js.html#line157">line 157</a>
+        <a href="config.js.html">config.js</a>, <a href="config.js.html#line275">line 275</a>
     </li></ul></dd>
     
 
@@ -1114,7 +1193,7 @@ sequence.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="config.js.html">config.js</a>, <a href="config.js.html#line146">line 146</a>
+        <a href="config.js.html">config.js</a>, <a href="config.js.html#line264">line 264</a>
     </li></ul></dd>
     
 
@@ -1159,8 +1238,14 @@ sequence.</p>
 
 <div class="description">
     <p>Getter for the application configuration document.  This is synchronous and merely returns a
-reference to an existing object, and is thus safe to call as often as desired.  The document
-should have the following keys at a minimum:</p>
+reference to an existing object, and is thus safe to call as often as desired.</p>
+<p>Example:</p>
+<pre class="prettyprint source"><code>import { getConfig } from '@edx/frontend-platform';
+
+const {
+  LMS_BASE_URL,
+} = getConfig();
+</code></pre>
 </div>
 
 
@@ -1204,7 +1289,7 @@ should have the following keys at a minimum:</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="config.js.html">config.js</a>, <a href="config.js.html#line84">line 84</a>
+        <a href="config.js.html">config.js</a>, <a href="config.js.html#line192">line 192</a>
     </li></ul></dd>
     
 
@@ -1366,7 +1451,7 @@ If any of the key values are `undefined`, an error will be logged to 'warn'.</co
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="config.js.html">config.js</a>, <a href="config.js.html#line116">line 116</a>
+        <a href="config.js.html">config.js</a>, <a href="config.js.html#line234">line 234</a>
     </li></ul></dd>
     
 
@@ -1413,6 +1498,13 @@ If any of the key values are `undefined`, an error will be logged to 'warn'.</co
     <p>Replaces the existing ConfigDocument.  This is not commonly used, but can be helpful for tests.</p>
 <p>The supplied config document will be tested with <code>ensureDefinedConfig</code> to ensure it does not
 have any <code>undefined</code> keys.</p>
+<p>Example:</p>
+<pre class="prettyprint source"><code>import { setConfig } from '@edx/frontend-platform';
+
+setConfig({
+  LMS_BASE_URL, // This is overriding the ENTIRE document - this is not merged in!
+});
+</code></pre>
 </div>
 
 
@@ -1505,7 +1597,7 @@ have any <code>undefined</code> keys.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="config.js.html">config.js</a>, <a href="config.js.html#line96">line 96</a>
+        <a href="config.js.html">config.js</a>, <a href="config.js.html#line214">line 214</a>
     </li></ul></dd>
     
 
@@ -1576,7 +1668,7 @@ have any <code>undefined</code> keys.</p>
                     <a href="module-Initialization.html" class="nav-link font-weight-bold">Initialization</a>
                     
             <ul class="list-unstyled px-3 pb-4 bg-light">
-                <li><a href="module-Initialization.html#~analytics">analytics</a></li><li><a href="module-Initialization.html#~auth">auth</a></li><li><a href="module-Initialization.html#~history">history</a></li><li><a href="module-Initialization.html#~initError">initError</a></li><li><a href="module-Initialization.html#~initialize">initialize</a></li>
+                <li><a href="module-Initialization.html#~analytics">analytics</a></li><li><a href="module-Initialization.html#~auth">auth</a></li><li><a href="module-Initialization.html#~history">history</a></li><li><a href="module-Initialization.html#~initError">initError</a></li><li><a href="module-Initialization.html#~initialize">initialize</a></li><li><a href="module-Initialization.html#~jsFileConfig">jsFileConfig</a></li>
             </ul>
         
                 </li><li class="module-section nav-item Internationalization">
@@ -1627,7 +1719,7 @@ have any <code>undefined</code> keys.</p>
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.0</a> on Wed May 24 2023 09:07:26 GMT+0000 (Coordinated Universal Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.0</a> on Fri May 26 2023 14:35:21 GMT+0000 (Coordinated Universal Time)
 </footer>
 
 <script> prettyPrint(); </script>
