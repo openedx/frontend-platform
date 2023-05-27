@@ -8,6 +8,8 @@ import {
   PARAGON_THEME_VARIANT_LIGHT,
 } from './constants';
 import { paragonThemeReducer, paragonThemeActions } from './reducers';
+import { logError, logInfo } from '../logging';
+import { getConfig } from '../config';
 
 /**
  * A React hook that allows functional components to subscribe to application events.  This should
@@ -53,12 +55,44 @@ export const useParagonThemeCore = ({
     }
     let coreThemeLink = document.head.querySelector(`link[href='${coreThemeUrl}']`);
     if (!coreThemeLink) {
-      coreThemeLink = document.createElement('link');
-      coreThemeLink.href = coreThemeUrl;
-      coreThemeLink.rel = 'stylesheet';
-      coreThemeLink.onload = () => {
-        onLoad();
+      const getExistingCoreThemeLinks = () => document.head.querySelectorAll('link[data-paragon-theme-core="true"]');
+      const removeExistingLinks = (existingLinks) => {
+        existingLinks.forEach((link) => {
+          link.remove();
+        });
       };
+      // find existing links
+      const existingLinks = getExistingCoreThemeLinks();
+
+      // create new link
+      const createCoreThemeLink = (url) => {
+        coreThemeLink = document.createElement('link');
+        coreThemeLink.href = url;
+        console.log('createCoreThemeLink', url);
+        coreThemeLink.rel = 'stylesheet';
+        coreThemeLink.dataset.paragonThemeCore = true;
+        coreThemeLink.onload = () => {
+          onLoad();
+          removeExistingLinks(existingLinks);
+        };
+        coreThemeLink.onerror = () => {
+          logError(`Failed to load core theme CSS from ${url}`);
+          if (PARAGON?.themeUrls?.core?.outputChunkName) {
+            const coreOutputChunkCss = `${PARAGON.themeUrls.core.outputChunkName}.css`;
+            const coreThemeFallbackUrl = `${getConfig().BASE_URL}/${coreOutputChunkCss}`;
+            logInfo(`Falling back to locally installed core theme CSS: ${coreThemeFallbackUrl}`);
+            coreThemeLink = createCoreThemeLink(coreThemeFallbackUrl);
+            const otherExistingLinks = getExistingCoreThemeLinks();
+            removeExistingLinks(otherExistingLinks);
+            document.head.insertAdjacentElement(
+              'afterbegin',
+              coreThemeLink,
+            );
+          }
+        };
+        return coreThemeLink;
+      };
+      coreThemeLink = createCoreThemeLink(coreThemeUrl);
       document.head.insertAdjacentElement(
         'afterbegin',
         coreThemeLink,
@@ -115,12 +149,42 @@ const useParagonThemeVariants = ({
       let themeVariantLink = document.head.querySelector(`link[href='${themeVariantUrl}']`);
       const stylesheetRelForVariant = generateStylesheetRelAttr(themeVariant);
       if (!themeVariantLink) {
-        themeVariantLink = document.createElement('link');
-        themeVariantLink.href = themeVariantUrl;
-        themeVariantLink.rel = stylesheetRelForVariant;
-        themeVariantLink.onload = () => {
-          setThemeVariantLoaded(themeVariant);
+        const getExistingThemeVariantLinks = () => document.head.querySelectorAll(`link[data-paragon-theme-variant='${themeVariant}']`);
+        // find existing links
+        const existingLinks = getExistingThemeVariantLinks();
+
+        // create new link
+        const createThemeVariantLink = (url) => {
+          themeVariantLink = document.createElement('link');
+          themeVariantLink.href = url;
+          themeVariantLink.rel = 'stylesheet';
+          themeVariantLink.dataset.paragonThemeVariant = themeVariant;
+          themeVariantLink.onload = () => {
+            setThemeVariantLoaded(themeVariant);
+            existingLinks.forEach((link) => {
+              link.remove();
+            });
+          };
+          themeVariantLink.onerror = () => {
+            logError(`Failed to load theme variant (${themeVariant}) CSS from ${themeVariantUrl}`);
+            if (PARAGON?.themeUrls?.variants?.[themeVariant]?.outputChunkName) {
+              const themeVariantOutputChunkCss = `${PARAGON?.themeUrls?.variants?.[themeVariant]?.outputChunkName}.css`;
+              const themeVariantFallbackUrl = `${getConfig().BASE_URL}/${themeVariantOutputChunkCss}`;
+              logInfo(`Falling back to locally installed theme variant (${themeVariant}) CSS: ${themeVariantFallbackUrl}`);
+              themeVariantLink = createThemeVariantLink(themeVariantFallbackUrl);
+              const otherExistingLinks = getExistingThemeVariantLinks();
+              otherExistingLinks.forEach((link) => {
+                link.remove();
+              });
+              document.head.insertAdjacentElement(
+                'afterbegin',
+                themeVariantLink,
+              );
+            }
+          };
+          return themeVariantLink;
         };
+        themeVariantLink = createThemeVariantLink(themeVariantUrl);
         document.head.insertAdjacentElement(
           'afterbegin',
           themeVariantLink,
@@ -132,21 +196,27 @@ const useParagonThemeVariants = ({
   }, [themeVariantUrls, currentThemeVariant, onLoadThemeVariantLight]);
 };
 
+const handleParagonVersionSubstitution = (url) => {
+  if (!url || !url.includes('$paragonVersion') || !PARAGON?.version) {
+    return url;
+  }
+  return url.replace('$paragonVersion', PARAGON.version);
+};
+
 /**
  * TODO
  * @param {*} config
- * @returns
+ * @returns An object containing the URLs for the theme's core CSS and any theme variants.
  */
 const getParagonThemeUrls = (config) => {
-  if (config.PARAGON_THEME_URLS) {
-    return config.PARAGON_THEME_URLS;
-  }
+  const coreCssUrl = config.PARAGON_THEME_URLS?.[PARAGON_THEME_CORE] ?? config.PARAGON_THEME_CORE_URL;
+  const lightThemeVariantCssUrl = (
+    config.PARAGON_THEME_URLS?.variants?.[PARAGON_THEME_VARIANT_LIGHT] ?? config.PARAGON_THEME_VARIANTS_LIGHT_URL
+  );
   return {
-    [PARAGON_THEME_CORE]: config.PARAGON_THEME_CORE_URL,
-    // [PARAGON_THEME_CORE]: undefined,
+    [PARAGON_THEME_CORE]: handleParagonVersionSubstitution(coreCssUrl),
     variants: {
-      [PARAGON_THEME_VARIANT_LIGHT]: config.PARAGON_THEME_VARIANTS_LIGHT_URL,
-      // [PARAGON_THEME_VARIANT_LIGHT]: undefined,
+      [PARAGON_THEME_VARIANT_LIGHT]: handleParagonVersionSubstitution(lightThemeVariantCssUrl),
     },
   };
 };
