@@ -46,4 +46,8 @@ MFE_CONFIG_OVERRIDES = {
 
 In the event the other Paragon CSS URLs are configured via one of the other documented mechanisms, but they fail to load (e.g., the CDN url throws a 404), `@edx/frontend-platform` will fallback to injecting the locally installed Paragon CSS from the consuming application into the HTML document.
 
-If you'd only like to use the locally installed `@edx/paragon`, you may do so without adjusting any configuration so long as you're using compatible versions of `@edx/frontend-build`, `@edx/frontend-platform`, and `@edx/paragon`.
+If you would like to use the same version of the Paragon CSS URLs as the locally installed `@edx/paragon`, the configuration for the Paragon CSS URLs may contain a wildcard `$paragonVersion` which gets replaced with the locally installed version of `@edx/paragon` in the consuming application, e.g.:
+
+```
+https://cdn.jsdelivr.net/npm/@edx/paragon@$paragonVersion/dist/core.css
+```
