@@ -94,7 +94,6 @@ export const useParagonThemeCore = ({
       const createCoreThemeLink = (url) => {
         coreThemeLink = document.createElement('link');
         coreThemeLink.href = url;
-        console.log('createCoreThemeLink', url);
         coreThemeLink.rel = 'stylesheet';
         coreThemeLink.dataset.paragonThemeCore = true;
         coreThemeLink.onload = () => {
