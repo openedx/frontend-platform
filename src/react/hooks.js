@@ -107,7 +107,7 @@ export const useParagonThemeCore = ({
         };
         return coreThemeLink;
       };
-      coreThemeLink = createCoreThemeLink(themeCore?.url);
+      coreThemeLink = createCoreThemeLink(themeCore.url);
       document.head.insertAdjacentElement(
         'afterbegin',
         coreThemeLink,
@@ -136,6 +136,10 @@ const useParagonThemeVariants = ({
   onLoadThemeVariantLight,
 }) => {
   useEffect(() => {
+    if (!themeVariants) {
+      return;
+    }
+
     /**
      * Determines the value for the `rel` attribute for a given theme variant based
      * on if its the currently applied variant.
@@ -153,7 +157,7 @@ const useParagonThemeVariants = ({
     };
 
     /**
-     * Iterate over each theme variant URL and inject it into the HTML document if it doesn't already exist.
+     * Iterate over each theme variant URL and inject it into the HTML document, if it doesn't already exist.
      */
     Object.entries(themeVariants).forEach(([themeVariant, value]) => {
       // If there is no config for the theme variant URL, set the theme variant to loaded and continue.
@@ -320,7 +324,6 @@ export const useParagonTheme = (config) => {
       return;
     }
 
-    // the core theme and light theme variant is still loading, do nothing.
     const hasThemeConfig = (themeCore.url && Object.keys(themeVariants).length > 0);
     if (!hasThemeConfig) {
       // no theme URLs to load, set loading to false.
