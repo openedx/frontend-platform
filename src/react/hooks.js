@@ -339,6 +339,7 @@ export const useParagonTheme = (config) => {
     isCoreThemeLoaded,
     isLightThemeVariantLoaded,
     themeCore.url,
+    themeVariants,
   ]);
 
   return [themeState, dispatch];
