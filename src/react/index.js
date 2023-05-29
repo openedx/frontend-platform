@@ -15,4 +15,3 @@ export { default as LoginRedirect } from './LoginRedirect';
 export { default as PageRoute } from './PageRoute';
 export { useAppEvent, useParagonTheme } from './hooks';
 export { paragonThemeActions } from './reducers';
-export { PARAGON_THEME_VARIANT_LIGHT } from './constants';
