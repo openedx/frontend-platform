@@ -68,7 +68,6 @@ export const useParagonThemeCore = ({
       const createCoreThemeLink = (url) => {
         coreThemeLink = document.createElement('link');
         coreThemeLink.href = url;
-        console.log('createCoreThemeLink', url);
         coreThemeLink.rel = 'stylesheet';
         coreThemeLink.dataset.paragonThemeCore = true;
         coreThemeLink.onload = () => {
@@ -77,9 +76,8 @@ export const useParagonThemeCore = ({
         };
         coreThemeLink.onerror = () => {
           logError(`Failed to load core theme CSS from ${url}`);
-          if (PARAGON?.themeUrls?.core?.outputChunkName) {
-            const coreOutputChunkCss = `${PARAGON.themeUrls.core.outputChunkName}.css`;
-            const coreThemeFallbackUrl = `${getConfig().BASE_URL}/${coreOutputChunkCss}`;
+          if (PARAGON?.themeUrls?.core) {
+            const coreThemeFallbackUrl = `${getConfig().BASE_URL}/${PARAGON.themeUrls.core}`;
             logInfo(`Falling back to locally installed core theme CSS: ${coreThemeFallbackUrl}`);
             coreThemeLink = createCoreThemeLink(coreThemeFallbackUrl);
             const otherExistingLinks = getExistingCoreThemeLinks();
@@ -167,9 +165,8 @@ const useParagonThemeVariants = ({
           };
           themeVariantLink.onerror = () => {
             logError(`Failed to load theme variant (${themeVariant}) CSS from ${themeVariantUrl}`);
-            if (PARAGON?.themeUrls?.variants?.[themeVariant]?.outputChunkName) {
-              const themeVariantOutputChunkCss = `${PARAGON?.themeUrls?.variants?.[themeVariant]?.outputChunkName}.css`;
-              const themeVariantFallbackUrl = `${getConfig().BASE_URL}/${themeVariantOutputChunkCss}`;
+            if (PARAGON?.themeUrls?.variants?.[themeVariant]) {
+              const themeVariantFallbackUrl = `${getConfig().BASE_URL}/${PARAGON.themeUrls.variants[themeVariant]}`;
               logInfo(`Falling back to locally installed theme variant (${themeVariant}) CSS: ${themeVariantFallbackUrl}`);
               themeVariantLink = createThemeVariantLink(themeVariantFallbackUrl);
               const otherExistingLinks = getExistingThemeVariantLinks();
@@ -213,6 +210,18 @@ const getParagonThemeUrls = (config) => {
   const lightThemeVariantCssUrl = (
     config.PARAGON_THEME_URLS?.variants?.[PARAGON_THEME_VARIANT_LIGHT] ?? config.PARAGON_THEME_VARIANTS_LIGHT_URL
   );
+
+  const hasMissingCssUrls = !coreCssUrl || !lightThemeVariantCssUrl;
+  if (hasMissingCssUrls && !!PARAGON) {
+    const prependBaseUrl = (url) => `${config.BASE_URL}/${url}`;
+    return {
+      [PARAGON_THEME_CORE]: prependBaseUrl(PARAGON.themeUrls.core),
+      variants: {
+        [PARAGON_THEME_VARIANT_LIGHT]: prependBaseUrl(PARAGON.themeUrls.variants.light),
+      },
+    };
+  }
+
   return {
     [PARAGON_THEME_CORE]: handleParagonVersionSubstitution(coreCssUrl),
     variants: {
