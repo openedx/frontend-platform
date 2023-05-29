@@ -9,33 +9,55 @@ This document serves as a guide to using `@edx/frontend-platform` to support MFE
 ## Theme URL configuration
 
 Paragon supports 2 mechanisms for configuring the Paragon theme URLs:
-* Environment variable configuration
-* Runtime configuration
-* Locally installed `@edx/paragon`
+* JavaScript-based configuration via `env.config.js`.
+* MFE runtime configuration API via `edx-platform`
 
-The Paragon theming extension to dynamically load external theme CSS prefers the theme configuration in the runtime config over the environment variable configuration.
+Using either configuration mechanism, a `PARAGON_THEME_URLS` configuration setting must be created to point to the externally hosted Paragon theme CSS files, e.g.:
 
-### Environment variable configuration
+```js
+const config = {
+    PARAGON_THEME_URLS = {
+        core: 'https://cdn.jsdelivr.net/npm/@edx/paragon@$paragonVersion/dist/core.css',
+        variants: {
+            light: 'https://cdn.jsdelivr.net/npm/@edx/paragon@$paragonVersion/dist/light.css',
+        },
+    },
+};
+export default config;
+```
 
-The standard way to configure MFEs is to use environment variables specific to the application environment they are running in. For example, during local development, environment variables are defined and loaded via the `.env.development` file.
+### JavaScript-based configuration
 
-Two new environment variables are exposed to configure the Paragon theme URLs:
-* `PARAGON_THEME_CORE_URL`. This URL represents the foundational theme styles provided by Paragon's `core.css` file.
-* `PARAGON_THEME_VARIANTS_LIGHT_URL`. This URL represents the light theme variant specific styles provided by Paragon's `light.css` file.
+Another approach to configuration with `@edx/frontend-platform` is to create a `env.config.js` file in the root of the repository, similar to the environment variable configuration mentioned above. However, in this case, the configuration is defined as a JavaScript file, which affords consumers to use more complex data types than just strings as in the environment variable approach.
 
-### Runtime configuration
+To use this JavaScript-based configuration approach, you may set a `PARAGON_THEME_URLS` configuration variable in your `env.config.js` file:
+
+```js
+const config = {
+    PARAGON_THEME_URLS: {
+        core: 'https://cdn.jsdelivr.net/npm/@edx/paragon@$paragonVersion/dist/paragon.css',
+        variants: {
+            light: 'https://cdn.jsdelivr.net/npm/@edx/paragon@$paragonVersion/scss/core/css/variables.css',
+        },
+    },
+};
+export default config;
+```
+
+
+### MFE runtime configuration API
 
 `@edx/frontend-platform` additionally supports loading application configuration from an API at runtime rather than environment variables. For example, in `edx-platform`, there is an API endpoint for MFE runtime configuration at `http://localhost:18000/api/mfe_config/v1`. The application configuration may be setup via Django settings as follows:
 
-```
+```python
 ENABLE_MFE_CONFIG_API = True
 MFE_CONFIG = {}
 MFE_CONFIG_OVERRIDES = {
-    "profile": {
-        "PARAGON_THEME_URLS": {
-            'core': 'https://cdn.jsdelivr.net/npm/@edx/paragon@21.0.0-alpha.28/dist/paragon.css',
+    'profile': {
+        'PARAGON_THEME_URLS': {
+            'core': 'https://cdn.jsdelivr.net/npm/@edx/paragon@$paragonVersion/dist/core.css',
             'variants': {
-                'light': 'https://cdn.jsdelivr.net/npm/@edx/paragon@21.0.0-alpha.28/scss/core/css/variables.css',
+                'light': 'https://cdn.jsdelivr.net/npm/@edx/paragon@$paragonVersion/dist/light.css',
             },
         },
     },
@@ -48,6 +70,7 @@ In the event the other Paragon CSS URLs are configured via one of the other docu
 
 If you would like to use the same version of the Paragon CSS URLs as the locally installed `@edx/paragon`, the configuration for the Paragon CSS URLs may contain a wildcard `$paragonVersion` which gets replaced with the locally installed version of `@edx/paragon` in the consuming application, e.g.:
 
-```
+```shell
 https://cdn.jsdelivr.net/npm/@edx/paragon@$paragonVersion/dist/core.css
+https://cdn.jsdelivr.net/npm/@edx/paragon@$paragonVersion/scss/core/css/variables.css
 ```
