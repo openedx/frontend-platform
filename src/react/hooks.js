@@ -82,7 +82,7 @@ export const useParagonThemeCore = ({
       const existingLinks = getExistingCoreThemeLinks();
 
       // create new link
-      const createCoreThemeLink = (url) => {
+      const createCoreThemeLink = (url, { isFallbackThemeUrl = false } = {}) => {
         coreThemeLink = document.createElement('link');
         coreThemeLink.href = url;
         coreThemeLink.rel = 'stylesheet';
@@ -93,10 +93,15 @@ export const useParagonThemeCore = ({
         };
         coreThemeLink.onerror = () => {
           logError(`Failed to load core theme CSS from ${url}`);
+          if (isFallbackThemeUrl) {
+            logError('Could not load core theme CSS from fallback URL. Aborting.');
+            onLoad();
+            return;
+          }
           if (PARAGON?.themeUrls?.core) {
-            const coreThemeFallbackUrl = `${getConfig().BASE_URL}/${PARAGON.themeUrls.core}`;
+            const coreThemeFallbackUrl = `${getConfig().BASE_URL}/${PARAGON.themeUrls.core.fileName}`;
             logInfo(`Falling back to locally installed core theme CSS: ${coreThemeFallbackUrl}`);
-            coreThemeLink = createCoreThemeLink(coreThemeFallbackUrl);
+            coreThemeLink = createCoreThemeLink(coreThemeFallbackUrl, { isFallbackThemeUrl: true });
             const otherExistingLinks = getExistingCoreThemeLinks();
             removeExistingLinks(otherExistingLinks);
             document.head.insertAdjacentElement(
@@ -195,7 +200,7 @@ const useParagonThemeVariants = ({
         const existingLinks = getExistingThemeVariantLinks();
 
         // create new link
-        const createThemeVariantLink = (url) => {
+        const createThemeVariantLink = (url, { isFallbackThemeUrl = false } = {}) => {
           themeVariantLink = document.createElement('link');
           themeVariantLink.href = url;
           themeVariantLink.rel = 'stylesheet';
@@ -208,10 +213,15 @@ const useParagonThemeVariants = ({
           };
           themeVariantLink.onerror = () => {
             logError(`Failed to load theme variant (${themeVariant}) CSS from ${value.url}`);
+            if (isFallbackThemeUrl) {
+              logError('Could not load theme theme variant CSS from fallback URL. Aborting.');
+              setThemeVariantLoaded(themeVariant);
+              return;
+            }
             if (PARAGON?.themeUrls?.variants?.[themeVariant]) {
-              const themeVariantFallbackUrl = `${getConfig().BASE_URL}/${PARAGON.themeUrls.variants[themeVariant]}`;
+              const themeVariantFallbackUrl = `${getConfig().BASE_URL}/${PARAGON.themeUrls.variants[themeVariant].fileName}`;
               logInfo(`Falling back to locally installed theme variant (${themeVariant}) CSS: ${themeVariantFallbackUrl}`);
-              themeVariantLink = createThemeVariantLink(themeVariantFallbackUrl);
+              themeVariantLink = createThemeVariantLink(themeVariantFallbackUrl, { isFallbackThemeUrl: true });
               const otherExistingLinks = getExistingThemeVariantLinks();
               otherExistingLinks.forEach((link) => {
                 link.remove();
