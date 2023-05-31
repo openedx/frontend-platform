@@ -14,23 +14,20 @@ Paragon supports 2 mechanisms for configuring the Paragon theme URLs:
 
 Using either configuration mechanism, a `PARAGON_THEME_URLS` configuration setting must be created to point to the externally hosted Paragon theme CSS files, e.g.:
 
-```js
-const config = {
-    PARAGON_THEME_URLS = {
-        core: 'https://cdn.jsdelivr.net/npm/@edx/paragon@$paragonVersion/dist/core.css',
-        variants: {
-            light: 'https://cdn.jsdelivr.net/npm/@edx/paragon@$paragonVersion/dist/light.css',
-        },
-    },
-};
-export default config;
+```json
+{
+    "core": "https://cdn.jsdelivr.net/npm/@edx/paragon@$paragonVersion/dist/core.css",
+    "variants": {
+        "light": "https://cdn.jsdelivr.net/npm/@edx/paragon@$paragonVersion/dist/light.css"
+    }
+}
 ```
 
 ### JavaScript-based configuration
 
-Another approach to configuration with `@edx/frontend-platform` is to create a `env.config.js` file in the root of the repository, similar to the environment variable configuration mentioned above. However, in this case, the configuration is defined as a JavaScript file, which affords consumers to use more complex data types than just strings as in the environment variable approach.
+One approach to configuring the `PARAGON_THEME_URLS` is to create a `env.config.js` file in the root of the repository. The configuration is defined as a JavaScript file, which affords consumers to use more complex data types, amongst other benefits.
 
-To use this JavaScript-based configuration approach, you may set a `PARAGON_THEME_URLS` configuration variable in your `env.config.js` file:
+To use this JavaScript-based configuration approach, you may set a `PARAGON_THEME_URLS` configuration variable in a `env.config.js` file:
 
 ```js
 const config = {
@@ -47,12 +44,13 @@ export default config;
 
 ### MFE runtime configuration API
 
-`@edx/frontend-platform` additionally supports loading application configuration from an API at runtime rather than environment variables. For example, in `edx-platform`, there is an API endpoint for MFE runtime configuration at `http://localhost:18000/api/mfe_config/v1`. The application configuration may be setup via Django settings as follows:
+`@edx/frontend-platform` additionally supports loading application configuration from the MFE runtime configuration API via `edx-platform`. The configuration is served by the `http://localhost:18000/api/mfe_config/v1` API endpoint. The application configuration may be setup via Django settings as follows:
 
 ```python
 ENABLE_MFE_CONFIG_API = True
 MFE_CONFIG = {}
 MFE_CONFIG_OVERRIDES = {
+    # `APP_ID` defined in your MFE
     'profile': {
         'PARAGON_THEME_URLS': {
             'core': 'https://cdn.jsdelivr.net/npm/@edx/paragon@$paragonVersion/dist/core.css',
