@@ -44,7 +44,9 @@ export default config;
 
 ### MFE runtime configuration API
 
-`@edx/frontend-platform` additionally supports loading application configuration from the MFE runtime configuration API via `edx-platform`. The configuration is served by the `http://localhost:18000/api/mfe_config/v1` API endpoint. The application configuration may be setup via Django settings as follows:
+`@edx/frontend-platform` additionally supports loading application configuration from the MFE runtime configuration API via `edx-platform`. The configuration is served by the `http://localhost:18000/api/mfe_config/v1` API endpoint. For more information, refer to [this documentation](https://github.com/openedx/edx-platform/blob/master/lms/djangoapps/mfe_config_api/docs/decisions/0001-mfe-config-api.rst) about the MFE runtime configuration API, please see these docs.
+
+The application configuration may be setup via Django settings as follows:
 
 ```python
 ENABLE_MFE_CONFIG_API = True
