@@ -96,6 +96,8 @@ export const useParagonThemeCore = ({
           if (isFallbackThemeUrl) {
             logError('Could not load core theme CSS from fallback URL. Aborting.');
             onLoad();
+            const otherExistingLinks = getExistingCoreThemeLinks();
+            removeExistingLinks(otherExistingLinks);
             return;
           }
           if (PARAGON?.themeUrls?.core) {
@@ -216,6 +218,10 @@ const useParagonThemeVariants = ({
             if (isFallbackThemeUrl) {
               logError('Could not load theme theme variant CSS from fallback URL. Aborting.');
               setThemeVariantLoaded(themeVariant);
+              const otherExistingLinks = getExistingThemeVariantLinks();
+              otherExistingLinks.forEach((link) => {
+                link.remove();
+              });
               return;
             }
             if (PARAGON?.themeUrls?.variants?.[themeVariant]) {
