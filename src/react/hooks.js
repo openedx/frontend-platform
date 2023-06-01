@@ -114,6 +114,7 @@ export const useParagonThemeCore = ({
         };
         return coreThemeLink;
       };
+      console.log('createCoreThemeLink', themeCore);
       coreThemeLink = createCoreThemeLink(themeCore.url);
       document.head.insertAdjacentElement(
         'afterbegin',
@@ -284,7 +285,10 @@ const handleParagonVersionSubstitution = (url) => {
  * @returns {ParagonThemeUrls|undefined} An object containing the URLs for the theme's core CSS and any theme variants.
  */
 const useParagonThemeUrls = (config) => useMemo(() => {
-  const paragonThemeUrls = config.PARAGON_THEME_URLS || {};
+  if (!config.PARAGON_THEME_URLS) {
+    return undefined;
+  }
+  const paragonThemeUrls = config.PARAGON_THEME_URLS;
   const coreCssUrl = handleParagonVersionSubstitution(paragonThemeUrls.core);
 
   const themeVariantsCss = {};
@@ -332,6 +336,9 @@ const useParagonThemeUrls = (config) => useMemo(() => {
  * @returns {ParagonThemeVariant|undefined} The default theme variant.
  */
 const getDefaultThemeVariant = (themeVariants) => {
+  if (!themeVariants) {
+    return undefined;
+  }
   const themeVariantKeys = Object.keys(themeVariants);
   if (themeVariantKeys.length === 0) {
     return undefined;
@@ -409,7 +416,7 @@ export const useParagonTheme = (config) => {
       return;
     }
 
-    const hasThemeConfig = (themeCore.url && Object.keys(themeVariants).length > 0);
+    const hasThemeConfig = (themeCore?.url && Object.keys(themeVariants).length > 0);
     if (!hasThemeConfig) {
       // no theme URLs to load, set loading to false.
       dispatch(paragonThemeActions.setParagonThemeLoaded(true));
@@ -426,7 +433,7 @@ export const useParagonTheme = (config) => {
     themeState.isThemeLoaded,
     isCoreThemeLoaded,
     hasLoadedThemeVariants,
-    themeCore.url,
+    themeCore?.url,
     themeVariants,
   ]);
 
