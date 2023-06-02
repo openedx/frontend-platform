@@ -3,8 +3,6 @@ import PropTypes from 'prop-types';
 import { IFRAME_PLUGIN } from './constants';
 
 export const pluginConfigShape = PropTypes.shape({
-  scope: PropTypes.string,
-  module: PropTypes.string,
   url: PropTypes.string.isRequired,
   type: PropTypes.oneOf([IFRAME_PLUGIN]).isRequired,
   // This is a place for us to put any generic props we want to pass to the component.  We need it.
