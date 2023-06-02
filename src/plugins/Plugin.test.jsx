@@ -23,7 +23,7 @@ global.ResizeObserver = jest.fn(function mockResizeObserver() {
 describe('Plugin', () => {
   it('should render nothing with a null plugin configuration', () => {
     const component = (
-      <Plugin plugin={null} />
+      <Plugin config={null} />
     );
 
     const { container } = render(component);
@@ -33,7 +33,7 @@ describe('Plugin', () => {
   it('should render a PluginIframe when given an iframe config', async () => {
     const title = 'test plugin';
     const component = (
-      <Plugin plugin={iframeConfig} title={title} fallback={<div>Fallback</div>} />
+      <Plugin config={iframeConfig} title={title} fallback={<div>Fallback</div>} />
     );
 
     const result = render(component);

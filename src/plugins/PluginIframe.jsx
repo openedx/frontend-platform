@@ -14,7 +14,7 @@ import {
   useElementSize,
   usePluginEvent,
 } from './data/hooks';
-import { pluginShape } from './data/shapes';
+import { pluginConfigShape } from './data/shapes';
 
 /**
  * Feature policy for iframe, allowing access to certain courseware-related media.
@@ -31,9 +31,9 @@ export const IFRAME_FEATURE_POLICY = (
 );
 
 export default function PluginIframe({
-  plugin, fallback, className, ...props
+  config, fallback, className, ...props
 }) {
-  const { url } = plugin;
+  const { url } = config;
   const { title, scrolling } = props;
   const [mounted, setMounted] = useState(false);
   const [ready, setReady] = useState(false);
@@ -82,7 +82,7 @@ export default function PluginIframe({
 }
 
 PluginIframe.propTypes = {
-  plugin: pluginShape,
+  config: pluginConfigShape,
   fallback: PropTypes.node,
   scrolling: PropTypes.oneOf(['auto', 'yes', 'no']),
   title: PropTypes.string,
@@ -90,7 +90,7 @@ PluginIframe.propTypes = {
 };
 
 PluginIframe.defaultProps = {
-  plugin: null,
+  config: null,
   fallback: null,
   scrolling: 'auto',
   title: null,

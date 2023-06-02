@@ -6,18 +6,18 @@ import PluginErrorBoundary from './PluginErrorBoundary';
 import {
   IFRAME_PLUGIN,
 } from './data/constants';
-import { pluginShape } from './data/shapes';
+import { pluginConfigShape } from './data/shapes';
 
-export default function Plugin({ plugin, ...props }) {
-  if (plugin === null) {
+export default function Plugin({ config, ...props }) {
+  if (config === null) {
     return null;
   }
 
   let renderer = null;
-  switch (plugin.type) {
+  switch (config.type) {
     case IFRAME_PLUGIN:
       renderer = (
-        <PluginIframe plugin={plugin} {...props} />
+        <PluginIframe config={config} {...props} />
       );
       break;
     // istanbul ignore next: default isn't meaningful, just satisfying linter
@@ -32,9 +32,9 @@ export default function Plugin({ plugin, ...props }) {
 }
 
 Plugin.propTypes = {
-  plugin: pluginShape,
+  config: pluginConfigShape,
 };
 
 Plugin.defaultProps = {
-  plugin: null,
+  config: null,
 };

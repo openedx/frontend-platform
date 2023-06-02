@@ -2,7 +2,7 @@
 import PropTypes from 'prop-types';
 import { IFRAME_PLUGIN } from './constants';
 
-export const pluginShape = PropTypes.shape({
+export const pluginConfigShape = PropTypes.shape({
   scope: PropTypes.string,
   module: PropTypes.string,
   url: PropTypes.string.isRequired,
