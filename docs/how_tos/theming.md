@@ -69,7 +69,7 @@ MFE_CONFIG_OVERRIDES = {
         'PARAGON_THEME_URLS': {
             'core': {
                 'url': 'https://cdn.jsdelivr.net/npm/@edx/paragon@$paragonVersion/dist/core.min.css',
-            }
+            },
             'variants': {
                 'light': {
                     'url': 'https://cdn.jsdelivr.net/npm/@edx/paragon@$paragonVersion/dist/light.min.css',
