@@ -40,7 +40,7 @@ const config = {
     PARAGON_THEME_URLS: {
         core: {
             url: 'https://cdn.jsdelivr.net/npm/@edx/paragon@$paragonVersion/dist/core.min.css',
-        }
+        },
         variants: {
             light: {
                 url: 'https://cdn.jsdelivr.net/npm/@edx/paragon@$paragonVersion/dist/light.min.css',
@@ -111,7 +111,7 @@ const config = {
                 default: 'https://cdn.jsdelivr.net/npm/@edx/paragon@$paragonVersion/dist/core.min.css',
                 brandOverride: 'https://cdn.jsdelivr.net/npm/@edx/brand-edx.org@#brandVersion/dist/core.min.css',
             },
-        }
+        },
         variants: {
             light: {
                 urls: {
