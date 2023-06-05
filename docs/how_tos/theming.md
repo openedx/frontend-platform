@@ -8,7 +8,7 @@ This document serves as a guide to using `@edx/frontend-platform` to support MFE
 
 ## Basic theme URL configuration
 
-Paragon supports 2 mechanisms for configuring the Paragon theme URLs:
+Paragon supports 2 mechanisms for configuring the Paragon theme urls:
 * JavaScript-based configuration via `env.config.js`.
 * MFE runtime configuration API via `edx-platform`
 
@@ -84,14 +84,14 @@ MFE_CONFIG_OVERRIDES = {
 
 ### Locally installed `@edx/paragon`
 
-If you would like to use the same version of the Paragon CSS URLs as the locally installed `@edx/paragon`, the configuration for the Paragon CSS URLs may contain a wildcard `$paragonVersion` which gets replaced with the locally installed version of `@edx/paragon` in the consuming application, e.g.:
+If you would like to use the same version of the Paragon CSS urls as the locally installed `@edx/paragon`, the configuration for the Paragon CSS urls may contain a wildcard `$paragonVersion` which gets replaced with the locally installed version of `@edx/paragon` in the consuming application, e.g.:
 
 ```shell
 https://cdn.jsdelivr.net/npm/@edx/paragon@$paragonVersion/dist/core.min.css
 https://cdn.jsdelivr.net/npm/@edx/paragon@$paragonVersion/dist/light.min.css
 ```
 
-In the event the other Paragon CSS URLs are configured via one of the other documented mechanisms, but they fail to load (e.g., the CDN url throws a 404), `@edx/frontend-platform` will fallback to injecting the locally installed Paragon CSS from the consuming application into the HTML document.
+In the event the other Paragon CSS urls are configured via one of the other documented mechanisms, but they fail to load (e.g., the CDN url throws a 404), `@edx/frontend-platform` will attempt to fallback to injecting the locally installed Paragon CSS from the consuming application into the HTML document.
 
 ## Usage with `@edx/brand`
 
@@ -130,9 +130,11 @@ export default config;
 
 ### Locally installed `@edx/brand`
 
-If you would like to use the same version of the brand override CSS URLs as the locally installed `@edx/brand`, the configuration for the Paragon CSS URLs may contain a wildcard `$brandVersion` which gets replaced with the locally installed version of `@edx/brand` in the consuming application, e.g.:
+If you would like to use the same version of the brand override CSS urls as the locally installed `@edx/brand`, the configuration for the brand override CSS urls may contain a wildcard `$brandVersion` which gets replaced with the locally installed version of `@edx/brand` in the consuming application, e.g.:
 
 ```shell
 https://cdn.jsdelivr.net/npm/@edx/brand@$brandVersion/dist/core.min.css
 https://cdn.jsdelivr.net/npm/@edx/brand@$brandVersion/dist/light.min.css
 ```
+
+In the event the other brand override CSS urls are configured via one of the other documented mechanisms, but they fail to load (e.g., the CDN is down), `@edx/frontend-platform` will attempt to fallback to injecting the locally installed brand override CSS urls from the consuming application into the HTML document.
