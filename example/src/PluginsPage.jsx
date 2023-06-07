@@ -19,7 +19,9 @@ export default function PluginsPage() {
         a plugin configuration like the one commented out above in PluginsPage.jsx.
       </p>
       <div className="d-flex flex-column">
-        <PluginSlot id="example" className="d-flex flex-column">
+        <PluginSlot id="example" className="d-flex flex-column" pluginProps={{
+          className: 'flex-grow-1'
+        }} style={{ height: 400 }}>
           <div key="default">This is default plugin content.</div>
         </PluginSlot>
       </div>
