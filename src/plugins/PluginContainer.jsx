@@ -1,60 +1,40 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import PropTypes from 'prop-types';
+import React from 'react';
+
+import PluginContainerIframe from './PluginContainerIframe';
+import PluginErrorBoundary from './PluginErrorBoundary';
+
 import {
-  dispatchMountedEvent, dispatchReadyEvent, dispatchUnmountedEvent, useHostEvent,
-} from './data/hooks';
-import { PLUGIN_RESIZE } from './data/constants';
+  IFRAME_PLUGIN,
+} from './data/constants';
+import { pluginConfigShape } from './data/shapes';
 
-export default function PluginContainer({
-  children, className, style, ready,
-}) {
-  const [dimensions, setDimensions] = useState({
-    width: null,
-    height: null,
-  });
+export default function PluginContainer({ config, ...props }) {
+  if (config === null) {
+    return null;
+  }
 
-  const finalStyle = useMemo(() => ({
-    ...dimensions,
-    ...style,
-  }), [dimensions, style]);
-
-  useHostEvent(PLUGIN_RESIZE, ({ payload }) => {
-    setDimensions({
-      width: payload.width,
-      height: payload.height,
-    });
-  });
-
-  useEffect(() => {
-    dispatchMountedEvent();
-
-    return () => {
-      dispatchUnmountedEvent();
-    };
-  }, []);
-
-  useEffect(() => {
-    if (ready) {
-      dispatchReadyEvent();
-    }
-  }, [ready]);
+  let renderer = null;
+  switch (config.type) {
+    case IFRAME_PLUGIN:
+      renderer = (
+        <PluginContainerIframe config={config} {...props} />
+      );
+      break;
+    // istanbul ignore next: default isn't meaningful, just satisfying linter
+    default:
+  }
 
   return (
-    <div className={className} style={finalStyle}>
-      {children}
-    </div>
+    <PluginErrorBoundary>
+      {renderer}
+    </PluginErrorBoundary>
   );
 }
 
 PluginContainer.propTypes = {
-  children: PropTypes.node.isRequired,
-  className: PropTypes.string,
-  ready: PropTypes.bool,
-  style: PropTypes.object, // eslint-disable-line
+  config: pluginConfigShape,
 };
 
 PluginContainer.defaultProps = {
-  className: null,
-  style: {},
-  ready: true,
+  config: null,
 };

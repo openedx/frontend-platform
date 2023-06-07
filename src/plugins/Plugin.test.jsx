@@ -3,11 +3,11 @@ import { render } from '@testing-library/react';
 import { fireEvent } from '@testing-library/dom';
 import '@testing-library/jest-dom';
 
-import Plugin from './Plugin';
+import PluginContainer from './Plugin';
 import {
   IFRAME_PLUGIN, PLUGIN_MOUNTED, PLUGIN_READY, PLUGIN_RESIZE,
 } from './data/constants';
-import { IFRAME_FEATURE_POLICY } from './PluginIframe';
+import { IFRAME_FEATURE_POLICY } from './PluginContainerIframe';
 
 const iframeConfig = {
   url: 'http://localhost/plugin1',
@@ -20,10 +20,10 @@ global.ResizeObserver = jest.fn(function mockResizeObserver() {
   this.disconnect = jest.fn();
 });
 
-describe('Plugin', () => {
+describe('PluginContainer', () => {
   it('should render nothing with a null plugin configuration', () => {
     const component = (
-      <Plugin config={null} />
+      <PluginContainer config={null} />
     );
 
     const { container } = render(component);
@@ -33,7 +33,7 @@ describe('Plugin', () => {
   it('should render a PluginIframe when given an iframe config', async () => {
     const title = 'test plugin';
     const component = (
-      <Plugin config={iframeConfig} title={title} fallback={<div>Fallback</div>} />
+      <PluginContainer config={iframeConfig} title={title} fallback={<div>Fallback</div>} />
     );
 
     const result = render(component);

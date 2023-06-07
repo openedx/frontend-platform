@@ -30,7 +30,7 @@ export const IFRAME_FEATURE_POLICY = (
   'fullscreen; microphone *; camera *; midi *; geolocation *; encrypted-media *'
 );
 
-export default function PluginIframe({
+export default function PluginContainerIframe({
   config, fallback, className, ...props
 }) {
   const { url } = config;
@@ -81,7 +81,7 @@ export default function PluginIframe({
   );
 }
 
-PluginIframe.propTypes = {
+PluginContainerIframe.propTypes = {
   config: pluginConfigShape,
   fallback: PropTypes.node,
   scrolling: PropTypes.oneOf(['auto', 'yes', 'no']),
@@ -89,7 +89,7 @@ PluginIframe.propTypes = {
   className: PropTypes.string,
 };
 
-PluginIframe.defaultProps = {
+PluginContainerIframe.defaultProps = {
   config: null,
   fallback: null,
   scrolling: 'auto',

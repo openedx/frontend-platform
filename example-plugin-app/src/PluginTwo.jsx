@@ -1,9 +1,9 @@
 import React from 'react';
-import { PluginContainer } from '@edx/frontend-platform/plugins';
+import { Plugin } from '@edx/frontend-platform/plugins';
 
 export default function PluginTwo() {
   return (
-    <PluginContainer className="bg-light" ready>
+    <Plugin className="bg-light" ready>
       <section className="bg-light p-3">
         <h2>Homework Due</h2>
         <p>
@@ -11,6 +11,6 @@ export default function PluginTwo() {
           a TA you haven&apos;t met will be grading your assignments. Good luck!
         </p>
       </section>
-    </PluginContainer>
+    </Plugin>
   );
 }

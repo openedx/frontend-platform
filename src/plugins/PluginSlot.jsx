@@ -2,7 +2,7 @@ import React, { forwardRef } from 'react';
 import PropTypes from 'prop-types';
 
 import { usePluginSlot } from './data/hooks';
-import Plugin from './Plugin';
+import PluginContainer from './Plugin';
 
 const PluginSlot = forwardRef(({
   as, id, pluginProps, children, ...props
@@ -15,7 +15,7 @@ const PluginSlot = forwardRef(({
       finalChildren.push(children);
     }
     plugins.forEach((pluginConfig) => {
-      finalChildren.push(<Plugin key={pluginConfig.url} config={pluginConfig} {...pluginProps} />);
+      finalChildren.push(<PluginContainer key={pluginConfig.url} config={pluginConfig} {...pluginProps} />);
     });
   } else {
     finalChildren = children;
