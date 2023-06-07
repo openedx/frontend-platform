@@ -2,7 +2,7 @@ import React, { forwardRef } from 'react';
 import PropTypes from 'prop-types';
 
 import { usePluginSlot } from './data/hooks';
-import PluginContainer from './Plugin';
+import PluginContainer from './PluginContainer';
 
 const PluginSlot = forwardRef(({
   as, id, pluginProps, children, ...props

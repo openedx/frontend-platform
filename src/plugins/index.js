@@ -2,10 +2,10 @@ export {
   usePluginSlot,
 } from './data/hooks';
 export {
-  default as PluginContainer,
+  default as Plugin,
 } from './Plugin';
 export {
-  default as Plugin,
+  default as PluginContainer,
 } from './PluginContainer';
 export {
   default as PluginSlot,
