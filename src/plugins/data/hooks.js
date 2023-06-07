@@ -40,7 +40,11 @@ export function usePluginEvent(iframeElement, type, callback) {
 }
 
 export function dispatchMessageEvent(targetWindow, message, targetOrigin) {
-  targetWindow.postMessage(message, targetOrigin);
+  // Checking targetOrigin falsiness here since '', null or undefined would all be reasons not to
+  // try to post a message to the origin.
+  if (targetOrigin) {
+    targetWindow.postMessage(message, targetOrigin);
+  }
 }
 
 export function dispatchPluginEvent(iframeElement, message, targetOrigin) {
