@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
+
+import { logError } from '../logging';
 
 export default class PluginErrorBoundary extends Component {
   constructor(props) {
@@ -12,16 +15,20 @@ export default class PluginErrorBoundary extends Component {
     return { hasError: true };
   }
 
-  componentDidCatch(error, errorInfo) {
-    // TODO: Better logging here.
-    // eslint-disable-next-line no-console
-    console.error(error, errorInfo);
+  componentDidCatch(error, info) {
+    logError(error, { stack: info.componentStack });
   }
 
   render() {
     if (this.state.hasError) {
       // You can render any custom fallback UI
-      return <div>Plugin failed to load.</div>;
+      return (
+        <FormattedMessage
+          id="plugin.load.failure.text"
+          defaultMessage="This content failed to load."
+          description="error message when an unexpected error occurs"
+        />
+      );
     }
 
     return this.props.children;
