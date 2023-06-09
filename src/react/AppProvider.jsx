@@ -43,7 +43,7 @@ import {
  * @param {Object} [props.store] A redux store.
  * @memberof module:React
  */
-export default function AppProvider({ store, children }) {
+export default function AppProvider({ store, children, wrapWithRouter }) {
   const [config, setConfig] = useState(getConfig());
   const [authenticatedUser, setAuthenticatedUser] = useState(getAuthenticatedUser());
   const [locale, setLocale] = useState(getLocale());
@@ -71,9 +71,11 @@ export default function AppProvider({ store, children }) {
           value={appContextValue}
         >
           <OptionalReduxProvider store={store}>
-            <Router>
-              {children}
-            </Router>
+            {wrapWithRouter ? (
+              <Router>
+                {children}
+              </Router>
+            ) : children}
           </OptionalReduxProvider>
         </AppContext.Provider>
       </ErrorBoundary>
@@ -85,8 +87,10 @@ AppProvider.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
   store: PropTypes.object,
   children: PropTypes.node.isRequired,
+  wrapWithRouter: PropTypes.bool,
 };
 
 AppProvider.defaultProps = {
   store: null,
+  wrapWithRouter: true,
 };
