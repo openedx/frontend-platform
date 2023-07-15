@@ -85,7 +85,6 @@ export default function AppProvider({ store, children }) {
     },
   }), [authenticatedUser, config, locale, paragonThemeState, paragonThemeDispatch]);
 
-  console.log('paragonThemeState', paragonThemeState);
   if (!paragonThemeState?.isThemeLoaded) {
     return null;
   }

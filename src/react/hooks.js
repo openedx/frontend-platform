@@ -458,7 +458,6 @@ const useParagonThemeUrls = (config) => useMemo(() => {
   });
 
   const hasMissingCssUrls = !coreCss.default || Object.keys(themeVariantsCss).length === 0;
-  console.log('hasMissingCssUrls', hasMissingCssUrls);
   if (hasMissingCssUrls) {
     if (!PARAGON_THEME) {
       return undefined;
