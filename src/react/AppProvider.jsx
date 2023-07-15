@@ -22,6 +22,7 @@ import {
   IntlProvider,
   LOCALE_CHANGED,
 } from '../i18n';
+import { SELECTED_THEME_VARIANT_KEY } from './constants';
 
 /**
  * A wrapper component for React-based micro-frontends to initialize a number of common data/
@@ -77,11 +78,14 @@ export default function AppProvider({ store, children }) {
     paragonTheme: {
       state: paragonThemeState,
       setThemeVariant: (themeVariant) => {
+        // Persist updated theme variant to localStorage.
+        localStorage.setItem(SELECTED_THEME_VARIANT_KEY, themeVariant);
         paragonThemeDispatch(paragonThemeActions.setParagonThemeVariant(themeVariant));
       },
     },
   }), [authenticatedUser, config, locale, paragonThemeState, paragonThemeDispatch]);
 
+  console.log('paragonThemeState', paragonThemeState);
   if (!paragonThemeState?.isThemeLoaded) {
     return null;
   }

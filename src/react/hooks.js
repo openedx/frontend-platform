@@ -6,6 +6,7 @@ import { sendTrackEvent } from '../analytics';
 import { paragonThemeReducer, paragonThemeActions } from './reducers';
 import { logError, logInfo } from '../logging';
 import { getConfig } from '../config';
+import { SELECTED_THEME_VARIANT_KEY } from './constants';
 
 /**
  * A React hook that allows functional components to subscribe to application events.  This should
@@ -201,9 +202,36 @@ const useParagonThemeVariants = ({
   themeVariants,
   currentThemeVariant,
   onLoad,
+  onDarkModeSystemPreferenceChange,
 }) => {
   const [isParagonThemeVariantLoaded, setIsParagonThemeVariantLoaded] = useState(false);
   const [isBrandThemeVariantLoaded, setIsBrandThemeVariantLoaded] = useState(false);
+
+  useEffect(() => {
+    const someFn = (colorSchemeQuery) => {
+      onDarkModeSystemPreferenceChange(colorSchemeQuery.matches);
+    };
+    const colorSchemeQuery = window.matchMedia?.('(prefers-color-scheme: dark)');
+    if (colorSchemeQuery) {
+      colorSchemeQuery.addEventListener('change', someFn);
+    }
+    return () => {
+      if (colorSchemeQuery) {
+        colorSchemeQuery.removeEventListener('change', someFn);
+      }
+    };
+  }, [onDarkModeSystemPreferenceChange]);
+
+  useEffect(() => {
+    if (currentThemeVariant && themeVariants?.[currentThemeVariant]) {
+      const htmlDataThemeVariantAttr = 'data-paragon-theme-variant';
+      document.querySelector('html').setAttribute(htmlDataThemeVariantAttr, currentThemeVariant);
+      return () => {
+        document.querySelector('html').removeAttribute(htmlDataThemeVariantAttr);
+      };
+    }
+    return () => {}; // no-op
+  }, [themeVariants, currentThemeVariant]);
 
   useEffect(() => {
     // Call `onLoad` once both the paragon and brand theme variant are loaded.
@@ -223,9 +251,7 @@ const useParagonThemeVariants = ({
      */
     const generateStylesheetRelAttr = (themeVariant) => (currentThemeVariant === themeVariant ? 'stylesheet' : 'alternate stylesheet');
 
-    /**
-     * Iterate over each theme variant URL and inject it into the HTML document, if it doesn't already exist.
-     */
+    // Iterate over each theme variant URL and inject it into the HTML document, if it doesn't already exist.
     Object.entries(themeVariants).forEach(([themeVariant, value]) => {
       // If there is no config for the theme variant URL, set the theme variant to loaded and continue.
       if (!value.urls) {
@@ -235,82 +261,88 @@ const useParagonThemeVariants = ({
       }
       const getParagonThemeVariantLink = () => document.head.querySelector(`link[data-paragon-theme-variant='${themeVariant}']`);
       const existingThemeVariantLink = document.head.querySelector(`link[href='${value.urls.default}']`);
-      const stylesheetRelForVariant = generateStylesheetRelAttr(themeVariant);
-      if (!existingThemeVariantLink) {
-        const getExistingThemeVariantLinks = (isBrandOverride) => {
-          const themeVariantLinkSelector = `link[data-${isBrandOverride ? 'brand' : 'paragon'}-theme-variant='${themeVariant}']`;
-          return document.head.querySelectorAll(themeVariantLinkSelector);
-        };
-        const createThemeVariantLink = (
-          url,
-          {
-            isFallbackThemeUrl = false,
-            isBrandOverride = false,
-          } = {},
-        ) => {
-          let themeVariantLink = document.createElement('link');
-          themeVariantLink.href = url;
-          themeVariantLink.rel = 'stylesheet';
-          if (isBrandOverride) {
-            themeVariantLink.dataset.brandThemeVariant = themeVariant;
-          } else {
-            themeVariantLink.dataset.paragonThemeVariant = themeVariant;
+      const existingThemeVariantBrandLink = document.head.querySelector(`link[href='${value.urls.brandOverride}']`);
+
+      const getExistingThemeVariantLinks = (isBrandOverride) => {
+        const themeVariantLinkSelector = `link[data-${isBrandOverride ? 'brand' : 'paragon'}-theme-variant='${themeVariant}']`;
+        return document.head.querySelectorAll(themeVariantLinkSelector);
+      };
+
+      const createThemeVariantLink = (
+        url,
+        {
+          isFallbackThemeUrl = false,
+          isBrandOverride = false,
+        } = {},
+      ) => {
+        let themeVariantLink = document.createElement('link');
+        themeVariantLink.href = url;
+        themeVariantLink.rel = generateStylesheetRelAttr(themeVariant);
+        if (isBrandOverride) {
+          themeVariantLink.dataset.brandThemeVariant = themeVariant;
+        } else {
+          themeVariantLink.dataset.paragonThemeVariant = themeVariant;
+        }
+
+        themeVariantLink.onload = () => {
+          if (themeVariant === currentThemeVariant) {
+            if (isBrandOverride) {
+              setIsBrandThemeVariantLoaded(true);
+            } else {
+              setIsParagonThemeVariantLoaded(true);
+            }
           }
-          themeVariantLink.onload = () => {
-            if (themeVariant === currentThemeVariant) {
-              if (isBrandOverride) {
-                setIsBrandThemeVariantLoaded(true);
-              } else {
-                setIsParagonThemeVariantLoaded(true);
-              }
-            } else {
-              const existingLinks = getExistingThemeVariantLinks(isBrandOverride);
-              removeExistingLinks(existingLinks);
-            }
-          };
-          themeVariantLink.onerror = () => {
-            logError(`Failed to load theme variant (${themeVariant}) CSS from ${value.urls.default}`);
-            if (isFallbackThemeUrl) {
-              logError(`Could not load theme variant (${themeVariant}) CSS from fallback URL. Aborting.`);
-              if (isBrandOverride) {
-                setIsBrandThemeVariantLoaded(true);
-              } else {
-                setIsParagonThemeVariantLoaded(true);
-              }
-              const otherExistingLinks = getExistingThemeVariantLinks(isBrandOverride);
-              removeExistingLinks(otherExistingLinks);
-              return;
-            }
-            const paragonThemeAccessor = isBrandOverride ? 'brand' : 'paragon';
-            const themeUrls = PARAGON_THEME?.[paragonThemeAccessor]?.themeUrls ?? {};
-            if (themeUrls.variants) {
-              const themeVariantFallbackUrl = `${getConfig().BASE_URL}/${themeUrls.variants[themeVariant].fileName}`;
-              logInfo(`Falling back to locally installed theme variant (${themeVariant}) CSS: ${themeVariantFallbackUrl}`);
-              themeVariantLink = createThemeVariantLink(themeVariantFallbackUrl, {
-                isFallbackThemeUrl: true,
-                isBrandOverride,
-              });
-              const otherExistingLinks = getExistingThemeVariantLinks(isBrandOverride);
-              removeExistingLinks(otherExistingLinks);
-              const foundParagonThemeVariantLink = getParagonThemeVariantLink();
-              if (foundParagonThemeVariantLink) {
-                foundParagonThemeVariantLink.insertAdjacentElement(
-                  'afterend',
-                  themeVariantLink,
-                );
-              } else {
-                document.head.insertAdjacentElement(
-                  'afterbegin',
-                  themeVariantLink,
-                );
-              }
-            } else {
-              logError(`Failed to load theme variant (${themeVariant}) CSS from ${url} or fallback URL. Aborting.`);
-            }
-          };
-          return themeVariantLink;
         };
 
+        themeVariantLink.onerror = () => {
+          logError(`Failed to load theme variant (${themeVariant}) CSS from ${value.urls.default}`);
+          if (isFallbackThemeUrl) {
+            logError(`Could not load theme variant (${themeVariant}) CSS from fallback URL. Aborting.`);
+            if (isBrandOverride) {
+              setIsBrandThemeVariantLoaded(true);
+            } else {
+              setIsParagonThemeVariantLoaded(true);
+            }
+            const otherExistingLinks = getExistingThemeVariantLinks(isBrandOverride);
+            removeExistingLinks(otherExistingLinks);
+            return;
+          }
+          const paragonThemeAccessor = isBrandOverride ? 'brand' : 'paragon';
+          const themeUrls = PARAGON_THEME?.[paragonThemeAccessor]?.themeUrls ?? {};
+          if (themeUrls.variants && themeUrls.variants[themeVariant]) {
+            const themeVariantFallbackUrl = `${getConfig().BASE_URL}/${themeUrls.variants[themeVariant].fileName}`;
+            logInfo(`Falling back to locally installed theme variant (${themeVariant}) CSS: ${themeVariantFallbackUrl}`);
+            themeVariantLink = createThemeVariantLink(themeVariantFallbackUrl, {
+              isFallbackThemeUrl: true,
+              isBrandOverride,
+            });
+            const otherExistingLinks = getExistingThemeVariantLinks(isBrandOverride);
+            removeExistingLinks(otherExistingLinks);
+            const foundParagonThemeVariantLink = getParagonThemeVariantLink();
+            if (foundParagonThemeVariantLink) {
+              foundParagonThemeVariantLink.insertAdjacentElement(
+                'afterend',
+                themeVariantLink,
+              );
+            } else {
+              document.head.insertAdjacentElement(
+                'afterbegin',
+                themeVariantLink,
+              );
+            }
+          } else {
+            logError(`Failed to load theme variant (${themeVariant}) CSS from ${url} or fallback URL. Aborting.`);
+            if (isBrandOverride) {
+              setIsBrandThemeVariantLoaded(true);
+            } else {
+              setIsParagonThemeVariantLoaded(true);
+            }
+          }
+        };
+        return themeVariantLink;
+      };
+
+      if (!existingThemeVariantLink) {
         const paragonThemeVariantLink = createThemeVariantLink(value.urls.default);
         document.head.insertAdjacentElement(
           'afterbegin',
@@ -334,16 +366,16 @@ const useParagonThemeVariants = ({
         } else {
           setIsBrandThemeVariantLoaded(true);
         }
-      } else if (existingThemeVariantLink.rel !== stylesheetRelForVariant) {
-        existingThemeVariantLink.rel = stylesheetRelForVariant;
+      } else {
+        const updatedStylesheetRel = generateStylesheetRelAttr(themeVariant);
+        existingThemeVariantLink.rel = updatedStylesheetRel;
+        existingThemeVariantBrandLink.rel = updatedStylesheetRel;
       }
     });
   }, [themeVariants, currentThemeVariant, onLoad]);
 };
 
-const handleParagonVersionSubstitution = (url, { isBrandOverride = false } = {}) => {
-  const localVersion = isBrandOverride ? PARAGON_THEME?.brand?.version : PARAGON_THEME?.paragon?.version;
-  const wildcardKeyword = isBrandOverride ? '$brandVersion' : '$paragonVersion';
+const handleVersionSubstitution = ({ url, wildcardKeyword, localVersion }) => {
   if (!url || !url.includes(wildcardKeyword) || !localVersion) {
     return url;
   }
@@ -371,6 +403,7 @@ const handleParagonVersionSubstitution = (url, { isBrandOverride = false } = {})
 /**
  * @typedef {Object} ParagonThemeUrls
  * @property {ParagonThemeCore} core
+ * @property {Object.<string, string>} defaults
  * @property {Object.<string, ParagonThemeVariant>} variants
  */
 
@@ -388,34 +421,44 @@ const useParagonThemeUrls = (config) => useMemo(() => {
   const paragonThemeUrls = config.PARAGON_THEME_URLS;
   const paragonCoreCssUrl = typeof paragonThemeUrls.core.urls === 'object' ? paragonThemeUrls.core.urls.default : paragonThemeUrls.core.url;
   const brandCoreCssUrl = typeof paragonThemeUrls.core.urls === 'object' ? paragonThemeUrls.core.urls.brandOverride : undefined;
+  const defaultThemeVariants = paragonThemeUrls.defaults;
+
+  // Local versions of @edx/paragon and @edx/brand
+  const localParagonVersion = PARAGON_THEME?.paragon?.version;
+  const localBrandVersion = PARAGON_THEME?.brand?.version;
+
   const coreCss = {
-    default: handleParagonVersionSubstitution(paragonCoreCssUrl),
-    brandOverride: handleParagonVersionSubstitution(brandCoreCssUrl, { isBrandOverride: true }),
+    default: handleVersionSubstitution({ url: paragonCoreCssUrl, wildcardKeyword: '$paragonVersion', localVersion: localParagonVersion }),
+    brandOverride: handleVersionSubstitution({ url: brandCoreCssUrl, wildcardKeyword: '$brandVersion', localVersion: localBrandVersion }),
   };
 
   const themeVariantsCss = {};
   const themeVariantsEntries = Object.entries(paragonThemeUrls.variants || {});
-  themeVariantsEntries.forEach(([themeVariant, {
-    url, urls, default: isDefaultThemeVariant, dark,
-  }]) => {
-    const themeVariantMetadata = {
-      default: isDefaultThemeVariant,
-      dark,
-    };
+  themeVariantsEntries.forEach(([themeVariant, { url, urls }]) => {
+    const themeVariantMetadata = { urls: null };
     if (url) {
       themeVariantMetadata.urls = {
-        default: handleParagonVersionSubstitution(url),
+        default: handleVersionSubstitution({
+          url,
+          wildcardKeyword: '$paragonVersion',
+          localVersion: localParagonVersion,
+        }),
       };
     } else {
       themeVariantMetadata.urls = {
-        default: handleParagonVersionSubstitution(urls.default),
-        brandOverride: handleParagonVersionSubstitution(urls.brandOverride, { isBrandOverride: true }),
+        default: handleVersionSubstitution({
+          url: urls.default,
+          wildcardKeyword: '$paragonVersion',
+          localVersion: localParagonVersion,
+        }),
+        brandOverride: handleVersionSubstitution({ url: urls.brandOverride, wildcardKeyword: '$brandVersion', localVersion: localBrandVersion }),
       };
     }
     themeVariantsCss[themeVariant] = themeVariantMetadata;
   });
 
   const hasMissingCssUrls = !coreCss.default || Object.keys(themeVariantsCss).length === 0;
+  console.log('hasMissingCssUrls', hasMissingCssUrls);
   if (hasMissingCssUrls) {
     if (!PARAGON_THEME) {
       return undefined;
@@ -430,12 +473,14 @@ const useParagonThemeUrls = (config) => useMemo(() => {
     });
     return {
       core: { urls: coreCss },
+      defaults: defaultThemeVariants,
       variants: themeVariants,
     };
   }
 
   return {
     core: { urls: coreCss },
+    defaults: defaultThemeVariants,
     variants: themeVariantsCss,
   };
 }, [config.BASE_URL, config.PARAGON_THEME_URLS]);
@@ -447,29 +492,61 @@ const useParagonThemeUrls = (config) => useMemo(() => {
  *
  * @returns {ParagonThemeVariant|undefined} The default theme variant.
  */
-const getDefaultThemeVariant = (themeVariants) => {
+const getDefaultThemeVariant = ({ themeVariants, themeVariantDefaults = {} }) => {
   if (!themeVariants) {
     return undefined;
   }
+
   const themeVariantKeys = Object.keys(themeVariants);
+
+  // Return early if there are no theme variants configured.
   if (themeVariantKeys.length === 0) {
     return undefined;
   }
+  // If there is only one theme variant, return it since it's the only one that may be used.
   if (themeVariantKeys.length === 1) {
+    const themeVariantKey = themeVariantKeys[0];
     return {
-      name: themeVariantKeys[0],
-      metadata: themeVariants[themeVariantKeys[0]],
+      name: themeVariantKey,
+      metadata: themeVariants[themeVariantKey],
     };
   }
-  const foundDefaultThemeVariant = Object.values(themeVariants)
-    .find(({ default: isDefault }) => isDefault === true);
+  // There's more than one theme variant configured; figured out which one to display based on
+  // the following preference rules:
+  //   1. Get theme preference from localStorage.
+  //   2. Detect user system settings.
+  //   3. Use the default theme variant as configured.
 
-  if (!foundDefaultThemeVariant) {
+  // Prioritize persisted localStorage theme variant preference.
+  const persistedSelectedParagonThemeVariant = localStorage.getItem(SELECTED_THEME_VARIANT_KEY);
+  if (persistedSelectedParagonThemeVariant && themeVariants[persistedSelectedParagonThemeVariant]) {
+    return {
+      name: persistedSelectedParagonThemeVariant,
+      metadata: themeVariants[persistedSelectedParagonThemeVariant],
+    };
+  }
+
+  // Otherwise, detect system preference via `prefers-color-scheme` media query and use
+  // the default dark theme variant, if one exists.
+  const hasDarkSystemPreference = !!window.matchMedia?.('(prefers-color-scheme: dark)')?.matches;
+  const defaultDarkThemeVariant = themeVariantDefaults.dark;
+  const darkThemeVariantMetadata = themeVariants[defaultDarkThemeVariant];
+  if (hasDarkSystemPreference && defaultDarkThemeVariant && darkThemeVariantMetadata) {
+    return {
+      name: defaultDarkThemeVariant,
+      metadata: darkThemeVariantMetadata,
+    };
+  }
+
+  // Otherwise, fallback to using the default light theme variant as configured.
+  const defaultLightThemeVariant = themeVariantDefaults.light;
+  const lightThemeVariantMetadata = themeVariants[defaultLightThemeVariant];
+  if (!defaultLightThemeVariant || !lightThemeVariantMetadata) {
     return undefined;
   }
   return {
-    name: foundDefaultThemeVariant[0],
-    metadata: foundDefaultThemeVariant[1],
+    name: defaultLightThemeVariant,
+    metadata: lightThemeVariantMetadata,
   };
 };
 
@@ -491,11 +568,12 @@ export const useParagonTheme = (config) => {
   const paragonThemeUrls = useParagonThemeUrls(config);
   const {
     core: themeCore,
+    defaults: themeVariantDefaults,
     variants: themeVariants,
   } = paragonThemeUrls || {};
   const initialParagonThemeState = {
     isThemeLoaded: false,
-    themeVariant: getDefaultThemeVariant(themeVariants)?.name,
+    themeVariant: getDefaultThemeVariant({ themeVariants, themeVariantDefaults })?.name,
   };
   const [themeState, dispatch] = useReducer(paragonThemeReducer, initialParagonThemeState);
 
@@ -515,11 +593,23 @@ export const useParagonTheme = (config) => {
     onLoad: onLoadThemeCore,
   });
 
+  // respond to system preference changes with regard to `prefers-color-scheme: dark`.
+  const handleDarkModeSystemPreferenceChange = useCallback((prefersDarkMode) => {
+    if (prefersDarkMode && themeVariantDefaults.dark) {
+      dispatch(paragonThemeActions.setParagonThemeVariant(themeVariantDefaults.dark));
+    } else if (!prefersDarkMode && themeVariantDefaults.light) {
+      dispatch(paragonThemeActions.setParagonThemeVariant(themeVariantDefaults.light));
+    } else {
+      logError(`Could not set theme variant based on system preference (prefers dark mode: ${prefersDarkMode})`, themeVariantDefaults, themeVariants);
+    }
+  }, [themeVariantDefaults, themeVariants]);
+
   // load the theme variant(s) CSS
   useParagonThemeVariants({
     themeVariants,
     onLoad: onLoadThemeVariants,
     currentThemeVariant: themeState.themeVariant,
+    onDarkModeSystemPreferenceChange: handleDarkModeSystemPreferenceChange,
   });
 
   useEffect(() => {
@@ -534,8 +624,8 @@ export const useParagonTheme = (config) => {
       dispatch(paragonThemeActions.setParagonThemeLoaded(true));
     }
 
-    const isDefaultThemeLoaded = (isCoreThemeLoaded && hasLoadedThemeVariants);
-    if (!isDefaultThemeLoaded) {
+    // Return early if neither the core theme CSS nor any theme variant CSS is loaded.
+    if (!isCoreThemeLoaded || !hasLoadedThemeVariants) {
       return;
     }
 
