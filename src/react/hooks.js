@@ -331,7 +331,7 @@ const useParagonThemeVariants = ({
               );
             }
           } else {
-            logError(`Failed to load theme variant (${themeVariant}) CSS from ${url} or fallback URL. Aborting.`);
+            logError(`Failed to load theme variant (${themeVariant}) CSS from ${url} and locally installed fallback URL is not available. Aborting.`);
             if (isBrandOverride) {
               setIsBrandThemeVariantLoaded(true);
             } else {
@@ -463,7 +463,8 @@ const useParagonThemeUrls = (config) => useMemo(() => {
       return undefined;
     }
     const themeVariants = {};
-    const prependBaseUrl = (url) => `${config.BASE_URL}/${url}`;
+    const baseUrl = config.BASE_URL || window.location?.origin;
+    const prependBaseUrl = (url) => `${baseUrl}/${url}`;
     themeVariantsEntries.forEach(([themeVariant, { fileName, ...rest }]) => {
       themeVariants[themeVariant] = {
         url: prependBaseUrl(fileName),
@@ -525,11 +526,12 @@ const getDefaultThemeVariant = ({ themeVariants, themeVariantDefaults = {} }) =>
     };
   }
 
-  // Otherwise, detect system preference via `prefers-color-scheme` media query and use
+  // Then, detect system preference via `prefers-color-scheme` media query and use
   // the default dark theme variant, if one exists.
   const hasDarkSystemPreference = !!window.matchMedia?.('(prefers-color-scheme: dark)')?.matches;
   const defaultDarkThemeVariant = themeVariantDefaults.dark;
   const darkThemeVariantMetadata = themeVariants[defaultDarkThemeVariant];
+
   if (hasDarkSystemPreference && defaultDarkThemeVariant && darkThemeVariantMetadata) {
     return {
       name: defaultDarkThemeVariant,
@@ -537,12 +539,15 @@ const getDefaultThemeVariant = ({ themeVariants, themeVariantDefaults = {} }) =>
     };
   }
 
-  // Otherwise, fallback to using the default light theme variant as configured.
   const defaultLightThemeVariant = themeVariantDefaults.light;
   const lightThemeVariantMetadata = themeVariants[defaultLightThemeVariant];
+
+  // Handle edge case where the default light theme variant is not configured or provided.
   if (!defaultLightThemeVariant || !lightThemeVariantMetadata) {
     return undefined;
   }
+
+  // Otherwise, fallback to using the default light theme variant as configured.
   return {
     name: defaultLightThemeVariant,
     metadata: lightThemeVariantMetadata,
@@ -594,6 +599,11 @@ export const useParagonTheme = (config) => {
 
   // respond to system preference changes with regard to `prefers-color-scheme: dark`.
   const handleDarkModeSystemPreferenceChange = useCallback((prefersDarkMode) => {
+    // Ignore system preference change if the theme variant is already set in localStorage.
+    if (localStorage.getItem(SELECTED_THEME_VARIANT_KEY)) {
+      return;
+    }
+
     if (prefersDarkMode && themeVariantDefaults.dark) {
       dispatch(paragonThemeActions.setParagonThemeVariant(themeVariantDefaults.dark));
     } else if (!prefersDarkMode && themeVariantDefaults.light) {
