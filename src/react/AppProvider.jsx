@@ -55,8 +55,6 @@ export default function AppProvider({ store, children }) {
   const [authenticatedUser, setAuthenticatedUser] = useState(getAuthenticatedUser());
   const [locale, setLocale] = useState(getLocale());
 
-  useTrackColorSchemeChoice();
-
   useAppEvent(AUTHENTICATED_USER_CHANGED, () => {
     setAuthenticatedUser(getAuthenticatedUser());
   });
@@ -69,6 +67,7 @@ export default function AppProvider({ store, children }) {
     setLocale(getLocale());
   });
 
+  useTrackColorSchemeChoice();
   const [paragonThemeState, paragonThemeDispatch] = useParagonTheme(config);
 
   const appContextValue = useMemo(() => ({
@@ -78,9 +77,10 @@ export default function AppProvider({ store, children }) {
     paragonTheme: {
       state: paragonThemeState,
       setThemeVariant: (themeVariant) => {
-        // Persist updated theme variant to localStorage.
-        localStorage.setItem(SELECTED_THEME_VARIANT_KEY, themeVariant);
         paragonThemeDispatch(paragonThemeActions.setParagonThemeVariant(themeVariant));
+
+        // Persist selected theme variant to localStorage.
+        window.localStorage.setItem(SELECTED_THEME_VARIANT_KEY, themeVariant);
       },
     },
   }), [authenticatedUser, config, locale, paragonThemeState, paragonThemeDispatch]);

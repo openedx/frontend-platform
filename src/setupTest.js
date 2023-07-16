@@ -5,6 +5,8 @@ import 'regenerator-runtime/runtime';
 import Enzyme from 'enzyme';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 
+import 'jest-localstorage-mock';
+
 Enzyme.configure({ adapter: new Adapter() });
 
 // These configuration values are usually set in webpack's EnvironmentPlugin however
