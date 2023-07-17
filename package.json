@@ -34,7 +34,7 @@
   "devDependencies": {
     "@edx/brand": "npm:@edx/brand-openedx@1.2.0",
     "@edx/browserslist-config": "1.2.0",
-    "@edx/frontend-build": "12.8.63",
+    "@edx/frontend-build": "12.8.65",
     "@edx/paragon": "^20.44.0",
     "@testing-library/react-hooks": "^8.0.1",
     "@wojtekmaj/enzyme-adapter-react-17": "0.8.0",
