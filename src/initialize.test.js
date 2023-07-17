@@ -85,7 +85,7 @@ describe('initialize', () => {
     PubSub.clearAllSubscriptions();
   });
 
-  it('should call default handlers in the absence of overrides', async (done) => {
+  it('should call default handlers in the absence of overrides', async () => {
     const expectedEvents = [
       APP_PUBSUB_INITIALIZED,
       APP_CONFIG_INITIALIZED,
@@ -100,9 +100,6 @@ describe('initialize', () => {
       const index = expectedEvents.indexOf(eventName);
       if (index > -1) {
         expectedEvents.splice(index, 1);
-        if (expectedEvents.length === 0) {
-          done();
-        }
       } else {
         throw new Error(`Unexpected event dispatched! ${eventName}`);
       }
@@ -206,7 +203,7 @@ describe('initialize', () => {
     expect(logError).not.toHaveBeenCalled();
   });
 
-  it('should call the default initError handler if something throws', async (done) => {
+  it('should call the default initError handler if something throws', async () => {
     const overrideHandlers = {
       pubSub: jest.fn(() => {
         throw new Error('uhoh!');
@@ -222,7 +219,6 @@ describe('initialize', () => {
     function errorHandler(eventName, data) {
       expect(eventName).toEqual(APP_INIT_ERROR);
       expect(data).toEqual(new Error('uhoh!'));
-      done();
     }
 
     subscribe(APP_INIT_ERROR, errorHandler);
@@ -242,7 +238,7 @@ describe('initialize', () => {
     expect(logError).toHaveBeenCalledWith(new Error('uhoh!'));
   });
 
-  it('should call the override initError handler if something throws', async (done) => {
+  it('should call the override initError handler if something throws', async () => {
     const overrideHandlers = {
       pubSub: jest.fn(() => {
         throw new Error('uhoh!');
@@ -259,7 +255,6 @@ describe('initialize', () => {
     function errorHandler(eventName, data) {
       expect(eventName).toEqual(APP_INIT_ERROR);
       expect(data).toEqual(new Error('uhoh!'));
-      done();
     }
 
     subscribe(APP_INIT_ERROR, errorHandler);
