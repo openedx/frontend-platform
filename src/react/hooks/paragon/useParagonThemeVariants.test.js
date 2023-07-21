@@ -121,7 +121,7 @@ describe('useParagonThemeVariants', () => {
     expect(document.head.querySelectorAll('link').length).toBe(0);
   });
 
-  it('should do nothing if themeVariants is not configured properly', () => {
+  it('should not create any core link if can not find themeVariant urls definition', () => {
     const themeVariants = {
       light: {
         default: 'https://cdn.jsdelivr.net/npm/@edx/paragon@$21.0.0/dist/light.min.css',

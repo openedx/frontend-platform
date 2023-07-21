@@ -86,7 +86,7 @@ describe('useParagonThemeCore', () => {
     expect(document.querySelector('link').href).toBe(`${getConfig().BASE_URL}/${PARAGON_THEME.paragon.themeUrls.core.fileName}`);
   });
 
-  it('should not create any core link if is properly configured', () => {
+  it('should not create any core link if can not find themeCore urls definition', () => {
     const coreConfig = {
       themeCore: {
         default: 'https://cdn.jsdelivr.net/npm/@edx/paragon@$21.0.0/dist/core.min.css',
