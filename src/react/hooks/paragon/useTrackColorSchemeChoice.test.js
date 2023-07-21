@@ -2,7 +2,14 @@ import { renderHook } from '@testing-library/react';
 import { useTrackColorSchemeChoice } from './hooks';
 import { sendTrackEvent } from '../analytics';
 
-jest.mock('../analytics');
+import { sendTrackEvent } from '../../../analytics';
+
+import useTrackColorSchemeChoice from './useTrackColorSchemeChoice';
+
+jest.mock('../../../analytics', () => ({
+  ...jest.requireActual('../../../analytics'),
+  sendTrackEvent: jest.fn(),
+}));
 
 const mockAddEventListener = jest.fn();
 const mockRemoveEventListener = jest.fn();
@@ -16,7 +23,7 @@ Object.defineProperty(window, 'matchMedia', {
   })),
 });
 
-describe('useTrackColorSchemeChoice hook', () => {
+describe('useTrackColorSchemeChoice', () => {
   afterEach(() => {
     mockAddEventListener.mockClear();
     mockRemoveEventListener.mockClear();
