@@ -22,6 +22,7 @@ import {
   LOCALE_CHANGED,
 } from '../i18n';
 import { basename } from '../initialize';
+import { SELECTED_THEME_VARIANT_KEY } from './constants';
 
 /**
  * A wrapper component for React-based micro-frontends to initialize a number of common data/
@@ -66,6 +67,7 @@ export default function AppProvider({ store, children, wrapWithRouter }) {
     setLocale(getLocale());
   });
 
+  useTrackColorSchemeChoice();
   const [paragonThemeState, paragonThemeDispatch] = useParagonTheme(config);
 
   const appContextValue = useMemo(() => ({
@@ -76,6 +78,9 @@ export default function AppProvider({ store, children, wrapWithRouter }) {
       state: paragonThemeState,
       setThemeVariant: (themeVariant) => {
         paragonThemeDispatch(paragonThemeActions.setParagonThemeVariant(themeVariant));
+
+        // Persist selected theme variant to localStorage.
+        window.localStorage.setItem(SELECTED_THEME_VARIANT_KEY, themeVariant);
       },
     },
   }), [authenticatedUser, config, locale, paragonThemeState, paragonThemeDispatch]);
