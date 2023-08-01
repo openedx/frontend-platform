@@ -40,3 +40,7 @@ export {
   initializeMockApp,
   mockMessages,
 } from './testing';
+export {
+  defineMessages,
+  mergeMessages,
+} from './i18n';

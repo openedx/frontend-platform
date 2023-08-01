@@ -316,6 +316,15 @@ export async function initialize({
     await handlers.logging();
     publish(APP_LOGGING_INITIALIZED);
 
+    // Internationalization
+    configureI18n({
+      messages,
+      config: getConfig(),
+      loggingService: getLoggingService(),
+    });
+    await handlers.i18n();
+    publish(APP_I18N_INITIALIZED);
+    
     // Authentication
     configureAuth(authServiceImpl, {
       loggingService: getLoggingService(),
@@ -334,15 +343,6 @@ export async function initialize({
     });
     await handlers.analytics();
     publish(APP_ANALYTICS_INITIALIZED);
-
-    // Internationalization
-    configureI18n({
-      messages,
-      config: getConfig(),
-      loggingService: getLoggingService(),
-    });
-    await handlers.i18n();
-    publish(APP_I18N_INITIALIZED);
 
     // Application Ready
     await handlers.ready();

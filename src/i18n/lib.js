@@ -236,12 +236,15 @@ const optionsShape = {
 /**
  *
  *
- * @param {Array} [messagesArray=[]]
+ * @param {Array} {Object} options.messages
  * @returns {Object}
  * @memberof module:Internationalization
  */
-export function mergeMessages(messagesArray = []) {
-  return Array.isArray(messagesArray) ? merge({}, ...messagesArray) : {};
+export function mergeMessages(newMessages) {
+  const msgs = Array.isArray(newMessages) ? merge({}, ...newMessages) : newMessages;
+  messages = merge(messages, msgs);
+
+  return messages; 
 }
 
 /**
@@ -262,8 +265,8 @@ export function configure(options) {
   loggingService = options.loggingService;
   // eslint-disable-next-line prefer-destructuring
   config = options.config;
-  messages = Array.isArray(options.messages) ? mergeMessages(options.messages) : options.messages;
-
+  messages = Array.isArray(options.messages) ? merge({}, ...options.messages) : options.messages;
+             
   if (config.ENVIRONMENT !== 'production') {
     Object.keys(messages).forEach((key) => {
       if (supportedLocales.indexOf(key) < 0) {
