@@ -1,18 +1,17 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 
-import { Routes, Route } from 'react-router-dom';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { APP_INIT_ERROR, APP_READY, initialize } from '@edx/frontend-platform';
-import { subscribe } from '@edx/frontend-platform/pubSub';
-
 import {
   AppProvider,
   AuthenticatedPageRoute,
   ErrorPage,
   PageWrap,
-} from '../src/react';
+} from '@edx/frontend-platform/react';
+import { APP_INIT_ERROR, APP_READY, initialize } from '@edx/frontend-platform';
+import { subscribe } from '@edx/frontend-platform/pubSub';
+import { Routes, Route } from 'react-router-dom';
 
 import './index.scss';
 import ExamplePage from './ExamplePage';
