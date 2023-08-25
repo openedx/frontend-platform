@@ -244,7 +244,7 @@ export function mergeMessages(newMessages) {
   const msgs = Array.isArray(newMessages) ? merge({}, ...newMessages) : newMessages;
   messages = merge(messages, msgs);
 
-  return messages; 
+  return messages;
 }
 
 /**
@@ -266,7 +266,7 @@ export function configure(options) {
   // eslint-disable-next-line prefer-destructuring
   config = options.config;
   messages = Array.isArray(options.messages) ? merge({}, ...options.messages) : options.messages;
-             
+
   if (config.ENVIRONMENT !== 'production') {
     Object.keys(messages).forEach((key) => {
       if (supportedLocales.indexOf(key) < 0) {

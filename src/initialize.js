@@ -324,7 +324,7 @@ export async function initialize({
     });
     await handlers.i18n();
     publish(APP_I18N_INITIALIZED);
-    
+
     // Authentication
     configureAuth(authServiceImpl, {
       loggingService: getLoggingService(),
