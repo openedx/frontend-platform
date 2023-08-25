@@ -3,7 +3,7 @@ import { render } from '@testing-library/react';
 import { fireEvent } from '@testing-library/dom';
 import '@testing-library/jest-dom';
 
-import PluginContainer from './Plugin';
+import PluginContainer from './PluginContainer';
 import {
   IFRAME_PLUGIN, PLUGIN_MOUNTED, PLUGIN_READY, PLUGIN_RESIZE,
 } from './data/constants';
@@ -21,7 +21,9 @@ global.ResizeObserver = jest.fn(function mockResizeObserver() {
 });
 
 describe('PluginContainer', () => {
-  it('should render nothing with a null plugin configuration', () => {
+  it('should return a blank page with a null plugin configuration', () => {
+    // the URL will be empty and an empty div tag will exist where the iFrame should be
+    // the iFrame will still take up the space assigned by the host MFE
     const component = (
       <PluginContainer config={null} />
     );
@@ -30,15 +32,14 @@ describe('PluginContainer', () => {
     expect(container.firstChild).toBeNull();
   });
 
-  it('should render a PluginIframe when given an iframe config', async () => {
+  it('should render a PluginIFrame when given an iFrame config', async () => {
     const title = 'test plugin';
     const component = (
       <PluginContainer config={iframeConfig} title={title} fallback={<div>Fallback</div>} />
     );
 
-    const result = render(component);
+    const { container } = render(component);
 
-    const { container } = result;
     const iframeElement = await container.querySelector('iframe');
     const fallbackElement = container.querySelector('div');
 
