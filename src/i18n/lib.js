@@ -236,7 +236,7 @@ const optionsShape = {
 /**
  *
  *
- * @param {Array} {Object} options.messages
+ * @param {Object} newMessages
  * @returns {Object}
  * @memberof module:Internationalization
  */
