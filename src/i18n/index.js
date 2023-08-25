@@ -104,6 +104,7 @@ export {
   getMessages,
   isRtl,
   handleRtl,
+  mergeMessages,
   LOCALE_CHANGED,
   LOCALE_TOPIC,
 } from './lib';
