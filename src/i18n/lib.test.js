@@ -261,7 +261,7 @@ describe('mergeMessages', () => {
         ar: { message: 'ar-hah' },
       },
     });
-    const result = mergeMessages({ en: { foo: 'bar' }, de: { buh: 'baz' }, jp: { gah: 'wut' }});
+    const result = mergeMessages({ en: { foo: 'bar' }, de: { buh: 'baz' }, jp: { gah: 'wut' } });
     expect(result).toEqual({
       ar: { message: 'ar-hah' },
       en: { foo: 'bar' },
