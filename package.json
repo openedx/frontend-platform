@@ -1,6 +1,6 @@
 {
   "name": "@edx/frontend-platform",
-  "version": "4.6.2",
+  "version": "4.6.3",
   "description": "Foundational application framework for Open edX micro-frontend applications.",
   "main": "index.js",
   "publishConfig": {
