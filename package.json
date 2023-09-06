@@ -38,7 +38,7 @@
     "@edx/paragon": "^20.44.0",
     "@testing-library/react-hooks": "^8.0.1",
     "@wojtekmaj/enzyme-adapter-react-17": "0.8.0",
-    "axios-mock-adapter": "^1.21.3",
+    "axios-mock-adapter": "^1.21.5",
     "core-js": "3.32.0",
     "enzyme": "3.11.0",
     "husky": "8.0.3",
@@ -75,7 +75,7 @@
   },
   "peerDependencies": {
     "@edx/frontend-build": ">= 8.1.0 || ^12.9.0-alpha.1",
-    "@edx/paragon": ">= 10.0.0 < 21.0.0",
+    "@edx/paragon": ">= 10.0.0 < 22.0.0",
     "prop-types": "^15.7.2",
     "react": "^16.9.0 || ^17.0.0",
     "react-dom": "^16.9.0 || ^17.0.0",
