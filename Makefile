@@ -24,3 +24,7 @@ docs-watch:
 
 docs-lint:
 	./node_modules/.bin/documentation lint src
+
+validate-no-uncommitted-package-lock-changes:
+	# Checking for package-lock.json changes...
+	git diff --exit-code package-lock.json
