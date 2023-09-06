@@ -40,4 +40,4 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.SEMANTIC_RELEASE_GITHUB_TOKEN }}
         NPM_TOKEN: ${{ secrets.SEMANTIC_RELEASE_NPM_TOKEN }}
       # `npm publish` relies on version specified in package.json file
-      run: npm publish --tag ${{github.event.inputs.tag}} # e.g., old-version
+      run: npm publish dist --tag ${{github.event.inputs.tag}} # e.g., old-version
