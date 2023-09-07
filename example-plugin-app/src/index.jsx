@@ -3,9 +3,9 @@ import 'regenerator-runtime/runtime';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Switch } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 
-import { AppProvider, ErrorPage, PageRoute } from '@edx/frontend-platform/react';
+import { AppProvider, ErrorPage, PageWrap } from '@edx/frontend-platform/react';
 import {
   APP_INIT_ERROR, APP_READY, subscribe, initialize,
 } from '@edx/frontend-platform';
@@ -18,14 +18,10 @@ import './index.scss';
 subscribe(APP_READY, () => {
   ReactDOM.render(
     <AppProvider>
-      <Switch>
-        <PageRoute path="/plugin1">
-          <PluginOne />
-        </PageRoute>
-        <PageRoute path="/plugin2">
-          <PluginTwo />
-        </PageRoute>
-      </Switch>
+      <Routes>
+        <Route path="/plugin1" element={<PageWrap><PluginOne /></PageWrap>} />
+        <Route path="/plugin2" element={<PageWrap><PluginTwo /></PageWrap>} />
+      </Routes>
     </AppProvider>,
     document.getElementById('root'),
   );
