@@ -20,7 +20,7 @@ export default function PluginsPage() {
       </p>
       <div className="d-flex flex-column">
         <PluginSlot
-          id="example"
+          id="example" // this is how PluginSlot knows which set of plugin URLs to grab from JS config
           className="d-flex flex-column"
           pluginProps={{
             className: 'flex-grow-1',

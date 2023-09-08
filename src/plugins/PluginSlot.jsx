@@ -11,6 +11,9 @@ import PluginContainer from './PluginContainer';
 const PluginSlot = forwardRef(({
   as, id, intl, pluginProps, children, ...props
 }, ref) => {
+  /* the plugins below are obtained by the id passed into PluginSlot by the Host MFE. See example/src/PluginsPage.jsx
+  for an example of how PluginSlot is populated, and example/src/index.jsx for a dummy JS config that holds all plugins
+  */
   const { plugins, keepDefault } = usePluginSlot(id);
 
   const { fallback } = pluginProps;
