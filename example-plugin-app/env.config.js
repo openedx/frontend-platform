@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 const config = {
   ACCESS_TOKEN_COOKIE_NAME: 'edx-jwt-cookie-header-payload',
   BASE_URL: 'http://localhost:8081',
@@ -23,4 +24,4 @@ const config = {
   FAVICON_URL: 'https://edx-cdn.org/v3/default/favicon.ico',
   IGNORED_ERROR_REGEX: null,
   PORT: 8081,
-}
+};

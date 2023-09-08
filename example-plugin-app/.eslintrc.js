@@ -4,7 +4,7 @@ const config = getBaseConfig('eslint');
 
 config.rules = {
   'import/no-extraneous-dependencies': ['error', {
-    'devDependencies': [
+    devDependencies: [
       '**/*.config.js',
       '**/*.test.jsx',
       '**/*.test.js',
@@ -19,7 +19,6 @@ config.rules = {
   }],
   'jsx-a11y/anchor-is-valid': ['error', {
     components: ['Link'],
-    specialLink: [],
     specialLink: ['to'],
     aspects: ['noHref', 'invalidHref', 'preferButton'],
   }],
