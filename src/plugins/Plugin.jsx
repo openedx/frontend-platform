@@ -6,49 +6,38 @@ import { ErrorBoundary } from 'react-error-boundary';
 import {
   dispatchMountedEvent, dispatchReadyEvent, dispatchUnmountedEvent, useHostEvent,
 } from './data/hooks';
+import { logError } from '../logging';
 import { PLUGIN_RESIZE } from './data/constants';
 
-function ErrorFallback(error) {
-  // we can customize the UI as we want
+// see example-plugin-app/src/PluginOne.jsx for example of customizing errorFallback
+function errorFallback() {
   return (
     <div>
       <h2>
-        Oops! An error occurred
-        <br />
-        <br />
-        {error.message}
+        Oops! An error occurred. Please refresh the screen to try again.
       </h2>
-      {/* Additional custom error handling */}
     </div>
   );
 }
 
 export default function Plugin({
-  children, className, style, ready,
+  children, className, style, ready, errorFallbackProp,
 }) {
   const [dimensions, setDimensions] = useState({
     width: null,
     height: null,
   });
 
-  const [errorMessage, setErrorMessage] = useState('');
-  const handleResetError = () => {
-    console.log('Error boundary reset');
-    setErrorMessage('');
-    // additional logic to perform code cleanup and state update actions
-  };
-
-  // Error logging function
-  function logErrorToService(error) {
-  // Use your preferred error logging service
-    setErrorMessage(error);
-    console.error('Caught an error:', errorMessage, error);
-  }
-
   const finalStyle = useMemo(() => ({
     ...dimensions,
     ...style,
   }), [dimensions, style]);
+
+  // Error logging function
+  // Need to confirm: When an error is caught here, the logging will be sent to the child MFE's logging service
+  const logErrorToService = (error, info) => {
+    logError(error, { stack: info.componentStack });
+  };
 
   useHostEvent(PLUGIN_RESIZE, ({ payload }) => {
     setDimensions({
@@ -74,9 +63,8 @@ export default function Plugin({
   return (
     <div className={className} style={finalStyle}>
       <ErrorBoundary
-        FallbackComponent={ErrorFallback}
-        onError={() => logErrorToService()}
-        onReset={handleResetError}
+        FallbackComponent={({ error }) => errorFallbackProp(error)}
+        onError={logErrorToService}
       >
         {children}
       </ErrorBoundary>
@@ -87,12 +75,14 @@ export default function Plugin({
 Plugin.propTypes = {
   children: PropTypes.node.isRequired,
   className: PropTypes.string,
+  errorFallbackProp: PropTypes.func,
   ready: PropTypes.bool,
   style: PropTypes.object, // eslint-disable-line
 };
 
 Plugin.defaultProps = {
   className: null,
+  errorFallbackProp: errorFallback,
   style: {},
   ready: true,
 };
