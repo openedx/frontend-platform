@@ -1,9 +1,27 @@
+'use client';
+
 import React, { useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
+import { ErrorBoundary } from 'react-error-boundary';
 import {
   dispatchMountedEvent, dispatchReadyEvent, dispatchUnmountedEvent, useHostEvent,
 } from './data/hooks';
 import { PLUGIN_RESIZE } from './data/constants';
+
+function ErrorFallback(error) {
+  // we can customize the UI as we want
+  return (
+    <div>
+      <h2>
+        Oops! An error occurred
+        <br />
+        <br />
+        {error.message}
+      </h2>
+      {/* Additional custom error handling */}
+    </div>
+  );
+}
 
 export default function Plugin({
   children, className, style, ready,
@@ -12,6 +30,20 @@ export default function Plugin({
     width: null,
     height: null,
   });
+
+  const [errorMessage, setErrorMessage] = useState('');
+  const handleResetError = () => {
+    console.log('Error boundary reset');
+    setErrorMessage('');
+    // additional logic to perform code cleanup and state update actions
+  };
+
+  // Error logging function
+  function logErrorToService(error) {
+  // Use your preferred error logging service
+    setErrorMessage(error);
+    console.error('Caught an error:', errorMessage, error);
+  }
 
   const finalStyle = useMemo(() => ({
     ...dimensions,
@@ -41,7 +73,13 @@ export default function Plugin({
 
   return (
     <div className={className} style={finalStyle}>
-      {children}
+      <ErrorBoundary
+        FallbackComponent={ErrorFallback}
+        onError={() => logErrorToService()}
+        onReset={handleResetError}
+      >
+        {children}
+      </ErrorBoundary>
     </div>
   );
 }

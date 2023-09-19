@@ -1,9 +1,11 @@
 import React from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
 import { render } from '@testing-library/react';
 import { fireEvent } from '@testing-library/dom';
 import '@testing-library/jest-dom';
 
 import PluginContainer from './PluginContainer';
+import Plugin from './Plugin';
 import {
   IFRAME_PLUGIN, PLUGIN_MOUNTED, PLUGIN_READY, PLUGIN_RESIZE,
 } from './data/constants';
@@ -30,6 +32,10 @@ describe('PluginContainer', () => {
 
     const { container } = render(component);
     expect(container.firstChild).toBeNull();
+  });
+
+  it('should render the desired fallback when the iframe fails to render', () => {
+
   });
 
   it('should render a PluginIFrame when given an iFrame config', async () => {
@@ -88,5 +94,23 @@ describe('PluginContainer', () => {
     fireEvent(window, readyEvent);
 
     expect(iframeElement.attributes.getNamedItem('class').value).toEqual('border border-0');
+  });
+});
+
+describe('Plugin', () => {
+  const breakingArray = null;
+  const failingMap = () => breakingArray.map(a => a);
+  it('should render the desired fallback when the error boundary receives a React error', () => {
+    const component = (
+      <ErrorBoundary fallback={<div>Something went wrong</div>}>
+        <Plugin className="bg-light" ready>
+          { failingMap }
+        </Plugin>
+      </ErrorBoundary>
+    );
+
+    const { container } = render(component);
+    console.log(container.children);
+    expect(container.firstChild).toHaveTextContent('Something went wrong');
   });
 });

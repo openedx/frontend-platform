@@ -1,7 +1,9 @@
+'use client';
+
 import React from 'react';
 
+// eslint-disable-next-line import/no-extraneous-dependencies
 import PluginContainerIframe from './PluginContainerIframe';
-import PluginErrorBoundary from './PluginErrorBoundary';
 
 import {
   IFRAME_PLUGIN,
@@ -13,6 +15,7 @@ export default function PluginContainer({ config, ...props }) {
     return null;
   }
 
+  // this will allow for future plugin types to be inserted in the PluginErrorBoundary
   let renderer = null;
   switch (config.type) {
     case IFRAME_PLUGIN:
@@ -25,9 +28,7 @@ export default function PluginContainer({ config, ...props }) {
   }
 
   return (
-    <PluginErrorBoundary>
-      {renderer}
-    </PluginErrorBoundary>
+    renderer
   );
 }
 
