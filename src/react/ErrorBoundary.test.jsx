@@ -2,6 +2,7 @@ import React from 'react';
 import { mount } from 'enzyme';
 
 import ErrorBoundary from './ErrorBoundary';
+import ErrorPage from './ErrorPage';
 import { initializeMockApp } from '..';
 
 describe('ErrorBoundary', () => {
@@ -53,5 +54,31 @@ describe('ErrorBoundary', () => {
         stack: expect.stringContaining('ExplodingComponent'),
       }),
     );
+  });
+  it('should render the fallback component when an error occurs', () => {
+    function FallbackComponent() {
+      return <div>Oops, something went wrong!</div>;
+    }
+    function ComponentError() {
+      throw new Error('An error occurred during the click event!');
+    }
+    const wrapper = mount(
+      <ErrorBoundary fallbackComponent={<FallbackComponent />}>
+        <ComponentError />
+      </ErrorBoundary>,
+    );
+    expect(wrapper.contains(<FallbackComponent />)).toBe(true);
+  });
+
+  it('should render the ErrorPage fallbackComponent is null', () => {
+    function ComponentError() {
+      throw new Error('An error occurred during the click event!');
+    }
+    const wrapper = mount(
+      <ErrorBoundary fallbackComponent={null}>
+        <ComponentError />
+      </ErrorBoundary>,
+    );
+    expect(wrapper.contains(<ErrorPage />)).toBe(true);
   });
 });
