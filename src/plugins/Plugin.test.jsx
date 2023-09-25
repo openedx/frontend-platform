@@ -110,7 +110,6 @@ describe('Plugin', () => {
     );
 
     const { container } = render(component);
-    console.log(container.children);
     expect(container.firstChild).toHaveTextContent('Something went wrong');
   });
 });

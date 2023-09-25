@@ -1,8 +1,10 @@
-import React, {useState, useEffect} from 'react';
+/* eslint react/prop-types: off */
+
+import React from 'react';
 import { Plugin } from '@edx/frontend-platform/plugins';
 
-function Greeting({subject}) {
-  return <div>Hello {subject.toUpperCase()}</div>
+function Greeting({ subject }) {
+  return <div>Hello {subject.toUpperCase()}</div>;
 }
 
 function errorFallback(error) {
@@ -11,7 +13,7 @@ function errorFallback(error) {
       <p className="h3 text-muted">
         Oops! An error occurred. Please refresh the screen to try again.
       </p>
-      <br/>
+      <br />
       {error.message}
     </div>
   );
