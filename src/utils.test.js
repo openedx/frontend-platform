@@ -3,6 +3,7 @@ import {
   camelCaseObject,
   snakeCaseObject,
   convertKeyNames,
+  parseURL,
   getQueryParameters,
 } from '.';
 
@@ -111,5 +112,43 @@ describe('getQueryParameters', () => {
       foo: 'bar',
       baz: '1',
     });
+  });
+});
+
+describe('ParseURL', () => {
+  const testURL = 'http://example.com:3000/pathname/?search=test#hash';
+  const parsedURL = parseURL(testURL);
+  it('String URL is correctly parsed', () => {
+    expect(parsedURL.toString()).toEqual(testURL);
+    expect(parsedURL.href).toEqual(testURL);
+    expect(typeof (parsedURL)).toEqual('object');
+  });
+
+  it('should return protocol from URL', () => {
+    expect(parsedURL.protocol).toEqual('http:');
+  });
+
+  it('should return hostname from URL', () => {
+    expect(parsedURL.hostname).toEqual('example.com');
+  });
+
+  it('should return port from URL', () => {
+    expect(parsedURL.port).toEqual('3000');
+  });
+
+  it('should return pathname from URL', () => {
+    expect(parsedURL.pathname).toEqual('/pathname/');
+  });
+
+  it('should return search rom URL', () => {
+    expect(parsedURL.search).toEqual('?search=test');
+  });
+
+  it('should return hash from URL', () => {
+    expect(parsedURL.hash).toEqual('#hash');
+  });
+
+  it('should return host from URL', () => {
+    expect(parsedURL.host).toEqual('example.com:3000');
   });
 });
