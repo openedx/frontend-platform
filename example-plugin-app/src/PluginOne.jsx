@@ -4,7 +4,9 @@ import React from 'react';
 import { Plugin } from '@edx/frontend-platform/plugins';
 
 function Greeting({ subject }) {
-  return <div>Hello {subject.toUpperCase()}</div>;
+  return (
+    <div>Hello {subject.toUpperCase()}</div>
+  );
 }
 
 function errorFallback(error) {

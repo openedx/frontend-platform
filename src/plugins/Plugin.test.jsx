@@ -1,9 +1,11 @@
+/* eslint react/prop-types: off */
+
 import React from 'react';
-import { ErrorBoundary } from 'react-error-boundary';
 import { render } from '@testing-library/react';
 import { fireEvent } from '@testing-library/dom';
 import '@testing-library/jest-dom';
 
+import { initializeMockApp } from '..';
 import PluginContainer from './PluginContainer';
 import Plugin from './Plugin';
 import {
@@ -34,25 +36,21 @@ describe('PluginContainer', () => {
     expect(container.firstChild).toBeNull();
   });
 
-  it('should render the desired fallback when the iframe fails to render', () => {
-
-  });
-
-  it('should render a PluginIFrame when given an iFrame config', async () => {
+  it('should render a Plugin iFrame Container when given an iFrame config', async () => {
     const title = 'test plugin';
     const component = (
-      <PluginContainer config={iframeConfig} title={title} fallback={<div>Fallback</div>} />
+      <PluginContainer config={iframeConfig} title={title} fallback={<div>Loading</div>} />
     );
 
     const { container } = render(component);
 
-    const iframeElement = await container.querySelector('iframe');
+    const iframeElement = container.querySelector('iframe');
     const fallbackElement = container.querySelector('div');
 
     expect(iframeElement).toBeInTheDocument();
     expect(fallbackElement).toBeInTheDocument();
 
-    expect(fallbackElement.innerHTML).toEqual('Fallback');
+    expect(fallbackElement.innerHTML).toEqual('Loading');
 
     // Ensure the iframe has the proper attributes
     expect(iframeElement.attributes.getNamedItem('allow').value).toEqual(IFRAME_FEATURE_POLICY);
@@ -98,18 +96,88 @@ describe('PluginContainer', () => {
 });
 
 describe('Plugin', () => {
-  const breakingArray = null;
-  const failingMap = () => breakingArray.map(a => a);
-  it('should render the desired fallback when the error boundary receives a React error', () => {
+  let logError = jest.fn();
+
+  beforeEach(async () => {
+    // This is a gross hack to suppress error logs in the invalid parentSelector test
+    jest.spyOn(console, 'error');
+    global.console.error.mockImplementation(() => {});
+
+    const { loggingService } = initializeMockApp();
+    logError = loggingService.logError;
+  });
+
+  afterEach(() => {
+    global.console.error.mockRestore();
+    jest.clearAllMocks();
+  });
+
+  const ExplodingComponent = () => {
+    throw new Error('booyah');
+  };
+
+  function HealthyComponent() {
+    return (
+      <div>Hello World!</div>
+    );
+  }
+
+  const errorFallback = () => (
+    <div>
+      <p>
+        Oh geez, this is not good at all.
+      </p>
+      <br />
+    </div>
+  );
+
+  it('should render children if no error', () => {
     const component = (
-      <ErrorBoundary fallback={<div>Something went wrong</div>}>
-        <Plugin className="bg-light" ready>
-          { failingMap }
-        </Plugin>
-      </ErrorBoundary>
+      <Plugin errorFallbackProp={errorFallback}>
+        <HealthyComponent />
+      </Plugin>
+    );
+    const { container } = render(component);
+    expect(container).toHaveTextContent('Hello World!');
+  });
+
+  it('should throw an error if the child component fails', () => {
+    const component = (
+      <Plugin className="bg-light" errorFallbackProp={errorFallback}>
+        <ExplodingComponent />
+      </Plugin>
+    );
+
+    render(component);
+
+    expect(logError).toHaveBeenCalledTimes(1);
+    expect(logError).toHaveBeenCalledWith(
+      new Error('booyah'),
+      expect.objectContaining({
+        stack: expect.stringContaining('ExplodingComponent'),
+      }),
+    );
+  });
+
+  it('should render the passed in fallback component when the error boundary receives a React error', () => {
+    const component = (
+      <Plugin errorFallbackProp={errorFallback}>
+        <ExplodingComponent />
+      </Plugin>
     );
 
     const { container } = render(component);
-    expect(container.firstChild).toHaveTextContent('Something went wrong');
+    expect(container).toHaveTextContent('Oh geez');
+  });
+
+  it('should render the default fallback component when one is not passed into the Plugin', () => {
+    const component = (
+      <Plugin>
+        <ExplodingComponent />
+      </Plugin>
+    );
+
+    const { container } = render(component);
+    expect(container).toHaveTextContent('Oops! An error occurred.');
   });
 });

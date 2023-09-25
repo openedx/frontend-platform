@@ -24,6 +24,7 @@ export default function PluginsPage() {
           className="d-flex flex-column"
           pluginProps={{
             className: 'flex-grow-1',
+            title: 'example plugins',
           }}
           style={{
             height: 400,

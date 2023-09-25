@@ -1,6 +1,8 @@
 'use client';
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, {
+  useEffect, useMemo, useState,
+} from 'react';
 import PropTypes from 'prop-types';
 import { ErrorBoundary } from 'react-error-boundary';
 import {
@@ -10,7 +12,7 @@ import { logError } from '../logging';
 import { PLUGIN_RESIZE } from './data/constants';
 
 // see example-plugin-app/src/PluginOne.jsx for example of customizing errorFallback
-function errorFallback() {
+function errorFallbackDefault() {
   return (
     <div>
       <h2>
@@ -32,6 +34,8 @@ export default function Plugin({
     ...dimensions,
     ...style,
   }), [dimensions, style]);
+
+  const errorFallback = errorFallbackProp || errorFallbackDefault;
 
   // Error logging function
   // Need to confirm: When an error is caught here, the logging will be sent to the child MFE's logging service
@@ -63,7 +67,7 @@ export default function Plugin({
   return (
     <div className={className} style={finalStyle}>
       <ErrorBoundary
-        FallbackComponent={({ error }) => errorFallbackProp(error)}
+        FallbackComponent={errorFallback}
         onError={logErrorToService}
       >
         {children}
@@ -82,7 +86,7 @@ Plugin.propTypes = {
 
 Plugin.defaultProps = {
   className: null,
-  errorFallbackProp: errorFallback,
+  errorFallbackProp: null,
   style: {},
   ready: true,
 };
