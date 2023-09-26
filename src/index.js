@@ -6,6 +6,7 @@ export {
   getQueryParameters,
   ensureDefinedConfig,
   parseURL,
+  getPath,
 } from './utils';
 export {
   APP_TOPIC,

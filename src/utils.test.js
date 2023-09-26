@@ -4,6 +4,7 @@ import {
   snakeCaseObject,
   convertKeyNames,
   parseURL,
+  getPath,
   getQueryParameters,
 } from '.';
 
@@ -150,5 +151,43 @@ describe('ParseURL', () => {
 
   it('should return host from URL', () => {
     expect(parsedURL.host).toEqual('example.com:3000');
+  });
+});
+
+describe('getPath', () => {
+  it('Path is retrieved with full url', () => {
+    const testURL = 'http://example.com:3000/pathname/?search=test#hash';
+
+    expect(getPath(testURL)).toEqual('/pathname/');
+  });
+
+  it('Path is retrieved with only path', () => {
+    const testURL = '/learning/';
+
+    expect(getPath(testURL)).toEqual('/learning/');
+  });
+
+  it('Path is retrieved without protocol', () => {
+    const testURL = '//example.com:3000/accounts/';
+
+    expect(getPath(testURL)).toEqual('/accounts/');
+  });
+
+  it('Path is retrieved with base `/`', () => {
+    const testURL = '/';
+
+    expect(getPath(testURL)).toEqual('/');
+  });
+
+  it('Path is retrieved without port', () => {
+    const testURL = 'https://example.com/accounts/';
+
+    expect(getPath(testURL)).toEqual('/accounts/');
+  });
+
+  it('Path is retrieved without CDN shape', () => {
+    const testURL = 'https://d20blt6w1kfasr.cloudfront.net/learning/';
+
+    expect(getPath(testURL)).toEqual('/learning/');
   });
 });

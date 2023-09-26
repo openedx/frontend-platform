@@ -54,7 +54,7 @@ Note that the env.config.js file in frontend-platform's root directory is NOT us
 initialization code, it's just there for the test suite and example application.
 */
 import envConfig from 'env.config'; // eslint-disable-line import/no-unresolved
-
+import { getPath } from './utils';
 import {
   publish,
 } from './pubSub';
@@ -99,7 +99,7 @@ import configureCache from './auth/LocalForageCache';
  */
 export const history = (typeof window !== 'undefined')
   ? createBrowserHistory({
-    basename: getConfig().PUBLIC_PATH,
+    basename: getPath(getConfig().PUBLIC_PATH),
   }) : createMemoryHistory();
 
 /**

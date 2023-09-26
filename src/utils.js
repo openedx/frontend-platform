@@ -144,6 +144,17 @@ export function parseURL(url) {
 }
 
 /**
+ * Given a string URL return the path of the URL
+ *
+ *
+ * @param {string}
+ * @returns {string}
+ */
+export function getPath(url) {
+  return parseURL(url).pathname;
+}
+
+/**
  * *Deprecated*: A method which converts the supplied query string into an object of
  * key-value pairs and returns it.  Defaults to the current query string - should perform like
  * [window.searchParams](https://developer.mozilla.org/en-US/docs/Web/API/URL/searchParams)
