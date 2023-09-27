@@ -14,7 +14,7 @@ handled.
 
 Given that this is a new feature that is being made available to the frontend, we 
 can't anticipate all of the ways that the plugin will be used for a given repo, nor do we 
-have any intention to limit the scope of how it can be used. Because we don't all of the use 
+have any intention to limit the scope of how it can be used. Because we don't know all of the use 
 cases for the plugin, we also don't know the desired fallback method that is desired for any 
 given plugin.
 
