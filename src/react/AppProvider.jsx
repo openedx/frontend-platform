@@ -16,6 +16,7 @@ import {
   IntlProvider,
   LOCALE_CHANGED,
 } from '../i18n';
+import { basename } from '../initialize';
 
 /**
  * A wrapper component for React-based micro-frontends to initialize a number of common data/
@@ -72,7 +73,7 @@ export default function AppProvider({ store, children, wrapWithRouter }) {
         >
           <OptionalReduxProvider store={store}>
             {wrapWithRouter ? (
-              <Router>
+              <Router basename={basename()}>
                 {children}
               </Router>
             ) : children}

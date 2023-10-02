@@ -103,6 +103,26 @@ export const history = (typeof window !== 'undefined')
   }) : createMemoryHistory();
 
 /**
+ * The string basename that is the root directory of this MFE.
+ *
+ * In devstack, this should always just return an empty string, because each MFE is in its own
+ * server/domain.
+ *
+ * In Tutor, all MFEs are deployed to a common server, each under a different top-level directory.
+ * The basename is the root path for a given MFE, e.g. "/library-authoring". It is set by tutor-mfe
+ * as an ENV variable in the Docker file, and we read it here from that configuration so that it
+ * can be passed into a Router later.
+ *
+ * By convention, our basenames do not have a trailing slash. So it's "/library-authoring", and not
+ * "/library-authoring/". Our configuration is inconsistent on this, so this function always strips
+ * off the trailing slash from any value entered in configuration.
+ */
+export function basename() {
+  const configBasename = getPath(getConfig().PUBLIC_PATH);
+  return configBasename.endsWith('/') ? configBasename.slice(0, -1) : configBasename;
+}
+
+/**
  * The default handler for the initialization lifecycle's `initError` phase.  Logs the error to the
  * LoggingService using `logError`
  *
