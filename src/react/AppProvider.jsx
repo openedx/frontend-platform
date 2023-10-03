@@ -73,7 +73,7 @@ export default function AppProvider({ store, children, wrapWithRouter }) {
         >
           <OptionalReduxProvider store={store}>
             {wrapWithRouter ? (
-              <Router basename={basename()}>
+              <Router basename={basename}>
                 {children}
               </Router>
             ) : children}
