@@ -123,6 +123,38 @@ export function convertKeyNames(object, nameMap) {
 }
 
 /**
+ * Given a string URL return an element that has been parsed via href.
+ * This element has the possibility to return different part of the URL.
+  parser.protocol; // => "http:"
+  parser.hostname; // => "example.com"
+  parser.port;     // => "3000"
+  parser.pathname; // => "/pathname/"
+  parser.search;   // => "?search=test"
+  parser.hash;     // => "#hash"
+  parser.host;     // => "example.com:3000"
+ * https://gist.github.com/jlong/2428561
+ *
+ * @param {string}
+ * @returns {Object}
+ */
+export function parseURL(url) {
+  const parser = document.createElement('a');
+  parser.href = url;
+  return parser;
+}
+
+/**
+ * Given a string URL return the path of the URL
+ *
+ *
+ * @param {string}
+ * @returns {string}
+ */
+export function getPath(url) {
+  return parseURL(url).pathname;
+}
+
+/**
  * *Deprecated*: A method which converts the supplied query string into an object of
  * key-value pairs and returns it.  Defaults to the current query string - should perform like
  * [window.searchParams](https://developer.mozilla.org/en-US/docs/Web/API/URL/searchParams)
