@@ -138,7 +138,7 @@ export function convertKeyNames(object, nameMap) {
  * @returns {Object}
  */
 export function parseURL(url) {
-  const parser = document.createElement('a');
+  const parser = document?.createElement('a');
   parser.href = url;
   return parser;
 }
