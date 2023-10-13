@@ -119,6 +119,16 @@ describe('getQueryParameters', () => {
 describe('ParseURL', () => {
   const testURL = 'http://example.com:3000/pathname/?search=test#hash';
   const parsedURL = parseURL(testURL);
+  let originalDocument;
+
+  beforeEach(() => {
+    originalDocument = global.document;
+  });
+
+  afterEach(() => {
+    global.document = originalDocument;
+  });
+
   it('String URL is correctly parsed', () => {
     expect(parsedURL.toString()).toEqual(testURL);
     expect(parsedURL.href).toEqual(testURL);
@@ -151,6 +161,12 @@ describe('ParseURL', () => {
 
   it('should return host from URL', () => {
     expect(parsedURL.host).toEqual('example.com:3000');
+  });
+
+  it('should return empty object in case of document being undefined', () => {
+    delete global.document;
+
+    expect(parseURL(testURL)).toEqual({});
   });
 });
 
