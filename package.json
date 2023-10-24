@@ -54,8 +54,8 @@
   },
   "dependencies": {
     "@cospired/i18n-iso-languages": "4.1.0",
-    "@formatjs/intl-pluralrules": "5.2.7",
-    "@formatjs/intl-relativetimeformat": "11.2.7",
+    "@formatjs/intl-pluralrules": "4.3.3",
+    "@formatjs/intl-relativetimeformat": "10.0.1",
     "axios": "0.27.2",
     "axios-cache-interceptor": "0.10.7",
     "form-urlencoded": "4.1.4",
@@ -70,7 +70,7 @@
     "lodash.merge": "4.6.2",
     "lodash.snakecase": "4.1.1",
     "pubsub-js": "1.9.4",
-    "react-intl": "^6.5.1",
+    "react-intl": "^5.25.0",
     "universal-cookie": "4.0.4"
   },
   "peerDependencies": {
