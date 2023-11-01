@@ -6,17 +6,42 @@ import { fireEvent } from '@testing-library/dom';
 import '@testing-library/jest-dom';
 
 import { initializeMockApp } from '..';
+import { IntlProvider } from '../i18n';
 import PluginContainer from './PluginContainer';
 import Plugin from './Plugin';
+import PluginSlot from './PluginSlot';
 import {
   IFRAME_PLUGIN, PLUGIN_MOUNTED, PLUGIN_READY, PLUGIN_RESIZE,
 } from './data/constants';
+import { usePluginSlot } from './data/hooks';
 import { IFRAME_FEATURE_POLICY } from './PluginContainerIframe';
 
 const iframeConfig = {
   url: 'http://localhost/plugin1',
   type: IFRAME_PLUGIN,
 };
+
+jest.mock('./data/hooks', () => ({
+  ...jest.requireActual('./data/hooks'),
+  usePluginSlot: jest.fn(() => {}),
+}));
+
+// jest.mock('./data/hooks', () => ({
+//   ...jest.requireActual('./data/hooks'),
+//   usePluginSlot: jest.fn(() => ({
+//     keepDefault: true,
+//     plugins: [
+//       {
+//         url: 'http://localhost/plugin1',
+//         type: 'IFRAME_PLUGIN',
+//       },
+//       {
+//         url: 'http://localhost/plugin1',
+//         type: 'IFRAME_PLUGIN',
+//       },
+//     ],
+//   })),
+// }));
 
 // Mock ResizeObserver which is unavailable in the context of a test.
 global.ResizeObserver = jest.fn(function mockResizeObserver() {
@@ -95,6 +120,30 @@ describe('PluginContainer', () => {
   });
 });
 
+describe('PluginSlot', () => {
+  it('should throw an error if there are duplicate URLs', () => {
+    usePluginSlot.mockImplementation(() => ({
+      keepDefault: true,
+      plugins: [
+        {
+          url: 'http://localhost/plugin1',
+          type: 'IFRAME_PLUGIN',
+        },
+        {
+          url: 'http://localhost/plugin1',
+          type: 'IFRAME_PLUGIN',
+        },
+      ],
+    }));
+    const component = (
+      <IntlProvider>
+        <PluginSlot id="example" />
+      </IntlProvider>
+    );
+    expect(() => render(component)).toThrow('Duplicate URLs in a single plugin slot. Each plugin should have a unique URL. If you want to to use the same plugin in two spots, consider adding another PluginSlot.');
+  });
+});
+
 describe('Plugin', () => {
   let logError = jest.fn();
 
@@ -130,7 +179,6 @@ describe('Plugin', () => {
       <br />
     </div>
   );
-
   it('should render children if no error', () => {
     const component = (
       <Plugin errorFallbackProp={errorFallback}>

@@ -3,10 +3,11 @@ import React, { forwardRef } from 'react';
 import classNames from 'classnames';
 import { Spinner } from '@edx/paragon';
 import PropTypes from 'prop-types';
-import { injectIntl, intlShape } from '@edx/frontend-platform/i18n';
+import { injectIntl, intlShape } from '../i18n';
 
 import { usePluginSlot } from './data/hooks';
 import PluginContainer from './PluginContainer';
+import { hasDuplicateUrls } from './data/utils';
 
 const PluginSlot = forwardRef(({
   as, id, intl, pluginProps, children, ...props
@@ -17,6 +18,10 @@ const PluginSlot = forwardRef(({
   const { plugins, keepDefault } = usePluginSlot(id);
 
   const { fallback } = pluginProps;
+
+  if (hasDuplicateUrls(plugins)) {
+    throw new Error('Duplicate URLs in a single plugin slot. Each plugin should have a unique URL. If you want to to use the same plugin in two spots, consider adding another PluginSlot.');
+  }
 
   // TODO: Add internationalization to the "Loading" text on the spinner.
   let finalFallback = (
