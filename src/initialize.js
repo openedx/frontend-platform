@@ -138,11 +138,11 @@ export async function initError(error) {
  * authenticated.
  * @param {boolean} hydrateUser Whether or not we should fetch additional user account data.
  */
-export async function auth(requireUser, hydrateUser) {
+export async function auth(requireUser, hydrateUser, isPactStubEnabled) {
   if (requireUser) {
     await ensureAuthenticatedUser(global.location.href);
   } else {
-    await fetchAuthenticatedUser();
+    await fetchAuthenticatedUser(isPactStubEnabled);
   }
 
   if (hydrateUser && getAuthenticatedUser() !== null) {
@@ -293,6 +293,7 @@ export async function initialize({
   externalScripts = [GoogleAnalyticsLoader],
   requireAuthenticatedUser: requireUser = false,
   hydrateAuthenticatedUser: hydrateUser = false,
+  isPactStubEnabled = false,
   messages,
   handlers: overrideHandlers = {},
 }) {
@@ -342,9 +343,10 @@ export async function initialize({
       loggingService: getLoggingService(),
       config: getConfig(),
       middleware: authMiddleware,
+      isPactStubEnabled,
     });
 
-    await handlers.auth(requireUser, hydrateUser);
+    await handlers.auth(requireUser, hydrateUser, isPactStubEnabled);
     publish(APP_AUTH_INITIALIZED);
 
     // Analytics

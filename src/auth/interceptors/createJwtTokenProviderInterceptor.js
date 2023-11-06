@@ -1,4 +1,5 @@
-const createJwtTokenProviderInterceptor = (options) => {
+const createJwtTokenProviderInterceptor = (isPactStubEnabled, options) => {
+  console.log('isPactStubEnabled - JWT Interceptor', isPactStubEnabled);
   const {
     jwtTokenService,
     shouldSkip,
@@ -17,7 +18,7 @@ const createJwtTokenProviderInterceptor = (options) => {
     // (namely our retry request interceptor below) to access the original request
     // and handle it appropriately
     try {
-      await jwtTokenService.getJwtToken();
+      await jwtTokenService.getJwtToken(isPactStubEnabled);
     } catch (error) {
       const requestError = Object.create(error);
       requestError.message = `[getJwtToken] ${requestError.message}`;

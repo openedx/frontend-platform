@@ -51,7 +51,9 @@ class AxiosJwtAuthService {
 
     ensureDefinedConfig(options, 'AuthService');
     PropTypes.checkPropTypes(optionsPropTypes, options, 'options', 'AuthService');
+    console.log('options.isPactStubEnabled - Auth Service Constructor', options.isPactStubEnabled);
 
+    this.isPactStubEnabled = options.isPactStubEnabled;
     this.config = options.config;
     this.loggingService = options.loggingService;
     this.jwtTokenService = new AxiosJwtTokenService(
@@ -60,11 +62,12 @@ class AxiosJwtAuthService {
       this.config.REFRESH_ACCESS_TOKEN_ENDPOINT,
     );
     this.csrfTokenService = new AxiosCsrfTokenService(this.config.CSRF_TOKEN_API_PATH);
-    this.authenticatedHttpClient = this.addAuthenticationToHttpClient(axios.create());
+    this.authenticatedHttpClient = this.addAuthenticationToHttpClient(this.isPactStubEnabled, axios.create());
     this.httpClient = axios.create();
     configureCache()
       .then((cachedAxiosClient) => {
-        this.cachedAuthenticatedHttpClient = this.addAuthenticationToHttpClient(cachedAxiosClient);
+        // eslint-disable-next-line max-len
+        this.cachedAuthenticatedHttpClient = this.addAuthenticationToHttpClient(this.isPactStubEnabled, cachedAxiosClient);
         this.cachedHttpClient = cachedAxiosClient;
       })
       .catch((e) => {
@@ -222,8 +225,8 @@ class AxiosJwtAuthService {
    * @returns {Promise<UserData>|Promise<null>} Resolves to the user's access token if they are
    * logged in.
    */
-  async fetchAuthenticatedUser(options = {}) {
-    const decodedAccessToken = await this.jwtTokenService.getJwtToken(options.forceRefresh || false);
+  async fetchAuthenticatedUser(isPactStubEnabled, options = {}) {
+    const decodedAccessToken = await this.jwtTokenService.getJwtToken(isPactStubEnabled, options.forceRefresh || false);
 
     if (decodedAccessToken !== null) {
       this.setAuthenticatedUser({
@@ -310,7 +313,7 @@ class AxiosJwtAuthService {
  * @param {string} [config.CSRF_TOKEN_API_PATH]
  * @returns {HttpClient} A configured Axios HTTP client.
  */
-  addAuthenticationToHttpClient(newHttpClient) {
+  addAuthenticationToHttpClient(isPactStubEnabled, newHttpClient) {
     const httpClient = Object.create(newHttpClient);
     // Set withCredentials to true. Enables cross-site Access-Control requests
     // to be made using cookies, authorization headers or TLS client
@@ -322,7 +325,7 @@ class AxiosJwtAuthService {
 
     // The JWT access token interceptor attempts to refresh the user's jwt token
     // before any request unless the isPublic flag is set on the request config.
-    const refreshAccessTokenInterceptor = createJwtTokenProviderInterceptor({
+    const refreshAccessTokenInterceptor = createJwtTokenProviderInterceptor(isPactStubEnabled, {
       jwtTokenService: this.jwtTokenService,
       shouldSkip: axiosRequestConfig => axiosRequestConfig.isPublic,
     });

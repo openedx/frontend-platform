@@ -34,8 +34,15 @@ export default class AxiosJwtTokenService {
     return this.httpClient;
   }
 
-  decodeJwtCookie() {
-    const cookieValue = this.cookies.get(this.tokenCookieName);
+  decodeJwtCookie(isPactStubEnabled) {
+    let cookieValue;
+    console.log('isPactStubEnabled - JWT Token Service', isPactStubEnabled);
+
+    if (isPactStubEnabled) {
+      cookieValue = 'eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJsbXMta2V5IiwiZXhwIjoxNjk4OTA5OTA3LCJncmFudF90eXBlIjoicGFzc3dvcmQiLCJpYXQiOjE2OTg5MDYzMDcsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6MTgwMDAvb2F1dGgyIiwicHJlZmVycmVkX3VzZXJuYW1lIjoiZWR4Iiwic2NvcGVzIjpbInVzZXJfaWQiLCJlbWFpbCIsInByb2ZpbGUiXSwidmVyc2lvbiI6IjEuMi4wIiwic3ViIjoiNWMxMGY2NmYyZDYzOTBiNzA2NjJjOTE0YWFlN2VmNzkiLCJmaWx0ZXJzIjpbInVzZXI6bWUiXSwiaXNfcmVzdHJpY3RlZCI6ZmFsc2UsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJ1c2VyX2lkIjozLCJlbWFpbCI6ImVkeEBleGFtcGxlLmNvbSIsIm5hbWUiOiIiLCJmYW1pbHlfbmFtZSI6IiIsImdpdmVuX25hbWUiOiIiLCJhZG1pbmlzdHJhdG9yIjp0cnVlLCJzdXBlcnVzZXIiOnRydWV9';
+    } else {
+      cookieValue = this.cookies.get(this.tokenCookieName);
+    }
 
     if (cookieValue) {
       try {
@@ -51,8 +58,9 @@ export default class AxiosJwtTokenService {
     return null;
   }
 
-  refresh() {
+  refresh(isPactStubEnabled) {
     let responseServerEpochSeconds = 0;
+    console.log('isPactStubEnabled - refresh', isPactStubEnabled);
 
     if (this.refreshRequestPromises[this.tokenCookieName] === undefined) {
       const makeRefreshRequest = async () => {
@@ -88,7 +96,7 @@ export default class AxiosJwtTokenService {
           ? Math.abs(browserEpochSeconds - responseServerEpochSeconds)
           : null;
 
-        const decodedJwtToken = this.decodeJwtCookie();
+        const decodedJwtToken = this.decodeJwtCookie(isPactStubEnabled);
 
         if (!decodedJwtToken) {
           // This is an unexpected case. The refresh endpoint should set the
@@ -111,9 +119,9 @@ export default class AxiosJwtTokenService {
     return this.refreshRequestPromises[this.tokenCookieName];
   }
 
-  async getJwtToken(forceRefresh = false) {
+  async getJwtToken(isPactStubEnabled, forceRefresh = false) {
     try {
-      const decodedJwtToken = this.decodeJwtCookie(this.tokenCookieName);
+      const decodedJwtToken = this.decodeJwtCookie(isPactStubEnabled);
       if (!AxiosJwtTokenService.isTokenExpired(decodedJwtToken) && !forceRefresh) {
         return decodedJwtToken;
       }
@@ -124,7 +132,7 @@ export default class AxiosJwtTokenService {
     }
 
     try {
-      return await this.refresh();
+      return await this.refresh(isPactStubEnabled);
     } catch (e) {
       // TODO: Fix these.  They're still using loggingService as a singleton.
       logFrontendAuthError(this.loggingService, e);
