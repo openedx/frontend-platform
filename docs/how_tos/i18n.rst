@@ -119,9 +119,9 @@ The pipeline jobs live in the `ecommerce-scripts <https://github.com/openedx/eco
 
         "i18n_extract": "BABEL_ENV=i18n babel src --quiet > /dev/null"
 
-      * Add ``babel-plugin-react-intl`` to your dev dependencies::
+      * Add ``babel-plugin-formatjs`` to your dev dependencies::
 
-          npm install babel-plugin-react-intl --save-dev
+          npm install babel-plugin-formatjs --save-dev
 
       * Add this to ``.babelrc``::
 
@@ -129,7 +129,7 @@ The pipeline jobs live in the `ecommerce-scripts <https://github.com/openedx/eco
             "i18n": {
               "plugins": [
                 ["react-intl", {
-                  "messagesDir": "./temp/babel-plugin-react-intl",
+                  "messagesDir": "./temp/babel-plugin-formatjs",
                   "moduleSourceName": "@edx/frontend-platform/i18n"
                  }]
                ]
@@ -138,7 +138,7 @@ The pipeline jobs live in the `ecommerce-scripts <https://github.com/openedx/eco
 
       Then:
 
-      * Confirm that running ``make i18n.extract`` creates a lot of ``.json`` files in ``your-repo/temp/babel-plugin-react-intl/`` .
+      * Confirm that running ``make i18n.extract`` creates a lot of ``.json`` files in ``your-repo/temp/babel-plugin-formatjs/`` .
 
       * Add ``temp`` and ``src/i18n/transifex_input.json`` to your ``.gitignore``.
 
