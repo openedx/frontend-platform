@@ -184,7 +184,7 @@ Create your pipeline job on Jenkins
 
    * Run the script that you try to create the jobs.
 
-     * Examples: ``python transifex/pull.py https://github.com/openedx/edx-platform.git edx/sustaining-team``. You might be required to setup environment variable ``GITHUB_ACCESS_TOKEN`` with your personal github account.
+     * Examples: ``python transifex/pull.py https://github.com/openedx/edx-platform.git``. You might be required to setup environment variable ``GITHUB_ACCESS_TOKEN`` with your personal github account.
 
        * For ``push_translations``, you also need transifex authentication. This action will try to create project resource if it isn't existed yet. If you don't have permission, it will fail.
 
