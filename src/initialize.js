@@ -99,7 +99,7 @@ import configureCache from './auth/LocalForageCache';
  */
 export const history = (typeof window !== 'undefined')
   ? createBrowserHistory({
-    basename: getPath(getConfig().PUBLIC_PATH),
+    basename: getPath(getConfig()?.PUBLIC_PATH),
   }) : createMemoryHistory();
 
 /**
@@ -112,7 +112,7 @@ export const history = (typeof window !== 'undefined')
  * as an ENV variable in the Docker file, and we read it here from that configuration so that it
  * can be passed into a Router later.
  */
-export const basename = getPath(getConfig().PUBLIC_PATH);
+export const basename = getPath(getConfig()?.PUBLIC_PATH);
 
 /**
  * The default handler for the initialization lifecycle's `initError` phase.  Logs the error to the
