@@ -36,7 +36,7 @@ function ErrorPage({
 
   return (
     <IntlProvider locale={locale} messages={getMessages()}>
-      <Container fluid className="py-5 justify-content-center align-items-start text-center">
+      <Container fluid className="py-5 justify-content-center align-items-start text-center" data-testid="error-page">
         <Row>
           <Col>
             <p className="text-muted">
