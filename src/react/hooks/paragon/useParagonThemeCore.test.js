@@ -33,7 +33,7 @@ describe('useParagonThemeCore', () => {
       themeCore: {
         urls: {
           default: 'https://cdn.jsdelivr.net/npm/@edx/paragon@$21.0.0/dist/core.min.css',
-          brandOverride: 'https://cdn.jsdelivr.net/npm/@edx/brand@$2.0.0Version/dist/core.min.css',
+          brandOverride: 'https://cdn.jsdelivr.net/npm/@edx/brand@$2.0.0/dist/core.min.css',
         },
       },
       onLoad: themeOnLoad,
