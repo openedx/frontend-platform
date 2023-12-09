@@ -11,19 +11,19 @@
  *   APP_READY,
  *   subscribe,
  * } from '@edx/frontend-platform';
- * import { AppProvider, ErrorPage, PageRoute } from '@edx/frontend-platform/react';
+ * import { AppProvider, ErrorPage, PageWrap } from '@edx/frontend-platform/react';
  * import React from 'react';
  * import ReactDOM from 'react-dom';
- * import { Switch } from 'react-router-dom';
+ * import { Routes, Route } from 'react-router-dom';
  *
  * subscribe(APP_READY, () => {
  *   ReactDOM.render(
  *     <AppProvider store={configureStore()}>
  *       <Header />
  *       <main>
- *         <Switch>
- *           <PageRoute exact path="/" component={PaymentPage} />
- *         </Switch>
+ *         <Routes>
+ *           <Route path="/" element={<PageWrap><PaymentPage /></PageWrap>} />
+ *         </Routes>
  *       </main>
  *       <Footer />
  *     </AppProvider>,
@@ -54,7 +54,7 @@ Note that the env.config.js file in frontend-platform's root directory is NOT us
 initialization code, it's just there for the test suite and example application.
 */
 import envConfig from 'env.config'; // eslint-disable-line import/no-unresolved
-
+import { getPath } from './utils';
 import {
   publish,
 } from './pubSub';
@@ -99,8 +99,20 @@ import configureCache from './auth/LocalForageCache';
  */
 export const history = (typeof window !== 'undefined')
   ? createBrowserHistory({
-    basename: getConfig().PUBLIC_PATH,
+    basename: getPath(getConfig().PUBLIC_PATH),
   }) : createMemoryHistory();
+
+/**
+ * The string basename that is the root directory of this MFE.
+ *
+ * In devstack, this should always just return "/", because each MFE is in its own server/domain.
+ *
+ * In Tutor, all MFEs are deployed to a common server, each under a different top-level directory.
+ * The basename is the root path for a given MFE, e.g. "/library-authoring". It is set by tutor-mfe
+ * as an ENV variable in the Docker file, and we read it here from that configuration so that it
+ * can be passed into a Router later.
+ */
+export const basename = getPath(getConfig().PUBLIC_PATH);
 
 /**
  * The default handler for the initialization lifecycle's `initError` phase.  Logs the error to the
@@ -316,6 +328,15 @@ export async function initialize({
     await handlers.logging();
     publish(APP_LOGGING_INITIALIZED);
 
+    // Internationalization
+    configureI18n({
+      messages,
+      config: getConfig(),
+      loggingService: getLoggingService(),
+    });
+    await handlers.i18n();
+    publish(APP_I18N_INITIALIZED);
+
     // Authentication
     configureAuth(authServiceImpl, {
       loggingService: getLoggingService(),
@@ -333,15 +354,6 @@ export async function initialize({
     });
     await handlers.analytics();
     publish(APP_ANALYTICS_INITIALIZED);
-
-    // Internationalization
-    configureI18n({
-      messages,
-      config: getConfig(),
-      loggingService: getLoggingService(),
-    });
-    await handlers.i18n();
-    publish(APP_I18N_INITIALIZED);
 
     // Application Ready
     await handlers.ready();

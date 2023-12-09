@@ -7,10 +7,11 @@ import {
   AppProvider,
   AuthenticatedPageRoute,
   ErrorPage,
-  PageRoute,
+  PageWrap,
 } from '@edx/frontend-platform/react';
 import { APP_INIT_ERROR, APP_READY, initialize } from '@edx/frontend-platform';
 import { subscribe } from '@edx/frontend-platform/pubSub';
+import { Routes, Route } from 'react-router-dom';
 
 import ExamplePage from './ExamplePage';
 import AuthenticatedPage from './AuthenticatedPage';
@@ -20,13 +21,14 @@ import './index.scss';
 subscribe(APP_READY, () => {
   ReactDOM.render(
     <AppProvider>
-      <PageRoute exact path="/" component={ExamplePage} />
-      <PageRoute
-        exact
-        path="/error_example"
-        component={() => <ErrorPage message="Test error message" />}
-      />
-      <AuthenticatedPageRoute exact path="/authenticated" component={AuthenticatedPage} />
+      <Routes>
+        <Route path="/" element={<PageWrap><ExamplePage /></PageWrap>} />
+        <Route
+          path="/error_example"
+          element={<PageWrap><ErrorPage message="Test error message" /></PageWrap>}
+        />
+        <Route path="/authenticated" element={<AuthenticatedPageRoute><AuthenticatedPage /></AuthenticatedPageRoute>} />
+      </Routes>
     </AppProvider>,
     document.getElementById('root'),
   );

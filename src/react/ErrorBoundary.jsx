@@ -11,7 +11,7 @@ import ErrorPage from './ErrorPage';
  * @memberof module:React
  * @extends {Component}
  */
-export default class ErrorBoundary extends Component {
+class ErrorBoundary extends Component {
   constructor(props) {
     super(props);
     this.state = { hasError: false };
@@ -28,17 +28,20 @@ export default class ErrorBoundary extends Component {
 
   render() {
     if (this.state.hasError) {
-      return <ErrorPage />;
+      return this.props.fallbackComponent || <ErrorPage />;
     }
-
     return this.props.children;
   }
 }
 
 ErrorBoundary.propTypes = {
   children: PropTypes.node,
+  fallbackComponent: PropTypes.node,
 };
 
 ErrorBoundary.defaultProps = {
   children: null,
+  fallbackComponent: undefined,
 };
+
+export default ErrorBoundary;

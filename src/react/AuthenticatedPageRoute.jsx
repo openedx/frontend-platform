@@ -1,9 +1,8 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-import { useRouteMatch } from 'react-router-dom';
 
 import AppContext from './AppContext';
-import PageRoute from './PageRoute';
+import PageWrap from './PageWrap';
 import { getLoginRedirectUrl } from '../auth';
 
 /**
@@ -14,45 +13,34 @@ import { getLoginRedirectUrl } from '../auth';
  *
  * It can optionally accept an override URL to redirect to instead of the login page.
  *
- * Like a `PageRoute`, also calls `sendPageEvent` when the route becomes active.
+ * Like a `PageWrap`, also calls `sendPageEvent` when the route becomes active.
  *
- * @see PageRoute
+ * @see PageWrap
  * @see {@link module:frontend-platform/analytics~sendPageEvent}
  * @memberof module:React
  * @param {Object} props
  * @param {string} props.redirectUrl The URL anonymous users should be redirected to, rather than
  * viewing the route's contents.
  */
-export default function AuthenticatedPageRoute({ redirectUrl, ...props }) {
+export default function AuthenticatedPageRoute({ redirectUrl, children }) {
   const { authenticatedUser } = useContext(AppContext);
-
-  const match = useRouteMatch({
-    // eslint-disable-next-line react/prop-types
-    path: props.path,
-    // eslint-disable-next-line react/prop-types
-    exact: props.exact,
-    // eslint-disable-next-line react/prop-types
-    strict: props.strict,
-    // eslint-disable-next-line react/prop-types
-    sensitive: props.sensitive,
-  });
-
   if (authenticatedUser === null) {
-    if (match) {
-      const destination = redirectUrl || getLoginRedirectUrl(global.location.href);
-      global.location.assign(destination);
-    }
-    // This emulates a Route's way of displaying nothing if the route's path doesn't match the
-    // current URL.
+    const destination = redirectUrl || getLoginRedirectUrl(global.location.href);
+    global.location.assign(destination);
+
     return null;
   }
+
   return (
-    <PageRoute {...props} />
+    <PageWrap>
+      {children}
+    </PageWrap>
   );
 }
 
 AuthenticatedPageRoute.propTypes = {
   redirectUrl: PropTypes.string,
+  children: PropTypes.node.isRequired,
 };
 
 AuthenticatedPageRoute.defaultProps = {
