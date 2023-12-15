@@ -1,3 +1,4 @@
+// @ts-check
 /**
  * #### Import members from **@edx/frontend-platform**
  *
@@ -134,8 +135,9 @@ export function convertKeyNames(object, nameMap) {
   parser.host;     // => "example.com:3000"
  * https://gist.github.com/jlong/2428561
  *
- * @param {string}
- * @returns {Object}
+ * @param {string} url The URL to parse
+ * @deprecated Just use the URL global instead: `new URL(str)` or `new URL(str, location.href)`
+ * @returns {HTMLAnchorElement|Record<never, never>}
  */
 export function parseURL(url) {
   if (typeof document !== 'undefined') {
@@ -149,13 +151,11 @@ export function parseURL(url) {
 
 /**
  * Given a string URL return the path of the URL
- *
- *
- * @param {string}
+ * @param {string} url
  * @returns {string}
  */
 export function getPath(url) {
-  return typeof document !== 'undefined' ? parseURL(url)?.pathname : '';
+  return new URL(url, window?.location.href ?? "https://example.com")?.pathname || '';
 }
 
 /**

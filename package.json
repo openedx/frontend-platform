@@ -2,7 +2,43 @@
   "name": "@edx/frontend-platform",
   "version": "1.0.0-semantically-released",
   "description": "Foundational application framework for Open edX micro-frontend applications.",
-  "main": "index.js",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./src/index.js",
+      "types": "./types/index.d.ts"
+    },
+    "./analytics": {
+      "import": "./src/analytics/index.js",
+      "types": "./types/analytics/index.d.ts"
+    },
+    "./auth": {
+      "import": "./src/auth/index.js",
+      "types": "./types/auth/index.d.ts"
+    },
+    "./i18n": {
+      "import": "./src/i18n/index.js",
+      "types": "./types/i18n/index.d.ts"
+    },
+    "./logging": {
+      "import": "./src/logging/index.js",
+      "types": "./types/logging/index.d.ts"
+    },
+    "./react": {
+      "import": "./src/react/index.js",
+      "types": "./types/react/index.d.ts"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "*": ["types/index.d.ts"],
+      "analytics": ["types/analytics/index.d.ts"],
+      "auth": ["types/auth/index.d.ts"],
+      "i18n": ["types/i18n/index.d.ts"],
+      "logging": ["types/logging/index.d.ts"],
+      "react": ["types/react/index.d.ts"]
+    }
+  },
   "publishConfig": {
     "access": "public"
   },

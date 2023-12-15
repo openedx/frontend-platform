@@ -1,3 +1,4 @@
+// @ts-check
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import { logFrontendAuthError } from './utils';
@@ -8,6 +9,11 @@ import createProcessAxiosRequestErrorInterceptor from './interceptors/createProc
 import AxiosJwtTokenService from './AxiosJwtTokenService';
 import AxiosCsrfTokenService from './AxiosCsrfTokenService';
 import configureCache from './LocalForageCache';
+
+/** @typedef {import('./interface.js').AuthService} AuthService */
+/** @typedef {import('./interface.js').AuthServiceOptions} AuthServiceOptions */
+/** @typedef {import('./interface.js').HttpClient} HttpClient */
+/** @typedef {import('./interface.js').UserData} UserData */
 
 const optionsPropTypes = {
   config: PropTypes.shape({
@@ -27,20 +33,11 @@ const optionsPropTypes = {
 
 /**
  * @implements {AuthService}
- * @memberof module:Auth
  */
 class AxiosJwtAuthService {
+
   /**
-   * @param {Object} options
-   * @param {Object} options.config
-   * @param {string} options.config.BASE_URL
-   * @param {string} options.config.LMS_BASE_URL
-   * @param {string} options.config.LOGIN_URL
-   * @param {string} options.config.LOGOUT_URL
-   * @param {string} options.config.REFRESH_ACCESS_TOKEN_ENDPOINT
-   * @param {string} options.config.ACCESS_TOKEN_COOKIE_NAME
-   * @param {string} options.config.CSRF_TOKEN_API_PATH
-   * @param {Object} options.loggingService requires logError and logInfo methods
+   * @param {AuthServiceOptions} options 
    */
   constructor(options) {
     this.authenticatedHttpClient = null;
@@ -110,6 +107,7 @@ class AxiosJwtAuthService {
    */
   getAuthenticatedHttpClient(options = {}) {
     if (options.useCache) {
+      // @ts-ignore - Typescript shows that this can be null. Probably worth fixing properly.
       return this.cachedAuthenticatedHttpClient;
     }
 
@@ -209,7 +207,7 @@ class AxiosJwtAuthService {
   /**
    * Sets the authenticated user to the provided value.
    *
-   * @param {UserData} authUser
+   * @param {UserData|null} authUser
    */
   setAuthenticatedUser(authUser) {
     this.authenticatedUser = authUser;
@@ -219,7 +217,7 @@ class AxiosJwtAuthService {
    * Reads the authenticated user's access token. Resolves to null if the user is
    * unauthenticated.
    *
-   * @returns {Promise<UserData>|Promise<null>} Resolves to the user's access token if they are
+   * @returns {Promise<UserData|null>} Resolves to the user's access token if they are
    * logged in.
    */
   async fetchAuthenticatedUser(options = {}) {
@@ -257,7 +255,8 @@ class AxiosJwtAuthService {
   async ensureAuthenticatedUser(redirectUrl = this.config.BASE_URL) {
     await this.fetchAuthenticatedUser();
 
-    if (this.getAuthenticatedUser() === null) {
+    const authenticatedUser = this.getAuthenticatedUser();
+    if (authenticatedUser === null) {
       const isRedirectFromLoginPage = global.document.referrer
         && global.document.referrer.startsWith(this.config.LOGIN_URL);
 
@@ -271,11 +270,12 @@ class AxiosJwtAuthService {
       this.redirectToLogin(redirectUrl);
 
       const unauthorizedError = new Error('Failed to ensure the user is authenticated');
+      // @ts-ignore
       unauthorizedError.isRedirecting = true;
       throw unauthorizedError;
     }
 
-    return this.getAuthenticatedUser();
+    return authenticatedUser;
   }
 
   /**
@@ -289,7 +289,7 @@ class AxiosJwtAuthService {
    *  console.log(authenticatedUser); // Will contain additional user information
    * ```
    *
-   * @returns {Promise<null>}
+   * @returns {Promise<void>}
    */
   async hydrateAuthenticatedUser() {
     const user = this.getAuthenticatedUser();

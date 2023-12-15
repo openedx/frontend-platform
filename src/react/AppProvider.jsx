@@ -1,3 +1,4 @@
+// @ts-check
 import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { BrowserRouter as Router } from 'react-router-dom';
@@ -41,10 +42,11 @@ import { basename } from '../initialize';
  * - A `Router` for react-router.
  *
  * @param {Object} props
- * @param {Object} [props.store] A redux store.
- * @memberof module:React
+ * @param {import('react').ReactNode} props.children The contents of your app, as React components
+ * @param {import('redux').Store|null} [props.store] Optional redux store.
+ * @param {boolean} [props.wrapWithRouter] Set this false if you want to supply your own router
  */
-export default function AppProvider({ store, children, wrapWithRouter }) {
+export default function AppProvider({ children, store = null, wrapWithRouter = true }) {
   const [config, setConfig] = useState(getConfig());
   const [authenticatedUser, setAuthenticatedUser] = useState(getAuthenticatedUser());
   const [locale, setLocale] = useState(getLocale());
@@ -89,9 +91,4 @@ AppProvider.propTypes = {
   store: PropTypes.object,
   children: PropTypes.node.isRequired,
   wrapWithRouter: PropTypes.bool,
-};
-
-AppProvider.defaultProps = {
-  store: null,
-  wrapWithRouter: true,
 };

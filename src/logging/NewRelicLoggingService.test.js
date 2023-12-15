@@ -1,4 +1,4 @@
-import NewRelicLoggingService, { MAX_ERROR_LENGTH } from './NewRelicLoggingService';
+import NewRelicLoggingService, { MAX_ERROR_LENGTH } from './NewRelicLoggingService.js';
 
 global.newrelic = {
   addPageAction: jest.fn(),

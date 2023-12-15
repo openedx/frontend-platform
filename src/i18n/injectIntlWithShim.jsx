@@ -7,6 +7,7 @@ import { getLoggingService, intlShape } from './lib';
  * property's formatMessage function.
  *
  * @memberof I18n
+ * @deprecated Use useIntl hook instead
  */
 const injectIntlWithShim = (WrappedComponent) => {
   class ShimmedIntlComponent extends React.Component {

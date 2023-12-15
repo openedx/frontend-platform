@@ -1,3 +1,4 @@
+// @ts-check
 /**
  * #### Import members from **@edx/frontend-platform/analytics**
  *
@@ -48,8 +49,8 @@ let service;
 
 /**
  *
- * @param {class} AnalyticsService
- * @param {*} options
+ * @param {AnalyticsServiceConstructor} AnalyticsService
+ * @param {AnalyticsServiceOptions} options
  * @returns {AnalyticsService}
  */
 export function configure(AnalyticsService, options) {
@@ -73,7 +74,7 @@ export function sendTrackingLogEvent(eventName, properties) {
  *
  *
  * @param {*} userId
- * @param {*} traits
+ * @param {*} [traits]
  */
 export function identifyAuthenticatedUser(userId, traits) {
   service.identifyAuthenticatedUser(userId, traits);
@@ -82,7 +83,7 @@ export function identifyAuthenticatedUser(userId, traits) {
 /**
  *
  *
- * @param {*} traits
+ * @param {*} [traits]
  * @returns {Promise}
  */
 export function identifyAnonymousUser(traits) {
@@ -131,12 +132,22 @@ export function resetAnalyticsService() {
 }
 
 /**
- * @name AnalyticsService
- * @interface
+ * @typedef {Object} AnalyticsService
  * @memberof module:Analytics
  * @property {function} identifyAnonymousUser
  * @property {function} identifyAuthenticatedUser
  * @property {function} sendPageEvent
  * @property {function} sendTrackEvent
  * @property {function} sendTrackingLogEvent
+ */
+
+/**
+ * @typedef {Object} AnalyticsServiceOptions
+ * @property {import('../config').ConfigDocument} config
+ * @property {*} httpClient
+ * @property {import('../logging/interface').LoggingService} loggingService
+ */
+
+/**
+ * @typedef {{new (options: AnalyticsServiceOptions): AnalyticsService}} AnalyticsServiceConstructor
  */

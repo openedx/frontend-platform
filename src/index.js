@@ -7,7 +7,7 @@ export {
   ensureDefinedConfig,
   parseURL,
   getPath,
-} from './utils';
+} from './utils.js';
 export {
   APP_TOPIC,
   APP_PUBSUB_INITIALIZED,
@@ -20,25 +20,25 @@ export {
   APP_INIT_ERROR,
   CONFIG_TOPIC,
   CONFIG_CHANGED,
-} from './constants';
+} from './constants.js';
 export {
   initialize,
   history,
   initError,
   auth,
-} from './initialize';
+} from './initialize.js';
 export {
   publish,
   subscribe,
   unsubscribe,
-} from './pubSub';
+} from './pubSub.js';
 export {
   getConfig,
   setConfig,
   mergeConfig,
   ensureConfig,
-} from './config';
+} from './config.js';
 export {
   initializeMockApp,
   mockMessages,
-} from './testing';
+} from './testing/index.js';

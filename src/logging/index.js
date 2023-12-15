@@ -4,6 +4,8 @@ export {
   configure,
   logInfo,
   logError,
-} from './interface';
-export { default as NewRelicLoggingService } from './NewRelicLoggingService';
-export { default as MockLoggingService } from './MockLoggingService';
+} from './interface.js';
+export { default as NewRelicLoggingService } from './NewRelicLoggingService.js';
+export { default as MockLoggingService } from './MockLoggingService.js';
+
+/** @typedef {import('./interface.js').LoggingService} LoggingService */

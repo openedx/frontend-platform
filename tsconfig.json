@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "declaration": true,
+    "declarationDir": "types",
+    "emitDeclarationOnly": true,
+    "declarationMap": true,
+    "strict": true,
+    "jsx": "react",
+    "noImplicitAny": false,
+    "resolveJsonModule": true,
+    "esModuleInterop": true
+  },
+  "include": ["./src/"]
+}

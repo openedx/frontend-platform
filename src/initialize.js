@@ -1,3 +1,4 @@
+// @ts-check
 /**
  * #### Import members from **@edx/frontend-platform**
  *
@@ -53,22 +54,23 @@ to an empty object `{}` if the file doesn't exist.  This acts like an 'optional'
 Note that the env.config.js file in frontend-platform's root directory is NOT used by the actual
 initialization code, it's just there for the test suite and example application.
 */
+// @ts-ignore
 import envConfig from 'env.config'; // eslint-disable-line import/no-unresolved
 import { getPath } from './utils';
 import {
   publish,
-} from './pubSub';
+} from './pubSub.js';
 // eslint-disable-next-line import/no-cycle
 import {
   getConfig, mergeConfig,
-} from './config';
+} from './config.js';
 import {
   configure as configureLogging, getLoggingService, NewRelicLoggingService, logError,
-} from './logging';
+} from './logging/index.js';
 import {
   configure as configureAnalytics, SegmentAnalyticsService, identifyAnonymousUser, identifyAuthenticatedUser,
-} from './analytics';
-import { GoogleAnalyticsLoader } from './scripts';
+} from './analytics/index.js';
+import { GoogleAnalyticsLoader } from './scripts/index.js';
 import {
   getAuthenticatedHttpClient,
   configure as configureAuth,
@@ -78,7 +80,7 @@ import {
   getAuthenticatedUser,
   AxiosJwtAuthService,
 } from './auth';
-import { configure as configureI18n } from './i18n';
+import { configure as configureI18n } from './i18n/index.js';
 import {
   APP_PUBSUB_INITIALIZED,
   APP_CONFIG_INITIALIZED,
@@ -88,7 +90,7 @@ import {
   APP_ANALYTICS_INITIALIZED,
   APP_READY, APP_INIT_ERROR,
 } from './constants';
-import configureCache from './auth/LocalForageCache';
+import configureCache from './auth/LocalForageCache.js';
 
 /**
  * A browser history or memory history object created by the [history](https://github.com/ReactTraining/history)
@@ -193,6 +195,7 @@ async function runtimeConfig() {
       mergeConfig(data);
     }
   } catch (error) {
+    // @ts-ignore
     // eslint-disable-next-line no-console
     console.error('Error with config API', error.message);
   }
@@ -263,11 +266,13 @@ function applyOverrideHandlers(overrides) {
  * - ready: A no-op by default.
  * - initError: Uses the 'initError' handler defined above.
  *
- * @param {Object} [options]
- * @param {*} [options.loggingService=NewRelicLoggingService] The `LoggingService` implementation
- * to use.
- * @param {*} [options.analyticsService=SegmentAnalyticsService] The `AnalyticsService`
- * implementation to use.
+ * @param {Object} options
+ * @param {import('./logging/interface.js').LoggingServiceConstructor} [options.loggingService=NewRelicLoggingService]
+ * The `LoggingService` implementation to use.
+ * @param {import('./analytics/interface.js').AnalyticsServiceConstructor} [options.analyticsService=SegmentAnalyticsService]
+ * The `AnalyticsService` implementation to use.
+ * @param {import('./auth/interface.js').AuthServiceConstructor} [options.authService=AxiosJwtAuthService]
+ * The `AuthService` implementation to use.
  * @param {*} [options.authMiddleware=[]] An array of middleware to apply to http clients in the auth service.
  * @param {*} [options.externalScripts=[GoogleAnalyticsLoader]] An array of externalScripts.
  * By default added GoogleAnalyticsLoader.
@@ -295,7 +300,7 @@ export async function initialize({
   hydrateAuthenticatedUser: hydrateUser = false,
   messages,
   handlers: overrideHandlers = {},
-}) {
+} = {}) {
   const handlers = applyOverrideHandlers(overrideHandlers);
   try {
     // Pub/Sub
@@ -360,6 +365,7 @@ export async function initialize({
     await handlers.ready();
     publish(APP_READY);
   } catch (error) {
+    // @ts-ignore
     if (!error.isRedirecting) {
       // Initialization Error
       await handlers.initError(error);
@@ -367,3 +373,5 @@ export async function initialize({
     }
   }
 }
+
+initialize();

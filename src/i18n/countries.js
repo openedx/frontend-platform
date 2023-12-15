@@ -1,5 +1,7 @@
+// @ts-check
 /* eslint-disable import/extensions */
-import COUNTRIES, { langs as countryLangs } from 'i18n-iso-countries';
+import * as COUNTRIES from 'i18n-iso-countries';
+import { langs as countryLangs } from 'i18n-iso-countries';
 
 import { getPrimaryLanguageSubtag } from './lib';
 

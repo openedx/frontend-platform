@@ -4,14 +4,8 @@ doc_command = ./node_modules/.bin/documentation build src -g -c ./docs/documenta
 cat_docs_command = cat ./docs/_API-header.md ./docs/_API-body.md > ./docs/API.md
 
 build:
-	rm -rf ./dist
-	./node_modules/.bin/fedx-scripts babel src --out-dir dist --source-maps --ignore **/*.test.jsx,**/*.test.js,**/setupTest.js --copy-files
-	@# --copy-files will bring in everything else that wasn't processed by babel. Remove what we don't want.
-	@find dist -name '*.test.js*' -delete
-	rm ./dist/setupTest.js
-	cp ./package.json ./dist/package.json
-	cp ./LICENSE ./dist/LICENSE
-	cp ./README.md ./dist/README.md
+	rm -rf types/*
+	npx tsc
 
 docs-build:
 	${doc_command}

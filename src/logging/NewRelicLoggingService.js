@@ -41,6 +41,10 @@ function sendError(error, customAttributes) {
   }
 }
 
+/**
+ * @param {string} name 
+ * @param {string|number|boolean|null} value 
+ */
 function setCustomAttribute(name, value) {
   if (process.env.NODE_ENV === 'development') {
     console.log(name, value); // eslint-disable-line
@@ -82,7 +86,7 @@ function setCustomAttribute(name, value) {
  *
  * Requires the NewRelic Browser JavaScript snippet.
  *
- * @implements {LoggingService}
+ * @implements {import('./interface.js').LoggingService}
  * @memberof module:Logging
  */
 export default class NewRelicLoggingService {
@@ -142,7 +146,7 @@ export default class NewRelicLoggingService {
   /**
    *
    *
-   * @param {*} errorStringOrObject
+   * @param {string|Error} errorStringOrObject
    * @param {*} [customAttributes={}]
    * @memberof NewRelicLoggingService
    */
@@ -173,7 +177,7 @@ export default class NewRelicLoggingService {
    * Sets a custom attribute that will be included with all subsequent log messages.
    *
    * @param {string} name
-   * @param {string|number|null} value
+   * @param {string|number|boolean|null} value
    */
   setCustomAttribute(name, value) {
     setCustomAttribute(name, value);

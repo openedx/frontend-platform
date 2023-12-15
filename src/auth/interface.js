@@ -1,3 +1,4 @@
+// @ts-check
 /**
  * #### Import members from **@edx/frontend-platform/auth**
  *
@@ -88,8 +89,8 @@ let service;
 
 /**
  *
- * @param {class} AuthService
- * @param {*} options
+ * @param {AuthServiceConstructor} AuthService
+ * @param {AuthServiceOptions} options
  * @returns {AuthService}
  */
 export function configure(AuthService, options) {
@@ -214,7 +215,7 @@ export function setAuthenticatedUser(authUser) {
  * Reads the authenticated user's access token. Resolves to null if the user is
  * unauthenticated.
  *
- * @returns {Promise<UserData>|Promise<null>} Resolves to the user's access token if they are
+ * @returns {Promise<UserData|null>} Resolves to the user's access token if they are
  * logged in.
  */
 export async function fetchAuthenticatedUser(options = {}) {
@@ -251,12 +252,15 @@ export async function hydrateAuthenticatedUser() {
   publish(AUTHENTICATED_USER_CHANGED);
 }
 
+
 /**
- * @name AuthService
- * @interface
- * @memberof module:Auth
- * @property {function} getAuthenticatedHttpClient
- * @property {function} getHttpClient
+ * @typedef {import("axios").Axios} HttpClient
+ */
+
+/**
+ * @typedef {Object} AuthService
+ * @property {typeof getAuthenticatedHttpClient} getAuthenticatedHttpClient
+ * @property {typeof getHttpClient} getHttpClient
  * @property {function} getLoginRedirectUrl
  * @property {function} redirectToLogin
  * @property {function} getLogoutRedirectUrl
@@ -269,40 +273,21 @@ export async function hydrateAuthenticatedUser() {
  */
 
 /**
- * A configured axios client. See axios docs for more
- * info https://github.com/axios/axios. All the functions
- * below accept isPublic and isCsrfExempt in the request
- * config options. Setting these to true will prevent this
- * client from attempting to refresh the jwt access token
- * or a csrf token respectively.
- *
- * ```
- *  // A public endpoint (no jwt token refresh)
- *  apiClient.get('/path/to/endpoint', { isPublic: true });
- * ```
- *
- * ```
- *  // A csrf exempt endpoint
- *  apiClient.post('/path/to/endpoint', { data }, { isCsrfExempt: true });
- * ```
- *
- * @name HttpClient
- * @interface
- * @memberof module:Auth
- * @property {function} get
- * @property {function} head
- * @property {function} options
- * @property {function} delete (csrf protected)
- * @property {function} post (csrf protected)
- * @property {function} put (csrf protected)
- * @property {function} patch (csrf protected)
+ * @typedef {Object} AuthServiceOptions
+ * @property {import('../config').ConfigDocument} config
+ * @property {import('../logging/interface').LoggingService} loggingService
+ * @property {((client: HttpClient) => void)[]} [middleware]
  */
 
 /**
- * @name UserData
- * @interface
- * @memberof module:Auth
+ * @typedef {{new (options: AuthServiceOptions): AuthService}} AuthServiceConstructor
+ */
+
+/**
+ * @typedef {Object} UserData
  * @property {string} userId
+ * @property {string} email
+ * @property {string} name
  * @property {string} username
  * @property {Array} roles
  * @property {boolean} administrator
