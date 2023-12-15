@@ -8,7 +8,7 @@ import {
   handleRtl,
   getCookies,
   mergeMessages,
-} from './lib';
+} from './lib.js';
 
 jest.mock('universal-cookie');
 

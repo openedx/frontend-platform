@@ -42,8 +42,8 @@ function sendError(error, customAttributes) {
 }
 
 /**
- * @param {string} name 
- * @param {string|number|boolean|null} value 
+ * @param {string} name
+ * @param {string|number|boolean|null} value
  */
 function setCustomAttribute(name, value) {
   if (process.env.NODE_ENV === 'development') {

@@ -56,7 +56,7 @@ initialization code, it's just there for the test suite and example application.
 */
 // @ts-ignore
 import envConfig from 'env.config'; // eslint-disable-line import/no-unresolved
-import { getPath } from './utils';
+import { getPath } from './utils.js';
 import {
   publish,
 } from './pubSub.js';
@@ -79,7 +79,7 @@ import {
   hydrateAuthenticatedUser,
   getAuthenticatedUser,
   AxiosJwtAuthService,
-} from './auth';
+} from './auth/index.js';
 import { configure as configureI18n } from './i18n/index.js';
 import {
   APP_PUBSUB_INITIALIZED,
@@ -89,7 +89,7 @@ import {
   APP_LOGGING_INITIALIZED,
   APP_ANALYTICS_INITIALIZED,
   APP_READY, APP_INIT_ERROR,
-} from './constants';
+} from './constants.js';
 import configureCache from './auth/LocalForageCache.js';
 
 /**
@@ -267,11 +267,11 @@ function applyOverrideHandlers(overrides) {
  * - initError: Uses the 'initError' handler defined above.
  *
  * @param {Object} options
- * @param {import('./logging/interface.js').LoggingServiceConstructor} [options.loggingService=NewRelicLoggingService]
+ * @param {import('./logging/interface.js').LoggingServiceConstructor} [options.loggingService]
  * The `LoggingService` implementation to use.
- * @param {import('./analytics/interface.js').AnalyticsServiceConstructor} [options.analyticsService=SegmentAnalyticsService]
+ * @param {import('./analytics/interface.js').AnalyticsServiceConstructor} [options.analyticsService]
  * The `AnalyticsService` implementation to use.
- * @param {import('./auth/interface.js').AuthServiceConstructor} [options.authService=AxiosJwtAuthService]
+ * @param {import('./auth/interface.js').AuthServiceConstructor} [options.authService]
  * The `AuthService` implementation to use.
  * @param {*} [options.authMiddleware=[]] An array of middleware to apply to http clients in the auth service.
  * @param {*} [options.externalScripts=[GoogleAnalyticsLoader]] An array of externalScripts.

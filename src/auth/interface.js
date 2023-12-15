@@ -36,7 +36,7 @@
  * @module Auth
  */
 import PropTypes from 'prop-types';
-import { publish } from '../pubSub';
+import { publish } from '../pubSub.js';
 
 /**
  * @constant
@@ -251,7 +251,6 @@ export async function hydrateAuthenticatedUser() {
   await service.hydrateAuthenticatedUser();
   publish(AUTHENTICATED_USER_CHANGED);
 }
-
 
 /**
  * @typedef {import("axios").Axios} HttpClient

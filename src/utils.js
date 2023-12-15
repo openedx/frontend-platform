@@ -155,7 +155,7 @@ export function parseURL(url) {
  * @returns {string}
  */
 export function getPath(url) {
-  return new URL(url, window?.location.href ?? "https://example.com")?.pathname || '';
+  return new URL(url, window?.location.href ?? 'https://example.com')?.pathname || '';
 }
 
 /**

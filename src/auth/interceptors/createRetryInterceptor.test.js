@@ -1,4 +1,4 @@
-import { defaultGetBackoffMilliseconds } from './createRetryInterceptor';
+import { defaultGetBackoffMilliseconds } from './createRetryInterceptor.js';
 
 describe('createRetryInterceptor: defaultGetBackoffMilliseconds', () => {
   it('returns a number between 2000 and 3000 on the first retry', () => {

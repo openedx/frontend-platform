@@ -124,10 +124,10 @@
  * @module Config
  */
 
-import { APP_CONFIG_INITIALIZED, CONFIG_CHANGED } from './constants';
+import { APP_CONFIG_INITIALIZED, CONFIG_CHANGED } from './constants.js';
 
-import { publish, subscribe } from './pubSub';
-import { ensureDefinedConfig } from './utils';
+import { publish, subscribe } from './pubSub.js';
+import { ensureDefinedConfig } from './utils.js';
 
 function extractRegex(envVar) {
   // Convert the environment variable string to a regex, while guarding

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import PropTypes from 'prop-types';
-import { ensureDefinedConfig } from '../utils';
+import { ensureDefinedConfig } from '../utils.js';
 
 const userPropTypes = PropTypes.shape({
   userId: PropTypes.string.isRequired,

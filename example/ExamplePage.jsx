@@ -5,7 +5,7 @@ import { injectIntl, intlShape } from '@edx/frontend-platform/i18n';
 import { logInfo } from '@edx/frontend-platform/logging';
 import { AppContext } from '@edx/frontend-platform/react';
 import { ensureConfig, mergeConfig, getConfig } from '@edx/frontend-platform';
-import messages from './messages';
+import messages from './messages.js';
 
 mergeConfig({
   EXAMPLE_VAR: process.env.EXAMPLE_VAR,

@@ -41,10 +41,10 @@ const serviceShape = {
 let service = null;
 
 /**
- * 
- * @param {LoggingServiceConstructor} LoggingService 
- * @param {{config: import('../config').ConfigDocument}} options 
- * @returns 
+ *
+ * @param {LoggingServiceConstructor} LoggingService
+ * @param {{config: import('../config').ConfigDocument}} options
+ * @returns
  */
 export function configure(LoggingService, options) {
   PropTypes.checkPropTypes(optionsShape, options, 'property', 'Logging');

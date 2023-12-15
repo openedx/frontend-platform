@@ -1,3 +1,4 @@
+// @ts-check
 import axios from 'axios';
 
 // This default algorithm is a recreation of what is documented here

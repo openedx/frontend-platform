@@ -9,16 +9,16 @@ import {
   APP_I18N_INITIALIZED,
   APP_READY,
   APP_INIT_ERROR,
-} from './constants';
-import { initialize } from './initialize';
-import { subscribe } from './pubSub';
+} from './constants.js';
+import { initialize } from './initialize.js';
+import { subscribe } from './pubSub.js';
 
 import {
   configure as configureLogging,
   NewRelicLoggingService,
   getLoggingService,
   logError,
-} from './logging';
+} from './logging/index.js';
 import {
   configure as configureAuth,
   getAuthenticatedHttpClient,
@@ -27,17 +27,17 @@ import {
   hydrateAuthenticatedUser,
   getAuthenticatedUser,
   AxiosJwtAuthService,
-} from './auth';
-import { configure as configureAnalytics, SegmentAnalyticsService } from './analytics';
-import { configure as configureI18n } from './i18n';
-import { getConfig } from './config';
-import configureCache from './auth/LocalForageCache';
+} from './auth/index.js';
+import { configure as configureAnalytics, SegmentAnalyticsService } from './analytics/index.js';
+import { configure as configureI18n } from './i18n/index.js';
+import { getConfig } from './config.js';
+import configureCache from './auth/LocalForageCache.js';
 
-jest.mock('./logging');
-jest.mock('./auth');
-jest.mock('./analytics');
-jest.mock('./i18n');
-jest.mock('./auth/LocalForageCache');
+jest.mock('./logging/index.js');
+jest.mock('./auth/index.js');
+jest.mock('./analytics/index.js');
+jest.mock('./i18n/index.js');
+jest.mock('./auth/LocalForageCache.js');
 jest.mock('history');
 
 let config = null;

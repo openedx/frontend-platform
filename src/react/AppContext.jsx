@@ -26,7 +26,7 @@ import React from 'react';
 const AppContext = React.createContext(/** @type {AppContext} */ ({
   authenticatedUser: null,
   config: {},
-  locale: ""
+  locale: '',
 }));
 
 export default AppContext;

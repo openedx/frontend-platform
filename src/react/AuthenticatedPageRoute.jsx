@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 
-import AppContext from './AppContext';
-import PageWrap from './PageWrap';
-import { getLoginRedirectUrl } from '../auth';
+import AppContext from './AppContext.jsx';
+import PageWrap from './PageWrap.jsx';
+import { getLoginRedirectUrl } from '../auth/index.js';
 
 /**
  * A react-router route that redirects to the login page when the route becomes active and the user

@@ -6,7 +6,7 @@ import {
   sendTrackEvent,
   sendTrackingLogEvent,
   SegmentAnalyticsService,
-} from './index';
+} from './index.js';
 
 const eventType = 'test.event';
 const eventData = {

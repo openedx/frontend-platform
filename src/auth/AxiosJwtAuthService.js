@@ -1,14 +1,14 @@
 // @ts-check
 import axios from 'axios';
 import PropTypes from 'prop-types';
-import { logFrontendAuthError } from './utils';
-import { camelCaseObject, ensureDefinedConfig } from '../utils';
-import createJwtTokenProviderInterceptor from './interceptors/createJwtTokenProviderInterceptor';
-import createCsrfTokenProviderInterceptor from './interceptors/createCsrfTokenProviderInterceptor';
-import createProcessAxiosRequestErrorInterceptor from './interceptors/createProcessAxiosRequestErrorInterceptor';
-import AxiosJwtTokenService from './AxiosJwtTokenService';
-import AxiosCsrfTokenService from './AxiosCsrfTokenService';
-import configureCache from './LocalForageCache';
+import { logFrontendAuthError } from './utils.js';
+import { camelCaseObject, ensureDefinedConfig } from '../utils.js';
+import createJwtTokenProviderInterceptor from './interceptors/createJwtTokenProviderInterceptor.js';
+import createCsrfTokenProviderInterceptor from './interceptors/createCsrfTokenProviderInterceptor.js';
+import createProcessAxiosRequestErrorInterceptor from './interceptors/createProcessAxiosRequestErrorInterceptor.js';
+import AxiosJwtTokenService from './AxiosJwtTokenService.js';
+import AxiosCsrfTokenService from './AxiosCsrfTokenService.js';
+import configureCache from './LocalForageCache.js';
 
 /** @typedef {import('./interface.js').AuthService} AuthService */
 /** @typedef {import('./interface.js').AuthServiceOptions} AuthServiceOptions */
@@ -35,9 +35,8 @@ const optionsPropTypes = {
  * @implements {AuthService}
  */
 class AxiosJwtAuthService {
-
   /**
-   * @param {AuthServiceOptions} options 
+   * @param {AuthServiceOptions} options
    */
   constructor(options) {
     this.authenticatedHttpClient = null;

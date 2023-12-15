@@ -1,3 +1,4 @@
+// @ts-check
 export {
   configure,
   identifyAnonymousUser,
@@ -7,6 +8,6 @@ export {
   sendTrackingLogEvent,
   getAnalyticsService,
   resetAnalyticsService,
-} from './interface';
-export { default as SegmentAnalyticsService } from './SegmentAnalyticsService';
-export { default as MockAnalyticsService } from './MockAnalyticsService';
+} from './interface.js';
+export { default as SegmentAnalyticsService } from './SegmentAnalyticsService.js';
+export { default as MockAnalyticsService } from './MockAnalyticsService.js';

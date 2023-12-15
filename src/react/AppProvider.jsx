@@ -3,21 +3,21 @@ import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { BrowserRouter as Router } from 'react-router-dom';
 
-import OptionalReduxProvider from './OptionalReduxProvider';
+import OptionalReduxProvider from './OptionalReduxProvider.jsx';
 
-import ErrorBoundary from './ErrorBoundary';
-import AppContext from './AppContext';
-import { useAppEvent, useTrackColorSchemeChoice } from './hooks';
-import { getAuthenticatedUser, AUTHENTICATED_USER_CHANGED } from '../auth';
-import { getConfig } from '../config';
-import { CONFIG_CHANGED } from '../constants';
+import ErrorBoundary from './ErrorBoundary.jsx';
+import AppContext from './AppContext.jsx';
+import { useAppEvent, useTrackColorSchemeChoice } from './hooks.js';
+import { getAuthenticatedUser, AUTHENTICATED_USER_CHANGED } from '../auth/index.js';
+import { getConfig } from '../config.js';
+import { CONFIG_CHANGED } from '../constants.js';
 import {
   getLocale,
   getMessages,
   IntlProvider,
   LOCALE_CHANGED,
-} from '../i18n';
-import { basename } from '../initialize';
+} from '../i18n/index.js';
+import { basename } from '../initialize.js';
 
 /**
  * A wrapper component for React-based micro-frontends to initialize a number of common data/
@@ -87,8 +87,10 @@ export default function AppProvider({ children, store = null, wrapWithRouter = t
 }
 
 AppProvider.propTypes = {
-  // eslint-disable-next-line react/forbid-prop-types
+  // Note: default values are set above in the props destructuring.
+  // eslint-disable-next-line react/forbid-prop-types, react/require-default-props
   store: PropTypes.object,
   children: PropTypes.node.isRequired,
+  // eslint-disable-next-line react/require-default-props
   wrapWithRouter: PropTypes.bool,
 };

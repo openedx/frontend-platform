@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { redirectToLogin } from '../auth';
+import { redirectToLogin } from '../auth/index.js';
 
 /**
  * A React component that, when rendered, redirects to the login page as a side effect.  Uses
