@@ -50,7 +50,7 @@
     "react-redux": "^8.1.1",
     "react-router-dom": "^6.6.1",
     "redux": "4.2.1",
-    "regenerator-runtime": "0.14.0"
+    "regenerator-runtime": "0.14.1"
   },
   "dependencies": {
     "@cospired/i18n-iso-languages": "4.1.0",
