@@ -36,7 +36,13 @@ const logFrontendAuthError = (loggingService, error) => {
   loggingService.logError(prefixedMessageError, prefixedMessageError.customAttributes);
 };
 
+/**
+ * Handle an Axios error
+ * @param {import("axios").AxiosError} axiosErrorObject The error
+ * @returns {import("./interface").DetailedAxiosError}
+ */
 const processAxiosError = (axiosErrorObject) => {
+  /** @type {import("./interface").DetailedAxiosError} */
   const error = Object.create(axiosErrorObject);
   const { request, response, config } = error;
 

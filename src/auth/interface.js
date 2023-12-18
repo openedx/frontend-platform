@@ -257,6 +257,21 @@ export async function hydrateAuthenticatedUser() {
  */
 
 /**
+ * @typedef {Object} CustomErrorAttributes
+ * @property {number} [httpErrorStatus]
+ * @property {'unknown-api-request-error'|'api-response-error'|'api-request-error'|'api-request-config-error'
+ * } [httpErrorType]
+ * @property {string} [httpErrorMessage]
+ * @property {string} [httpErrorRequestUrl]
+ * @property {string} [httpErrorRequestMethod]
+ * @property {any} [httpErrorResponseData]
+ */
+
+/**
+ * @typedef {import("axios").AxiosError & {customAttributes: CustomErrorAttributes}} DetailedAxiosError
+ */
+
+/**
  * @typedef {Object} AuthService
  * @property {typeof getAuthenticatedHttpClient} getAuthenticatedHttpClient
  * @property {typeof getHttpClient} getHttpClient

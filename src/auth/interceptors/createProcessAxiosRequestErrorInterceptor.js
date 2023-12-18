@@ -1,3 +1,4 @@
+// @ts-check
 import { processAxiosError } from '../utils.js';
 
 const createProcessAxiosRequestErrorInterceptor = (options) => {
