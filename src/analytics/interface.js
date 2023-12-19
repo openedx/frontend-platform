@@ -143,9 +143,9 @@ export function resetAnalyticsService() {
 
 /**
  * @typedef {Object} AnalyticsServiceOptions
- * @property {import('../config').ConfigDocument} config
+ * @property {import('../config.js').ConfigDocument} config
  * @property {*} httpClient
- * @property {import('../logging/interface').LoggingService} loggingService
+ * @property {import('../logging/interface.js').LoggingService} loggingService
  */
 
 /**

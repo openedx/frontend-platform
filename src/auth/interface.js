@@ -288,8 +288,8 @@ export async function hydrateAuthenticatedUser() {
 
 /**
  * @typedef {Object} AuthServiceOptions
- * @property {import('../config').ConfigDocument} config
- * @property {import('../logging/interface').LoggingService} loggingService
+ * @property {import('../config.js').ConfigDocument} config
+ * @property {import('../logging/interface.js').LoggingService} loggingService
  * @property {((client: HttpClient) => void)[]} [middleware]
  */
 

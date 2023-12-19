@@ -2,8 +2,8 @@ import React from 'react';
 
 /**
  * @typedef {Object} AppContext
- * @property {import('../auth/interface').UserData|null} authenticatedUser
- * @property {import('../config').ConfigDocument} config
+ * @property {import('../auth/interface.js').UserData|null} authenticatedUser
+ * @property {import('../config.js').ConfigDocument} config
  * @property {string} locale
  */
 

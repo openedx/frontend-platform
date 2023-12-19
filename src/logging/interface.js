@@ -43,7 +43,7 @@ let service = null;
 /**
  *
  * @param {LoggingServiceConstructor} LoggingService
- * @param {{config: import('../config').ConfigDocument}} options
+ * @param {{config: import('../config.js').ConfigDocument}} options
  * @returns
  */
 export function configure(LoggingService, options) {
@@ -113,5 +113,5 @@ export function resetLoggingService() {
  */
 
 /**
- * @typedef {{new (options: {config: import('../config').ConfigDocument}): LoggingService}} LoggingServiceConstructor
+ * @typedef {{new (options: {config: import('../config.js').ConfigDocument}): LoggingService}} LoggingServiceConstructor
  */
