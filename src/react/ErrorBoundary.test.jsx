@@ -1,9 +1,9 @@
 import React from 'react';
 import { mount } from 'enzyme';
 
-import ErrorBoundary from './ErrorBoundary';
-import ErrorPage from './ErrorPage';
-import { initializeMockApp } from '..';
+import ErrorBoundary from './ErrorBoundary.jsx';
+import ErrorPage from './ErrorPage.jsx';
+import { initializeMockApp } from '../index.js';
 
 describe('ErrorBoundary', () => {
   let logError = jest.fn();

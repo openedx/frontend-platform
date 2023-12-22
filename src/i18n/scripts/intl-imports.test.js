@@ -1,7 +1,7 @@
 // Tests for the intl-imports.js command line.
 
 import path from 'path';
-import { main as realMain } from './intl-imports';
+import { main as realMain } from './intl-imports.js';
 
 const sempleAppDirectory = path.join(__dirname, '../../../example');
 

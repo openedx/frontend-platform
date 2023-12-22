@@ -1,3 +1,4 @@
+// @ts-check
 export {
   AUTHENTICATED_USER_TOPIC,
   AUTHENTICATED_USER_CHANGED,
@@ -14,6 +15,6 @@ export {
   fetchAuthenticatedUser,
   ensureAuthenticatedUser,
   hydrateAuthenticatedUser,
-} from './interface';
-export { default as AxiosJwtAuthService } from './AxiosJwtAuthService';
-export { default as MockAuthService } from './MockAuthService';
+} from './interface.js';
+export { default as AxiosJwtAuthService } from './AxiosJwtAuthService.js';
+export { default as MockAuthService } from './MockAuthService.js';

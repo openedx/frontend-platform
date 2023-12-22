@@ -1,3 +1,4 @@
+// @ts-check
 /**
  * #### Import members from **@edx/frontend-platform/i18n**
  * The i18n module relies on react-intl and re-exports all of that package's exports.
@@ -21,66 +22,6 @@
  * @see {@link https://github.com/openedx/frontend-platform/blob/master/docs/how_tos/i18n.rst}
  * @see {@link https://formatjs.io/docs/react-intl/components/ Intl} for components exported from this module.
  *
- */
-
-/**
- * @name createIntl
- * @kind function
- * @see {@link https://formatjs.io/docs/react-intl/api#createIntl Intl}
- */
-
-/**
- * @name FormattedDate
- * @kind class
- * @see {@link https://formatjs.io/docs/react-intl/components/#formatteddate Intl}
- */
-
-/**
- * @name FormattedTime
- * @kind class
- * @see {@link https://formatjs.io/docs/react-intl/components/#formattedtime Intl}
- */
-
-/**
- * @name FormattedRelativeTime
- * @kind class
- * @see {@link https://formatjs.io/docs/react-intl/components/#formattedrelativetime Intl}
- */
-
-/**
- * @name FormattedNumber
- * @kind class
- * @see {@link https://formatjs.io/docs/react-intl/components/#formattednumber Intl}
- */
-
-/**
- * @name FormattedPlural
- * @kind class
- * @see {@link https://formatjs.io/docs/react-intl/components/#formattedplural Intl}
- */
-
-/**
- * @name FormattedMessage
- * @kind class
- * @see {@link https://formatjs.io/docs/react-intl/components/#formattedmessage Intl}
- */
-
-/**
- * @name IntlProvider
- * @kind class
- * @see {@link https://formatjs.io/docs/react-intl/components/#intlprovider Intl}
- */
-
-/**
- * @name defineMessages
- * @kind function
- * @see {@link https://formatjs.io/docs/react-intl/api#definemessagesdefinemessage Intl}
- */
-
-/**
- * @name useIntl
- * @kind function
- * @see {@link https://formatjs.io/docs/react-intl/api#useIntl Intl}
  */
 
 export {
@@ -107,18 +48,18 @@ export {
   mergeMessages,
   LOCALE_CHANGED,
   LOCALE_TOPIC,
-} from './lib';
+} from './lib.js';
 
 export {
   default as injectIntl,
-} from './injectIntlWithShim';
+} from './injectIntlWithShim.jsx';
 
 export {
   getCountryList,
   getCountryMessages,
-} from './countries';
+} from './countries.js';
 
 export {
   getLanguageList,
   getLanguageMessages,
-} from './languages';
+} from './languages.js';

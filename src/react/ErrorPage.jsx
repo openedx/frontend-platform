@@ -4,14 +4,14 @@ import {
   Button, Container, Row, Col,
 } from '@edx/paragon';
 
-import { useAppEvent } from './hooks';
+import { useAppEvent } from './hooks.js';
 import {
   FormattedMessage,
   IntlProvider,
   getMessages,
   getLocale,
   LOCALE_CHANGED,
-} from '../i18n';
+} from '../i18n/index.js';
 
 /**
  * An error page that displays a generic message for unexpected errors.  Also contains a "Try

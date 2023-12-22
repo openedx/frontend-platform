@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import { logError } from '../logging';
+import { logError } from '../logging/index.js';
 
-import ErrorPage from './ErrorPage';
+import ErrorPage from './ErrorPage.jsx';
 
 /**
  * Error boundary component used to log caught errors and display the error page.

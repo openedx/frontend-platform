@@ -40,7 +40,7 @@ export function unsubscribe(token) {
 /**
  *
  * @param {string} type
- * @param {Object} data
+ * @param {Object} [data]
  */
 export function publish(type, data) {
   return PubSub.publish(type, data);

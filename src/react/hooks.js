@@ -1,7 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 import { useEffect } from 'react';
-import { subscribe, unsubscribe } from '../pubSub';
-import { sendTrackEvent } from '../analytics';
+import { subscribe, unsubscribe } from '../pubSub.js';
+import { sendTrackEvent } from '../analytics/index.js';
 
 /**
  * A React hook that allows functional components to subscribe to application events.  This should

@@ -12,8 +12,8 @@ config.rules = {
       'example/*',
     ],
   }],
-  'import/extensions': ['error', {
-    ignore: ['@edx/frontend-platform*'],
+  'import/extensions': ['error', 'always', {
+    ignorePackages: true,
   }],
   'import/no-unresolved': ['error', {
     ignore: ['@edx/frontend-platform*'],

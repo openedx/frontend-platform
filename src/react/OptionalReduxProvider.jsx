@@ -1,14 +1,19 @@
+// @ts-check
+// Since this is an "internal" component, we check props with typescript not propTypes.
+/* eslint-disable react/prop-types */
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
 
 /**
  * @memberof module:React
  * @param {Object} props
+ * @param {import('redux').Store|null} props.store
+ * @param {React.ReactNode} props.children
  */
-export default function OptionalReduxProvider({ store, children }) {
+export default function OptionalReduxProvider({ store = null, children }) {
   if (store === null) {
-    return children;
+    // eslint-disable-next-line react/jsx-no-useless-fragment
+    return <>{children}</>;
   }
 
   return (
@@ -17,12 +22,3 @@ export default function OptionalReduxProvider({ store, children }) {
     </Provider>
   );
 }
-
-OptionalReduxProvider.propTypes = {
-  store: PropTypes.object, // eslint-disable-line
-  children: PropTypes.node.isRequired,
-};
-
-OptionalReduxProvider.defaultProps = {
-  store: null,
-};

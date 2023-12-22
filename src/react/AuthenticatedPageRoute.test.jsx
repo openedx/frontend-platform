@@ -2,11 +2,11 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import { Route, Routes, MemoryRouter } from 'react-router-dom';
-import { getAuthenticatedUser, getLoginRedirectUrl } from '../auth';
-import AuthenticatedPageRoute from './AuthenticatedPageRoute';
-import AppContext from './AppContext';
-import { getConfig } from '../config';
-import { sendPageEvent } from '../analytics';
+import { getAuthenticatedUser, getLoginRedirectUrl } from '../auth/index.js';
+import AuthenticatedPageRoute from './AuthenticatedPageRoute.jsx';
+import AppContext from './AppContext.jsx';
+import { getConfig } from '../config.js';
+import { sendPageEvent } from '../analytics/index.js';
 
 jest.mock('../analytics');
 jest.mock('../auth');

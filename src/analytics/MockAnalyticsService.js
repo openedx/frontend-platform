@@ -1,6 +1,8 @@
+/** @typedef {import('./interface.js').AnalyticsService} AnalyticsService */
+
 /**
  * The MockAnalyticsService implements all functions of AnalyticsService as Jest mocks (jest.fn())).
- * It emulates the behavior of a real analytics service but witohut making any requests. It has no
+ * It emulates the behavior of a real analytics service but without making any requests. It has no
  * other functionality.
  *
  * @implements {AnalyticsService}

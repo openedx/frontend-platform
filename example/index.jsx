@@ -14,8 +14,8 @@ import { subscribe } from '@edx/frontend-platform/pubSub';
 import { Routes, Route } from 'react-router-dom';
 
 import './index.scss';
-import ExamplePage from './ExamplePage';
-import AuthenticatedPage from './AuthenticatedPage';
+import ExamplePage from './ExamplePage.jsx';
+import AuthenticatedPage from './AuthenticatedPage.jsx';
 
 subscribe(APP_READY, () => {
   ReactDOM.render(

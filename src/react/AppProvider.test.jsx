@@ -2,8 +2,8 @@ import React from 'react';
 import { createStore } from 'redux';
 import { mount } from 'enzyme';
 import { BrowserRouter as Router } from 'react-router-dom';
-import AppProvider from './AppProvider';
-import { initialize } from '../initialize';
+import AppProvider from './AppProvider.jsx';
+import { initialize } from '../initialize.js';
 
 jest.mock('../auth', () => ({
   configure: () => {},

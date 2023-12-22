@@ -3,6 +3,7 @@
 .vscode
 coverage
 dist
+types
 node_modules
 /docs/api
 .env.private

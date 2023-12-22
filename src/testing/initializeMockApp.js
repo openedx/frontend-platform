@@ -1,9 +1,9 @@
-import { configure as configureAnalytics, MockAnalyticsService } from '../analytics';
-import { configure as configureI18n } from '../i18n';
-import { configure as configureLogging, MockLoggingService } from '../logging';
-import { configure as configureAuth, MockAuthService } from '../auth';
-import { getConfig } from '../config';
-import mockMessages from './mockMessages';
+import { configure as configureAnalytics, MockAnalyticsService } from '../analytics/index.js';
+import { configure as configureI18n } from '../i18n/index.js';
+import { configure as configureLogging, MockLoggingService } from '../logging/index.js';
+import { configure as configureAuth, MockAuthService } from '../auth/index.js';
+import { getConfig } from '../config.js';
+import mockMessages from './mockMessages.js';
 
 /**
  * Initializes a mock application for component testing. The mock application includes

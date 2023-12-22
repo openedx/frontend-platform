@@ -1,5 +1,7 @@
+// @ts-check
 import formurlencoded from 'form-urlencoded';
-import { snakeCaseObject } from '../utils';
+import { snakeCaseObject } from '../utils.js';
+/** @typedef {import('./interface.js').AnalyticsService} AnalyticsService */
 
 /**
  * @implements {AnalyticsService}
@@ -28,6 +30,7 @@ class SegmentAnalyticsService {
   initializeSegment() {
     // Create a queue, but don't obliterate an existing one!
     global.analytics = global.analytics || [];
+    // @ts-ignore
     const { analytics } = global;
 
     // If the real analytics.js is already on the page return.
@@ -97,6 +100,7 @@ class SegmentAnalyticsService {
 
       // Insert our script next to the first script element.
       const first = document.getElementsByTagName('script')[0];
+      // @ts-ignore
       first.parentNode.insertBefore(script, first);
       analytics._loadOptions = options; // eslint-disable-line no-underscore-dangle
 
@@ -131,7 +135,7 @@ class SegmentAnalyticsService {
    * @returns {Promise} The promise returned by HttpClient.post.
    */
   sendTrackingLogEvent(eventName, properties) {
-    const snakeEventData = snakeCaseObject(properties, { deep: true });
+    const snakeEventData = snakeCaseObject(properties);
     const serverData = {
       event_type: eventName,
       event: JSON.stringify(snakeEventData),
@@ -182,7 +186,7 @@ class SegmentAnalyticsService {
     // but we still have a user id associated in segment, reset the local segment state
     // This has to be wrapped in the analytics.ready() callback because the analytics.user()
     // function isn't available until the analytics.js package has finished initializing.
-    return new Promise((resolve, reject) => { // eslint-disable-line no-unused-vars
+    return /** @type {Promise<void>} */(new Promise((resolve) => {
       global.analytics.ready(() => {
         if (global.analytics.user().id()) {
           global.analytics.reset();
@@ -197,7 +201,7 @@ class SegmentAnalyticsService {
       // this is added to handle a specific use-case where if a user has blocked the analytics
       // tools in their browser, this promise does not get resolved and user sees a blank
       // page. Dispatching this event in script.onerror callback in analytics.load.
-      document.addEventListener('segmentFailed', resolve);
+      document.addEventListener('segmentFailed', () => resolve());
       // This is added to handle the google analytics blocked case which is injected into
       // the DOM by segment.min.js.
       setTimeout(() => {
@@ -206,7 +210,7 @@ class SegmentAnalyticsService {
           resolve();
         }
       }, 2000);
-    });
+    }));
   }
 
   /**

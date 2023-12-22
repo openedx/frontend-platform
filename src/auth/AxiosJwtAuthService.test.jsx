@@ -2,7 +2,7 @@
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 import MockAdapter from 'axios-mock-adapter';
-import AxiosJwtAuthService from './AxiosJwtAuthService';
+import AxiosJwtAuthService from './AxiosJwtAuthService.js';
 
 const mockLoggingService = {
   logInfo: jest.fn(),

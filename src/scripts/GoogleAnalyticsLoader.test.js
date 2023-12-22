@@ -1,4 +1,4 @@
-import { GoogleAnalyticsLoader } from './index';
+import { GoogleAnalyticsLoader } from './index.js';
 
 const googleAnalyticsId = 'test-key';
 

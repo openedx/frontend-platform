@@ -1,3 +1,4 @@
+// @ts-check
 /**
  * #### Import members from **@edx/frontend-platform/logging**
  *
@@ -41,6 +42,9 @@ let service = null;
 
 /**
  *
+ * @param {LoggingServiceConstructor} LoggingService
+ * @param {{config: import('../config.js').ConfigDocument}} options
+ * @returns
  */
 export function configure(LoggingService, options) {
   PropTypes.checkPropTypes(optionsShape, options, 'property', 'Logging');
@@ -75,7 +79,7 @@ export function logError(errorStringOrObject, customAttributes) {
  * Sets a custom attribute that will be included with all subsequent log messages.
  *
  * @param {string} name
- * @param {string|number|null} value
+ * @param {string|number|boolean|null} value
  */
 export function setCustomAttribute(name, value) {
   return service.setCustomAttribute(name, value);
@@ -102,9 +106,12 @@ export function resetLoggingService() {
 }
 
 /**
- * @name LoggingService
- * @interface
- * @memberof module:Logging
- * @property {function} logError
- * @property {function} logInfo
+ * @typedef {Object} LoggingService
+ * @property {typeof logError} logError
+ * @property {typeof logInfo} logInfo
+ * @property {typeof setCustomAttribute} setCustomAttribute
+ */
+
+/**
+ * @typedef {{new (options: {config: import('../config.js').ConfigDocument}): LoggingService}} LoggingServiceConstructor
  */

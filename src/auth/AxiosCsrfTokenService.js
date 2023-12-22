@@ -1,5 +1,6 @@
+// @ts-check
 import axios from 'axios';
-import { getUrlParts, processAxiosErrorAndThrow } from './utils';
+import { getUrlParts, processAxiosErrorAndThrow } from './utils.js';
 
 export default class AxiosCsrfTokenService {
   constructor(csrfTokenApiPath) {

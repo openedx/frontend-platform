@@ -1,3 +1,4 @@
+// @ts-check
 import PropTypes from 'prop-types';
 import Cookies from 'universal-cookie';
 import merge from 'lodash.merge';
@@ -33,6 +34,10 @@ import '@formatjs/intl-relativetimeformat/locale-data/pt';
 import '@formatjs/intl-relativetimeformat/locale-data/ru';
 import '@formatjs/intl-relativetimeformat/locale-data/th';
 import '@formatjs/intl-relativetimeformat/locale-data/uk';
+
+/** @typedef {import('../logging/interface').LoggingService} LoggingService */
+/** @typedef {{[id: string]: string}} Messages */
+/** @typedef {{[languageCode: string]: Messages}} MessagesByLocale */
 
 const cookies = new Cookies();
 const supportedLocales = [
@@ -144,7 +149,7 @@ export function findSupportedLocale(locale) {
  * Gracefully fall back to a more general primary language subtag or to English (en)
  * if we don't support that language.
  *
- * @param {string} locale If a locale is provided, returns the closest supported locale. Optional.
+ * @param {string} [locale] If a locale is provided, returns the closest supported locale. Optional.
  * @throws An error if i18n has not yet been configured.
  * @returns {string}
  * @memberof module:Internationalization
@@ -175,6 +180,7 @@ export function getLocale(locale) {
  * provided.
  *
  * @param {string} [locale=getLocale()]
+ * @returns {Messages}
  * @memberof module:Internationalization
  */
 export function getMessages(locale = getLocale()) {
@@ -236,8 +242,8 @@ const optionsShape = {
 /**
  *
  *
- * @param {Object} newMessages
- * @returns {Object}
+ * @param {MessagesByLocale|MessagesByLocale[]} newMessages
+ * @returns {MessagesByLocale}
  * @memberof module:Internationalization
  */
 export function mergeMessages(newMessages) {
@@ -256,7 +262,7 @@ export function mergeMessages(newMessages) {
  * @param {Object} options
  * @param {LoggingService} options.loggingService
  * @param {Object} options.config
- * @param {Object} options.messages
+ * @param {MessagesByLocale|MessagesByLocale[]} options.messages
  * @memberof module:Internationalization
  */
 export function configure(options) {

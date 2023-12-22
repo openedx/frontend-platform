@@ -1,3 +1,4 @@
+// @ts-check
 /* eslint-disable no-underscore-dangle */
 import localforage from 'localforage';
 import memoryDriver from 'localforage-memoryStorageDriver';

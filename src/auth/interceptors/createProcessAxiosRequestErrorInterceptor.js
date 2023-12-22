@@ -1,4 +1,5 @@
-import { processAxiosError } from '../utils';
+// @ts-check
+import { processAxiosError } from '../utils.js';
 
 const createProcessAxiosRequestErrorInterceptor = (options) => {
   const { loggingService } = options;

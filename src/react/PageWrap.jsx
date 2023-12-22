@@ -3,7 +3,7 @@
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
-import { sendPageEvent } from '../analytics';
+import { sendPageEvent } from '../analytics/index.js';
 
 /**
  * A Wrapper component that calls `sendPageEvent` when it becomes active.

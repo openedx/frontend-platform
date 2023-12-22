@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react-hooks';
-import { useTrackColorSchemeChoice } from './hooks';
-import { sendTrackEvent } from '../analytics';
+import { useTrackColorSchemeChoice } from './hooks.js';
+import { sendTrackEvent } from '../analytics/index.js';
 
 jest.mock('../analytics');
 

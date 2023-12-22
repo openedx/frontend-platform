@@ -1,21 +1,21 @@
 import PubSub from 'pubsub-js';
-import { initialize } from './initialize';
+import { initialize } from './initialize.js';
 
 import {
   logError,
-} from './logging';
+} from './logging/index.js';
 import {
   ensureAuthenticatedUser,
   fetchAuthenticatedUser,
   hydrateAuthenticatedUser,
-} from './auth';
-import { getConfig } from './config';
+} from './auth/index.js';
+import { getConfig } from './config.js';
 
-jest.mock('./logging');
-jest.mock('./auth');
-jest.mock('./analytics');
-jest.mock('./i18n');
-jest.mock('./auth/LocalForageCache');
+jest.mock('./logging/index.js');
+jest.mock('./auth/index.js');
+jest.mock('./analytics/index.js');
+jest.mock('./i18n/index.js');
+jest.mock('./auth/LocalForageCache.js');
 jest.mock('env.config.js', () => ({
   JS_FILE_VAR: 'JS_FILE_VAR_VALUE_CONSTANT',
 }));

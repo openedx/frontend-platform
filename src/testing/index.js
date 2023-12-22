@@ -5,5 +5,5 @@
  * @module Testing
  */
 
-export { default as initializeMockApp } from './initializeMockApp';
-export { default as mockMessages } from './mockMessages';
+export { default as initializeMockApp } from './initializeMockApp.js';
+export { default as mockMessages } from './mockMessages.js';
