@@ -34,7 +34,7 @@
   "devDependencies": {
     "@edx/brand": "npm:@openedx/brand-openedx@^1.2.2",
     "@edx/browserslist-config": "1.2.0",
-    "@edx/frontend-build": "13.0.14",
+    "@openedx/frontend-build": "^13.0.19",
     "@openedx/paragon": "21.11.0",
     "@testing-library/react-hooks": "^8.0.1",
     "@wojtekmaj/enzyme-adapter-react-17": "0.8.0",
@@ -74,8 +74,8 @@
     "universal-cookie": "4.0.4"
   },
   "peerDependencies": {
-    "@edx/frontend-build": ">= 8.1.0 || ^12.9.0-alpha.1",
     "@edx/paragon": ">= 10.0.0 < 22.0.0",
+    "@openedx/frontend-build": ">= 8.1.0 || ^12.9.0-alpha.1",
     "prop-types": "^15.7.2",
     "react": "^16.9.0 || ^17.0.0",
     "react-dom": "^16.9.0 || ^17.0.0",
