@@ -124,7 +124,7 @@ Addressing consistency vs. flexibility
 ``frontend-base`` is published to npm as ES6 modules with
 ``peerDependencies`` in its package.json. This means that consuming apps
 are told exactly what versions of supporting libraries
-(``@edx/frontend-auth``, ``@edx/frontend-i18n``, ``@edx/paragon``,
+(``@edx/frontend-auth``, ``@edx/frontend-i18n``, ``@openedx/paragon``,
 React, etc.) are compatible with a given version of ``frontend-base``.
 Beyond that, applications are free to use any compatible version. This
 prevents ``frontend-base`` from being a bottleneck for updating library

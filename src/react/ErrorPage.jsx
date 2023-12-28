@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import {
   Button, Container, Row, Col,
-} from '@edx/paragon';
+} from '@openedx/paragon';
 
 import { useAppEvent } from './hooks';
 import {
