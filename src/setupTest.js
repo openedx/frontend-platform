@@ -1,11 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
-
-import Enzyme from 'enzyme';
-import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-
-Enzyme.configure({ adapter: new Adapter() });
+import '@testing-library/jest-dom';
 
 // These configuration values are usually set in webpack's EnvironmentPlugin however
 // Jest does not use webpack so we need to set these so for testing

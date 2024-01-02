@@ -5,6 +5,8 @@
 const messages = {
   ar: {},
   'es-419': {},
+  fa: {},
+  'fa-ir': {},
   fr: {},
   'zh-cn': {},
   ca: {},
