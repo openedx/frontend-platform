@@ -248,7 +248,7 @@ class AxiosJwtAuthService {
    * Ensures a user is authenticated. It will redirect to login when not
    * authenticated.
    *
-   * @param {string} [redirectUrl=config.BASE_URL] to return user after login when not
+   * @param {string} [redirectUrl] to return user after login when not
    * authenticated.
    * @returns {Promise<UserData>}
    */

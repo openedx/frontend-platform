@@ -23,7 +23,6 @@
  * ```
  *
  * As shown in this example, logging depends on the configuration document.
- *
  * @module Logging
  */
 
@@ -69,7 +68,7 @@ export function logInfo(infoStringOrErrorObject, customAttributes) {
  * object, or as an optional second parameter.
  *
  * @param {string|Error} errorStringOrObject
- * @param {Object} [customAttributes={}]
+ * @param {Object} [customAttributes]
  */
 export function logError(errorStringOrObject, customAttributes) {
   return service.logError(errorStringOrObject, customAttributes);

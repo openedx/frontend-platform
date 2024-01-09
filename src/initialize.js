@@ -41,8 +41,7 @@
  *   requireAuthenticatedUser: true,
  *   hydrateAuthenticatedUser: true,
  * });
-
-```
+ * ```
  * @module Initialization
  */
 
@@ -174,7 +173,7 @@ async function jsFileConfig() {
   mergeConfig(config);
 }
 
-/*
+/**
  * Set or overrides configuration through an API.
  * This method allows runtime configuration.
  * Set a basic configuration when an error happen and allow initError and display the ErrorPage.
@@ -273,20 +272,20 @@ function applyOverrideHandlers(overrides) {
  * The `AnalyticsService` implementation to use.
  * @param {import('./auth/interface.js').AuthServiceConstructor} [options.authService]
  * The `AuthService` implementation to use.
- * @param {*} [options.authMiddleware=[]] An array of middleware to apply to http clients in the auth service.
- * @param {*} [options.externalScripts=[GoogleAnalyticsLoader]] An array of externalScripts.
+ * @param {*} [options.authMiddleware] An array of middleware to apply to http clients in the auth service.
+ * @param {*} [options.externalScripts] An array of externalScripts.
  * By default added GoogleAnalyticsLoader.
- * @param {*} [options.requireAuthenticatedUser=false] If true, turns on automatic login
+ * @param {*} [options.requireAuthenticatedUser] If true, turns on automatic login
  * redirection for unauthenticated users.  Defaults to false, meaning that by default the
  * application will allow anonymous/unauthenticated sessions.
- * @param {*} [options.hydrateAuthenticatedUser=false] If true, makes an API call to the user
+ * @param {*} [options.hydrateAuthenticatedUser] If true, makes an API call to the user
  * account endpoint (`${App.config.LMS_BASE_URL}/api/user/v1/accounts/${username}`) to fetch
  * detailed account information for the authenticated user. This data is merged into the return
  * value of `getAuthenticatedUser`, overriding any duplicate keys that already exist. Defaults to
  * false, meaning that no additional account information will be loaded.
  * @param {*} [options.messages] A i18n-compatible messages object, or an array of such objects. If
  * an array is provided, duplicate keys are resolved with the last-one-in winning.
- * @param {*} [options.handlers={}] An optional object of handlers which can be used to replace the
+ * @param {*} [options.handlers] An optional object of handlers which can be used to replace the
  * default behavior of any part of the startup sequence. It can also be used to add additional
  * initialization behavior before or after the rest of the sequence.
  */

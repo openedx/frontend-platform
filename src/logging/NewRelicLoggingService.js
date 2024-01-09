@@ -127,7 +127,7 @@ export default class NewRelicLoggingService {
    *
    *
    * @param {*} infoStringOrErrorObject
-   * @param {*} [customAttributes={}]
+   * @param {*} [customAttributes]
    * @memberof NewRelicLoggingService
    */
   logInfo(infoStringOrErrorObject, customAttributes = {}) {
