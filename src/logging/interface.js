@@ -37,13 +37,14 @@ const serviceShape = {
   logError: PropTypes.func.isRequired,
 };
 
+/** @type {LoggingService|null} */
 let service = null;
 
 /**
  *
  * @param {LoggingServiceConstructor} LoggingService
  * @param {{config: import('../config.js').ConfigDocument}} options
- * @returns
+ * @returns {LoggingService}
  */
 export function configure(LoggingService, options) {
   PropTypes.checkPropTypes(optionsShape, options, 'property', 'Logging');
@@ -57,10 +58,11 @@ export function configure(LoggingService, options) {
  * object, or as an optional second parameter.
  *
  * @param {string|Error} infoStringOrErrorObject
- * @param {Object} [customAttributes={}]
+ * @param {Object} [customAttributes]
+ * @returns {void}
  */
 export function logInfo(infoStringOrErrorObject, customAttributes) {
-  return service.logInfo(infoStringOrErrorObject, customAttributes);
+  return service?.logInfo(infoStringOrErrorObject, customAttributes);
 }
 
 /**
@@ -69,9 +71,10 @@ export function logInfo(infoStringOrErrorObject, customAttributes) {
  *
  * @param {string|Error} errorStringOrObject
  * @param {Object} [customAttributes]
+ * @returns {void}
  */
 export function logError(errorStringOrObject, customAttributes) {
-  return service.logError(errorStringOrObject, customAttributes);
+  return service?.logError(errorStringOrObject, customAttributes);
 }
 
 /**
@@ -79,9 +82,10 @@ export function logError(errorStringOrObject, customAttributes) {
  *
  * @param {string} name
  * @param {string|number|boolean|null} value
+ * @returns {void}
  */
 export function setCustomAttribute(name, value) {
-  return service.setCustomAttribute(name, value);
+  return service?.setCustomAttribute(name, value);
 }
 
 /**

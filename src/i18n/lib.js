@@ -115,6 +115,7 @@ export function getCookies() {
  *
  * @param {string} code
  * @memberof module:Internationalization
+ * @returns {string}
  */
 export function getPrimaryLanguageSubtag(code) {
   return code.split('-')[0];
@@ -179,7 +180,7 @@ export function getLocale(locale) {
  * Returns messages for the provided locale, or the user's preferred locale if no argument is
  * provided.
  *
- * @param {string} [locale=getLocale()]
+ * @param {string} [locale]
  * @returns {Messages}
  * @memberof module:Internationalization
  */
@@ -192,6 +193,7 @@ export function getMessages(locale = getLocale()) {
  *
  * @param {string} locale
  * @memberof module:Internationalization
+ * @returns {boolean}
  */
 export function isRtl(locale) {
   return rtlLocales.includes(locale);
