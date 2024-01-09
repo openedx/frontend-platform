@@ -31,12 +31,24 @@
   },
   "typesVersions": {
     "*": {
-      "*": ["types/index.d.ts"],
-      "analytics": ["types/analytics/index.d.ts"],
-      "auth": ["types/auth/index.d.ts"],
-      "i18n": ["types/i18n/index.d.ts"],
-      "logging": ["types/logging/index.d.ts"],
-      "react": ["types/react/index.d.ts"]
+      "*": [
+        "types/index.d.ts"
+      ],
+      "analytics": [
+        "types/analytics/index.d.ts"
+      ],
+      "auth": [
+        "types/auth/index.d.ts"
+      ],
+      "i18n": [
+        "types/i18n/index.d.ts"
+      ],
+      "logging": [
+        "types/logging/index.d.ts"
+      ],
+      "react": [
+        "types/react/index.d.ts"
+      ]
     }
   },
   "publishConfig": {
@@ -45,7 +57,7 @@
   "sideEffects": false,
   "scripts": {
     "build": "make build",
-    "docs": "jsdoc -c jsdoc.json",
+    "docs": "./node_modules/.bin/typedoc src/index.js src/analytics/index.js src/auth/index.js src/i18n/index.js src/logging/index.js src/react/index.js src/scripts/index.js src/testing/index.js --out docs/api",
     "docs-watch": "nodemon -w src -w docs/template -w README.md -e js,jsx --exec npm run docs",
     "lint": "fedx-scripts eslint --ext .js --ext .jsx --config .eslintrc.cjs .",
     "snapshot": "fedx-scripts jest --updateSnapshot",
@@ -79,8 +91,6 @@
     "enzyme": "3.11.0",
     "eslint-plugin-jsdoc": "^46.9.1",
     "husky": "8.0.3",
-    "jsdoc": "^4.0.0",
-    "jsdoc-tsimport-plugin": "^1.0.5",
     "nodemon": "3.0.2",
     "prop-types": "15.8.1",
     "react": "17.0.2",
@@ -88,7 +98,8 @@
     "react-redux": "^8.1.1",
     "react-router-dom": "^6.6.1",
     "redux": "4.2.1",
-    "regenerator-runtime": "0.14.0"
+    "regenerator-runtime": "0.14.0",
+    "typedoc": "^0.25.7"
   },
   "dependencies": {
     "@cospired/i18n-iso-languages": "4.1.0",
