@@ -10,8 +10,9 @@
   },
   "plugins": [
       "plugins/markdown",
-      "docs/addTagsPlugin",
-      "docs/removeExport"
+      "docs/addTagsPlugin.js",
+      "docs/removeExport.js",
+      "node_modules/jsdoc-tsimport-plugin/index.js"
   ],
   "templates": {
       "cleverLinks": false,

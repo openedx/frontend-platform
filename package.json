@@ -80,6 +80,7 @@
     "eslint-plugin-jsdoc": "^46.9.1",
     "husky": "8.0.3",
     "jsdoc": "^4.0.0",
+    "jsdoc-tsimport-plugin": "^1.0.5",
     "nodemon": "3.0.2",
     "prop-types": "15.8.1",
     "react": "17.0.2",
