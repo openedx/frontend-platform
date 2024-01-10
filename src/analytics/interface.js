@@ -133,12 +133,12 @@ export function resetAnalyticsService() {
 
 /**
  * @typedef {Object} AnalyticsService
- * @memberof module:Analytics
  * @property {function} identifyAnonymousUser
  * @property {function} identifyAuthenticatedUser
  * @property {function} sendPageEvent
  * @property {function} sendTrackEvent
  * @property {function} sendTrackingLogEvent
+ * @memberof module:Analytics
  */
 
 /**
@@ -149,5 +149,5 @@ export function resetAnalyticsService() {
  */
 
 /**
- * @typedef {{new (options: AnalyticsServiceOptions): AnalyticsService}} AnalyticsServiceConstructor
+ * @typedef {new (options: AnalyticsServiceOptions) => AnalyticsService} AnalyticsServiceConstructor
  */

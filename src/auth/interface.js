@@ -294,7 +294,7 @@ export async function hydrateAuthenticatedUser() {
  */
 
 /**
- * @typedef {{new (options: AuthServiceOptions): AuthService}} AuthServiceConstructor
+ * @typedef {new (options: AuthServiceOptions) => AuthService} AuthServiceConstructor
  */
 
 /**
