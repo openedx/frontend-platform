@@ -34,4 +34,6 @@ export {
 export { default as NewRelicLoggingService } from './NewRelicLoggingService.js';
 export { default as MockLoggingService } from './MockLoggingService.js';
 
+// Export types too - required for interfaces to be documented by TypeDoc:
 /** @typedef {import('./interface.js').LoggingService} LoggingService */
+/** @typedef {import('./interface.js').LoggingServiceConstructor} LoggingServiceConstructor */

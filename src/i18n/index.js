@@ -63,3 +63,7 @@ export {
   getLanguageList,
   getLanguageMessages,
 } from './languages.js';
+
+// Export types too - required for interfaces to be documented by TypeDoc:
+/** @typedef {import('./lib.js').Messages} Messages */
+/** @typedef {import('./lib.js').MessagesByLocale} MessagesByLocale */

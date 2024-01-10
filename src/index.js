@@ -42,3 +42,6 @@ export {
   initializeMockApp,
   mockMessages,
 } from './testing/index.js';
+
+// Export types too - required for interfaces to be documented by TypeDoc:
+/** @typedef {import('./config.js').ConfigDocument} ConfigDocument */

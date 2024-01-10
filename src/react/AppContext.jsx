@@ -1,7 +1,7 @@
 import React from 'react';
 
 /**
- * @typedef {Object} AppContext
+ * @typedef IAppContext
  * @property {import('../auth/interface.js').UserData|null} authenticatedUser
  * @property {import('../config.js').ConfigDocument} config
  * @property {string} locale
@@ -20,10 +20,10 @@ import React from 'react';
  * If the `App.authenticatedUser` or `App.config` data changes, `AppContext` will be updated
  * accordingly and pass those changes onto React components using the context.
  *
- * `AppContext` is used in a React application like any other `[React Context](https://reactjs.org/docs/context.html)
+ * `AppContext` is used in a React application like any other [React Context](https://reactjs.org/docs/context.html)
  * @memberof module:React
  */
-const AppContext = React.createContext(/** @type {AppContext} */ ({
+const AppContext = React.createContext(/** @type {IAppContext} */ ({
   authenticatedUser: null,
   config: {},
   locale: '',

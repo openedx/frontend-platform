@@ -14,3 +14,6 @@ export { default as ErrorPage } from './ErrorPage.jsx';
 export { default as LoginRedirect } from './LoginRedirect.jsx';
 export { default as PageWrap } from './PageWrap.jsx';
 export { useAppEvent } from './hooks.js';
+
+// Export types too - required for interfaces to be documented by TypeDoc:
+/** @typedef {import('./AppContext.js').IAppContext} IAppContext */
