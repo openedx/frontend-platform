@@ -190,7 +190,7 @@ let config = {
  * ```
  *
  * @returns {ConfigDocument}
-  */
+ */
 export function getConfig() {
   return config;
 }
@@ -231,7 +231,7 @@ export function setConfig(newConfig) {
  *
  * If any of the key values are `undefined`, an error will be logged to 'warn'.
  *
- * @param {Object} newConfig
+ * @param {Partial<ConfigDocument>} newConfig
  */
 export function mergeConfig(newConfig) {
   ensureDefinedConfig(newConfig, 'ProcessEnvConfigService');

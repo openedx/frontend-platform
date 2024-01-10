@@ -2,6 +2,9 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 import { ensureDefinedConfig } from '../utils.js';
 
+/** @typedef {import('../config.js').ConfigDocument} ConfigDocument */
+/** @typedef {import('../logging/interface.js').LoggingService} LoggingService */
+
 const userPropTypes = PropTypes.shape({
   userId: PropTypes.string.isRequired,
   username: PropTypes.string.isRequired,
@@ -77,17 +80,8 @@ const optionsPropTypes = {
 class MockAuthService {
   /**
    * @param {Object} options
-   * @param {Object} options.config
-   * @param {string} options.config.BASE_URL
-   * @param {string} options.config.LMS_BASE_URL
-   * @param {string} options.config.LOGIN_URL
-   * @param {string} options.config.LOGOUT_URL
-   * @param {string} options.config.REFRESH_ACCESS_TOKEN_ENDPOINT
-   * @param {string} options.config.ACCESS_TOKEN_COOKIE_NAME
-   * @param {string} options.config.CSRF_TOKEN_API_PATH
-   * @param {Object} options.config.hydratedAuthenticatedUser
-   * @param {Object} options.config.authenticatedUser
-   * @param {Object} options.loggingService requires logError and logInfo methods
+   * @param {ConfigDocument&{hydratedAuthenticatedUser?: any, authenticatedUser?: any}} options.config
+   * @param {LoggingService} options.loggingService requires logError and logInfo methods
    */
   constructor(options) {
     this.authenticatedHttpClient = null;

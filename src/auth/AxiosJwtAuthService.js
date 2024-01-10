@@ -304,10 +304,6 @@ class AxiosJwtAuthService {
  * Adds authentication defaults and interceptors to an HTTP client instance.
  *
  * @param {HttpClient} newHttpClient
- * @param {Object} config
- * @param {string} [config.REFRESH_ACCESS_TOKEN_ENDPOINT]
- * @param {string} [config.ACCESS_TOKEN_COOKIE_NAME]
- * @param {string} [config.CSRF_TOKEN_API_PATH]
  * @returns {HttpClient} A configured Axios HTTP client.
  */
   addAuthenticationToHttpClient(newHttpClient) {
