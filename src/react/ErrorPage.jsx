@@ -17,7 +17,6 @@ import {
  * An error page that displays a generic message for unexpected errors.  Also contains a "Try
  * Again" button to refresh the page.
  *
- * @memberof module:React
  * @extends {Component}
  */
 function ErrorPage({

@@ -1,5 +1,5 @@
 /**
- * #### Import members from **`@edx/frontend-platform/logging`**
+ * **Import members from `@openedx/frontend-platform/logging`**
  *
  * Contains a shared interface for logging information. (The default implementation is in
  * NewRelicLoggingService.js.) When in development mode, all messages will instead be sent to the console.

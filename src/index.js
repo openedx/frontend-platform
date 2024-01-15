@@ -1,3 +1,16 @@
+/**
+ * Here you can find the core functionality of `frontend-platform`, which you
+ * can import directly. For example:
+ * ```js
+ * import { getConfig } from "@openedx/frontend-platform";
+ * ```
+ * Other functionality is split into modules, which you import separately, e.g.
+ * i18n functionality can be imported from "@openedx/frontend-platform/i18n".
+ *
+ * @module Core
+ *
+ */
+
 export {
   modifyObjectKeys,
   camelCaseObject,

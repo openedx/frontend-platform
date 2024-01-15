@@ -1,6 +1,6 @@
 // @ts-check
 /**
- * #### Import members from **@edx/frontend-platform**
+ * **Import members from `@openedx/frontend-platform`**
  *
  * The initialization module provides a function for managing an application's initialization
  * lifecycle.  It also provides constants and default handler implementations.

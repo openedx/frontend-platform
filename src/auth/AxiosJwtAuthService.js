@@ -33,7 +33,6 @@ const optionsPropTypes = {
 
 /**
  * @implements {AuthService}
- * @memberof module:Auth
  */
 class AxiosJwtAuthService {
   /**

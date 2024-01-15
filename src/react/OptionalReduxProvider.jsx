@@ -5,7 +5,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 
 /**
- * @memberof module:React
+ * Optional Redux provider, that wraps components with a redux provider if needed
  * @param {Object} props
  * @param {import('redux').Store|null} props.store
  * @param {React.ReactNode} props.children

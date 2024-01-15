@@ -7,8 +7,6 @@ import ErrorPage from './ErrorPage.jsx';
 
 /**
  * Error boundary component used to log caught errors and display the error page.
- *
- * @memberof module:React
  * @extends {Component}
  */
 class ErrorBoundary extends Component {

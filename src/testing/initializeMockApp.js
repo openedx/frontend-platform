@@ -41,7 +41,6 @@ import mockMessages from './mockMessages.js';
  * an array is provided, duplicate keys are resolved with the last-one-in winning.
  * @param {UserData|null} [options.authenticatedUser] A UserData object representing the
  * authenticated user. This is passed directly to MockAuthService.
- * @memberof module:Testing
  */
 export default function initializeMockApp({
   messages = mockMessages,

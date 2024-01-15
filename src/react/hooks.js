@@ -9,7 +9,6 @@ import { sendTrackEvent } from '../analytics/index.js';
  * provide necessary data to a given component, rather than utilizing a non-React-like Pub/Sub
  * mechanism.
  *
- * @memberof module:React
  * @param {string} type
  * @param {function} callback
  */
@@ -27,7 +26,6 @@ export const useAppEvent = (type, callback) => {
  * A React hook that tracks user's preferred color scheme (light or dark) and sends respective
  * event to the tracking service.
  *
- * @memberof module:React
  */
 export const useTrackColorSchemeChoice = () => {
   useEffect(() => {

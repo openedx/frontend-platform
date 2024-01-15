@@ -1,6 +1,6 @@
 // @ts-check
 /**
- * #### Import members from **@edx/frontend-platform**
+ * **Import members from `@openedx/frontend-platform`**
  *
  * The configuration module provides utilities for working with an application's configuration
  * document (ConfigDocument).  Configuration variables can be supplied to the
@@ -329,5 +329,4 @@ export function ensureConfig(keys, requester = 'unspecified application code') {
  * @property {import('./logging/interface.js').LoggingServiceConstructor} [loggingService]
  * @property {import('./analytics/interface.js').AnalyticsServiceConstructor} [analyticsService]
  * @property {import('./auth/interface.js').AuthServiceConstructor} [authService]
- * @memberof module:Config
  */

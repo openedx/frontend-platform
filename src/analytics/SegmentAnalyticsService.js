@@ -5,7 +5,6 @@ import { snakeCaseObject } from '../utils.js';
 
 /**
  * @implements {AnalyticsService}
- * @memberof module:Analytics
  */
 class SegmentAnalyticsService {
   constructor({ httpClient, loggingService, config }) {

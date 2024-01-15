@@ -6,7 +6,6 @@
  * other functionality.
  *
  * @implements {AnalyticsService}
- * @memberof module:Analytics
  */
 class MockAnalyticsService {
   static hasIdentifyBeenCalled = false;

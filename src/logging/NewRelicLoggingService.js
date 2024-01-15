@@ -87,7 +87,6 @@ function setCustomAttribute(name, value) {
  * Requires the NewRelic Browser JavaScript snippet.
  *
  * @implements {import('./interface.js').LoggingService}
- * @memberof module:Logging
  */
 export default class NewRelicLoggingService {
   constructor(options) {
@@ -128,7 +127,6 @@ export default class NewRelicLoggingService {
    *
    * @param {*} infoStringOrErrorObject
    * @param {*} [customAttributes]
-   * @memberof NewRelicLoggingService
    */
   logInfo(infoStringOrErrorObject, customAttributes = {}) {
     let message = infoStringOrErrorObject;
@@ -148,7 +146,6 @@ export default class NewRelicLoggingService {
    *
    * @param {string|Error} errorStringOrObject
    * @param {*} [customAttributes={}]
-   * @memberof NewRelicLoggingService
    */
   logError(errorStringOrObject, customAttributes = {}) {
     const errorCustomAttributes = errorStringOrObject.customAttributes || {};

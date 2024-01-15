@@ -17,7 +17,6 @@ import { getLoginRedirectUrl } from '../auth/index.js';
  *
  * @see PageWrap
  * @see {@link module:frontend-platform/analytics~sendPageEvent}
- * @memberof module:React
  * @param {Object} props
  * @param {string} props.redirectUrl The URL anonymous users should be redirected to, rather than
  * viewing the route's contents.

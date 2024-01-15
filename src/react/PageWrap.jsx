@@ -9,7 +9,6 @@ import { sendPageEvent } from '../analytics/index.js';
  * A Wrapper component that calls `sendPageEvent` when it becomes active.
  *
  * @see {@link module:frontend-platform/analytics~sendPageEvent}
- * @memberof module:React
  * @param {Object} props
  */
 export default function PageWrap({ children }) {

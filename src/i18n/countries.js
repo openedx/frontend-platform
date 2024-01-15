@@ -31,7 +31,6 @@ COUNTRIES.registerLocale(require('i18n-iso-countries/langs/uk.json'));
 /**
  * Provides a lookup table of country IDs to country names for the current locale.
  *
- * @memberof module:I18n
  */
 export function getCountryMessages(locale) {
   const primaryLanguageSubtag = getPrimaryLanguageSubtag(locale);
@@ -51,7 +50,6 @@ export function getCountryMessages(locale) {
  * TODO: ARCH-878: The list should be sorted alphabetically in the current locale.
  * This is useful for populating dropdowns.
  *
- * @memberof module:I18n
  */
 export function getCountryList(locale) {
   const countryMessages = getCountryMessages(locale);

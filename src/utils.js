@@ -1,6 +1,6 @@
 // @ts-check
 /**
- * #### Import members from **@edx/frontend-platform**
+ * **Import members from `@edx/frontend-platform`**
  *
  * @module Utilities
  */

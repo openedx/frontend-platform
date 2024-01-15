@@ -57,7 +57,7 @@
   "sideEffects": false,
   "scripts": {
     "build": "make build",
-    "docs": "./node_modules/.bin/typedoc src/index.js src/analytics/index.js src/auth/index.js src/i18n/index.js src/logging/index.js src/react/index.js src/scripts/index.js src/testing/index.js --out docs/api",
+    "docs": "./node_modules/.bin/typedoc src/config.js src/pubSub.js src/initialize.js src/utils.js src/analytics/index.js src/auth/index.js src/i18n/index.js src/logging/index.js src/react/index.js src/scripts/index.js src/testing/index.js --out docs/api",
     "docs-watch": "nodemon -w src -w docs/template -w README.md -e js,jsx --exec npm run docs",
     "lint": "fedx-scripts eslint --ext .js --ext .jsx --config .eslintrc.cjs .",
     "snapshot": "fedx-scripts jest --updateSnapshot",

@@ -1,6 +1,7 @@
 // @ts-check
 /**
- * #### Import members from **@edx/frontend-platform/i18n**
+ * **Import members from `@openedx/frontend-platform/i18n`**
+ *
  * The i18n module relies on react-intl and re-exports all of that package's exports.
  *
  * For each locale we want to support, react-intl needs 1) the locale-data, which includes

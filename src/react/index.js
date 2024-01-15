@@ -1,5 +1,6 @@
 /**
- * #### Import members from **@edx/frontend-platform/react**
+ * **Import members from `@openedx/frontend-platform/react`**
+ *
  * The React module provides a variety of React components, hooks, and contexts for use in an
  * application.
  *

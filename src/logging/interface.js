@@ -16,7 +16,7 @@ const serviceShape = {
 let service = null;
 
 /**
- *
+ * Configure the logging service for this frontend application
  * @param {LoggingServiceConstructor} LoggingService
  * @param {{config: ConfigDocument}} options
  * @returns {LoggingService}

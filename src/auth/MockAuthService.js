@@ -75,7 +75,6 @@ const optionsPropTypes = {
  * Logging and Analytics.
  *
  * @implements {AuthService}
- * @memberof module:Auth
  */
 class MockAuthService {
   /**

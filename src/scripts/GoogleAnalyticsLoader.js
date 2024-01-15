@@ -1,6 +1,5 @@
 /**
  * @implements {GoogleAnalyticsLoader}
- * @memberof module:GoogleAnalytics
  */
 class GoogleAnalyticsLoader {
   constructor({ config }) {
