@@ -6,6 +6,6 @@ module.exports = createConfig('jest', {
   ],
   testTimeout: 20000,
   moduleNameMapper: {
-    axios: 'axios/dist/node/axios.cjs',
+    '^axios$': 'axios/dist/node/axios.cjs',
   },
 });
