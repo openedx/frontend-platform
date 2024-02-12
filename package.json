@@ -37,7 +37,7 @@
     "@edx/browserslist-config": "1.2.0",
     "@openedx/frontend-build": "13.0.27",
     "@openedx/paragon": "22.0.0",
-    "@testing-library/jest-dom": "6.4.1",
+    "@testing-library/jest-dom": "6.4.2",
     "@testing-library/react": "12.1.5",
     "@testing-library/react-hooks": "^8.0.1",
     "axios-mock-adapter": "^1.21.3",
