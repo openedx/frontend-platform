@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PluggableComponent renders correctly 1`] = `
+<div>
+  <button
+    data-testid="button-test"
+    type="button"
+  >
+    button title
+  </button>
+</div>
+`;
