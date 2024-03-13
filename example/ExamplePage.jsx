@@ -8,7 +8,6 @@ import { ensureConfig, mergeConfig, getConfig } from '@edx/frontend-platform';
 import PluggableComponent from '@root_path/src/react/PluggableComponent';
 import messages from './messages';
 
-
 mergeConfig({
   EXAMPLE_VAR: process.env.EXAMPLE_VAR,
 });
@@ -51,11 +50,11 @@ class ExamplePage extends Component {
         <p>JS_FILE_VAR var came through: <strong>{getConfig().JS_FILE_VAR}</strong></p>
         <p>Visit <Link to="/authenticated">authenticated page</Link>.</p>
         <p>Visit <Link to="/error_example">error page</Link>.</p>
-        <PluggableComponent 
-          id="pluggable-component-test" 
-          as="any-mfe-plugins-test" 
+        <PluggableComponent
+          id="pluggable-component-test"
+          as="any-mfe-plugins-test"
           title="This is my button plugin"
-         />
+        />
       </div>
     );
   }
