@@ -4,3 +4,5 @@ dist
 docs
 node_modules
 src/analytics/segment.js
+src/react/PluggableComponent
+src/react/utils/contextFactory

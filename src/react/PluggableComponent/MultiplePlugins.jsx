@@ -5,13 +5,13 @@ import PropTypes from 'prop-types';
 
 import { isPluginAvailable, getPluginsByPrefix } from './utils';
 
-const MultiplePlugins = ({
+function MultiplePlugins({
   plugins,
   pluggableComponentProps,
   prefix,
   loadingComponent,
   containerPluginsProps,
-}) => {
+}) {
   const [pluginComponents, setPluginComponents] = useState({});
   const loadedAllPluginsRef = useRef(null);
 
@@ -95,7 +95,7 @@ const MultiplePlugins = ({
       ))}
     </div>
   );
-};
+}
 
 MultiplePlugins.defaultProps = {
   plugins: [],

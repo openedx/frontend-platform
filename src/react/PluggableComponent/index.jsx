@@ -24,7 +24,7 @@ import MultiplePlugins from './MultiplePlugins';
   * Useful for passing classNames or styles for layout.
  * @returns {React.ReactNode} - Rendered component
  */
-const PluggableComponent = ({
+function PluggableComponent({
   children,
   loadingComponent,
   as,
@@ -33,7 +33,7 @@ const PluggableComponent = ({
   plugins,
   containerPluginsProps,
   ...pluggableComponentProps
-}) => {
+}) {
   const [newComponent, setNewComponent] = useState(children || null);
   const loadedComponentRef = useRef(null);
   const [isLoadingComponent, setIsLoadingComponent] = useState(false);
@@ -109,7 +109,7 @@ const PluggableComponent = ({
   }
 
   return newComponent;
-};
+}
 
 PluggableComponent.defaultProps = {
   loadingComponent: null,

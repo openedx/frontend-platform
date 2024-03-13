@@ -36,7 +36,9 @@ describe('MultiplePlugins', () => {
       { id: 'plugin1', name: 'any-mfe-plugins-test' },
     ];
 
-    const MockPluginComponent = () => <div data-testid="plugin1">Mocked Plugin Component</div>;
+    function MockPluginComponent() {
+      return <div data-testid="plugin1">Mocked Plugin Component</div>;
+    }
 
     jest.mock(
       '@node_modules/@openedx-plugins/any-mfe-plugins-test',
@@ -55,7 +57,9 @@ describe('MultiplePlugins', () => {
   });
 
   test('loads a plugin successfully with prefix', async () => {
-    const MockPluginComponent = () => <div data-testid="any-mfe-plugins-test">Mocked Plugin Component</div>;
+    function MockPluginComponent() {
+      return <div data-testid="any-mfe-plugins-test">Mocked Plugin Component</div>;
+    }
 
     jest.mock(
       '@node_modules/@openedx-plugins/any-mfe-plugins-test',
@@ -77,7 +81,9 @@ describe('MultiplePlugins', () => {
   });
 
   test('loads a plugin successfully with prefix changing component props', async () => {
-    const MockPluginComponent = (props) => <div data-testid="mock-plugin-props">{props.title}</div>;
+    function MockPluginComponent(props) {
+      return <div data-testid="mock-plugin-props">{props.title}</div>;
+    }
 
     jest.mock(
       '@node_modules/@openedx-plugins/any-mfe-plugins-test',

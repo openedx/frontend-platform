@@ -4,7 +4,7 @@ import {
 } from '@testing-library/react';
 import PluggableComponent from '.';
 
-const ToggleContentComponent = () => {
+function ToggleContentComponent() {
   const [showContent, setShowContent] = useState(false);
 
   return (
@@ -15,7 +15,7 @@ const ToggleContentComponent = () => {
       {showContent && <div data-testid="toggle-content">Toggle On</div>}
     </div>
   );
-};
+}
 
 describe('PluggableComponent', () => {
   beforeEach(() => {
@@ -117,7 +117,7 @@ describe('PluggableComponent', () => {
     await waitFor(() => {
       expect(screen.getByText('Testing a new title component')).toBeInTheDocument();
     });
-  }); 
+  });
 
   test('updates component when children change', async () => {
     const { getByText, getByTestId } = render(
@@ -169,7 +169,9 @@ describe('PluggableComponent', () => {
   });
 
   test('renders multiple plugins', async () => {
-    const MockPluginComponent = () => <div data-testid="plugin-test">Mocked Plugin Component</div>;
+    function MockPluginComponent() {
+      return <div data-testid="plugin-test">Mocked Plugin Component</div>;
+    }
 
     // Mock the dynamic import to resolve with the MockPluginComponent
     jest.mock('@node_modules/@openedx-plugins/any-mfe-plugins-test', () => MockPluginComponent, { virtual: true });
@@ -190,7 +192,9 @@ describe('PluggableComponent', () => {
   });
 
   test('renders multiple plugins with prefix', async () => {
-    const MockPluginComponent = () => <div data-testid="plugin-test">Mocked Plugin Component</div>;
+    function MockPluginComponent() {
+      return <div data-testid="plugin-test">Mocked Plugin Component</div>;
+    }
 
     // Mock the dynamic import to resolve with the MockPluginComponent
     jest.mock('@node_modules/@openedx-plugins/any-mfe-plugins-test', () => MockPluginComponent, { virtual: true });
