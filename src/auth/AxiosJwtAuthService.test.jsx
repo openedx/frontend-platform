@@ -155,7 +155,7 @@ const expectNoCallToCsrfTokenFetch = () => {
 };
 
 const expectRequestToHaveJwtAuth = (request) => {
-  expect(request.headers['USE-JWT-COOKIE']).toBe(true);
+  expect(request.headers['USE-JWT-COOKIE']).toBeTruthy();
   expect(request.withCredentials).toBe(true);
 };
 

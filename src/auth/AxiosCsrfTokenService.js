@@ -10,7 +10,7 @@ export default class AxiosCsrfTokenService {
     // certificates. More on MDN:
     // https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/withCredentials
     this.httpClient.defaults.withCredentials = true;
-    this.httpClient.defaults.headers.common['USE-JWT-COOKIE'] = true;
+    this.httpClient.defaults.headers['USE-JWT-COOKIE'] = true;
 
     this.csrfTokenCache = {};
     this.csrfTokenRequestPromises = {};
