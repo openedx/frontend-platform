@@ -16,6 +16,6 @@ metadata:
   annotations:
     openedx.org/arch-interest-groups: "jmbowman"
 spec:
-  owner: group:fed-bom
+  owner: 
   type: 'library'
   lifecycle: 'production'
