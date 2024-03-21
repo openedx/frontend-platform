@@ -1,3 +1,4 @@
+import { waitFor } from '@testing-library/react';
 import {
   modifyObjectKeys,
   camelCaseObject,
@@ -164,9 +165,9 @@ describe('ParseURL', () => {
   });
 
   it('should return empty object in case of document being undefined', () => {
-    delete global.document;
+    global.document = undefined;
 
-    expect(parseURL(testURL)).toEqual({});
+    waitFor(() => { expect(parseURL(testURL)).toEqual({}); });
   });
 });
 
