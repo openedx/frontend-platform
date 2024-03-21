@@ -35,7 +35,7 @@
   "devDependencies": {
     "@edx/brand": "npm:@openedx/brand-openedx@^1.2.2",
     "@edx/browserslist-config": "1.2.0",
-    "@openedx/frontend-build": "https://github.com/openedx/frontend-build/tarball/bilalqamar95/jest-v29-upgrade",
+    "@openedx/frontend-build": "https://github.com/openedx/frontend-build/tarball/alpha",
     "@openedx/paragon": "22.1.1",
     "@testing-library/jest-dom": "6.4.2",
     "@testing-library/react": "12.1.5",
