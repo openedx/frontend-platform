@@ -27,7 +27,7 @@ jobs:
     - name: Test
       run: npm run test
     - name: Coverage
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
     - name: Build
       run: npm run build
     # NPM expects to be authenticated for publishing. This step will fail CI if NPM is not authenticated
