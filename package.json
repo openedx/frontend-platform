@@ -41,7 +41,7 @@
     "@testing-library/react": "12.1.5",
     "@testing-library/react-hooks": "^8.0.1",
     "axios-mock-adapter": "^1.21.3",
-    "core-js": "3.36.0",
+    "core-js": "3.36.1",
     "husky": "8.0.3",
     "jsdoc": "^4.0.0",
     "nodemon": "3.1.0",
