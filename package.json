@@ -35,13 +35,13 @@
   "devDependencies": {
     "@edx/brand": "npm:@openedx/brand-openedx@^1.2.2",
     "@edx/browserslist-config": "1.2.0",
-    "@openedx/frontend-build": "14.0.0-alpha.1",
-    "@openedx/paragon": "22.1.1",
+    "@openedx/frontend-build": "13.1.4",
+    "@openedx/paragon": "22.2.2",
     "@testing-library/jest-dom": "6.4.2",
     "@testing-library/react": "12.1.5",
     "@testing-library/react-hooks": "^8.0.1",
     "axios-mock-adapter": "^1.21.3",
-    "core-js": "3.36.0",
+    "core-js": "3.37.0",
     "husky": "8.0.3",
     "jsdoc": "^4.0.0",
     "nodemon": "3.1.0",
@@ -71,7 +71,7 @@
     "lodash.merge": "4.6.2",
     "lodash.snakecase": "4.1.1",
     "pubsub-js": "1.9.4",
-    "react-intl": "6.5.5",
+    "react-intl": "6.6.5",
     "universal-cookie": "4.0.4"
   },
   "peerDependencies": {
