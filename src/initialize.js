@@ -63,7 +63,7 @@ import {
   getConfig, mergeConfig,
 } from './config';
 import {
-  configure as configureLogging, getLoggingService, NewRelicLoggingService, logError,
+  configure as configureLogging, getLoggingService, NewRelicLoggingService, logError, DatadogLoggingService
 } from './logging';
 import {
   configure as configureAnalytics, SegmentAnalyticsService, identifyAnonymousUser, identifyAuthenticatedUser,
@@ -287,6 +287,7 @@ function applyOverrideHandlers(overrides) {
  */
 export async function initialize({
   loggingService = NewRelicLoggingService,
+  datDogloggingService = DatadogLoggingService,
   analyticsService = SegmentAnalyticsService,
   authService = AxiosJwtAuthService,
   authMiddleware = [],
@@ -318,15 +319,27 @@ export async function initialize({
     // If a service wasn't supplied we fall back to the default parameters on the initialize
     // function signature.
     const loggingServiceImpl = getConfig().loggingService || loggingService;
+    const ddloggingServiceImpl = getConfig().datDogloggingService || datDogloggingService;
     const analyticsServiceImpl = getConfig().analyticsService || analyticsService;
     const authServiceImpl = getConfig().authService || authService;
 
-    // Logging
-    configureLogging(loggingServiceImpl, {
-      config: getConfig(),
-    });
-    await handlers.logging();
-    publish(APP_LOGGING_INITIALIZED);
+    if (loggingServiceImpl) {
+      // new relic Logging
+      configureLogging(loggingServiceImpl, {
+        config: getConfig(),
+      });
+      await handlers.logging();
+      publish(APP_LOGGING_INITIALIZED);
+    }
+
+    if (getConfig().DATADOG_ENABLED) {
+      // Datadog Logging
+      configureLogging(ddloggingServiceImpl, {
+        config: getConfig(),
+      });
+      await handlers.logging();
+      publish(APP_LOGGING_INITIALIZED);
+    }
 
     // Internationalization
     configureI18n({
