@@ -1,6 +1,9 @@
 import React from 'react';
 import { createStore } from 'redux';
 import { render, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import '@testing-library/jest-dom';
+
 import AppProvider from './AppProvider';
 import { initialize } from '../initialize';
 import { useAppEvent, useTrackColorSchemeChoice, useParagonTheme } from './hooks';
@@ -29,6 +32,7 @@ jest.mock('../config', () => ({
     REFRESH_ACCESS_TOKEN_ENDPOINT: 'localhost:18000/oauth2/access_token',
     ACCESS_TOKEN_COOKIE_NAME: 'access_token',
     CSRF_TOKEN_API_PATH: 'localhost:18000/csrf',
+    PUBLIC_PATH: '/',
   }),
 }));
 
