@@ -187,7 +187,13 @@ const useParagonThemeVariants = ({
       } else {
         const updatedStylesheetRel = generateStylesheetRelAttr(themeVariant);
         existingThemeVariantLink.rel = updatedStylesheetRel;
-        existingThemeVariantBrandLink.rel = updatedStylesheetRel;
+        existingThemeVariantLink.removeAttribute('as');
+        if (existingThemeVariantBrandLink) {
+          existingThemeVariantBrandLink.rel = updatedStylesheetRel;
+          existingThemeVariantBrandLink.removeAttribute('as');
+        }
+        setIsParagonThemeVariantLoaded(true);
+        setIsBrandThemeVariantLoaded(true);
       }
     });
   }, [themeVariants, currentThemeVariant, onLoad]);
