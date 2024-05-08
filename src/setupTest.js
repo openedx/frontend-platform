@@ -1,5 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import '@testing-library/jest-dom';
+import 'jest-localstorage-mock';
 
 // These configuration values are usually set in webpack's EnvironmentPlugin however
 // Jest does not use webpack so we need to set these so for testing
