@@ -34,8 +34,9 @@ const useParagonThemeCore = ({
       setIsBrandThemeCoreLoaded(true);
       return;
     }
-    const getParagonThemeCoreLink = () => document.head.querySelector('link[data-paragon-theme-core="true"');
+    const getParagonThemeCoreLink = () => document.head.querySelector('link[data-paragon-theme-core="true"]');
     const existingCoreThemeLink = document.head.querySelector(`link[href='${themeCore.urls.default}']`);
+    const brandCoreLink = document.head.querySelector(`link[href='${themeCore.urls.brandOverride}']`);
     if (!existingCoreThemeLink) {
       const getExistingCoreThemeLinks = (isBrandOverride) => {
         const coreThemeLinkSelector = `link[data-${isBrandOverride ? 'brand' : 'paragon'}-theme-core="true"]`;
@@ -126,6 +127,15 @@ const useParagonThemeCore = ({
       } else {
         setIsBrandThemeCoreLoaded(true);
       }
+    } else {
+      existingCoreThemeLink.rel = 'stylesheet';
+      existingCoreThemeLink.removeAttribute('as');
+      if (brandCoreLink) {
+        brandCoreLink.rel = 'stylesheet';
+        brandCoreLink.removeAttribute('as');
+      }
+      setIsParagonThemeCoreLoaded(true);
+      setIsBrandThemeCoreLoaded(true);
     }
   }, [themeCore?.urls, onLoad]);
 };
