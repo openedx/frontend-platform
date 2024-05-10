@@ -85,9 +85,9 @@ const useParagonThemeCore = ({
             coreThemeLink = createCoreThemeLink(coreThemeFallbackUrl, { isFallbackThemeUrl: true, isBrandOverride });
             const otherExistingLinks = getExistingCoreThemeLinks(isBrandOverride);
             removeExistingLinks(otherExistingLinks);
-            const foundParagonThemCoreLink = getParagonThemeCoreLink();
-            if (foundParagonThemCoreLink) {
-              foundParagonThemCoreLink.insertAdjacentElement(
+            const foundParagonThemeCoreLink = getParagonThemeCoreLink();
+            if (foundParagonThemeCoreLink) {
+              foundParagonThemeCoreLink.insertAdjacentElement(
                 'afterend',
                 coreThemeLink,
               );
