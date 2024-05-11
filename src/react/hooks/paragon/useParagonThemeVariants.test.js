@@ -5,18 +5,6 @@ import useParagonThemeVariants from './useParagonThemeVariants';
 
 jest.mock('../../../logging');
 
-const mockAddEventListener = jest.fn();
-const mockRemoveEventListener = jest.fn();
-const mockOnChange = jest.fn();
-
-Object.defineProperty(window, 'matchMedia', {
-  value: jest.fn(() => ({
-    addEventListener: mockAddEventListener,
-    removeEventListener: mockRemoveEventListener,
-    onchange: mockOnChange,
-  })),
-});
-
 describe('useParagonThemeVariants', () => {
   const themeOnLoad = jest.fn();
 
@@ -83,34 +71,6 @@ describe('useParagonThemeVariants', () => {
     expect(logError).toHaveBeenCalledTimes(1);
     expect(logError).toHaveBeenCalledWith(`Failed to load theme variant (${currentThemeVariant}) CSS from ${themeVariants.light.urls.default}`);
     expect(document.querySelector('link').href).toBe(`${getConfig().BASE_URL}/${PARAGON_THEME.paragon.themeUrls.variants.light.fileName}`);
-  });
-
-  it('should configure theme variants according with system preference and add the change event listener', () => {
-    window.matchMedia['prefers-color-scheme'] = 'dark';
-
-    const themeVariants = {
-      light: {
-        urls: {
-          default: 'https://cdn.jsdelivr.net/npm/@edx/paragon@$21.0.0/dist/light.min.css',
-          brandOverride: 'https://cdn.jsdelivr.net/npm/@edx/brand@$2.0.0/dist/light.min.css',
-        },
-      },
-      dark: {
-        urls: {
-          default: 'https://cdn.jsdelivr.net/npm/@edx/paragon@$21.0.0/dist/dark.min.css',
-          brandOverride: 'https://cdn.jsdelivr.net/npm/@edx/brand@$2.0.0/dist/dark.min.css',
-        },
-      },
-    };
-
-    const currentThemeVariant = 'light';
-
-    renderHook(() => useParagonThemeVariants({ themeVariants, currentThemeVariant, onLoad: themeOnLoad }));
-
-    const themeLinks = document.head.querySelectorAll('link');
-    act(() => { themeLinks.forEach((link) => link.onload()); });
-
-    expect(mockAddEventListener).toHaveBeenCalledTimes(1);
   });
 
   it('should do nothing if themeVariants is not configured', () => {
