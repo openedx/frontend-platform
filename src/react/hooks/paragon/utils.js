@@ -83,5 +83,5 @@ export const handleVersionSubstitution = ({ url, wildcardKeyword, localVersion }
   if (!url || !url.includes(wildcardKeyword) || !localVersion) {
     return url;
   }
-  return url.replace(wildcardKeyword, localVersion);
+  return url.replaceAll(wildcardKeyword, localVersion);
 };
