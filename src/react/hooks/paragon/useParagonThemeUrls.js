@@ -16,7 +16,7 @@ const useParagonThemeUrls = (config) => useMemo(() => {
   const brandCoreCssUrl = typeof paragonThemeUrls.core.urls === 'object' ? paragonThemeUrls.core.urls.brandOverride : undefined;
   const defaultThemeVariants = paragonThemeUrls.defaults;
 
-  // Local versions of @edx/paragon and @edx/brand
+  // Local versions of @openedx/paragon and @edx/brand
   const localParagonVersion = PARAGON_THEME?.paragon?.version;
   const localBrandVersion = PARAGON_THEME?.brand?.version;
 
