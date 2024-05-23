@@ -1,5 +1,5 @@
 {
-  "name": "@edx/frontend-platform",
+  "name": "@openedx/frontend-platform",
   "version": "1.0.0-semantically-released",
   "description": "Foundational application framework for Open edX micro-frontend applications.",
   "main": "index.js",
