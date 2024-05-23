@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document serves as a guide to using `@edx/frontend-platform` to support MFE theming with Paragon using theme CSS loaded externally (e.g., from a CDN).
+This document serves as a guide to using `@openedx/frontend-platform` to support MFE theming with Paragon using theme CSS loaded externally (e.g., from a CDN).
 
 To do this, configured URLs pointing to relevant CSS files from `@openedx/paragon` and (optionally) `@openedx/brand-openedx` are loaded and injected to the HTML document at runtime. This differs than the consuming application importing the styles from `@openedx/paragon` and `@openedx/brand-openedx` directly, which includes these styles in the application's production assets.
 
@@ -10,7 +10,7 @@ By serving CSS loaded externally, consuming applications of Paragon no longer ne
 
 ### Dark mode and theme variant preferences
 
-`@edx/frontend-platform` supports both `light` (required) and `dark` (optional) theme variants. The choice of which theme variant should be applied on page load is based on the following preference cascade:
+`@openedx/frontend-platform` supports both `light` (required) and `dark` (optional) theme variants. The choice of which theme variant should be applied on page load is based on the following preference cascade:
 
 1. **Get theme preference from localStorage.** Supports persisting and loading the user's preference for their selected theme variant, until cleared.
 1. **Detect user system settings.** Rely on the `prefers-color-scheme` media query to detect if the user's system indicates a preference for dark mode. If so, use the default dark theme variant, if one is configured.
@@ -26,7 +26,7 @@ If your use case necessitates additional variants beyond the default supported `
 
 There is also a meaningful improvement in performance as loading the compiled theme CSS from an external CDN means micro-frontends (MFEs) can include cached styles instead of needing to load essentially duplicate theme styles included in each individual MFE as users navigate across the platform.
 
-However, as the styles from `@openedx/paragon` and `@openedx/brand-openedx` get loaded at runtime by `@edx/frontend-platform`, the associated CSS files do not get processed through the consuming application's Webpack build process (e.g., if the MFE used PurgeCSS or any custom PostCSS plugins specifically for Paragon).
+However, as the styles from `@openedx/paragon` and `@openedx/brand-openedx` get loaded at runtime by `@openedx/frontend-platform`, the associated CSS files do not get processed through the consuming application's Webpack build process (e.g., if the MFE used PurgeCSS or any custom PostCSS plugins specifically for Paragon).
 
 ### Falling back to styles installed in consuming application
 
@@ -118,7 +118,7 @@ export default config;
 
 ### MFE runtime configuration API
 
-`@edx/frontend-platform` additionally supports loading application configuration from the MFE runtime configuration API via `edx-platform`. The configuration is served by the `http://localhost:18000/api/mfe_config/v1` API endpoint. For more information, refer to [this documentation](https://github.com/openedx/edx-platform/blob/master/lms/djangoapps/mfe_config_api/docs/decisions/0001-mfe-config-api.rst) about the MFE runtime configuration API, please see these docs.
+`@openedx/frontend-platform` additionally supports loading application configuration from the MFE runtime configuration API via `edx-platform`. The configuration is served by the `http://localhost:18000/api/mfe_config/v1` API endpoint. For more information, refer to [this documentation](https://github.com/openedx/edx-platform/blob/master/lms/djangoapps/mfe_config_api/docs/decisions/0001-mfe-config-api.rst) about the MFE runtime configuration API, please see these docs.
 
 The application configuration may be setup via Django settings as follows:
 
@@ -154,7 +154,7 @@ https://cdn.jsdelivr.net/npm/@openedx/paragon@$paragonVersion/dist/core.min.css
 https://cdn.jsdelivr.net/npm/@openedx/paragon@$paragonVersion/dist/light.min.css
 ```
 
-In the event the other Paragon CSS urls are configured via one of the other documented mechanisms, but they fail to load (e.g., the CDN url throws a 404), `@edx/frontend-platform` will attempt to fallback to injecting the locally installed Paragon CSS from the consuming application into the HTML document.
+In the event the other Paragon CSS urls are configured via one of the other documented mechanisms, but they fail to load (e.g., the CDN url throws a 404), `@openedx/frontend-platform` will attempt to fallback to injecting the locally installed Paragon CSS from the consuming application into the HTML document.
 
 ## Usage with `@openedx/brand-openedx`
 
@@ -201,4 +201,4 @@ https://cdn.jsdelivr.net/npm/@openedx/brand-openedx@$brandVersion/dist/core.min.
 https://cdn.jsdelivr.net/npm/@openedx/brand-openedx@$brandVersion/dist/light.min.css
 ```
 
-In the event the other brand override CSS urls are configured via one of the other documented mechanisms, but they fail to load (e.g., the CDN is down), `@edx/frontend-platform` will attempt to fallback to injecting the locally installed brand override CSS urls from the consuming application into the HTML document.
+In the event the other brand override CSS urls are configured via one of the other documented mechanisms, but they fail to load (e.g., the CDN is down), `@openedx/frontend-platform` will attempt to fallback to injecting the locally installed brand override CSS urls from the consuming application into the HTML document.
