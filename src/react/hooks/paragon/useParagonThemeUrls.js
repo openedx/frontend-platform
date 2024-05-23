@@ -54,24 +54,34 @@ const useParagonThemeUrls = (config) => useMemo(() => {
     themeVariantsCss[themeVariant] = themeVariantMetadata;
   });
 
-  const hasMissingCssUrls = !coreCss.default || Object.keys(themeVariantsCss).length === 0;
-  if (hasMissingCssUrls) {
-    if (!PARAGON_THEME) {
+  // If we don't have  the core default or any theme variants, use the PARAGON_THEME
+  if (!coreCss.default || Object.keys(themeVariantsCss).length === 0) {
+    const localCoreUrl = PARAGON_THEME.paragon?.themeUrls?.core;
+    const localThemeVariants = PARAGON_THEME.paragon?.themeUrls?.variants;
+
+    if (!localCoreUrl || Object.keys(localCoreUrl).length === 0
+      || !localThemeVariants || Object.keys(localThemeVariants).length === 0) {
       return undefined;
     }
-    const themeVariants = {};
-    const baseUrl = config.BASE_URL || window.location?.origin;
-    const prependBaseUrl = (url) => `${baseUrl}/${url}`;
-    themeVariantsEntries.forEach(([themeVariant, { fileName, ...rest }]) => {
-      themeVariants[themeVariant] = {
-        url: prependBaseUrl(fileName),
-        ...rest,
-      };
-    });
+
+    if (!coreCss.default) {
+      coreCss.default = PARAGON_THEME?.paragon?.themeUrls?.core?.fileName;
+    }
+
+    if (Object.keys(themeVariantsCss).length === 0) {
+      const baseUrl = config.BASE_URL || window.location?.origin;
+      const prependBaseUrl = (url) => `${baseUrl}/${url}`;
+      Object.entries(localThemeVariants).forEach(([themeVariant, { fileName, ...rest }]) => {
+        themeVariantsCss[themeVariant] = {
+          url: prependBaseUrl(fileName),
+          ...rest,
+        };
+      });
+    }
     return {
       core: { urls: coreCss },
       defaults: defaultThemeVariants,
-      variants: themeVariants,
+      variants: themeVariantsCss,
     };
   }
 
