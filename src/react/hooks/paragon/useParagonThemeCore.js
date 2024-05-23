@@ -130,9 +130,11 @@ const useParagonThemeCore = ({
     } else {
       existingCoreThemeLink.rel = 'stylesheet';
       existingCoreThemeLink.removeAttribute('as');
+      existingCoreThemeLink.dataset.paragonThemeCore = true;
       if (brandCoreLink) {
         brandCoreLink.rel = 'stylesheet';
         brandCoreLink.removeAttribute('as');
+        brandCoreLink.dataset.brandThemeCore = true;
       }
       setIsParagonThemeCoreLoaded(true);
       setIsBrandThemeCoreLoaded(true);
