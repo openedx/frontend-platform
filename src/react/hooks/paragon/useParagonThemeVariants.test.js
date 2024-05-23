@@ -97,4 +97,28 @@ describe('useParagonThemeVariants', () => {
 
     expect(document.head.querySelectorAll('link').length).toBe(0);
   });
+  it('shoud not create a new link if it already exists', () => {
+    document.head.innerHTML = '<link rel="preload" as="style" href="https://cdn.jsdelivr.net/npm/@edx/paragon@$21.0.0/dist/light.min.css" onerror="this.remove();">';
+
+    const themeVariants = {
+      light: {
+        urls: {
+          default: 'https://cdn.jsdelivr.net/npm/@edx/paragon@$21.0.0/dist/light.min.css',
+        },
+      },
+      dark: {
+        urls: {
+          default: 'https://cdn.jsdelivr.net/npm/@edx/paragon@$21.0.0/dist/dark.min.css',
+        },
+      },
+    };
+
+    const currentTheme = 'light';
+    renderHook(() => useParagonThemeVariants({ themeVariants, currentTheme, onLoad: themeOnLoad }));
+    const themeLinks = document.head.querySelectorAll('link');
+    const lightThemeLink = document.head.querySelector('link[data-paragon-theme-variant="light"]');
+    expect(themeLinks.length).toBe(2);
+    expect(lightThemeLink.rel).toContain('stylesheet');
+    expect(lightThemeLink).not.toHaveAttribute('as', 'style');
+  });
 });
