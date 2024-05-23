@@ -48,7 +48,7 @@ const useParagonThemeVariants = ({
         document.querySelector('html').removeAttribute(htmlDataThemeVariantAttr);
       };
     }
-    return () => {}; // no-op
+    return () => { }; // no-op
   }, [themeVariants, currentThemeVariant]);
 
   useEffect(() => {
@@ -160,12 +160,15 @@ const useParagonThemeVariants = ({
         return themeVariantLink;
       };
 
-      if (!existingThemeVariantLink) {
-        const paragonThemeVariantLink = createThemeVariantLink(value.urls.default);
-        document.head.insertAdjacentElement(
-          'afterbegin',
-          paragonThemeVariantLink,
-        );
+      const insertBrandThemeVariantLink = () => {
+        const updatedStylesheetRel = generateStylesheetRelAttr(themeVariant);
+
+        if (existingThemeVariantBrandLink) {
+          existingThemeVariantBrandLink.rel = updatedStylesheetRel;
+          existingThemeVariantBrandLink.removeAttribute('as');
+          existingThemeVariantBrandLink.dataset.brandThemeVariant = themeVariant;
+          return;
+        }
 
         if (value.urls.brandOverride) {
           const brandThemeVariantLink = createThemeVariantLink(value.urls.brandOverride, { isBrandOverride: true });
@@ -181,20 +184,26 @@ const useParagonThemeVariants = ({
               brandThemeVariantLink,
             );
           }
-        } else {
-          setIsBrandThemeVariantLoaded(true);
         }
+        setIsBrandThemeVariantLoaded(true);
+      };
+
+      if (!existingThemeVariantLink) {
+        const paragonThemeVariantLink = createThemeVariantLink(value.urls.default);
+        document.head.insertAdjacentElement(
+          'afterbegin',
+          paragonThemeVariantLink,
+        );
+        insertBrandThemeVariantLink(existingThemeVariantBrandLink);
       } else {
         const updatedStylesheetRel = generateStylesheetRelAttr(themeVariant);
         existingThemeVariantLink.rel = updatedStylesheetRel;
         existingThemeVariantLink.removeAttribute('as');
-        if (existingThemeVariantBrandLink) {
-          existingThemeVariantBrandLink.rel = updatedStylesheetRel;
-          existingThemeVariantBrandLink.removeAttribute('as');
-        }
-        setIsParagonThemeVariantLoaded(true);
-        setIsBrandThemeVariantLoaded(true);
+        existingThemeVariantLink.dataset.paragonThemeVariant = themeVariant;
+        insertBrandThemeVariantLink(existingThemeVariantBrandLink);
       }
+      setIsParagonThemeVariantLoaded(true);
+      setIsBrandThemeVariantLoaded(true);
     });
   }, [themeVariants, currentThemeVariant, onLoad]);
 };
