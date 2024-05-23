@@ -86,6 +86,24 @@ describe('useParagonThemeCore', () => {
     expect(document.querySelector('link').href).toBe(`${getConfig().BASE_URL}/${PARAGON_THEME.paragon.themeUrls.core.fileName}`);
   });
 
+  it('should not create a new link if the core theme is already loaded', () => {
+    document.head.innerHTML = '<link rel="preload" as="style" href="https://cdn.jsdelivr.net/npm/@edx/paragon@$21.0.0/dist/core.min.css" onerror="this.remove();">';
+    const coreConfig = {
+      themeCore: {
+        urls: {
+          default: 'https://cdn.jsdelivr.net/npm/@edx/paragon@$21.0.0/dist/core.min.css',
+        },
+      },
+      onLoad: themeOnLoad,
+    };
+
+    renderHook(() => useParagonThemeCore(coreConfig));
+    const themeCoreLinks = document.head.querySelectorAll('link');
+    expect(themeCoreLinks.length).toBe(1);
+    expect(themeCoreLinks[0].rel).toContain('stylesheet');
+    expect(themeCoreLinks[0]).not.toHaveAttribute('as', 'style');
+  });
+
   it('should not create any core link if can not find themeCore urls definition', () => {
     const coreConfig = {
       themeCore: {
