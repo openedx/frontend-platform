@@ -5,7 +5,7 @@ import {
 import { SELECTED_THEME_VARIANT_KEY } from '../../constants';
 import { logError } from '../../../logging';
 import { paragonThemeActions, paragonThemeReducer } from '../../reducers';
-import { getDefaultThemeVariant } from './utils';
+import { getDefaultThemeVariant, isEmptyObject } from './utils';
 
 import useParagonThemeCore from './useParagonThemeCore';
 import useParagonThemeUrls from './useParagonThemeUrls';
@@ -84,7 +84,7 @@ const useParagonTheme = (config) => {
       return;
     }
 
-    const hasThemeConfig = (themeCore?.urls && Object.keys(themeVariants).length > 0);
+    const hasThemeConfig = (themeCore?.urls && !isEmptyObject(themeVariants));
     if (!hasThemeConfig) {
       // no theme URLs to load, set loading to false.
       dispatch(paragonThemeActions.setParagonThemeLoaded(true));
