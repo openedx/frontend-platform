@@ -116,7 +116,7 @@ describe('useParagonThemeUrls', () => {
         expect.objectContaining({
           core: {
             urls: {
-              default: 'core.min.css',
+              default: 'http://localhost/core.min.css',
               brandOverride: 'brand-core.css',
             },
           },
@@ -125,7 +125,9 @@ describe('useParagonThemeUrls', () => {
           },
           variants: {
             light: {
-              url: 'http://localhost/light.min.css',
+              urls: {
+                default: 'http://localhost/light.min.css',
+              },
             },
           },
         }),
