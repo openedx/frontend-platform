@@ -1,8 +1,6 @@
 import { useMemo } from 'react';
 
-import { basename } from '../../../initialize';
-
-import { handleVersionSubstitution } from './utils';
+import { fallbackThemeUrl, handleVersionSubstitution, isEmptyObject } from './utils';
 
 /**
  * Returns an object containing the URLs for the theme's core CSS and any theme variants.
@@ -57,24 +55,21 @@ const useParagonThemeUrls = (config) => useMemo(() => {
   });
 
   // If we don't have  the core default or any theme variants, use the PARAGON_THEME
-  if (!coreCss.default || Object.keys(themeVariantsCss).length === 0) {
+  if (!coreCss.default || isEmptyObject(themeVariantsCss)) {
     const localCoreUrl = PARAGON_THEME.paragon?.themeUrls?.core;
     const localThemeVariants = PARAGON_THEME.paragon?.themeUrls?.variants;
-    if (!localCoreUrl || Object.keys(localCoreUrl).length === 0
-      || !localThemeVariants || Object.keys(localThemeVariants).length === 0) {
+
+    if (isEmptyObject(localCoreUrl) || isEmptyObject(localThemeVariants)) {
       return undefined;
     }
-
-    const baseUrl = config?.BASE_URL || window.location?.origin;
-    const prependBaseUrl = (url) => `${baseUrl}${basename}${url}`;
     if (!coreCss.default) {
-      coreCss.default = prependBaseUrl(localCoreUrl?.fileName);
+      coreCss.default = fallbackThemeUrl(localCoreUrl?.fileName);
     }
 
-    if (Object.keys(themeVariantsCss).length === 0) {
+    if (isEmptyObject(themeVariantsCss)) {
       Object.entries(localThemeVariants).forEach(([themeVariant, { fileName, ...rest }]) => {
         themeVariantsCss[themeVariant] = {
-          urls: { default: prependBaseUrl(fileName), ...rest.urls },
+          urls: { default: fallbackThemeUrl(fileName), ...rest.urls },
         };
       });
     }
@@ -90,6 +85,6 @@ const useParagonThemeUrls = (config) => useMemo(() => {
     defaults: defaultThemeVariants,
     variants: themeVariantsCss,
   };
-}, [config?.BASE_URL, config?.PARAGON_THEME_URLS]);
+}, [config?.PARAGON_THEME_URLS]);
 
 export default useParagonThemeUrls;
