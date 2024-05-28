@@ -59,9 +59,9 @@ const useParagonTheme = (config) => {
       return;
     }
 
-    if (prefersDarkMode && themeVariantDefaults.dark) {
+    if (prefersDarkMode && themeVariantDefaults?.dark) {
       dispatch(paragonThemeActions.setParagonThemeVariant(themeVariantDefaults.dark));
-    } else if (!prefersDarkMode && themeVariantDefaults.light) {
+    } else if (!prefersDarkMode && themeVariantDefaults?.light) {
       dispatch(paragonThemeActions.setParagonThemeVariant(themeVariantDefaults.light));
     } else {
       logError(`Could not set theme variant based on system preference (prefers dark mode: ${prefersDarkMode})`, themeVariantDefaults, themeVariants);
