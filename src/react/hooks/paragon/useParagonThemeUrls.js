@@ -1,6 +1,8 @@
 import { useMemo } from 'react';
-import { handleVersionSubstitution } from './utils';
+
 import { basename } from '../../../initialize';
+
+import { handleVersionSubstitution } from './utils';
 
 /**
  * Returns an object containing the URLs for the theme's core CSS and any theme variants.

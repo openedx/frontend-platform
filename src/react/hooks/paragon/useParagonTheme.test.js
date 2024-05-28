@@ -1,6 +1,8 @@
 import { act, renderHook } from '@testing-library/react-hooks';
-import useParagonTheme from './useParagonTheme';
+
 import { getConfig } from '../../../config';
+
+import useParagonTheme from './useParagonTheme';
 
 jest.mock('../../../config', () => ({
   ...jest.requireActual('.../../../config'),
