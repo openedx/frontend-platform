@@ -1,6 +1,8 @@
 import { act, renderHook } from '@testing-library/react-hooks';
+
 import { getConfig } from '../../../config';
 import { logError } from '../../../logging';
+
 import useParagonThemeVariants from './useParagonThemeVariants';
 
 jest.mock('../../../logging');

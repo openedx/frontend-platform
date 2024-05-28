@@ -42,7 +42,7 @@ jest.mock('../i18n', () => ({
 }));
 
 jest.mock('../analytics', () => ({
-  configure: () => { },
+  configure: () => {},
   identifyAnonymousUser: jest.fn(),
   identifyAuthenticatedUser: jest.fn(),
 }));
