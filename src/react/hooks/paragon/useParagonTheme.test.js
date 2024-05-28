@@ -60,7 +60,7 @@ describe('useParagonTheme', () => {
   });
 
   it('should configure theme variants according with system preference and add the change event listener', () => {
-    const { unmount } = renderHook(() => useParagonTheme(getConfig()));
+    const { result, unmount } = renderHook(() => useParagonTheme(getConfig()));
     const themeLinks = document.head.querySelectorAll('link');
     const darkLink = document.head.querySelector('link[data-paragon-theme-variant="dark"]');
     const lightLink = document.head.querySelector('link[data-paragon-theme-variant="light"]');
@@ -70,13 +70,15 @@ describe('useParagonTheme', () => {
     expect(mockAddEventListener).toHaveBeenCalled();
     expect(darkLink.rel).toBe('stylesheet');
     expect(lightLink.rel).toBe('alternate stylesheet');
+    expect(result.current[0]).toEqual({ isThemeLoaded: true, themeVariant: 'dark' });
+
     unmount();
     expect(mockRemoveEventListener).toHaveBeenCalled();
   });
 
   it('should configure theme variants according with user preference if is defined (localStorage)', () => {
     window.localStorage.getItem.mockReturnValue('light');
-    const { unmount } = renderHook(() => useParagonTheme(getConfig()));
+    const { result, unmount } = renderHook(() => useParagonTheme(getConfig()));
     const themeLinks = document.head.querySelectorAll('link');
     const darkLink = document.head.querySelector('link[data-paragon-theme-variant="dark"]');
     const lightLink = document.head.querySelector('link[data-paragon-theme-variant="light"]');
@@ -87,6 +89,8 @@ describe('useParagonTheme', () => {
 
     expect(darkLink.rel).toBe('alternate stylesheet');
     expect(lightLink.rel).toBe('stylesheet');
+    expect(result.current[0]).toEqual({ isThemeLoaded: true, themeVariant: 'light' });
+
     unmount();
     expect(mockRemoveEventListener).toHaveBeenCalled();
   });

@@ -40,24 +40,6 @@ describe('useParagonThemeVariants', () => {
   });
 
   it('should dispatch a log error and fallback to PARAGON_THEME if can not load the variant theme link', () => {
-    global.PARAGON_THEME = {
-      paragon: {
-        version: '1.0.0',
-        themeUrls: {
-          core: {
-            fileName: 'core.min.css',
-          },
-          defaults: {
-            light: 'light',
-          },
-          variants: {
-            light: {
-              fileName: 'light.min.css',
-            },
-          },
-        },
-      },
-    };
     const themeVariants = {
       light: {
         urls: {
