@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { logError, logInfo } from '../../../logging';
 import { removeExistingLinks } from './utils';
 import { getConfig } from '../../../config';
+import { basename } from '../../../initialize';
 
 /**
  * Adds/updates a `<link>` element in the HTML document to load the core application theme CSS.
@@ -80,7 +81,7 @@ const useParagonThemeCore = ({
           const paragonThemeAccessor = isBrandOverride ? 'brand' : 'paragon';
           const themeUrls = PARAGON_THEME?.[paragonThemeAccessor]?.themeUrls ?? {};
           if (themeUrls.core) {
-            const coreThemeFallbackUrl = `${getConfig().BASE_URL}/${themeUrls.core.fileName}`;
+            const coreThemeFallbackUrl = `${getConfig().BASE_URL}${basename}${themeUrls.core.fileName}`;
             logInfo(`Falling back to locally installed core theme CSS: ${coreThemeFallbackUrl}`);
             coreThemeLink = createCoreThemeLink(coreThemeFallbackUrl, { isFallbackThemeUrl: true, isBrandOverride });
             const otherExistingLinks = getExistingCoreThemeLinks(isBrandOverride);

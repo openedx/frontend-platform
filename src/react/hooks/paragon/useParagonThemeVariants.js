@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { logError, logInfo } from '../../../logging';
 import { removeExistingLinks } from './utils';
 import { getConfig } from '../../../config';
+import { basename } from '../../../initialize';
 
 /**
  * Adds/updates a `<link>` element in the HTML document to load each theme variant's CSS, setting the
@@ -128,7 +129,7 @@ const useParagonThemeVariants = ({
           const paragonThemeAccessor = isBrandOverride ? 'brand' : 'paragon';
           const themeUrls = PARAGON_THEME?.[paragonThemeAccessor]?.themeUrls ?? {};
           if (themeUrls.variants && themeUrls.variants[themeVariant]) {
-            const themeVariantFallbackUrl = `${getConfig().BASE_URL}/${themeUrls.variants[themeVariant].fileName}`;
+            const themeVariantFallbackUrl = `${getConfig().BASE_URL}${basename}${themeUrls.variants[themeVariant].fileName}`;
             logInfo(`Falling back to locally installed theme variant (${themeVariant}) CSS: ${themeVariantFallbackUrl}`);
             themeVariantLink = createThemeVariantLink(themeVariantFallbackUrl, {
               isFallbackThemeUrl: true,
