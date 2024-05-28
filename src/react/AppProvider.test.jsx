@@ -145,24 +145,19 @@ describe('AppProvider', () => {
   });
 
   describe('paragon theme and brand', () => {
+    let Component = (
+      <AppProvider>
+        <div>Child One</div>
+        <div>Child Two</div>
+      </AppProvider>
+    );
+
     it('calls trackColorSchemeChoice', () => {
-      const Component = (
-        <AppProvider>
-          <div>Child One</div>
-          <div>Child Two</div>
-        </AppProvider>
-      );
       render(Component);
       expect(useTrackColorSchemeChoice).toHaveBeenCalled();
     });
 
     it('calls useParagonTheme', () => {
-      const Component = (
-        <AppProvider>
-          <div>Child One</div>
-          <div>Child Two</div>
-        </AppProvider>
-      );
       render(Component);
       expect(useParagonTheme).toHaveBeenCalled();
       expect(useParagonTheme).toHaveBeenCalledWith(
@@ -183,12 +178,6 @@ describe('AppProvider', () => {
         { isThemeLoaded: false },
         jest.fn(),
       ]);
-      const Component = (
-        <AppProvider>
-          <div>Child One</div>
-          <div>Child Two</div>
-        </AppProvider>
-      );
       const { container } = render(Component);
       expect(container).toBeEmptyDOMElement();
     });
@@ -199,7 +188,7 @@ describe('AppProvider', () => {
         { isThemeLoaded: true, themeVariant: 'light' },
         mockUseParagonThemeDispatch,
       ]);
-      const Component = (
+      Component = (
         <AppProvider>
           <AppContext.Consumer>
             {({ paragonTheme }) => (
@@ -238,12 +227,12 @@ describe('AppProvider', () => {
   });
 
   describe('useAppEvent', () => {
+    const Component = (
+      <AppProvider>
+        <div>Child</div>
+      </AppProvider>
+    );
     it('subscribes to `AUTHENTICATED_USER_CHANGED`', async () => {
-      const Component = (
-        <AppProvider>
-          <div>Child</div>
-        </AppProvider>
-      );
       render(Component);
       expect(useAppEvent).toHaveBeenCalledWith(AUTHENTICATED_USER_CHANGED, expect.any(Function));
       const useAppEventMockCalls = useAppEvent.mock.calls;
@@ -255,11 +244,6 @@ describe('AppProvider', () => {
     });
 
     it('subscribes to `CONFIG_CHANGED`', async () => {
-      const Component = (
-        <AppProvider>
-          <div>Child</div>
-        </AppProvider>
-      );
       render(Component);
       expect(useAppEvent).toHaveBeenCalledWith(CONFIG_CHANGED, expect.any(Function));
       const useAppEventMockCalls = useAppEvent.mock.calls;
@@ -271,11 +255,6 @@ describe('AppProvider', () => {
     });
 
     it('subscribes to `LOCALE_CHANGED`', async () => {
-      const Component = (
-        <AppProvider>
-          <div>Child</div>
-        </AppProvider>
-      );
       render(Component);
       expect(useAppEvent).toHaveBeenCalledWith(LOCALE_CHANGED, expect.any(Function));
       const useAppEventMockCalls = useAppEvent.mock.calls;
