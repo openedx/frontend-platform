@@ -1,12 +1,14 @@
 import {
   useCallback, useEffect, useReducer, useState,
 } from 'react';
-import useParagonThemeUrls from './useParagonThemeUrls';
-import { getDefaultThemeVariant } from './utils';
-import { paragonThemeActions, paragonThemeReducer } from '../../reducers';
-import useParagonThemeCore from './useParagonThemeCore';
+
 import { SELECTED_THEME_VARIANT_KEY } from '../../constants';
 import { logError } from '../../../logging';
+import { paragonThemeActions, paragonThemeReducer } from '../../reducers';
+import { getDefaultThemeVariant } from './utils';
+
+import useParagonThemeCore from './useParagonThemeCore';
+import useParagonThemeUrls from './useParagonThemeUrls';
 import useParagonThemeVariants from './useParagonThemeVariants';
 
 /**

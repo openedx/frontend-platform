@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 
-import { logError, logInfo } from '../../../logging';
-import { removeExistingLinks } from './utils';
 import { getConfig } from '../../../config';
 import { basename } from '../../../initialize';
+import { logError, logInfo } from '../../../logging';
+import { removeExistingLinks } from './utils';
 
 /**
  * Adds/updates a `<link>` element in the HTML document to load the core application theme CSS.
