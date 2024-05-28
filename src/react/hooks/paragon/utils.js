@@ -1,3 +1,5 @@
+import { getConfig } from '../../../config';
+import { basename } from '../../../initialize';
 import { SELECTED_THEME_VARIANT_KEY } from '../../constants';
 
 /**
@@ -79,9 +81,21 @@ export const getDefaultThemeVariant = ({ themeVariants, themeVariantDefaults = {
   };
 };
 
+/**
+* Creates the fallback URL for the given theme file.
+* @param {string} url The theme file path.
+* @returns {string} The default theme url.
+*/
+export const fallbackThemeUrl = (url) => {
+  const baseUrl = getConfig().BASE_URL || window.location?.origin;
+  return `${baseUrl}${basename}${url}`;
+};
+
 export const handleVersionSubstitution = ({ url, wildcardKeyword, localVersion }) => {
   if (!url || !url.includes(wildcardKeyword) || !localVersion) {
     return url;
   }
   return url.replaceAll(wildcardKeyword, localVersion);
 };
+
+export const isEmptyObject = (obj) => !obj || Object.keys(obj).length === 0;
