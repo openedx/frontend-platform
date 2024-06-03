@@ -140,7 +140,7 @@ export async function initError(error) {
  */
 export async function auth(requireUser, hydrateUser) {
   if (requireUser) {
-    await ensureAuthenticatedUser(global.location.href);
+    await ensureAuthenticatedUser(globalThis.location.href);
   } else {
     await fetchAuthenticatedUser();
   }

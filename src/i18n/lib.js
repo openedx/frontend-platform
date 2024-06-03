@@ -167,7 +167,7 @@ export function getLocale(locale) {
   // Note that some browers prefer upper case for the region part of the locale, while others don't.
   // Thus the toLowerCase, for consistency.
   // https://developer.mozilla.org/en-US/docs/Web/API/NavigatorLanguage/language
-  return findSupportedLocale(global.navigator.language.toLowerCase());
+  return findSupportedLocale(globalThis.navigator.language.toLowerCase());
 }
 
 /**
@@ -199,9 +199,9 @@ export function isRtl(locale) {
  */
 export function handleRtl() {
   if (isRtl(getLocale())) {
-    global.document.getElementsByTagName('html')[0].setAttribute('dir', 'rtl');
+    globalThis.document.getElementsByTagName('html')[0].setAttribute('dir', 'rtl');
   } else {
-    global.document.getElementsByTagName('html')[0].setAttribute('dir', 'ltr');
+    globalThis.document.getElementsByTagName('html')[0].setAttribute('dir', 'ltr');
   }
 }
 
