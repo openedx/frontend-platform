@@ -1,6 +1,21 @@
 /* eslint-disable import/extensions */
 import LANGUAGES, { langs as languageLangs } from '@cospired/i18n-iso-languages';
 
+// import arLocale from '@cospired/i18n-iso-languages/langs/ar.json';
+import enLocale from '@cospired/i18n-iso-languages/langs/en.json';
+import esLocale from '@cospired/i18n-iso-languages/langs/es.json';
+import frLocale from '@cospired/i18n-iso-languages/langs/fr.json';
+// import zhLocale from '@cospired/i18n-iso-languages/langs/zh.json';
+// import caLocale from '@cospired/i18n-iso-languages/langs/ca.json';
+// import heLocale from '@cospired/i18n-iso-languages/langs/he.json';
+// import idLocale from '@cospired/i18n-iso-languages/langs/id.json';
+// import koLocale from '@cospired/i18n-iso-languages/langs/ko.json';
+import plLocale from '@cospired/i18n-iso-languages/langs/pl.json';
+import ptLocale from '@cospired/i18n-iso-languages/langs/pt.json';
+// import ruLocale from '@cospired/i18n-iso-languages/langs/ru.json';
+// import thLocale from '@cospired/i18n-iso-languages/langs/th.json';
+// import ukLocale from '@cospired/i18n-iso-languages/langs/uk.json';
+
 import { getPrimaryLanguageSubtag } from './lib';
 
 /*
@@ -14,20 +29,20 @@ import { getPrimaryLanguageSubtag } from './lib';
  * been a while, go check and see if that's changed!
  */
 
-// LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/ar.json'));
-LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/en.json'));
-LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/es.json'));
-LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/fr.json'));
-// LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/zh.json'));
-// LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/ca.json'));
-// LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/he.json'));
-// LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/id.json'));
-// LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/ko.json'));
-LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/pl.json'));
-LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/pt.json'));
-// LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/ru.json'));
-// LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/th.json'));
-// LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/uk.json'));
+// LANGUAGES.registerLocale(arLocale);
+LANGUAGES.registerLocale(enLocale);
+LANGUAGES.registerLocale(esLocale);
+LANGUAGES.registerLocale(frLocale);
+// LANGUAGES.registerLocale(zhLocale);
+// LANGUAGES.registerLocale(caLocale);
+// LANGUAGES.registerLocale(heLocale);
+// LANGUAGES.registerLocale(idLocale);
+// LANGUAGES.registerLocale(koLocale);
+LANGUAGES.registerLocale(plLocale);
+LANGUAGES.registerLocale(ptLocale);
+// LANGUAGES.registerLocale(ruLocale);
+// LANGUAGES.registerLocale(thLocale);
+// LANGUAGES.registerLocale(ukLocale);
 
 /**
  * Provides a lookup table of language IDs to language names for the current locale.
