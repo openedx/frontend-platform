@@ -45,6 +45,7 @@ import { SELECTED_THEME_VARIANT_KEY } from './constants';
  * - Optionally a redux `Provider`. Will only be included if a `store` property is passed to
  * `AppProvider`.
  * - A `Router` for react-router.
+ * - A theme manager for Paragon.
  *
  * @param {Object} props
  * @param {Object} [props.store] A redux store.
