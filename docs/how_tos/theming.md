@@ -2,9 +2,9 @@
 
 ## Overview
 
-This document serves as a guide to using `@openedx/frontend-platform` to support MFE theming with Paragon using theme CSS loaded externally (e.g., from a CDN).
+This document is a guide for using `@openedx/frontend-platform` to support MFE theming with Paragon loading the theme CSS externally (e.g., from a CDN).
 
-To do this, configured URLs pointing to relevant CSS files from `@openedx/paragon` and (optionally) `@openedx/brand-openedx` are loaded and injected to the HTML document at runtime. This differs than the consuming application importing the styles from `@openedx/paragon` and `@openedx/brand-openedx` directly, which includes these styles in the application's production assets.
+To do this, configured URLs pointing to relevant CSS files from `@openedx/paragon` and (optionally) `@openedx/brand-openedx` are loaded and injected to the HTML document at runtime. This differs from importing the styles from `@openedx/paragon` and `@openedx/brand-openedx` directly, which includes these styles in the application's production assets.
 
 By serving CSS loaded externally, consuming applications of Paragon no longer need to be responsible for compiling the theme SCSS to CSS themselves and instead use a pre-compiled CSS file. In doing so, this allows making changes to the Paragon theme without needing to necessarily re-build and re-deploy all consuming applications.
 
@@ -14,13 +14,13 @@ By serving CSS loaded externally, consuming applications of Paragon no longer ne
 
 1. **Get theme preference from localStorage.** Supports persisting and loading the user's preference for their selected theme variant, until cleared.
 1. **Detect user system settings.** Rely on the `prefers-color-scheme` media query to detect if the user's system indicates a preference for dark mode. If so, use the default dark theme variant, if one is configured.
-1. **Use default theme variant as configured (see below).** Otherwise, load the default theme variant as configured by the `defaults` option described below.
+1. **Use the default theme variant as configured (see below).** Otherwise, load the default theme variant as configured by the `defaults` option described below.
 
-Whenever the current theme variant changes, an attrivbute `data-paragon-theme-variant="*"` is updated on the `<html>` element. This attribute enables applications' both JS and CSS to have knowledge of the currently applied theme variant.
+Whenever the current theme variant changes, an attribute `data-paragon-theme-variant="*"` is updated on the `<html>` element. This attribute enables applications both JS and CSS to have knowledge of the currently applied theme variant.
 
 ### Supporting custom theme variants beyond `light` and `dark`
 
-If your use case necessitates additional variants beyond the default supported `light` and `dark` theme variants, you may pass any number of custom theme variants. Custom theme variants will work the user's persisted localStorage setting (i.e., if a user switches to a custom theme variant, the MFE will continue to load the custom theme variant by default). By supporting custom theme variants, it also supports having multiple or alternative `light` and/or `dark` theme variants.
+If your use case requires additional variants beyond the default `light` and `dark` theme variants, you may pass any number of custom theme variants. Custom theme variants will work the user's persisted localStorage setting (i.e., if a user switches to a custom theme variant, the MFE will continue to load the custom theme variant by default). By supporting custom theme variants, it also supports having multiple or alternative `light` and/or `dark` theme variants. You can see the [Configuration options](#configuration-options) example for better understanding.
 
 ### Performance implications
 
@@ -90,6 +90,52 @@ The `dark` theme variant options are optional.
 | `variants.dark.urls.default`          | String        | URL for the `dark.css` file from `@openedx/paragon`.                                                  |
 | `variants.dark.urls.brandOverride`    | String        | URL for the `dark.css` file from `@openedx/brand-openedx`.                                                    |
 
+Understanding the different configuration options, a complex use case:
+
+```js
+const config = {
+    PARAGON_THEME_URLS: {
+        {
+            core: {
+                urls: {
+                    default: 'https://cdn.jsdelivr.net/npm/@openedx/paragon@$paragonVersion/dist/core.min.css',
+                    brandOverride: 'https://cdn.jsdelivr.net/npm/@my-brand/brand-package@#brandVersion/dist/core.min.css',
+                },
+            },
+            defaults: {
+                light: 'light',
+                dark: 'dark',
+            },
+            variants: {
+                light: {
+                    urls: {
+                        default: 'https://cdn.jsdelivr.net/npm/@openedx/paragon@$paragonVersion/dist/light.min.css',
+                        brandOverride: 'https://cdn.jsdelivr.net/npm/@my-brand/brand-package@$brandVersion/dist/light.min.css',
+                    },
+                },
+                // Configure optional dark mode
+                dark: {
+                    urls: {
+                        default: 'https://cdn.jsdelivr.net/npm/@openedx/paragon@$paragonVersion/dark/dark.min.css',
+                        brandOverride: 'https://cdn.jsdelivr.net/npm/@my-brand/brand-package@$brandVersion/dist/dark.min.css',
+                    },
+                },
+                // Configure any extra theme using a custom @openedx/brand-openedx package
+                green: {
+                    url: 'https://cdn.jsdelivr.net/npm/@my-brand/brand-package@$brandVersion/dist/green.min.css',
+                },
+                red: {
+                    url: 'https://cdn.jsdelivr.net/npm/@my-brand/brand-package@$brandVersion/dist/red.min.css',
+                },
+                'high-contrast-dark': {
+                    url: 'https://cdn.jsdelivr.net/npm/@my-brand/brand-package@$brandVersion/dist/high-contrast-dark.min.css',
+                },
+            },
+        }
+    }
+}
+```
+
 ### JavaScript-based configuration
 
 One approach to configuring the `PARAGON_THEME_URLS` is to create a `env.config.js` file in the root of the repository. The configuration is defined as a JavaScript file, which affords consumers to use more complex data types, amongst other benefits.
@@ -145,7 +191,7 @@ MFE_CONFIG_OVERRIDES = {
 }
 ```
 
-### Locally installed `@openedx/paragon`
+### Reference the locally installed `@openedx/paragon` version
 
 If you would like to use the same version of the Paragon CSS urls as the locally installed `@openedx/paragon`, the configuration for the Paragon CSS urls may contain a wildcard `$paragonVersion` which gets replaced with the locally installed version of `@openedx/paragon` in the consuming application, e.g.:
 
@@ -158,9 +204,9 @@ In the event the other Paragon CSS urls are configured via one of the other docu
 
 ## Usage with `@openedx/brand-openedx`
 
-The core Paragon design tokens and styles may be optionally overriden by utilizing `@openedx/brand-openedx`, which allows theme authors to customize the default Paragon theme to match the look and feel of their custom brand.
+The core Paragon design tokens and styles may be optionally overridden by utilizing `@openedx/brand-openedx`, which allows theme authors to customize the default Paragon theme to match the look and feel of their custom brand.
 
-This override mechanism works by compiling the design tokens defined in `@openedx/brand-openedx` with the the core Paragon tokens to generate overrides to Paragon's default CSS variables, and then compiling the output CSS with any SCSS theme customizations not possible through a design token override.
+This override mechanism works by compiling the design tokens defined in `@openedx/brand-openedx` with the core Paragon tokens to generate overrides to Paragon's default CSS variables and then compiling the output CSS with any SCSS theme customizations not possible through a design token override.
 
 The CSS urls for `@openedx/brand-openedx` overrides will be applied after the core Paragon theme urls load, thus overriding any previously set CSS variables and/or styles.
 
@@ -172,7 +218,7 @@ const config = {
         core: {
             urls: {
                 default: 'https://cdn.jsdelivr.net/npm/@openedx/paragon@$paragonVersion/dist/core.min.css',
-                brandOverride: 'https://cdn.jsdelivr.net/npm/@openedx/brand-openedx-edx.org@#brandVersion/dist/core.min.css',
+                brandOverride: 'https://cdn.jsdelivr.net/npm/@openedx/brand-openedx@#brandVersion/dist/core.min.css',
             },
         },
         defaults: {
@@ -182,7 +228,7 @@ const config = {
             light: {
                 urls: {
                     default: 'https://cdn.jsdelivr.net/npm/@openedx/paragon@$paragonVersion/dist/light.min.css',
-                    brandOverride: 'https://cdn.jsdelivr.net/npm/@openedx/brand-openedx-edx.org@$brandVersion/dist/light.min.css',
+                    brandOverride: 'https://cdn.jsdelivr.net/npm/@openedx/brand-openedx@$brandVersion/dist/light.min.css',
                 },
             },
         },
@@ -192,9 +238,9 @@ const config = {
 export default config;
 ```
 
-### Locally installed `@openedx/brand-openedx`
+### Reference the locally installed `@openedx/brand-openedx` version
 
-If you would like to use the same version of the brand override CSS urls as the locally installed `@openedx/brand-openedx`, the configuration for the brand override CSS urls may contain a wildcard `$brandVersion` which gets replaced with the locally installed version of `@openedx/brand-openedx` in the consuming application, e.g.:
+If you would like to use the same version of the brand overrides CSS urls as the locally installed `@openedx/brand-openedx`, the configuration for the brand override CSS urls may contain a wildcard `$brandVersion` which gets replaced with the locally installed version of `@openedx/brand-openedx` in the consuming application, e.g.:
 
 ```shell
 https://cdn.jsdelivr.net/npm/@openedx/brand-openedx@$brandVersion/dist/core.min.css
