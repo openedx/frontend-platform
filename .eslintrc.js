@@ -3,6 +3,7 @@ const { getBaseConfig } = require('@openedx/frontend-build');
 
 const config = getBaseConfig('eslint');
 
+config.globals = { globalThis: 'readonly' };
 config.rules = {
   'import/no-extraneous-dependencies': ['error', {
     devDependencies: [
