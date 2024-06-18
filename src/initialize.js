@@ -68,7 +68,7 @@ import {
 import {
   configure as configureAnalytics, SegmentAnalyticsService, identifyAnonymousUser, identifyAuthenticatedUser,
 } from './analytics';
-import { GoogleAnalyticsLoader } from './scripts';
+import { GoogleAnalyticsLoader, TealiumLoader } from './scripts';
 import {
   getAuthenticatedHttpClient,
   configure as configureAuth,
@@ -290,7 +290,7 @@ export async function initialize({
   analyticsService = SegmentAnalyticsService,
   authService = AxiosJwtAuthService,
   authMiddleware = [],
-  externalScripts = [GoogleAnalyticsLoader],
+  externalScripts = [GoogleAnalyticsLoader, TealiumLoader],
   requireAuthenticatedUser: requireUser = false,
   hydrateAuthenticatedUser: hydrateUser = false,
   messages,
