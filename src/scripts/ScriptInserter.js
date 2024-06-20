@@ -39,12 +39,7 @@ class ScriptInserter {
    * @param {string} content - The content to insert into the head section.
    */
   insertToHead(content) {
-    const { head } = document;
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = content;
-    while (tempDiv.firstChild) {
-      head.appendChild(tempDiv.firstChild);
-    }
+    this.createAndAppendScript(content, document.head);
   }
 
   /**
@@ -52,12 +47,7 @@ class ScriptInserter {
    * @param {string} content - The content to insert at the top of the body section.
    */
   insertToBodyTop(content) {
-    const { body } = document;
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = content;
-    while (tempDiv.firstChild) {
-      body.insertBefore(tempDiv.firstChild, body.firstChild);
-    }
+    this.createAndAppendScript(content, document.body, true);
   }
 
   /**
@@ -65,11 +55,41 @@ class ScriptInserter {
    * @param {string} content - The content to insert at the bottom of the body section.
    */
   insertToBodyBottom(content) {
-    const { body } = document;
+    this.createAndAppendScript(content, document.body);
+  }
+
+  /**
+   * Creates a script element and appends it to the specified location.
+   * @param {string} content - The content of the script.
+   * @param {Element} parent - The parent element to insert the script into (head or body).
+   * @param {boolean} atStart - Whether to insert the script at the start of the parent element.
+   */
+  createAndAppendScript(content, parent, atStart = false) {
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = content;
-    while (tempDiv.firstChild) {
-      body.appendChild(tempDiv.firstChild);
+    const scriptElement = tempDiv.querySelector('script');
+
+    if (scriptElement && scriptElement.src) {
+      // If the script has a src attribute, create a new script element with the same src
+      const newScriptElement = document.createElement('script');
+      newScriptElement.src = scriptElement.src;
+      newScriptElement.async = true;
+
+      if (atStart && parent.firstChild) {
+        parent.insertBefore(newScriptElement, parent.firstChild);
+      } else {
+        parent.appendChild(newScriptElement);
+      }
+    } else {
+      // If the script does not have a src attribute, insert its inner content as inline script
+      const newScriptElement = document.createElement('script');
+      newScriptElement.text = scriptElement ? scriptElement.innerHTML : content;
+
+      if (atStart && parent.firstChild) {
+        parent.insertBefore(newScriptElement, parent.firstChild);
+      } else {
+        parent.appendChild(newScriptElement);
+      }
     }
   }
 }
