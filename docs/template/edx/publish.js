@@ -653,7 +653,7 @@ exports.publish = (memberData, opts, tutorials) => {
         const myNamespaces = members.namespaces.filter(obj => obj.longname === longname);
 
         const trimModuleName = (moduleName) => {
-            if (moduleName.includes('module:')) {
+            if (moduleName?.includes('module:')) {
                 return moduleName.split(':')[1];
             }
             return moduleName;
