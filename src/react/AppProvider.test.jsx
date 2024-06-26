@@ -57,6 +57,12 @@ jest.mock('./hooks', () => ({
   ]),
 }));
 
+Object.defineProperty(window, 'localStorage', {
+  value: {
+    setItem: jest.fn(),
+  },
+});
+
 describe('AppProvider', () => {
   beforeEach(async () => {
     jest.clearAllMocks();
