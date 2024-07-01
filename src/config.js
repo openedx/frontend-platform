@@ -324,4 +324,5 @@ export function ensureConfig(keys, requester = 'unspecified application code') {
  * @property {string} MFE_CONFIG_API_URL
  * @property {string} APP_ID
  * @property {string} SUPPORT_URL
+ * @property {string} PARAGON_THEME_URLS
  */

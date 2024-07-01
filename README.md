@@ -1,8 +1,8 @@
 [![Build Status](https://github.com/openedx/frontend-platform/actions/workflows/ci.yml/badge.svg)](https://github.com/openedx/frontend-platform/actions/workflows/ci.yml)
 [![Codecov](https://img.shields.io/codecov/c/github/edx/frontend-platform)](https://codecov.io/gh/edx/frontend-platform)
-[![NPM Version](https://img.shields.io/npm/v/@edx/frontend-platform.svg)](https://www.npmjs.com/package/@edx/frontend-platform)
-[![npm_downloads](https://img.shields.io/npm/dt/@edx/frontend-platform.svg)](https://www.npmjs.com/package/@edx/frontend-platform)
-[![license](https://img.shields.io/npm/l/@edx/frontend-platform.svg)](https://github.com/openedx/frontend-platform/blob/master/LICENSE)
+[![NPM Version](https://img.shields.io/npm/v/@openedx/frontend-platform.svg)](https://www.npmjs.com/package/@openedx/frontend-platform)
+[![npm_downloads](https://img.shields.io/npm/dt/@openedx/frontend-platform.svg)](https://www.npmjs.com/package/@opeedx/frontend-platform)
+[![license](https://img.shields.io/npm/l/@openedx/frontend-platform.svg)](https://github.com/openedx/frontend-platform/blob/master/LICENSE)
 [![semantic release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 
 # Overview
@@ -13,11 +13,11 @@ frontend-platform is a modest application framework for Open edX micro-frontend 
 
 | Service                            | Module location                  |
 |------------------------------------|----------------------------------|
-| Analytics                          | @edx/frontend-platform/analytics |
-| Logging                            | @edx/frontend-platform/logging   |
-| Authenticated API client (auth)    | @edx/frontend-platform/auth      |
-| Internationalization (i18n)        | @edx/frontend-platform/i18n      |
-| Misc (init, config, pubSub, utils) | @edx/frontend-platform           |
+| Analytics                          | @openedx/frontend-platform/analytics |
+| Logging                            | @openedx/frontend-platform/logging   |
+| Authenticated API client (auth)    | @openedx/frontend-platform/auth      |
+| Internationalization (i18n)        | @openedx/frontend-platform/i18n      |
+| Misc (init, config, pubSub, utils) | @openedx/frontend-platform           |
 
 -------------------------------------------------------------------------
 
@@ -101,7 +101,7 @@ initialize({
 When using runtime configuration via `mergeConfig` noted above, `getConfig` must be called within a component's render lifecycle for the added keys and values to be returned in the configuration object. If `getConfig` is called outside of a component's render lifecycle, the custom configuration key/value pairs will not initially be part of the object returned by `getConfig`. For example:
 
 ```jsx
-import { getConfig } from '@edx/frontend-platform/config';
+import { getConfig } from '@openedx/frontend-platform/config';
 
 // The runtime configuration `CUSTOM_VARIABLE` added in the above code snippet will not appear here. This is
 // because `getConfig` is called before `mergeConfig` is executed to add the custom runtime configuration.
