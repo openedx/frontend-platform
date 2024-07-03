@@ -43,6 +43,7 @@
     "axios-mock-adapter": "^1.22.0",
     "core-js": "3.37.1",
     "husky": "8.0.3",
+    "jest-environment-jsdom": "29.7.0",
     "jsdoc": "^4.0.0",
     "nodemon": "3.1.4",
     "prop-types": "15.8.1",

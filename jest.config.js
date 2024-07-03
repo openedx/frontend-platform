@@ -5,7 +5,4 @@ module.exports = createConfig('jest', {
     '<rootDir>/src/setupTest.js',
   ],
   testTimeout: 20000,
-  moduleNameMapper: {
-    '^axios$': 'axios/dist/node/axios.cjs',
-  },
 });
