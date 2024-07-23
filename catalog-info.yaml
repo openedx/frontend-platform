@@ -16,6 +16,6 @@ metadata:
   annotations:
     openedx.org/arch-interest-groups: ""
 spec:
-  owner: "group:frontend-all"
+  owner: "group:committers-frontend"
   type: 'library'
   lifecycle: 'production'
