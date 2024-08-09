@@ -629,7 +629,7 @@ exports.publish = (memberData, opts, tutorials) => {
         generateSourceFiles(sourceFiles, opts.encoding);
     }
 
-    // if (members.globals.length) { generate('Global', [{kind: 'globalobj'}], globalUrl); }
+    if (members.globals.length) { generate('Global', [{kind: 'globalobj'}], globalUrl); }
 
     // index page displays information from package.json and lists files
     files = find({kind: 'file'});

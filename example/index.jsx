@@ -1,7 +1,6 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 
-import React from 'react';
 import ReactDOM from 'react-dom';
 import {
   AppProvider,
@@ -16,6 +15,7 @@ import { Routes, Route } from 'react-router-dom';
 import './index.scss';
 import ExamplePage from './ExamplePage';
 import AuthenticatedPage from './AuthenticatedPage';
+import ComponentPropOverridesPage from './ComponentPropOverridesPage';
 
 subscribe(APP_READY, () => {
   ReactDOM.render(
@@ -27,6 +27,7 @@ subscribe(APP_READY, () => {
           element={<PageWrap><ErrorPage message="Test error message" /></PageWrap>}
         />
         <Route path="/authenticated" element={<AuthenticatedPageRoute><AuthenticatedPage /></AuthenticatedPageRoute>} />
+        <Route path="/component-prop-overrides" element={<ComponentPropOverridesPage />} />
       </Routes>
     </AppProvider>,
     document.getElementById('root'),

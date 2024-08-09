@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 import { Link } from 'react-router-dom';
 
 import { injectIntl, intlShape } from '@edx/frontend-platform/i18n';
@@ -48,6 +48,7 @@ class ExamplePage extends Component {
         <p>EXAMPLE_VAR env var came through: <strong>{getConfig().EXAMPLE_VAR}</strong></p>
         <p>JS_FILE_VAR var came through: <strong>{getConfig().JS_FILE_VAR}</strong></p>
         <p>Visit <Link to="/authenticated">authenticated page</Link>.</p>
+        <p>Visit <Link to="/component-prop-overrides">component prop overrides page</Link>.</p>
         <p>Visit <Link to="/error_example">error page</Link>.</p>
       </div>
     );
