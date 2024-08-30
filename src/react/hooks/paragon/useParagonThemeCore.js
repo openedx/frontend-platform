@@ -1,7 +1,21 @@
+// eslint-disable-next-line max-len
+/* eslint no-param-reassign: ["error", { "props": true, "ignorePropertyModificationsFor": ["coreThemeLink", "brandCoreLink"] }] */
+
 import { useEffect, useState } from 'react';
 
 import { logError, logInfo } from '../../../logging';
 import { fallbackThemeUrl, removeExistingLinks } from './utils';
+
+function handleExistingCoreThemeLink(coreThemeLink, brandCoreLink) {
+  coreThemeLink.rel = 'stylesheet';
+  coreThemeLink.removeAttribute('as');
+  coreThemeLink.dataset.paragonThemeCore = true;
+  if (brandCoreLink) {
+    brandCoreLink.rel = 'stylesheet';
+    brandCoreLink.removeAttribute('as');
+    brandCoreLink.dataset.brandThemeCore = true;
+  }
+}
 
 /**
  * Adds/updates a `<link>` element in the HTML document to load the core application theme CSS.
@@ -35,7 +49,7 @@ const useParagonThemeCore = ({
     }
     const getParagonThemeCoreLink = () => document.head.querySelector('link[data-paragon-theme-core="true"]');
     const existingCoreThemeLink = document.head.querySelector(`link[href='${themeCore.urls.default}']`);
-    const brandCoreLink = document.head.querySelector(`link[href='${themeCore.urls.brandOverride}']`);
+    const existingBrandCoreLink = document.head.querySelector(`link[href='${themeCore.urls.brandOverride}']`);
     if (!existingCoreThemeLink) {
       const getExistingCoreThemeLinks = (isBrandOverride) => {
         const coreThemeLinkSelector = `link[data-${isBrandOverride ? 'brand' : 'paragon'}-theme-core="true"]`;
@@ -127,14 +141,7 @@ const useParagonThemeCore = ({
         setIsBrandThemeCoreLoaded(true);
       }
     } else {
-      existingCoreThemeLink.rel = 'stylesheet';
-      existingCoreThemeLink.removeAttribute('as');
-      existingCoreThemeLink.dataset.paragonThemeCore = true;
-      if (brandCoreLink) {
-        brandCoreLink.rel = 'stylesheet';
-        brandCoreLink.removeAttribute('as');
-        brandCoreLink.dataset.brandThemeCore = true;
-      }
+      handleExistingCoreThemeLink(existingCoreThemeLink, existingBrandCoreLink);
       setIsParagonThemeCoreLoaded(true);
       setIsBrandThemeCoreLoaded(true);
     }

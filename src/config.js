@@ -171,8 +171,16 @@ let config = {
   MFE_CONFIG_API_URL: process.env.MFE_CONFIG_API_URL,
   APP_ID: process.env.APP_ID,
   SUPPORT_URL: process.env.SUPPORT_URL,
-  PARAGON_THEME_URLS: JSON.parse(process.env.PARAGON_THEME_URLS) || {},
 };
+
+if (process.env.PARAGON_THEME_URLS) {
+  try {
+    config.PARAGON_THEME_URLS = JSON.parse(process.env.PARAGON_THEME_URLS);
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error('Error parsing PARAGON_THEME_URLS:', e);
+  }
+}
 
 /**
  * Getter for the application configuration document.  This is synchronous and merely returns a
