@@ -11,17 +11,18 @@ on:
 jobs:
   tests:
     runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        node: [18, 20]
+    continue-on-error: ${{ matrix.node == 20 }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Nodejs Env
-        run: echo "NODE_VER=`cat .nvmrc`" >> $GITHUB_ENV
-
       - name: Setup Nodejs
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_VER }}
+          node-version: ${{ matrix.node }}
 
       - name: Install dependencies
         run: npm ci
