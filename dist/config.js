@@ -167,7 +167,8 @@ var config = {
   FAVICON_URL: process.env.FAVICON_URL,
   MFE_CONFIG_API_URL: process.env.MFE_CONFIG_API_URL,
   APP_ID: process.env.APP_ID,
-  SUPPORT_URL: process.env.SUPPORT_URL
+  SUPPORT_URL: process.env.SUPPORT_URL,
+  PARAGON_THEME_URLS: JSON.parse(process.env.PARAGON_THEME_URLS) || {}
 };
 
 /**

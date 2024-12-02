@@ -1,11 +1,27 @@
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 /* eslint-disable import/extensions */
 import LANGUAGES, { langs as languageLangs } from '@cospired/i18n-iso-languages';
+
+// import arLocale from '@cospired/i18n-iso-languages/langs/ar.json';
+import enLocale from '@cospired/i18n-iso-languages/langs/en.json';
+import esLocale from '@cospired/i18n-iso-languages/langs/es.json';
+import frLocale from '@cospired/i18n-iso-languages/langs/fr.json';
+// import zhLocale from '@cospired/i18n-iso-languages/langs/zh.json';
+// import caLocale from '@cospired/i18n-iso-languages/langs/ca.json';
+// import heLocale from '@cospired/i18n-iso-languages/langs/he.json';
+// import idLocale from '@cospired/i18n-iso-languages/langs/id.json';
+// import koLocale from '@cospired/i18n-iso-languages/langs/ko.json';
+import plLocale from '@cospired/i18n-iso-languages/langs/pl.json';
+import ptLocale from '@cospired/i18n-iso-languages/langs/pt.json';
+// import ruLocale from '@cospired/i18n-iso-languages/langs/ru.json';
+// import thLocale from '@cospired/i18n-iso-languages/langs/th.json';
+// import ukLocale from '@cospired/i18n-iso-languages/langs/uk.json';
+
 import { getPrimaryLanguageSubtag } from './lib';
 
 /*
@@ -19,20 +35,20 @@ import { getPrimaryLanguageSubtag } from './lib';
  * been a while, go check and see if that's changed!
  */
 
-// LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/ar.json'));
-LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/en.json'));
-LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/es.json'));
-LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/fr.json'));
-// LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/zh.json'));
-// LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/ca.json'));
-// LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/he.json'));
-// LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/id.json'));
-// LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/ko.json'));
-LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/pl.json'));
-LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/pt.json'));
-// LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/ru.json'));
-// LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/th.json'));
-// LANGUAGES.registerLocale(require('@cospired/i18n-iso-languages/langs/uk.json'));
+// LANGUAGES.registerLocale(arLocale);
+LANGUAGES.registerLocale(enLocale);
+LANGUAGES.registerLocale(esLocale);
+LANGUAGES.registerLocale(frLocale);
+// LANGUAGES.registerLocale(zhLocale);
+// LANGUAGES.registerLocale(caLocale);
+// LANGUAGES.registerLocale(heLocale);
+// LANGUAGES.registerLocale(idLocale);
+// LANGUAGES.registerLocale(koLocale);
+LANGUAGES.registerLocale(plLocale);
+LANGUAGES.registerLocale(ptLocale);
+// LANGUAGES.registerLocale(ruLocale);
+// LANGUAGES.registerLocale(thLocale);
+// LANGUAGES.registerLocale(ukLocale);
 
 /**
  * Provides a lookup table of language IDs to language names for the current locale.
