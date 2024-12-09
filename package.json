@@ -69,7 +69,7 @@
     "lodash.memoize": "4.1.2",
     "lodash.merge": "4.6.2",
     "lodash.snakecase": "4.1.1",
-    "pubsub-js": "1.9.4",
+    "pubsub-js": "1.9.5",
     "react-intl": "6.7.0",
     "universal-cookie": "4.0.4"
   },
