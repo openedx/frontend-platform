@@ -1,0 +1,1 @@
+{"version":3,"file":"index.js","names":["default","useAppEvent"],"sources":["../../../src/react/hooks/index.js"],"sourcesContent":["export { default as useAppEvent } from './useAppEvent';\n\nexport * from './paragon';\n"],"mappings":"AAAA,SAASA,OAAO,IAAIC,WAAW,QAAQ,eAAe;AAEtD,cAAc,WAAW","ignoreList":[]}
