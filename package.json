@@ -35,7 +35,7 @@
   "devDependencies": {
     "@edx/brand": "npm:@openedx/brand-openedx@^1.2.2",
     "@edx/browserslist-config": "1.4.0",
-    "@openedx/frontend-build": "14.1.5",
+    "@openedx/frontend-build": "14.2.2",
     "@openedx/paragon": "22.8.1",
     "@testing-library/jest-dom": "6.5.0",
     "@testing-library/react": "12.1.5",
