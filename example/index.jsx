@@ -12,6 +12,7 @@ import { subscribe } from '@edx/frontend-platform/pubSub';
 /* eslint-enable import/no-extraneous-dependencies */
 import { Routes, Route } from 'react-router-dom';
 
+import './index.scss';
 import ExamplePage from './ExamplePage';
 import AuthenticatedPage from './AuthenticatedPage';
 

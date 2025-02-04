@@ -5,4 +5,4 @@ const config = {
   JS_FILE_VAR: 'JS_FILE_VAR_VALUE_FOR_EXAMPLE_APP',
 };
 
-module.exports = config;
+export default config;

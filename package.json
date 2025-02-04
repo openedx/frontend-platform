@@ -14,7 +14,7 @@
     "lint": "fedx-scripts eslint --ext .js --ext .jsx .",
     "i18n_extract": "fedx-scripts formatjs extract",
     "snapshot": "fedx-scripts jest --updateSnapshot",
-    "start": "fedx-scripts webpack-dev-server --progress --host apps.local.openedx.io",
+    "start": "fedx-scripts webpack-dev-server --progress",
     "test": "fedx-scripts jest --coverage",
     "test:watch": "npm run test -- --watch"
   },
