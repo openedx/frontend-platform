@@ -137,6 +137,16 @@ function extractRegex(envVar) {
   return undefined;
 }
 
+function parseParagonThemeUrls(paragonUrlsJson) {
+  // Safely parses a JSON string coming from the environment variables.
+  // If the JSON is invalid, the function returns an empty object.
+  try {
+    return JSON.parse(paragonUrlsJson);
+  } catch (err) {
+    return {};
+  }
+}
+
 const ENVIRONMENT = process.env.NODE_ENV;
 let config = {
   ACCESS_TOKEN_COOKIE_NAME: process.env.ACCESS_TOKEN_COOKIE_NAME,
@@ -171,7 +181,7 @@ let config = {
   MFE_CONFIG_API_URL: process.env.MFE_CONFIG_API_URL,
   APP_ID: process.env.APP_ID,
   SUPPORT_URL: process.env.SUPPORT_URL,
-  PARAGON_THEME_URLS: process.env.PARAGON_THEME_URLS ? JSON.parse(process.env.PARAGON_THEME_URLS) : {},
+  PARAGON_THEME_URLS: parseParagonThemeUrls(process.env.PARAGON_THEME_URLS),
 };
 
 /**
