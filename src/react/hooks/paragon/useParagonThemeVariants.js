@@ -27,16 +27,16 @@ const useParagonThemeVariants = ({
   const [isBrandThemeVariantLoaded, setIsBrandThemeVariantLoaded] = useState(false);
 
   useEffect(() => {
-    const someFn = (colorSchemeQuery) => {
+    const changeColorScheme = (colorSchemeQuery) => {
       onDarkModeSystemPreferenceChange(colorSchemeQuery.matches);
     };
     const colorSchemeQuery = window.matchMedia?.('(prefers-color-scheme: dark)');
     if (colorSchemeQuery) {
-      colorSchemeQuery.addEventListener('change', someFn);
+      colorSchemeQuery.addEventListener('change', changeColorScheme);
     }
     return () => {
       if (colorSchemeQuery) {
-        colorSchemeQuery.removeEventListener('change', someFn);
+        colorSchemeQuery.removeEventListener('change', changeColorScheme);
       }
     };
   }, [onDarkModeSystemPreferenceChange]);
@@ -49,7 +49,7 @@ const useParagonThemeVariants = ({
         document.querySelector('html').removeAttribute(htmlDataThemeVariantAttr);
       };
     }
-    return () => {}; // no-op
+    return () => {}; // Cleanup: no action needed when theme variant is not set
   }, [themeVariants, currentThemeVariant]);
 
   useEffect(() => {
@@ -127,9 +127,9 @@ const useParagonThemeVariants = ({
             return;
           }
           const paragonThemeAccessor = isBrandOverride ? 'brand' : 'paragon';
-          const themeUrls = PARAGON_THEME?.[paragonThemeAccessor]?.themeUrls ?? {};
-          if (themeUrls.variants && themeUrls.variants[themeVariant]) {
-            const themeVariantFallbackUrl = fallbackThemeUrl(themeUrls.variants[themeVariant].fileName);
+          const variants = PARAGON_THEME?.[paragonThemeAccessor]?.themeUrls?.variants ?? {};
+          if (variants[themeVariant]) {
+            const themeVariantFallbackUrl = fallbackThemeUrl(variants[themeVariant].fileName);
             logInfo(`Falling back to locally installed theme variant (${themeVariant}) CSS: ${themeVariantFallbackUrl}`);
             themeVariantLink = createThemeVariantLink(themeVariantFallbackUrl, {
               isFallbackThemeUrl: true,

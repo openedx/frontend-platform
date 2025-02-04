@@ -1,6 +1,13 @@
 import { useMemo } from 'react';
 
-import { fallbackThemeUrl, handleVersionSubstitution, isEmptyObject } from './utils';
+import { fallbackThemeUrl, isEmptyObject } from './utils';
+
+export const handleVersionSubstitution = ({ url, wildcardKeyword, localVersion }) => {
+  if (!url || !url.includes(wildcardKeyword) || !localVersion) {
+    return url;
+  }
+  return url.replaceAll(wildcardKeyword, localVersion);
+};
 
 /**
  * Returns an object containing the URLs for the theme's core CSS and any theme variants.
@@ -18,6 +25,8 @@ const useParagonThemeUrls = (config) => useMemo(() => {
   const defaultThemeVariants = paragonThemeUrls.defaults;
 
   // Local versions of @openedx/paragon and @edx/brand
+  // these are only used when passed into handleVersionSubstitution
+  // which does not attempt substitution using falsy value
   const localParagonVersion = PARAGON_THEME?.paragon?.version;
   const localBrandVersion = PARAGON_THEME?.brand?.version;
 

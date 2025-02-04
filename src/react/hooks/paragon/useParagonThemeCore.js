@@ -77,9 +77,9 @@ const useParagonThemeCore = ({
             return;
           }
           const paragonThemeAccessor = isBrandOverride ? 'brand' : 'paragon';
-          const themeUrls = PARAGON_THEME?.[paragonThemeAccessor]?.themeUrls ?? {};
-          if (themeUrls.core) {
-            const coreThemeFallbackUrl = fallbackThemeUrl(themeUrls.core.fileName);
+          const core = PARAGON_THEME?.[paragonThemeAccessor]?.themeUrls?.core ?? {};
+          if (core) {
+            const coreThemeFallbackUrl = fallbackThemeUrl(core.fileName);
             logInfo(`Falling back to locally installed core theme CSS: ${coreThemeFallbackUrl}`);
             coreThemeLink = createCoreThemeLink(coreThemeFallbackUrl, { isFallbackThemeUrl: true, isBrandOverride });
             const otherExistingLinks = getExistingCoreThemeLinks(isBrandOverride);
