@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 
 import { fallbackThemeUrl, isEmptyObject } from './utils';
+import { getConfig } from '../../../config';
 
 export const handleVersionSubstitution = ({ url, wildcardKeyword, localVersion }) => {
   if (!url || !url.includes(wildcardKeyword) || !localVersion) {
@@ -12,14 +13,14 @@ export const handleVersionSubstitution = ({ url, wildcardKeyword, localVersion }
 /**
  * Returns an object containing the URLs for the theme's core CSS and any theme variants.
  *
- * @param {*} config
  * @returns {ParagonThemeUrls|undefined} An object containing the URLs for the theme's core CSS and any theme variants.
  */
-const useParagonThemeUrls = (config) => useMemo(() => {
-  if (!config?.PARAGON_THEME_URLS) {
+const useParagonThemeUrls = () => useMemo(() => {
+  const { PARAGON_THEME_URLS: paragonThemeUrls } = getConfig();
+  if (!paragonThemeUrls || isEmptyObject(paragonThemeUrls)) {
     return undefined;
   }
-  const paragonThemeUrls = config.PARAGON_THEME_URLS;
+
   const paragonCoreCssUrl = typeof paragonThemeUrls?.core?.urls === 'object' ? paragonThemeUrls.core.urls.default : paragonThemeUrls?.core?.url;
   const brandCoreCssUrl = typeof paragonThemeUrls?.core?.urls === 'object' ? paragonThemeUrls.core.urls.brandOverride : undefined;
   const defaultThemeVariants = paragonThemeUrls.defaults;
@@ -94,6 +95,6 @@ const useParagonThemeUrls = (config) => useMemo(() => {
     defaults: defaultThemeVariants,
     variants: themeVariantsCss,
   };
-}, [config?.PARAGON_THEME_URLS]);
+}, []);
 
 export default useParagonThemeUrls;

@@ -1,7 +1,5 @@
 import { act, renderHook } from '@testing-library/react-hooks';
 
-import { getConfig } from '../../../config';
-
 import useParagonTheme from './useParagonTheme';
 
 jest.mock('../../../config', () => ({
@@ -60,7 +58,7 @@ describe('useParagonTheme', () => {
   });
 
   it('should configure theme variants according with system preference and add the change event listener', () => {
-    const { result, unmount } = renderHook(() => useParagonTheme(getConfig()));
+    const { result, unmount } = renderHook(() => useParagonTheme());
     const themeLinks = document.head.querySelectorAll('link');
     const darkLink = document.head.querySelector('link[data-paragon-theme-variant="dark"]');
     const lightLink = document.head.querySelector('link[data-paragon-theme-variant="light"]');
@@ -78,7 +76,7 @@ describe('useParagonTheme', () => {
 
   it('should configure theme variants according with user preference if is defined (localStorage)', () => {
     window.localStorage.getItem.mockReturnValue('light');
-    const { result, unmount } = renderHook(() => useParagonTheme(getConfig()));
+    const { result, unmount } = renderHook(() => useParagonTheme());
     const themeLinks = document.head.querySelectorAll('link');
     const darkLink = document.head.querySelector('link[data-paragon-theme-variant="dark"]');
     const lightLink = document.head.querySelector('link[data-paragon-theme-variant="light"]');

@@ -166,17 +166,6 @@ describe('AppProvider', () => {
     it('calls useParagonTheme', () => {
       render(Component);
       expect(useParagonTheme).toHaveBeenCalled();
-      expect(useParagonTheme).toHaveBeenCalledWith(
-        expect.objectContaining({
-          BASE_URL: 'localhost:8080',
-          LMS_BASE_URL: 'localhost:18000',
-          LOGIN_URL: 'localhost:18000/login',
-          LOGOUT_URL: 'localhost:18000/logout',
-          REFRESH_ACCESS_TOKEN_ENDPOINT: 'localhost:18000/oauth2/access_token',
-          ACCESS_TOKEN_COOKIE_NAME: 'access_token',
-          CSRF_TOKEN_API_PATH: 'localhost:18000/csrf',
-        }),
-      );
     });
 
     it('blocks rendering until paragon theme is loaded', () => {

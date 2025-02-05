@@ -69,7 +69,7 @@ export default function AppProvider({ store = null, children, wrapWithRouter = t
   });
 
   useTrackColorSchemeChoice();
-  const [paragonThemeState, paragonThemeDispatch] = useParagonTheme(config);
+  const [paragonThemeState, paragonThemeDispatch] = useParagonTheme();
 
   const appContextValue = useMemo(() => ({
     authenticatedUser,
