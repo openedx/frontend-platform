@@ -1,13 +1,16 @@
 import { renderHook } from '@testing-library/react-hooks';
 
 import useParagonThemeUrls from './useParagonThemeUrls';
+import { mergeConfig } from '../../../config';
 
 describe('useParagonThemeUrls', () => {
+  beforeEach(() => { jest.resetAllMocks(); });
   it.each([
     undefined,
     {},
-  ])('handles when `config.PARAGON_THEME_URLS` is not present', (config) => {
-    const { result } = renderHook(() => useParagonThemeUrls(config));
+  ])('handles when `config.PARAGON_THEME_URLS` is not present', (paragonThemeUrls) => {
+    mergeConfig({ PARAGON_THEME_URLS: paragonThemeUrls });
+    const { result } = renderHook(() => useParagonThemeUrls());
     expect(result.current).toEqual(undefined);
   });
 
@@ -28,6 +31,7 @@ describe('useParagonThemeUrls', () => {
           },
         },
       };
+      mergeConfig(config);
       const { result } = renderHook(() => useParagonThemeUrls(config));
       expect(result.current).toEqual(
         expect.objectContaining({
@@ -74,6 +78,7 @@ describe('useParagonThemeUrls', () => {
           },
         },
       };
+      mergeConfig(config);
       const { result } = renderHook(() => useParagonThemeUrls(config));
       expect(result.current).toEqual(
         expect.objectContaining({
@@ -111,7 +116,8 @@ describe('useParagonThemeUrls', () => {
           variants: {},
         },
       };
-      const { result } = renderHook(() => useParagonThemeUrls(config));
+      mergeConfig(config);
+      const { result } = renderHook(() => useParagonThemeUrls());
       expect(result.current).toEqual(
         expect.objectContaining({
           core: {

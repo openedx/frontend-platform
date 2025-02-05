@@ -89,13 +89,12 @@ export const getDefaultThemeVariant = ({ themeVariants, themeVariantDefaults = {
  * variant will already be loaded.
  *
  * @memberof module:React
- * @param {object} config An object containing the URLs for the theme's core CSS and any theme (i.e., `getConfig()`)
  *
  * @returns An array containing 2 elements: 1) an object containing the app
  *  theme state, and 2) a dispatch function to mutate the app theme state.
  */
-const useParagonTheme = (config) => {
-  const paragonThemeUrls = useParagonThemeUrls(config);
+const useParagonTheme = () => {
+  const paragonThemeUrls = useParagonThemeUrls();
   const {
     core: themeCore,
     defaults: themeVariantDefaults,
