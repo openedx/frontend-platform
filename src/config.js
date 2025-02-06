@@ -140,6 +140,9 @@ function extractRegex(envVar) {
 function parseParagonThemeUrls(paragonUrlsJson) {
   // Safely parses a JSON string coming from the environment variables.
   // If the JSON is invalid, the function returns an empty object.
+  if (!paragonUrlsJson) {
+    return undefined;
+  }
   try {
     return JSON.parse(paragonUrlsJson);
   } catch (err) {
