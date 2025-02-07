@@ -15,7 +15,7 @@ import { fallbackThemeUrl, removeExistingLinks } from './utils';
  * @param {object} args
  * @param {object} [args.themeVariants] An object containing the URLs for each supported theme variant, e.g.: `{ light: { url: 'https://path/to/light.css' } }`.
  * @param {string} [args.currentThemeVariant] The currently applied theme variant, e.g.: `light`.
- * @param {string} args.onLoad A callback function called when the theme variant(s) CSS is loaded.
+ * @param {string} args.onLoad A callback function called when the theme variant(s) CSS is Complete.
  */
 const useParagonThemeVariants = ({
   themeVariants,
@@ -23,8 +23,8 @@ const useParagonThemeVariants = ({
   onLoad,
   onDarkModeSystemPreferenceChange,
 }) => {
-  const [isParagonThemeVariantLoaded, setIsParagonThemeVariantLoaded] = useState(false);
-  const [isBrandThemeVariantLoaded, setIsBrandThemeVariantLoaded] = useState(false);
+  const [isParagonThemeVariantComplete, setIsParagonThemeVariantComplete] = useState(false);
+  const [isBrandThemeVariantComplete, setIsBrandThemeVariantComplete] = useState(false);
 
   useEffect(() => {
     const changeColorScheme = (colorSchemeQuery) => {
@@ -53,11 +53,11 @@ const useParagonThemeVariants = ({
   }, [themeVariants, currentThemeVariant]);
 
   useEffect(() => {
-    // Call `onLoad` once both the paragon and brand theme variant are loaded.
-    if (isParagonThemeVariantLoaded && isBrandThemeVariantLoaded) {
+    // Call `onLoad` once both the paragon and brand theme variant are Complete.
+    if (isParagonThemeVariantComplete && isBrandThemeVariantComplete) {
       onLoad();
     }
-  }, [isParagonThemeVariantLoaded, isBrandThemeVariantLoaded, onLoad]);
+  }, [isParagonThemeVariantComplete, isBrandThemeVariantComplete, onLoad]);
 
   useEffect(() => {
     if (!themeVariants) {
@@ -72,10 +72,10 @@ const useParagonThemeVariants = ({
 
     // Iterate over each theme variant URL and inject it into the HTML document, if it doesn't already exist.
     Object.entries(themeVariants).forEach(([themeVariant, value]) => {
-      // If there is no config for the theme variant URL, set the theme variant to loaded and continue.
+      // If there is no config for the theme variant URL, set the theme variant to complete and continue.
       if (!value.urls) {
-        setIsParagonThemeVariantLoaded(true);
-        setIsBrandThemeVariantLoaded(true);
+        setIsParagonThemeVariantComplete(true);
+        setIsBrandThemeVariantComplete(true);
         return;
       }
       const getParagonThemeVariantLink = () => document.head.querySelector(`link[data-paragon-theme-variant='${themeVariant}']`);
@@ -106,9 +106,9 @@ const useParagonThemeVariants = ({
         themeVariantLink.onload = () => {
           if (themeVariant === currentThemeVariant) {
             if (isBrandOverride) {
-              setIsBrandThemeVariantLoaded(true);
+              setIsBrandThemeVariantComplete(true);
             } else {
-              setIsParagonThemeVariantLoaded(true);
+              setIsParagonThemeVariantComplete(true);
             }
           }
         };
@@ -118,9 +118,9 @@ const useParagonThemeVariants = ({
           if (isFallbackThemeUrl) {
             logError(`Could not load theme variant (${themeVariant}) CSS from fallback URL. Aborting.`);
             if (isBrandOverride) {
-              setIsBrandThemeVariantLoaded(true);
+              setIsBrandThemeVariantComplete(true);
             } else {
-              setIsParagonThemeVariantLoaded(true);
+              setIsParagonThemeVariantComplete(true);
             }
             const otherExistingLinks = getExistingThemeVariantLinks(isBrandOverride);
             removeExistingLinks(otherExistingLinks);
@@ -152,9 +152,9 @@ const useParagonThemeVariants = ({
           } else {
             logError(`Failed to load theme variant (${themeVariant}) CSS from ${url} and locally installed fallback URL is not available. Aborting.`);
             if (isBrandOverride) {
-              setIsBrandThemeVariantLoaded(true);
+              setIsBrandThemeVariantComplete(true);
             } else {
-              setIsParagonThemeVariantLoaded(true);
+              setIsParagonThemeVariantComplete(true);
             }
           }
         };
@@ -186,7 +186,7 @@ const useParagonThemeVariants = ({
             );
           }
         }
-        setIsBrandThemeVariantLoaded(true);
+        setIsBrandThemeVariantComplete(true);
       };
 
       if (!existingThemeVariantLink) {
@@ -203,8 +203,8 @@ const useParagonThemeVariants = ({
         existingThemeVariantLink.dataset.paragonThemeVariant = themeVariant;
         insertBrandThemeVariantLink(existingThemeVariantBrandLink);
       }
-      setIsParagonThemeVariantLoaded(true);
-      setIsBrandThemeVariantLoaded(true);
+      setIsParagonThemeVariantComplete(true);
+      setIsBrandThemeVariantComplete(true);
     });
   }, [themeVariants, currentThemeVariant, onLoad]);
 };
