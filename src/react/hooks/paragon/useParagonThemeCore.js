@@ -16,21 +16,21 @@ const useParagonThemeCore = ({
   themeCore,
   onLoad,
 }) => {
-  const [isParagonThemeCoreLoaded, setIsParagonThemeCoreLoaded] = useState(false);
-  const [isBrandThemeCoreLoaded, setIsBrandThemeCoreLoaded] = useState(false);
+  const [isParagonThemeCoreComplete, setIsParagonThemeCoreComplete] = useState(false);
+  const [isBrandThemeCoreComplete, setIsBrandThemeCoreComplete] = useState(false);
 
   useEffect(() => {
-    // Call `onLoad` once both the paragon and brand theme core are loaded.
-    if (isParagonThemeCoreLoaded && isBrandThemeCoreLoaded) {
+    // Call `onLoad` once both the paragon and brand theme core are complete.
+    if (isParagonThemeCoreComplete && isBrandThemeCoreComplete) {
       onLoad();
     }
-  }, [isParagonThemeCoreLoaded, isBrandThemeCoreLoaded, onLoad]);
+  }, [isParagonThemeCoreComplete, isBrandThemeCoreComplete, onLoad]);
 
   useEffect(() => {
     // If there is no config for the core theme url, do nothing.
     if (!themeCore?.urls) {
-      setIsParagonThemeCoreLoaded(true);
-      setIsBrandThemeCoreLoaded(true);
+      setIsParagonThemeCoreComplete(true);
+      setIsBrandThemeCoreComplete(true);
       return;
     }
     const getParagonThemeCoreLink = () => document.head.querySelector('link[data-paragon-theme-core="true"]');
@@ -58,29 +58,28 @@ const useParagonThemeCore = ({
         }
         coreThemeLink.onload = () => {
           if (isBrandOverride) {
-            setIsBrandThemeCoreLoaded(true);
+            setIsBrandThemeCoreComplete(true);
           } else {
-            setIsParagonThemeCoreLoaded(true);
+            setIsParagonThemeCoreComplete(true);
           }
         };
         coreThemeLink.onerror = () => {
-          logError(`Failed to load core theme CSS from ${url}`);
           if (isFallbackThemeUrl) {
-            logError(`Could not load core theme CSS from ${url} or fallback URL. Aborting.`);
+            logError('Could not load core theme fallback URL. Aborting.');
             if (isBrandOverride) {
-              setIsBrandThemeCoreLoaded(true);
+              setIsBrandThemeCoreComplete(true);
             } else {
-              setIsParagonThemeCoreLoaded(true);
+              setIsParagonThemeCoreComplete(true);
             }
             const otherExistingLinks = getExistingCoreThemeLinks(isBrandOverride);
             removeExistingLinks(otherExistingLinks);
             return;
           }
           const paragonThemeAccessor = isBrandOverride ? 'brand' : 'paragon';
-          const core = PARAGON_THEME?.[paragonThemeAccessor]?.themeUrls?.core ?? {};
+          const core = PARAGON_THEME?.[paragonThemeAccessor]?.themeUrls?.core ?? null;
           if (core) {
             const coreThemeFallbackUrl = fallbackThemeUrl(core.fileName);
-            logInfo(`Falling back to locally installed core theme CSS: ${coreThemeFallbackUrl}`);
+            logInfo(`Could not load core theme CSS from ${url}. Falling back to locally installed core theme CSS: ${coreThemeFallbackUrl}`);
             coreThemeLink = createCoreThemeLink(coreThemeFallbackUrl, { isFallbackThemeUrl: true, isBrandOverride });
             const otherExistingLinks = getExistingCoreThemeLinks(isBrandOverride);
             removeExistingLinks(otherExistingLinks);
@@ -124,7 +123,7 @@ const useParagonThemeCore = ({
           );
         }
       } else {
-        setIsBrandThemeCoreLoaded(true);
+        setIsBrandThemeCoreComplete(true);
       }
     } else {
       existingCoreThemeLink.rel = 'stylesheet';
@@ -135,8 +134,8 @@ const useParagonThemeCore = ({
         brandCoreLink.removeAttribute('as');
         brandCoreLink.dataset.brandThemeCore = true;
       }
-      setIsParagonThemeCoreLoaded(true);
-      setIsBrandThemeCoreLoaded(true);
+      setIsParagonThemeCoreComplete(true);
+      setIsBrandThemeCoreComplete(true);
     }
   }, [themeCore?.urls, onLoad]);
 };
