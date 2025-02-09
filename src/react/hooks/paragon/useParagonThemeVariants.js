@@ -114,9 +114,9 @@ const useParagonThemeVariants = ({
         };
 
         themeVariantLink.onerror = () => {
-          logError(`Failed to load theme variant (${themeVariant}) CSS from ${value.urls.default}`);
+          const paragonThemeAccessor = isBrandOverride ? 'brand' : 'paragon';
           if (isFallbackThemeUrl) {
-            logError(`Could not load theme variant (${themeVariant}) CSS from fallback URL. Aborting.`);
+            logError(`Could not load theme variant (${paragonThemeAccessor} - ${themeVariant}) CSS from fallback URL. Aborting.`);
             if (isBrandOverride) {
               setIsBrandThemeVariantComplete(true);
             } else {
@@ -126,11 +126,10 @@ const useParagonThemeVariants = ({
             removeExistingLinks(otherExistingLinks);
             return;
           }
-          const paragonThemeAccessor = isBrandOverride ? 'brand' : 'paragon';
           const variants = PARAGON_THEME?.[paragonThemeAccessor]?.themeUrls?.variants ?? {};
           if (variants[themeVariant]) {
             const themeVariantFallbackUrl = fallbackThemeUrl(variants[themeVariant].fileName);
-            logInfo(`Falling back to locally installed theme variant (${themeVariant}) CSS: ${themeVariantFallbackUrl}`);
+            logInfo(`Failed to load theme variant (${themeVariant}) CSS from ${isBrandOverride ? value.urls.brandOverride : value.urls.default}. Falling back to locally installed theme variant: ${themeVariantFallbackUrl}`);
             themeVariantLink = createThemeVariantLink(themeVariantFallbackUrl, {
               isFallbackThemeUrl: true,
               isBrandOverride,
