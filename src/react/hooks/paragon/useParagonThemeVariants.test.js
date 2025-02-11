@@ -52,11 +52,11 @@ describe('useParagonThemeVariants', () => {
 
     renderHook(() => useParagonThemeVariants({ themeVariants, currentThemeVariant, onLoad: themeOnLoad }));
 
-    const createdLinkTag = document.head.querySelectorAll('link');
+    const themeLinks = document.head.querySelectorAll('link');
     const paragonFallbackURL = `${getConfig().BASE_URL}/${PARAGON_THEME.paragon.themeUrls.variants.light.fileName}`;
     const brandFallbackURL = `${getConfig().BASE_URL}/${PARAGON_THEME.brand.themeUrls.variants.light.fileName}`;
 
-    act(() => { createdLinkTag.forEach((link) => link.onerror()); });
+    act(() => { themeLinks.forEach((link) => link.onerror()); });
 
     expect(logInfo).toHaveBeenCalledTimes(2);
     expect(logInfo).toHaveBeenCalledWith(`Failed to load theme variant (${currentThemeVariant}) CSS from ${themeVariants.light.urls.default}. Falling back to locally installed theme variant: ${paragonFallbackURL}`);
@@ -82,11 +82,11 @@ describe('useParagonThemeVariants', () => {
     const currentThemeVariant = 'light';
 
     renderHook(() => useParagonThemeVariants({ themeVariants, currentThemeVariant, onLoad: themeOnLoad }));
-    const createdLinkTag = document.head.querySelectorAll('link');
+    const themeLinks = document.head.querySelectorAll('link');
     const paragonFallbackURL = `${getConfig().BASE_URL}/${PARAGON_THEME.paragon.themeUrls.variants.light.fileName}`;
     const brandFallbackURL = `${getConfig().BASE_URL}/${PARAGON_THEME.brand.themeUrls.variants.light.fileName}`;
 
-    act(() => { createdLinkTag.forEach((link) => link.onerror()); });
+    act(() => { themeLinks.forEach((link) => link.onerror()); });
 
     const fallbackLinks = document.querySelectorAll('link');
     expect(fallbackLinks[0].href).toBe(paragonFallbackURL);
@@ -116,8 +116,8 @@ describe('useParagonThemeVariants', () => {
     const currentThemeVariant = 'light';
 
     renderHook(() => useParagonThemeVariants({ themeVariants, currentThemeVariant, onLoad: themeOnLoad }));
-    const createdLinkTag = document.head.querySelectorAll('link');
-    act(() => { createdLinkTag.forEach((link) => link.onerror()); });
+    const themeLinks = document.head.querySelectorAll('link');
+    act(() => { themeLinks.forEach((link) => link.onerror()); });
     expect(logError).toHaveBeenCalledTimes(2);
     expect(logError).toHaveBeenCalledWith(`Failed to load theme variant (${currentThemeVariant}) CSS from ${themeVariants.light.urls.default} and locally installed fallback URL is not available. Aborting.`);
 

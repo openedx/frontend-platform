@@ -139,5 +139,79 @@ describe('useParagonThemeUrls', () => {
         }),
       );
     });
+    it('returns expected undefined when core default and variants are not present and can not fallback to PARAGON_THEME', () => {
+      const config = {
+        PARAGON_THEME_URLS: {
+          core: {
+            urls: {
+              brandOverride: 'brand-core.css',
+            },
+          },
+          defaults: {
+            light: 'light',
+          },
+          variants: {},
+        },
+      };
+      const originalParagonTheme = global.PARAGON_THEME;
+      Object.defineProperty(global, 'PARAGON_THEME', {
+        value: 'mocked-theme',
+        writable: true,
+      });
+      mergeConfig(config);
+      const { result } = renderHook(() => useParagonThemeUrls());
+      expect(result.current).toBe(undefined);
+      // Restores the original PARAGON_THEME
+      Object.defineProperty(global, 'PARAGON_THEME', {
+        value: originalParagonTheme,
+        writable: false,
+      });
+    });
+    it('manage substitucion of keywords in the url with the local installed version', () => {
+      const config = {
+        PARAGON_THEME_URLS: {
+          core: {
+            urls: {
+              default: 'https://cdn.jsdelivr.net/npm/@edx/paragon@$paragonVersion/dist/core.min.css',
+              brandOverride: 'https://cdn.jsdelivr.net/npm/@edx/brand@$brandVersion/dist/core.min.css',
+            },
+          },
+          defaults: {
+            light: 'light',
+          },
+          variants: {
+            light: {
+              urls: {
+                default: 'https://cdn.jsdelivr.net/npm/@edx/paragon@$paragonVersion/dist/light.min.css',
+                brandOverride: 'https://cdn.jsdelivr.net/npm/@edx/brand@$brandVersion/dist/light.min.css',
+              },
+            },
+          },
+        },
+      };
+      mergeConfig(config);
+      const { result } = renderHook(() => useParagonThemeUrls(config));
+      expect(result.current).toEqual(
+        expect.objectContaining({
+          core: {
+            urls: {
+              default: 'https://cdn.jsdelivr.net/npm/@edx/paragon@1.0.0/dist/core.min.css',
+              brandOverride: 'https://cdn.jsdelivr.net/npm/@edx/brand@1.0.0/dist/core.min.css',
+            },
+          },
+          defaults: {
+            light: 'light',
+          },
+          variants: {
+            light: {
+              urls: {
+                default: 'https://cdn.jsdelivr.net/npm/@edx/paragon@1.0.0/dist/light.min.css',
+                brandOverride: 'https://cdn.jsdelivr.net/npm/@edx/brand@1.0.0/dist/light.min.css',
+              },
+            },
+          },
+        }),
+      );
+    });
   });
 });

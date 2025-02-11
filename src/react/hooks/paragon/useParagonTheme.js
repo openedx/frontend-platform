@@ -25,10 +25,6 @@ export const getDefaultThemeVariant = ({ themeVariants, themeVariantDefaults = {
 
   const themeVariantKeys = Object.keys(themeVariants);
 
-  // Return early if there are no theme variants configured.
-  if (themeVariantKeys.length === 0) {
-    return undefined;
-  }
   // If there is only one theme variant, return it since it's the only one that may be used.
   if (themeVariantKeys.length === 1) {
     const themeVariantKey = themeVariantKeys[0];

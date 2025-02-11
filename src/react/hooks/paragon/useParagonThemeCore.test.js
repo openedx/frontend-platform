@@ -16,7 +16,7 @@ describe('useParagonThemeCore', () => {
     coreConfig = {
       themeCore: {
         urls: {
-          default: 'https://cdn.jsdelivr.net/npm/@edx/paragon@$21.0.0/dist/core.min.css',
+          default: 'https://cdn.jsdelivr.net/npm/@edx/paragon@21.0.0/dist/core.min.css',
         },
       },
       onLoad: themeOnLoad,
@@ -33,7 +33,7 @@ describe('useParagonThemeCore', () => {
   });
 
   it('should load the core default and brand url and change the loading state to true', () => {
-    coreConfig.themeCore.urls.brandOverride = 'https://cdn.jsdelivr.net/npm/@edx/brand@$2.0.0Version/dist/core.min.css';
+    coreConfig.themeCore.urls.brandOverride = 'https://cdn.jsdelivr.net/npm/@edx/brand@2.0.0/dist/core.min.css';
 
     renderHook(() => useParagonThemeCore(coreConfig));
     const createdLinkTag = document.head.querySelector('link[data-paragon-theme-core="true"]');
@@ -46,7 +46,7 @@ describe('useParagonThemeCore', () => {
   });
 
   it('should dispatch a log error and fallback to PARAGON_THEME if can not load the core theme link (either default or brandOverride)', () => {
-    coreConfig.themeCore.urls.brandOverride = 'https://cdn.jsdelivr.net/npm/@edx/brand@$2.0.0Version/dist/core.min.css';
+    coreConfig.themeCore.urls.brandOverride = 'https://cdn.jsdelivr.net/npm/@edx/brand@2.0.0/dist/core.min.css';
     renderHook(() => useParagonThemeCore(coreConfig));
 
     const createdLinkTag = document.head.querySelector('link[data-paragon-theme-core="true"]');
@@ -65,7 +65,7 @@ describe('useParagonThemeCore', () => {
     expect(fallbackLinks[1].href).toBe(brandFallbackUrl);
   });
   it('should dispatch a log error if the fallback url is not loaded (either default or brandOverride)', () => {
-    coreConfig.themeCore.urls.brandOverride = 'https://cdn.jsdelivr.net/npm/@edx/brand@$2.0.0Version/dist/core.min.css';
+    coreConfig.themeCore.urls.brandOverride = 'https://cdn.jsdelivr.net/npm/@edx/brand@2.0.0/dist/core.min.css';
 
     renderHook(() => useParagonThemeCore(coreConfig));
     const createdLinkTag = document.head.querySelector('link[data-paragon-theme-core="true"]');
@@ -104,25 +104,27 @@ describe('useParagonThemeCore', () => {
   });
 
   it('should not create a new link if the core theme is already loaded (either default or brandOverride)', () => {
-    coreConfig.themeCore.urls.brandOverride = 'https://cdn.jsdelivr.net/npm/@edx/brand@$2.0.0/dist/core.min.css';
+    coreConfig.themeCore.urls.brandOverride = 'https://cdn.jsdelivr.net/npm/@edx/brand@2.0.0/dist/core.min.css';
 
-    document.head.innerHTML = `<link rel="preload" as="style" href="https://cdn.jsdelivr.net/npm/@edx/paragon@$21.0.0/dist/core.min.css" onerror="this.remove();">
-    <link rel="preload" as="style" href="https://cdn.jsdelivr.net/npm/@edx/brand@$2.0.0/dist/core.min.css" onerror="this.remove();">`;
+    document.head.innerHTML = `<link rel="preload" as="style" href="https://cdn.jsdelivr.net/npm/@edx/paragon@21.0.0/dist/core.min.css" onerror="this.remove();">
+    <link rel="preload" as="style" href="https://cdn.jsdelivr.net/npm/@edx/brand@2.0.0/dist/core.min.css" onerror="this.remove();">`;
 
     renderHook(() => useParagonThemeCore(coreConfig));
-    const themeCoreLinks = document.head.querySelectorAll('link');
-    expect(themeCoreLinks.length).toBe(2);
-    expect(themeCoreLinks[0].rel).toContain('stylesheet');
-    expect(themeCoreLinks[0]).not.toHaveAttribute('as', 'style');
-    expect(themeCoreLinks[1].rel).toContain('stylesheet');
-    expect(themeCoreLinks[1].href).toBe(coreConfig.themeCore.urls.brandOverride);
-    expect(themeCoreLinks[1]).not.toHaveAttribute('as', 'style');
+
+    const createdLinkTags = document.head.querySelectorAll('link');
+
+    expect(createdLinkTags.length).toBe(2);
+    expect(createdLinkTags[0].rel).toContain('stylesheet');
+    expect(createdLinkTags[0]).not.toHaveAttribute('as', 'style');
+    expect(createdLinkTags[1].rel).toContain('stylesheet');
+    expect(createdLinkTags[1].href).toBe(coreConfig.themeCore.urls.brandOverride);
+    expect(createdLinkTags[1]).not.toHaveAttribute('as', 'style');
   });
 
   it('should not create any core link if can not find themeCore urls definition', () => {
     coreConfig = {
       themeCore: {
-        default: 'https://cdn.jsdelivr.net/npm/@edx/paragon@$21.0.0/dist/core.min.css',
+        default: 'https://cdn.jsdelivr.net/npm/@edx/paragon@21.0.0/dist/core.min.css',
       },
       onLoad: themeOnLoad,
     };

@@ -2,6 +2,9 @@ import { act, renderHook } from '@testing-library/react-hooks';
 
 import useParagonTheme from './useParagonTheme';
 import { getConfig } from '../../../config';
+import { logError } from '../../../logging';
+
+jest.mock('../../../logging');
 
 const PARAGON_THEME_URLS = {
   core: {
@@ -16,12 +19,12 @@ const PARAGON_THEME_URLS = {
   variants: {
     light: {
       urls: {
-        default: 'https://cdn.jsdelivr.net/npm/@edx/paragon@$21.0.0/dist/light.min.css',
+        default: 'https://cdn.jsdelivr.net/npm/@edx/paragon@21.0.0/dist/light.min.css',
       },
     },
     dark: {
       urls: {
-        default: 'https://cdn.jsdelivr.net/npm/@edx/paragon@$21.0.0/dist/dark.min.css',
+        default: 'https://cdn.jsdelivr.net/npm/@edx/paragon@21.0.0/dist/dark.min.css',
       },
     },
   },
@@ -93,7 +96,7 @@ describe('useParagonTheme', () => {
         isThemeLoaded: true,
         themeVariant: initialPreference,
       });
-      // Unmount the hook
+
       unmount();
       expect(mockRemoveEventListener).toHaveBeenCalled();
     },
@@ -134,12 +137,41 @@ describe('useParagonTheme', () => {
     expect(mockRemoveEventListener).toHaveBeenCalled();
   });
   it('should not configure any theme if PARAGON_THEME_URLS is undefined', () => {
-    getConfig.mockReturnValue({ PUBLIC_PATH: '/', PARAGON_THEME_URLS: undefined });
+    getConfig.mockReturnValueOnce({ PUBLIC_PATH: '/', PARAGON_THEME_URLS: undefined });
     const { result, unmount } = renderHook(() => useParagonTheme());
     const themeLinks = document.head.querySelectorAll('link');
 
     expect(result.current[0]).toEqual({ isThemeLoaded: true, themeVariant: undefined });
     expect(themeLinks.length).toBe(0);
+    unmount();
+  });
+  it('should return themeVariant undefined if can not configure the default theme or fallback in the light theme', () => {
+    getConfig.mockReturnValueOnce({ PUBLIC_PATH: '/', PARAGON_THEME_URLS: { ...PARAGON_THEME_URLS, defaults: { red: 'red' }, variants: { light: PARAGON_THEME_URLS.variants.light, green: { urls: { default: 'green-url' } } } } });
+    window.localStorage.getItem.mockReturnValue();
+
+    const { result, unmount } = renderHook(() => useParagonTheme());
+    const themeLinks = document.head.querySelectorAll('link');
+    const themeVariantLinks = document.head.querySelectorAll('link[data-paragon-theme-variant]');
+    act(() => { themeLinks.forEach((link) => link.onload()); });
+
+    expect(result.current[0]).toEqual({ isThemeLoaded: true, themeVariant: undefined });
+    expect(themeLinks.length).toBe(3);
+    themeVariantLinks.forEach(link => expect(link.rel).toBe('alternate stylesheet'));
+    unmount();
+  });
+  it('should log a error if can not configure the theme variant base on preference system', () => {
+    getConfig.mockReturnValueOnce({ PUBLIC_PATH: '/', PARAGON_THEME_URLS: { ...PARAGON_THEME_URLS, defaults: { dark: 'dark' }, variants: { light: PARAGON_THEME_URLS.variants.light, green: { urls: { default: 'green-url' } } } } });
+    window.localStorage.getItem.mockReturnValue();
+
+    const { result, unmount } = renderHook(() => useParagonTheme());
+    const themeLinks = document.head.querySelectorAll('link');
+    const themeVariantLinks = document.head.querySelectorAll('link[data-paragon-theme-variant]');
+    act(() => { themeLinks.forEach((link) => link.onload()); });
+
+    expect(result.current[0]).toEqual({ isThemeLoaded: true, themeVariant: 'dark' });
+    expect(logError.mock.calls[0][0]).toBe('Could not set theme variant based on system preference (prefers dark mode: true)');
+    expect(themeVariantLinks.length).toBe(2);
+    themeVariantLinks.forEach(link => expect(link.rel).toBe('alternate stylesheet'));
     unmount();
   });
 });
