@@ -1,5 +1,6 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+/* eslint-disable import/no-extraneous-dependencies */
 import {
   AppProvider,
   AuthenticatedPageRoute,
@@ -8,6 +9,7 @@ import {
 } from '@edx/frontend-platform/react';
 import { APP_INIT_ERROR, APP_READY, initialize } from '@edx/frontend-platform';
 import { subscribe } from '@edx/frontend-platform/pubSub';
+/* eslint-enable import/no-extraneous-dependencies */
 import { Routes, Route } from 'react-router-dom';
 
 import './index.scss';

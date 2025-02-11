@@ -35,7 +35,7 @@
   "devDependencies": {
     "@edx/brand": "npm:@openedx/brand-openedx@^1.2.2",
     "@edx/browserslist-config": "1.4.0",
-    "@openedx/frontend-build": "github:adamstankiewicz/frontend-build#ags/react-18",
+    "@openedx/frontend-build": "npm:@adamstankiewicz/openedx-frontend-build@^1.0.0",
     "@openedx/paragon": "22.15.1",
     "@testing-library/jest-dom": "6.6.3",
     "@testing-library/react": "^13",
@@ -73,7 +73,7 @@
     "universal-cookie": "4.0.4"
   },
   "peerDependencies": {
-    "@openedx/frontend-build": ">= 14.0.0",
+    "@openedx/frontend-build": ">= 1.0.0",
     "@openedx/paragon": ">= 21.5.7 < 23.0.0",
     "prop-types": ">=15.7.2 <16.0.0",
     "react": "^16.9.0 || ^17.0.0 || ^18.0.0",
