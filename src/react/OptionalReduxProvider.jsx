@@ -6,7 +6,7 @@ import { Provider } from 'react-redux';
  * @memberof module:React
  * @param {Object} props
  */
-export default function OptionalReduxProvider({ store, children }) {
+export default function OptionalReduxProvider({ store = null, children }) {
   if (store === null) {
     return children;
   }
@@ -23,8 +23,4 @@ export default function OptionalReduxProvider({ store, children }) {
 OptionalReduxProvider.propTypes = {
   store: PropTypes.object, // eslint-disable-line
   children: PropTypes.node.isRequired,
-};
-
-OptionalReduxProvider.defaultProps = {
-  store: null,
 };

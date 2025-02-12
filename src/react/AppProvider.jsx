@@ -44,7 +44,7 @@ import { basename } from '../initialize';
  * @param {Object} [props.store] A redux store.
  * @memberof module:React
  */
-export default function AppProvider({ store, children, wrapWithRouter }) {
+export default function AppProvider({ store = null, children, wrapWithRouter = true }) {
   const [config, setConfig] = useState(getConfig());
   const [authenticatedUser, setAuthenticatedUser] = useState(getAuthenticatedUser());
   const [locale, setLocale] = useState(getLocale());
@@ -91,9 +91,4 @@ AppProvider.propTypes = {
   store: PropTypes.object,
   children: PropTypes.node.isRequired,
   wrapWithRouter: PropTypes.bool,
-};
-
-AppProvider.defaultProps = {
-  store: null,
-  wrapWithRouter: true,
 };
