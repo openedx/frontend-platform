@@ -4,13 +4,20 @@ import { logError, logInfo } from '../../../logging';
 import { fallbackThemeUrl, removeExistingLinks } from './utils';
 
 /**
- * Adds/updates a `<link>` element in the HTML document to load the core application theme CSS.
+ * Custom React hook that manages the loading and updating of the core Paragon theme CSS and the brand override
+ * theme CSS. It ensures that the core theme CSS (both default and brand override) is added to the document
+ * `<head>` as `<link>` elements.
+ *
+ * The function logs and handles fallback logic in case the core theme fails to load.
  *
  * @memberof module:React
  *
- * @param {object} args
- * @param {object} args.themeCore Object representing the core Paragon theme CSS.
- * @param {string} args.onLoad A callback function called when the core theme CSS is loaded.
+ * @param {Object} args - The arguments object containing theme and callback information.
+ * @param {Object} args.themeCore - The core theme configuration.
+ * @param {string} args.themeCore.urls.default - The URL to the default core theme CSS.
+ * @param {string} [args.themeCore.urls.brandOverride] - The URL to the brand override theme CSS (optional).
+ * @param {Function} args.onLoad - A callback function that is called once both the core Paragon (default)
+ * theme and brand override theme (if provided) are complete.
  */
 const useParagonThemeCore = ({
   themeCore,

@@ -12,11 +12,20 @@ import useParagonThemeUrls from './useParagonThemeUrls';
 import useParagonThemeVariants from './useParagonThemeVariants';
 
 /**
-* Finds the default theme variant from the given theme variants object. If no default theme exists, the first theme
+* Finds the default theme variant from the given theme variants object. If no default theme exists, the light theme
 * variant is returned as a fallback.
-* @param {Object.<string, ParagonThemeVariant>|undefined} themeVariants
 *
-* @returns {ParagonThemeVariant|undefined} The default theme variant.
+* It prioritizes:
+*   1. A persisted theme variant from localStorage.
+*   2. A system preference (`prefers-color-scheme`).
+*   3. The configured default theme variant.
+*
+* @param {Object.<string, ParagonThemeVariant>|undefined} themeVariants - An object where the keys are theme variant
+* names (e.g., "light", "dark") and the values are objects containing URLs for theme CSS files.
+* @param {Object} [options.themeVariantDefaults={}] - An object containing default theme variant preferences.
+*
+* @returns {Object|undefined} The default theme variant, or `undefined` if no valid theme variant is found.
+*
 */
 export const getDefaultThemeVariant = ({ themeVariants, themeVariantDefaults = {} }) => {
   if (!themeVariants) {
@@ -33,11 +42,6 @@ export const getDefaultThemeVariant = ({ themeVariants, themeVariantDefaults = {
       metadata: themeVariants[themeVariantKey],
     };
   }
-  // There's more than one theme variant configured; figured out which one to display based on
-  // the following preference rules:
-  //   1. Get theme preference from localStorage.
-  //   2. Detect user system settings.
-  //   3. Use the default theme variant as configured.
 
   // Prioritize persisted localStorage theme variant preference.
   const persistedSelectedParagonThemeVariant = localStorage.getItem(SELECTED_THEME_VARIANT_KEY);
@@ -77,17 +81,27 @@ export const getDefaultThemeVariant = ({ themeVariants, themeVariantDefaults = {
 };
 
 /**
- * Given the inputs of URLs to the CSS for the core application theme and the theme variants (e.g., light), this hook
- * will inject the CSS as `<link>` elements into the HTML document, loading each theme variant's CSS with an appropriate
- * priority based on whether its the currently active theme variant. This is done using "alternate" stylesheets. That
- * is,the browser will still download the CSS for the non-current theme variants, but at a lower priority than the
- * current theme variant's CSS. This ensures that if the theme variant is changed at runtime, the CSS for the new theme
- * variant will already be loaded.
+ * A custom React hook that manages the application's theme state and injects the appropriate CSS for the theme core
+ * and theme variants (e.g., light and dark modes) into the HTML document. It handles dynamically loading the theme
+ * CSS based on the current theme variant, and ensures that the theme variant's CSS is preloaded for runtime theme
+ * switching.This is done using "alternate" stylesheets. That is, the browser will download the CSS for the
+ * non-current theme variants with a lower priority than the current one.
+ *
+ * The hook also responds to system theme preference changes (e.g., via the `prefers-color-scheme` media query),
+ * and can automatically switch the theme based on the system's dark mode or light mode preference.
  *
  * @memberof module:React
  *
- * @returns An array containing 2 elements: 1) an object containing the app
- *  theme state, and 2) a dispatch function to mutate the app theme state.
+ * @returns {Array} - An array containing:
+ *  1. An object representing the current theme state.
+ *  2. A dispatch function to mutate the app theme state (e.g., change the theme variant).
+ *
+ * * @example
+ * const [themeState, dispatch] = useParagonTheme();
+ * console.log(themeState.isThemeLoaded); // true when the theme has been successfully loaded.
+ *
+ * // Dispatch an action to change the theme variant
+ * dispatch(paragonThemeActions.setParagonThemeVariant('dark'));
  */
 const useParagonTheme = () => {
   const paragonThemeUrls = useParagonThemeUrls();

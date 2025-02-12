@@ -5,17 +5,22 @@ import { logError, logInfo } from '../../../logging';
 import { fallbackThemeUrl, removeExistingLinks } from './utils';
 
 /**
+ * A custom React hook that manages the loading of theme variant CSS files dynamically.
  * Adds/updates a `<link>` element in the HTML document to load each theme variant's CSS, setting the
- * non-current theme variants as "alternate" stylesheets. That is, the browser will still download
- * the CSS for the non-current theme variants, but at a lower priority than the current theme
- * variant's CSS. This ensures that if the theme variant is changed at runtime, the CSS for the new
- * theme variant will already be loaded.
+ * non-current theme variants as "alternate" stylesheets. That is, the browser will download
+ * the CSS for the non-current theme variants, but at a lower priority than the current one.
+ * This ensures that if the theme variant is changed at runtime, the new theme's CSS will already be loaded.
+ *
+ * The hook also listens for changes in the system's preference and triggers the provided callback accordingly.
  *
  * @memberof module:React
- * @param {object} args
- * @param {object} [args.themeVariants] An object containing the URLs for each supported theme variant, e.g.: `{ light: { url: 'https://path/to/light.css' } }`.
+ * @param {object} args Configuration object for theme variants and related settings.
+ * @param {object} [args.themeVariants] An object containing the URLs for each supported theme variant,
+ * e.g.: `{ light: { url: 'https://path/to/light.css' } }`.
  * @param {string} [args.currentThemeVariant] The currently applied theme variant, e.g.: `light`.
- * @param {string} args.onLoad A callback function called when the theme variant(s) CSS is Complete.
+ * @param {string} args.onLoad A callback function called when the theme variant(s) CSS is (are) complete.
+ * @param {function} [args.onDarkModeSystemPreferenceChange] A callback function that is triggered
+ * when the system's preference changes.
  */
 const useParagonThemeVariants = ({
   themeVariants,
@@ -26,6 +31,7 @@ const useParagonThemeVariants = ({
   const [isParagonThemeVariantComplete, setIsParagonThemeVariantComplete] = useState(false);
   const [isBrandThemeVariantComplete, setIsBrandThemeVariantComplete] = useState(false);
 
+  // Effect hook that listens for changes in the system's dark mode preference.
   useEffect(() => {
     const changeColorScheme = (colorSchemeQuery) => {
       onDarkModeSystemPreferenceChange(colorSchemeQuery.matches);
@@ -41,6 +47,7 @@ const useParagonThemeVariants = ({
     };
   }, [onDarkModeSystemPreferenceChange]);
 
+  // Effect hook to set the theme current variant on the HTML element.
   useEffect(() => {
     if (currentThemeVariant && themeVariants?.[currentThemeVariant]) {
       const htmlDataThemeVariantAttr = 'data-paragon-theme-variant';
@@ -52,8 +59,8 @@ const useParagonThemeVariants = ({
     return () => {}; // Cleanup: no action needed when theme variant is not set
   }, [themeVariants, currentThemeVariant]);
 
+  // Effect hook that calls `onLoad` when both paragon and brand theme variants are completed the processing.
   useEffect(() => {
-    // Call `onLoad` once both the paragon and brand theme variant are Complete.
     if (isParagonThemeVariantComplete && isBrandThemeVariantComplete) {
       onLoad();
     }
@@ -67,6 +74,9 @@ const useParagonThemeVariants = ({
     /**
      * Determines the value for the `rel` attribute for a given theme variant based
      * on if its the currently applied variant.
+     *
+     * @param {string} themeVariant The key representing a theme variant (e.g., `light`, `dark`).
+     * @returns {string} The value for the `rel` attribute, either 'stylesheet' or 'alternate stylesheet'.
      */
     const generateStylesheetRelAttr = (themeVariant) => (currentThemeVariant === themeVariant ? 'stylesheet' : 'alternate stylesheet');
 
