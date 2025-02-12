@@ -137,9 +137,24 @@ function extractRegex(envVar) {
   return undefined;
 }
 
+/**
+ * Safely parses a JSON string coming from the environment variables.
+ * If the JSON is invalid, the function returns an empty object and logs an error to the console.
+ *
+ * @param {string} paragonUrlsJson - The JSON string representing Paragon theme URLs.
+ * @returns {Object|undefined} - Returns a parsed object if the JSON is valid; otherwise, returns
+ * an empty object if invalid or undefined if no input is provided.
+ *
+ * @example
+ * const jsonString = '{
+ *    "core":{"urls":{"default":"core.min.css"}},
+ *    "defaults":{"light":"light"},
+ *    "variants":{"light":{"urls":{"default":"light.min.css"}}}
+ * }';
+ * const parsedUrls = parseParagonThemeUrls(jsonString);
+ * console.log(parsedUrls); // Outputs the parsed JSON object
+ */
 function parseParagonThemeUrls(paragonUrlsJson) {
-  // Safely parses a JSON string coming from the environment variables.
-  // If the JSON is invalid, the function returns an empty object.
   if (!paragonUrlsJson) {
     return undefined;
   }
@@ -151,6 +166,7 @@ function parseParagonThemeUrls(paragonUrlsJson) {
       console.error('Unable to parse PARAGON_THEME_URLS JSON.\nPlease check https://github.com/openedx/frontend-platform/tree/master/docs/how_tos/theming.md for the expected formatting.\nReturning an empty object ({}), it will cause the theming configuration to be skipped.');
       return {};
     }
+    // In case of a different type of error, return the error object itself
     return err;
   }
 }

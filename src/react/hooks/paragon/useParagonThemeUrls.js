@@ -3,6 +3,26 @@ import { useMemo } from 'react';
 import { fallbackThemeUrl, isEmptyObject } from './utils';
 import { getConfig } from '../../../config';
 
+/**
+ * Replaces a wildcard in the URL string with a provided local version string.
+ * This is typically used to substitute a version placeholder (e.g., `$paragonVersion`)
+ * in URLs with actual version values.
+ *
+ * @param {Object} args - The arguments object for version substitution.
+ * @param {string} args.url - The URL string that may contain a wildcard keyword (e.g., `$paragonVersion`).
+ * @param {string} args.wildcardKeyword - The keyword (e.g., `$paragonVersion`) in the URL to be replaced
+ * with the local version.
+ * @param {string} args.localVersion - The local version string to replace the wildcard with.
+ *
+ * @returns {string} The URL with the wildcard keyword replaced by the provided version string.
+ * If the conditions are not met (e.g., missing URL or version), the original URL is returned.
+ *
+ * @example
+ * const url = 'https://cdn.example.com/$paragonVersion/theme.css';
+ * const version = '1.0.0';
+ * const updatedUrl = handleVersionSubstitution({ url, wildcardKeyword: '$paragonVersion', localVersion: version });
+ * console.log(updatedUrl); // Outputs: 'https://cdn.example.com/1.0.0/theme.css'
+ */
 export const handleVersionSubstitution = ({ url, wildcardKeyword, localVersion }) => {
   if (!url || !url.includes(wildcardKeyword) || !localVersion) {
     return url;
@@ -11,9 +31,25 @@ export const handleVersionSubstitution = ({ url, wildcardKeyword, localVersion }
 };
 
 /**
- * Returns an object containing the URLs for the theme's core CSS and any theme variants.
+ * Custom React hook that retrieves the Paragon theme URLs, including the core theme CSS and any theme variants.
+ * It supports version substitution for the Paragon and brand versions and returns a structured object containing
+ * the URLs. The hook also handles fallback scenarios when the URLs are unavailable in the configuration or when
+ * version substitution is required.
  *
- * @returns {ParagonThemeUrls|undefined} An object containing the URLs for the theme's core CSS and any theme variants.
+ * @returns {Object|undefined} An object containing:
+ *   - `core`: The core theme URLs (including default and brand override).
+ *   - `defaults`: Any default theme variants.
+ *   - `variants`: The URLs for any additional theme variants (default and brand override).
+ *
+ *   If the required URLs are not available or cannot be determined, `undefined` is returned.
+ *
+ * @example
+ * const themeUrls = useParagonThemeUrls();
+ * if (themeUrls) {
+ *   console.log(themeUrls.core.urls.default); // Outputs the URL of the core theme CSS
+ *   console.log(themeUrls.variants['dark'].urls.default); // Outputs the URL of the dark theme variant CSS
+ * }
+ *
  */
 const useParagonThemeUrls = () => useMemo(() => {
   const { PARAGON_THEME_URLS: paragonThemeUrls } = getConfig();
