@@ -2,7 +2,6 @@
 .idea
 .vscode
 coverage
-dist
 src/i18n/transifex_input.json
 node_modules
 /docs/api
