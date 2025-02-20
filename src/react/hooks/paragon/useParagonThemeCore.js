@@ -16,22 +16,22 @@ import { fallbackThemeUrl, removeExistingLinks } from './utils';
  * @param {Object} args.themeCore - The core theme configuration.
  * @param {string} args.themeCore.urls.default - The URL to the default core theme CSS.
  * @param {string} [args.themeCore.urls.brandOverride] - The URL to the brand override theme CSS (optional).
- * @param {Function} args.onLoad - A callback function that is called once both the core Paragon (default)
+ * @param {Function} args.onComplete - A callback function that is called once both the core Paragon (default)
  * theme and brand override theme (if provided) are complete.
  */
 const useParagonThemeCore = ({
   themeCore,
-  onLoad,
+  onComplete,
 }) => {
   const [isParagonThemeCoreComplete, setIsParagonThemeCoreComplete] = useState(false);
   const [isBrandThemeCoreComplete, setIsBrandThemeCoreComplete] = useState(false);
 
   useEffect(() => {
-    // Call `onLoad` once both the paragon and brand theme core are complete.
+    // Call `onComplete` once both the paragon and brand theme core are complete.
     if (isParagonThemeCoreComplete && isBrandThemeCoreComplete) {
-      onLoad();
+      onComplete();
     }
-  }, [isParagonThemeCoreComplete, isBrandThemeCoreComplete, onLoad]);
+  }, [isParagonThemeCoreComplete, isBrandThemeCoreComplete, onComplete]);
 
   useEffect(() => {
     // If there is no config for the core theme url, do nothing.
@@ -144,7 +144,7 @@ const useParagonThemeCore = ({
       setIsParagonThemeCoreComplete(true);
       setIsBrandThemeCoreComplete(true);
     }
-  }, [themeCore?.urls, onLoad]);
+  }, [themeCore?.urls, onComplete]);
 };
 
 export default useParagonThemeCore;

@@ -8,7 +8,7 @@ import useParagonThemeCore from './useParagonThemeCore';
 jest.mock('../../../logging');
 
 describe('useParagonThemeCore', () => {
-  const themeOnLoad = jest.fn();
+  const themeOnComplete = jest.fn();
   let coreConfig;
 
   beforeEach(() => {
@@ -19,7 +19,7 @@ describe('useParagonThemeCore', () => {
           default: 'https://cdn.jsdelivr.net/npm/@edx/paragon@21.0.0/dist/core.min.css',
         },
       },
-      onLoad: themeOnLoad,
+      onComplete: themeOnComplete,
     };
     jest.clearAllMocks();
   });
@@ -29,7 +29,7 @@ describe('useParagonThemeCore', () => {
     const createdLinkTag = document.head.querySelector('link');
     act(() => createdLinkTag.onload());
     expect(createdLinkTag.href).toBe(coreConfig.themeCore.urls.default);
-    expect(themeOnLoad).toHaveBeenCalledTimes(1);
+    expect(themeOnComplete).toHaveBeenCalledTimes(1);
   });
 
   it('should load the core default and brand url and change the loading state to true', () => {
@@ -42,7 +42,7 @@ describe('useParagonThemeCore', () => {
     act(() => { createdLinkTag.onload(); createdBrandLinkTag.onload(); });
     expect(createdLinkTag.href).toBe(coreConfig.themeCore.urls.default);
     expect(createdBrandLinkTag.href).toBe(coreConfig.themeCore.urls.brandOverride);
-    expect(themeOnLoad).toHaveBeenCalledTimes(1);
+    expect(themeOnComplete).toHaveBeenCalledTimes(1);
   });
 
   it('should dispatch a log error and fallback to PARAGON_THEME if can not load the core theme link (either default or brandOverride)', () => {
@@ -126,11 +126,11 @@ describe('useParagonThemeCore', () => {
       themeCore: {
         default: 'https://cdn.jsdelivr.net/npm/@edx/paragon@21.0.0/dist/core.min.css',
       },
-      onLoad: themeOnLoad,
+      onComplete: themeOnComplete,
     };
 
     renderHook(() => useParagonThemeCore(coreConfig));
     expect(document.head.querySelectorAll('link').length).toBe(0);
-    expect(themeOnLoad).toHaveBeenCalledTimes(1);
+    expect(themeOnComplete).toHaveBeenCalledTimes(1);
   });
 });

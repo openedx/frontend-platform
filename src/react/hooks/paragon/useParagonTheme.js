@@ -129,7 +129,7 @@ const useParagonTheme = () => {
   // load the core theme CSS
   useParagonThemeCore({
     themeCore,
-    onLoad: onLoadThemeCore,
+    onComplete: onLoadThemeCore,
   });
 
   // respond to system preference changes with regard to `prefers-color-scheme: dark`.
@@ -151,7 +151,7 @@ const useParagonTheme = () => {
   // load the theme variant(s) CSS
   useParagonThemeVariants({
     themeVariants,
-    onLoad: onLoadThemeVariants,
+    onComplete: onLoadThemeVariants,
     currentThemeVariant: themeState.themeVariant,
     onDarkModeSystemPreferenceChange: handleDarkModeSystemPreferenceChange,
   });

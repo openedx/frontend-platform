@@ -8,7 +8,7 @@ import useParagonThemeVariants from './useParagonThemeVariants';
 jest.mock('../../../logging');
 
 describe('useParagonThemeVariants', () => {
-  const themeOnLoad = jest.fn();
+  const themeOnComplete = jest.fn();
 
   afterEach(() => {
     document.head.innerHTML = '';
@@ -32,7 +32,7 @@ describe('useParagonThemeVariants', () => {
     };
     const currentThemeVariant = 'light';
 
-    renderHook(() => useParagonThemeVariants({ themeVariants, currentThemeVariant, onLoad: themeOnLoad }));
+    renderHook(() => useParagonThemeVariants({ themeVariants, currentThemeVariant, onComplete: themeOnComplete }));
     const themeLinks = document.head.querySelectorAll('link');
     act(() => { themeLinks.forEach((link) => link.onload()); });
 
@@ -50,7 +50,7 @@ describe('useParagonThemeVariants', () => {
     };
     const currentThemeVariant = 'light';
 
-    renderHook(() => useParagonThemeVariants({ themeVariants, currentThemeVariant, onLoad: themeOnLoad }));
+    renderHook(() => useParagonThemeVariants({ themeVariants, currentThemeVariant, onComplete: themeOnComplete }));
 
     const themeLinks = document.head.querySelectorAll('link');
     const paragonFallbackURL = `${getConfig().BASE_URL}/${PARAGON_THEME.paragon.themeUrls.variants.light.fileName}`;
@@ -81,7 +81,7 @@ describe('useParagonThemeVariants', () => {
 
     const currentThemeVariant = 'light';
 
-    renderHook(() => useParagonThemeVariants({ themeVariants, currentThemeVariant, onLoad: themeOnLoad }));
+    renderHook(() => useParagonThemeVariants({ themeVariants, currentThemeVariant, onComplete: themeOnComplete }));
     const themeLinks = document.head.querySelectorAll('link');
     const paragonFallbackURL = `${getConfig().BASE_URL}/${PARAGON_THEME.paragon.themeUrls.variants.light.fileName}`;
     const brandFallbackURL = `${getConfig().BASE_URL}/${PARAGON_THEME.brand.themeUrls.variants.light.fileName}`;
@@ -115,7 +115,7 @@ describe('useParagonThemeVariants', () => {
 
     const currentThemeVariant = 'light';
 
-    renderHook(() => useParagonThemeVariants({ themeVariants, currentThemeVariant, onLoad: themeOnLoad }));
+    renderHook(() => useParagonThemeVariants({ themeVariants, currentThemeVariant, onComplete: themeOnComplete }));
     const themeLinks = document.head.querySelectorAll('link');
     act(() => { themeLinks.forEach((link) => link.onerror()); });
     expect(logError).toHaveBeenCalledTimes(2);
@@ -132,7 +132,7 @@ describe('useParagonThemeVariants', () => {
     const themeVariants = null;
     const currentTheme = 'light';
 
-    renderHook(() => useParagonThemeVariants({ themeVariants, currentTheme, onLoad: themeOnLoad }));
+    renderHook(() => useParagonThemeVariants({ themeVariants, currentTheme, onComplete: themeOnComplete }));
     expect(document.head.querySelectorAll('link').length).toBe(0);
   });
 
@@ -148,7 +148,7 @@ describe('useParagonThemeVariants', () => {
 
     const currentTheme = 'light';
 
-    renderHook(() => useParagonThemeVariants({ themeVariants, currentTheme, onLoad: themeOnLoad }));
+    renderHook(() => useParagonThemeVariants({ themeVariants, currentTheme, onComplete: themeOnComplete }));
 
     expect(document.head.querySelectorAll('link').length).toBe(0);
   });
@@ -171,7 +171,7 @@ describe('useParagonThemeVariants', () => {
     };
 
     const currentTheme = 'light';
-    renderHook(() => useParagonThemeVariants({ themeVariants, currentTheme, onLoad: themeOnLoad }));
+    renderHook(() => useParagonThemeVariants({ themeVariants, currentTheme, onComplete: themeOnComplete }));
     const themeLinks = document.head.querySelectorAll('link');
     const lightThemeLink = document.head.querySelector('link[data-paragon-theme-variant="light"]');
     const lightThemeBrandLink = document.head.querySelector('link[data-brand-theme-variant="light"]');
