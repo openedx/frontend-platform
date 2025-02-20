@@ -18,14 +18,14 @@ import { fallbackThemeUrl, removeExistingLinks } from './utils';
  * @param {object} [args.themeVariants] An object containing the URLs for each supported theme variant,
  * e.g.: `{ light: { url: 'https://path/to/light.css' } }`.
  * @param {string} [args.currentThemeVariant] The currently applied theme variant, e.g.: `light`.
- * @param {string} args.onLoad A callback function called when the theme variant(s) CSS is (are) complete.
+ * @param {function} args.onComplete A callback function called when the theme variant(s) CSS is (are) complete.
  * @param {function} [args.onDarkModeSystemPreferenceChange] A callback function that is triggered
  * when the system's preference changes.
  */
 const useParagonThemeVariants = ({
   themeVariants,
   currentThemeVariant,
-  onLoad,
+  onComplete,
   onDarkModeSystemPreferenceChange,
 }) => {
   const [isParagonThemeVariantComplete, setIsParagonThemeVariantComplete] = useState(false);
@@ -59,12 +59,12 @@ const useParagonThemeVariants = ({
     return () => {}; // Cleanup: no action needed when theme variant is not set
   }, [themeVariants, currentThemeVariant]);
 
-  // Effect hook that calls `onLoad` when both paragon and brand theme variants are completed the processing.
+  // Effect hook that calls `onComplete` when both paragon and brand theme variants are completed the processing.
   useEffect(() => {
     if (isParagonThemeVariantComplete && isBrandThemeVariantComplete) {
-      onLoad();
+      onComplete();
     }
-  }, [isParagonThemeVariantComplete, isBrandThemeVariantComplete, onLoad]);
+  }, [isParagonThemeVariantComplete, isBrandThemeVariantComplete, onComplete]);
 
   useEffect(() => {
     if (!themeVariants) {
@@ -215,7 +215,7 @@ const useParagonThemeVariants = ({
       setIsParagonThemeVariantComplete(true);
       setIsBrandThemeVariantComplete(true);
     });
-  }, [themeVariants, currentThemeVariant, onLoad]);
+  }, [themeVariants, currentThemeVariant, onComplete]);
 };
 
 export default useParagonThemeVariants;
