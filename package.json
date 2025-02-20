@@ -34,20 +34,20 @@
   "homepage": "https://github.com/openedx/frontend-platform#readme",
   "devDependencies": {
     "@edx/brand": "npm:@openedx/brand-openedx@^1.2.2",
-    "@edx/browserslist-config": "1.4.0",
-    "@openedx/frontend-build": "14.2.2",
-    "@openedx/paragon": "22.13.0",
+    "@edx/browserslist-config": "1.5.0",
+    "@openedx/frontend-build": "^14.3.0",
+    "@openedx/paragon": "22.15.1",
     "@testing-library/jest-dom": "6.6.3",
-    "@testing-library/react": "12.1.5",
-    "@testing-library/react-hooks": "^8.0.1",
+    "@testing-library/react": "16.2.0",
+    "@testing-library/dom": "10.4.0",
     "axios-mock-adapter": "^1.22.0",
     "husky": "8.0.3",
     "jest-environment-jsdom": "29.7.0",
     "jsdoc": "^4.0.0",
     "nodemon": "3.1.9",
     "prop-types": "15.8.1",
-    "react": "17.0.2",
-    "react-dom": "17.0.2",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
     "react-redux": "^8.1.1",
     "react-router-dom": "^6.6.1",
     "redux": "4.2.1"
@@ -56,7 +56,7 @@
     "@cospired/i18n-iso-languages": "4.2.0",
     "@formatjs/intl-pluralrules": "4.3.3",
     "@formatjs/intl-relativetimeformat": "10.0.1",
-    "axios": "1.6.7",
+    "axios": "1.7.9",
     "axios-cache-interceptor": "1.6.2",
     "form-urlencoded": "4.1.4",
     "glob": "7.2.3",
@@ -77,10 +77,18 @@
     "@openedx/frontend-build": ">= 14.0.0",
     "@openedx/paragon": ">= 21.5.7 < 23.0.0",
     "prop-types": ">=15.7.2 <16.0.0",
-    "react": "^16.9.0 || ^17.0.0",
-    "react-dom": "^16.9.0 || ^17.0.0",
+    "react": "^16.9.0 || ^17.0.0 || ^18.0.0",
+    "react-dom": "^16.9.0 || ^17.0.0 || ^18.0.0",
     "react-redux": "^7.1.1 || ^8.1.1",
     "react-router-dom": "^6.0.0",
     "redux": "^4.0.4"
+  },
+  "peerDependenciesMeta": {
+    "redux": {
+      "optional": true
+    },
+    "react-redux": {
+      "optional": true
+    }
   }
 }

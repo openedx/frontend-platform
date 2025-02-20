@@ -1,4 +1,6 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import { defineMessages } from '@edx/frontend-platform/i18n';
+/* eslint-enable import/no-extraneous-dependencies */
 
 const messages = defineMessages({
   'example.message': {
