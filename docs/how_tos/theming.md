@@ -2,8 +2,10 @@
 
 > [!IMPORTANT]  
 > This document describes theming with design tokens. 
+> 
 > Information on theming MFEs that do not yet have design tokens support:
 > * https://github.com/openedx/brand-openedx
+> 
 > Information on the design tokens project:
 > * https://github.com/openedx/paragon/blob/master/docs/decisions/0019-scaling-styles-with-design-tokens.rst
 > * https://github.com/openedx/paragon/tree/alpha?tab=readme-ov-file#design-tokens
