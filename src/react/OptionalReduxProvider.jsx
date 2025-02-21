@@ -1,9 +1,6 @@
-import React, { lazy, Suspense } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-
-const DynamicProvider = lazy(() => import('react-redux')
-  .then((module) => ({ default: module.Provider }))
-  .catch(() => ({ default: ({ children }) => children })));
+import { Provider } from 'react-redux';
 
 /**
  * @memberof module:React
@@ -15,13 +12,11 @@ export default function OptionalReduxProvider({ store = null, children }) {
   }
 
   return (
-    <Suspense fallback={null}>
-      <DynamicProvider store={store}>
-        <div data-testid="redux-provider">
-          {children}
-        </div>
-      </DynamicProvider>
-    </Suspense>
+    <Provider store={store}>
+      <div data-testid="redux-provider">
+        {children}
+      </div>
+    </Provider>
   );
 }
 
