@@ -1,6 +1,6 @@
 import React from 'react';
 import { createStore } from 'redux';
-import { render } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import AppProvider from './AppProvider';
 import { initialize } from '../initialize';
 
@@ -48,7 +48,7 @@ describe('AppProvider', () => {
     });
   });
 
-  it('should render its children with a router', () => {
+  it('should render its children with a router', async () => {
     const component = (
       <AppProvider store={createStore(state => state)}>
         <div className="child">Child One</div>
@@ -57,16 +57,16 @@ describe('AppProvider', () => {
     );
 
     const wrapper = render(component);
-    const list = wrapper.container.querySelectorAll('div.child');
-    expect(list.length).toEqual(2);
-    expect(list[0].textContent).toEqual('Child One');
-    expect(list[1].textContent).toEqual('Child Two');
+    await waitFor(() => {
+      expect(screen.getByText('Child One')).toBeInTheDocument();
+      expect(screen.getByText('Child Two')).toBeInTheDocument();
+    });
     expect(wrapper.getByTestId('browser-router')).toBeInTheDocument();
     const reduxProvider = wrapper.getByTestId('redux-provider');
     expect(reduxProvider).toBeInTheDocument();
   });
 
-  it('should render its children without a router', () => {
+  it('should render its children without a router', async () => {
     const component = (
       <AppProvider store={createStore(state => state)} wrapWithRouter={false}>
         <div className="child">Child One</div>
@@ -75,16 +75,16 @@ describe('AppProvider', () => {
     );
 
     const wrapper = render(component);
-    const list = wrapper.container.querySelectorAll('div.child');
-    expect(list.length).toEqual(2);
-    expect(list[0].textContent).toEqual('Child One');
-    expect(list[1].textContent).toEqual('Child Two');
+    await waitFor(() => {
+      expect(screen.getByText('Child One')).toBeInTheDocument();
+      expect(screen.getByText('Child Two')).toBeInTheDocument();
+    });
     expect(wrapper.queryByTestId('browser-router')).not.toBeInTheDocument();
     const reduxProvider = wrapper.getByTestId('redux-provider');
     expect(reduxProvider).toBeInTheDocument();
   });
 
-  it('should skip redux Provider if not given a store', () => {
+  it('should skip redux Provider if not given a store', async () => {
     const component = (
       <AppProvider>
         <div className="child">Child One</div>
@@ -93,11 +93,8 @@ describe('AppProvider', () => {
     );
 
     const wrapper = render(component);
-    const list = wrapper.container.querySelectorAll('div.child');
-    expect(list.length).toEqual(2);
-    expect(list[0].textContent).toEqual('Child One');
-    expect(list[1].textContent).toEqual('Child Two');
-
+    expect(screen.getByText('Child One')).toBeInTheDocument();
+    expect(screen.getByText('Child Two')).toBeInTheDocument();
     const reduxProvider = wrapper.queryByTestId('redux-provider');
     expect(reduxProvider).not.toBeInTheDocument();
   });

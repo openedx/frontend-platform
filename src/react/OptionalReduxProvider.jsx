@@ -1,33 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+/* eslint-disable import/no-extraneous-dependencies */
+import { logError } from '@edx/frontend-platform/logging';
+/* eslint-enable import/no-extraneous-dependencies */
 
 function useProvider(store) {
-  const [Provider, setProvider] = useState(null);
+  const [Provider, setProvider] = useState(null); // Initially null to prevent render children that expect a Provider
+
   useEffect(() => {
     if (!store) {
-      setProvider(() => ({ children: c }) => c);
+      setProvider(() => ({ children }) => children); // Ensure fallback if no store
       return;
     }
-    if (process.env.NODE_ENV === 'test') {
-      // In test environments, load react-redux synchronously to avoid async state updates.
+    const loadProvider = async () => {
       try {
-        // eslint-disable-next-line global-require
-        const module = require('react-redux');
-        setProvider(() => module.Provider);
-      } catch {
-        setProvider(() => ({ children: c }) => c);
+        const { Provider: ReactReduxProvider } = await import('react-redux');
+        // Set the Provider from react-redux
+        setProvider(() => ReactReduxProvider);
+      } catch (error) {
+        logError('Failed to load react-redux', error);
       }
-    } else {
-      // In production, load react-redux dynamically.
-      import('react-redux')
-        .then((module) => {
-          setProvider(() => module.Provider);
-        })
-        .catch(() => {
-          setProvider(() => ({ children: c }) => c);
-        });
-    }
+    };
+    loadProvider();
   }, [store]);
+
   return Provider;
 }
 
@@ -38,17 +34,14 @@ function useProvider(store) {
 export default function OptionalReduxProvider({ store = null, children }) {
   const Provider = useProvider(store);
 
-  // If the Provider is not loaded yet, we return null to avoid rendering issues
   if (!Provider) {
     return null;
   }
 
-  // If the store is null, we return the children directly as no Provider is needed
-  if (store === null) {
+  if (!store) {
     return children;
   }
 
-  // If the Provider is loaded and the store is not null, we render the Provider with the children
   return (
     <Provider store={store}>
       <div data-testid="redux-provider">
