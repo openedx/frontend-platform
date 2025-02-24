@@ -1,6 +1,6 @@
 import React from 'react';
 import { createStore } from 'redux';
-import { render, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import AppProvider from './AppProvider';
 import { initialize } from '../initialize';
 
@@ -58,10 +58,8 @@ describe('AppProvider', () => {
 
     const wrapper = render(component);
     await waitFor(() => {
-      const list = wrapper.container.querySelectorAll('div.child');
-      expect(list.length).toEqual(2);
-      expect(list[0].textContent).toEqual('Child One');
-      expect(list[1].textContent).toEqual('Child Two');
+      expect(screen.getByText('Child One')).toBeInTheDocument();
+      expect(screen.getByText('Child Two')).toBeInTheDocument();
     });
     expect(wrapper.getByTestId('browser-router')).toBeInTheDocument();
     const reduxProvider = wrapper.getByTestId('redux-provider');
@@ -78,10 +76,8 @@ describe('AppProvider', () => {
 
     const wrapper = render(component);
     await waitFor(() => {
-      const list = wrapper.container.querySelectorAll('div.child');
-      expect(list.length).toEqual(2);
-      expect(list[0].textContent).toEqual('Child One');
-      expect(list[1].textContent).toEqual('Child Two');
+      expect(screen.getByText('Child One')).toBeInTheDocument();
+      expect(screen.getByText('Child Two')).toBeInTheDocument();
     });
     expect(wrapper.queryByTestId('browser-router')).not.toBeInTheDocument();
     const reduxProvider = wrapper.getByTestId('redux-provider');
@@ -97,13 +93,8 @@ describe('AppProvider', () => {
     );
 
     const wrapper = render(component);
-    await waitFor(() => {
-      const list = wrapper.container.querySelectorAll('div.child');
-      expect(list.length).toEqual(2);
-      expect(list[0].textContent).toEqual('Child One');
-      expect(list[1].textContent).toEqual('Child Two');
-    });
-
+    expect(screen.getByText('Child One')).toBeInTheDocument();
+    expect(screen.getByText('Child Two')).toBeInTheDocument();
     const reduxProvider = wrapper.queryByTestId('redux-provider');
     expect(reduxProvider).not.toBeInTheDocument();
   });
