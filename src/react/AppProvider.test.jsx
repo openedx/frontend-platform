@@ -204,11 +204,11 @@ describe('AppProvider', () => {
           </AppContext.Consumer>
         </AppProvider>
       );
-      render(Component);
-      expect(screen.getByText('Is theme loaded: yes')).toBeInTheDocument();
-      expect(screen.getByText('Current theme variant: light')).toBeInTheDocument();
+      const wrapper = render(Component);
+      expect(wrapper.getByText('Is theme loaded: yes')).toBeInTheDocument();
+      expect(wrapper.getByText('Current theme variant: light')).toBeInTheDocument();
 
-      const setThemeVariantBtn = screen.getByRole('button', { name: 'Set theme variant' });
+      const setThemeVariantBtn = wrapper.getByRole('button', { name: 'Set theme variant' });
       expect(setThemeVariantBtn).toBeInTheDocument();
       await userEvent.click(setThemeVariantBtn);
 

@@ -1,4 +1,4 @@
-import { act, renderHook } from '@testing-library/react-hooks';
+import { act, renderHook } from '@testing-library/react';
 
 import { getConfig } from '../../../config';
 import { logError, logInfo } from '../../../logging';
