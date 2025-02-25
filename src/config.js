@@ -163,7 +163,7 @@ function parseParagonThemeUrls(paragonUrlsJson) {
   } catch (err) {
     if (err instanceof SyntaxError) {
       // eslint-disable-next-line no-console
-      console.error('Unable to parse PARAGON_THEME_URLS JSON.\nPlease check https://github.com/openedx/frontend-platform/tree/master/docs/how_tos/theming.md for the expected formatting.\nReturning an empty object ({}), it will cause the theming configuration to be skipped.');
+      console.error('Unable to parse PARAGON_THEME_URLS JSON.\nPlease check https://github.com/openedx/frontend-platform/tree/master/docs/how_tos/theming.md for the expected formatting.\nAn empty object ({}) will be returned, which will cause the theming configuration to fall back to the installed packages.');
       return {};
     }
     // In case of a different type of error, return the error object itself

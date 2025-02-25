@@ -6,12 +6,12 @@ import { mergeConfig } from '../../../config';
 describe('useParagonThemeUrls', () => {
   beforeEach(() => { jest.resetAllMocks(); });
   it.each([
-    undefined,
-    {},
-  ])('handles when `config.PARAGON_THEME_URLS` is not present', (paragonThemeUrls) => {
+    [undefined, undefined],
+    [{}, { core: { urls: { default: 'localhost:8080/core.min.css', brandOverride: undefined } }, defaults: { light: 'light' }, variants: { light: { urls: { default: 'localhost:8080/light.min.css' } } } }],
+  ])('handles when `config.PARAGON_THEME_URLS` is not present (%s)', (paragonThemeUrls, expectedURLConfig) => {
     mergeConfig({ PARAGON_THEME_URLS: paragonThemeUrls });
     const { result } = renderHook(() => useParagonThemeUrls());
-    expect(result.current).toEqual(undefined);
+    expect(result.current).toEqual(expectedURLConfig);
   });
 
   describe('when `config.PARAGON_THEME_URLS` is present', () => {

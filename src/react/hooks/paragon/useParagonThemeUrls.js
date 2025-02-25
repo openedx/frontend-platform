@@ -53,7 +53,7 @@ export const handleVersionSubstitution = ({ url, wildcardKeyword, localVersion }
  */
 const useParagonThemeUrls = () => useMemo(() => {
   const { PARAGON_THEME_URLS: paragonThemeUrls } = getConfig();
-  if (!paragonThemeUrls || isEmptyObject(paragonThemeUrls)) {
+  if (!paragonThemeUrls) {
     return undefined;
   }
 
@@ -101,9 +101,10 @@ const useParagonThemeUrls = () => useMemo(() => {
   });
 
   // If we don't have  the core default or any theme variants, use the PARAGON_THEME
-  if (!coreCss.default || isEmptyObject(themeVariantsCss)) {
+  if (!coreCss.default || isEmptyObject(themeVariantsCss) || isEmptyObject(defaultThemeVariants)) {
     const localCoreUrl = PARAGON_THEME.paragon?.themeUrls?.core;
     const localThemeVariants = PARAGON_THEME.paragon?.themeUrls?.variants;
+    const localDefaultThemeVariants = PARAGON_THEME.paragon?.themeUrls?.defaults;
 
     if (isEmptyObject(localCoreUrl) || isEmptyObject(localThemeVariants)) {
       return undefined;
@@ -121,7 +122,7 @@ const useParagonThemeUrls = () => useMemo(() => {
     }
     return {
       core: { urls: coreCss },
-      defaults: defaultThemeVariants,
+      defaults: defaultThemeVariants || localDefaultThemeVariants,
       variants: themeVariantsCss,
     };
   }
