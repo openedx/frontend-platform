@@ -36,7 +36,7 @@
     "@edx/brand": "npm:@openedx/brand-openedx@^1.2.2",
     "@edx/browserslist-config": "1.5.0",
     "@openedx/frontend-build": "^14.3.0",
-    "@openedx/paragon": "22.15.2",
+    "@openedx/paragon": "22.15.3",
     "@testing-library/dom": "10.4.0",
     "@testing-library/jest-dom": "6.6.3",
     "@testing-library/react": "16.2.0",
