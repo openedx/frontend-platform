@@ -6,7 +6,12 @@ import OptionalReduxProvider from './OptionalReduxProvider';
 
 import ErrorBoundary from './ErrorBoundary';
 import AppContext from './AppContext';
-import { useAppEvent, useTrackColorSchemeChoice } from './hooks';
+import {
+  useAppEvent,
+  useParagonTheme,
+  useTrackColorSchemeChoice,
+} from './hooks';
+import { paragonThemeActions } from './reducers';
 import { getAuthenticatedUser, AUTHENTICATED_USER_CHANGED } from '../auth';
 import { getConfig } from '../config';
 import { CONFIG_CHANGED } from '../constants';
@@ -17,6 +22,7 @@ import {
   LOCALE_CHANGED,
 } from '../i18n';
 import { basename } from '../initialize';
+import { SELECTED_THEME_VARIANT_KEY } from './constants';
 
 /**
  * A wrapper component for React-based micro-frontends to initialize a number of common data/
@@ -39,6 +45,7 @@ import { basename } from '../initialize';
  * - Optionally a redux `Provider`. Will only be included if a `store` property is passed to
  * `AppProvider`.
  * - A `Router` for react-router.
+ * - A theme manager for Paragon.
  *
  * @param {Object} props
  * @param {Object} [props.store] A redux store.
@@ -48,8 +55,6 @@ export default function AppProvider({ store = null, children, wrapWithRouter = t
   const [config, setConfig] = useState(getConfig());
   const [authenticatedUser, setAuthenticatedUser] = useState(getAuthenticatedUser());
   const [locale, setLocale] = useState(getLocale());
-
-  useTrackColorSchemeChoice();
 
   useAppEvent(AUTHENTICATED_USER_CHANGED, () => {
     setAuthenticatedUser(getAuthenticatedUser());
@@ -63,7 +68,27 @@ export default function AppProvider({ store = null, children, wrapWithRouter = t
     setLocale(getLocale());
   });
 
-  const appContextValue = useMemo(() => ({ authenticatedUser, config, locale }), [authenticatedUser, config, locale]);
+  useTrackColorSchemeChoice();
+  const [paragonThemeState, paragonThemeDispatch] = useParagonTheme();
+
+  const appContextValue = useMemo(() => ({
+    authenticatedUser,
+    config,
+    locale,
+    paragonTheme: {
+      state: paragonThemeState,
+      setThemeVariant: (themeVariant) => {
+        paragonThemeDispatch(paragonThemeActions.setParagonThemeVariant(themeVariant));
+
+        // Persist selected theme variant to localStorage.
+        window.localStorage.setItem(SELECTED_THEME_VARIANT_KEY, themeVariant);
+      },
+    },
+  }), [authenticatedUser, config, locale, paragonThemeState, paragonThemeDispatch]);
+
+  if (!paragonThemeState?.isThemeLoaded) {
+    return null;
+  }
 
   return (
     <IntlProvider locale={locale} messages={getMessages()}>
@@ -87,7 +112,7 @@ export default function AppProvider({ store = null, children, wrapWithRouter = t
 }
 
 AppProvider.propTypes = {
-  store: PropTypes.shape(),
+  store: PropTypes.shape({}),
   children: PropTypes.node.isRequired,
   wrapWithRouter: PropTypes.bool,
 };
