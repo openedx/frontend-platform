@@ -134,6 +134,40 @@ function extractRegex(envVar) {
   }
   return undefined;
 }
+
+/**
+ * Safely parses a JSON string coming from the environment variables.
+ * If the JSON is invalid, the function returns an empty object and logs an error to the console.
+ *
+ * @param {string} paragonUrlsJson - The JSON string representing Paragon theme URLs.
+ * @returns {Object|undefined} - Returns a parsed object if the JSON is valid; otherwise, returns
+ * an empty object if invalid or undefined if no input is provided.
+ *
+ * @example
+ * const jsonString = '{
+ *    "core":{"urls":{"default":"core.min.css"}},
+ *    "defaults":{"light":"light"},
+ *    "variants":{"light":{"urls":{"default":"light.min.css"}}}
+ * }';
+ * const parsedUrls = parseParagonThemeUrls(jsonString);
+ * console.log(parsedUrls); // Outputs the parsed JSON object
+ */
+function parseParagonThemeUrls(paragonUrlsJson) {
+  if (!paragonUrlsJson) {
+    return undefined;
+  }
+  try {
+    return JSON.parse(paragonUrlsJson);
+  } catch (err) {
+    if (err instanceof SyntaxError) {
+      // eslint-disable-next-line no-console
+      console.error('Unable to parse PARAGON_THEME_URLS JSON.\nPlease check https://github.com/openedx/frontend-platform/tree/master/docs/how_tos/theming.md for the expected formatting.\nAn empty object ({}) will be returned, which will cause the theming configuration to fall back to the installed packages.');
+      return {};
+    }
+    // In case of a different type of error, return the error object itself
+    return err;
+  }
+}
 var ENVIRONMENT = process.env.NODE_ENV;
 var config = {
   ACCESS_TOKEN_COOKIE_NAME: process.env.ACCESS_TOKEN_COOKIE_NAME,
@@ -168,7 +202,7 @@ var config = {
   MFE_CONFIG_API_URL: process.env.MFE_CONFIG_API_URL,
   APP_ID: process.env.APP_ID,
   SUPPORT_URL: process.env.SUPPORT_URL,
-  PARAGON_THEME_URLS: process.env.PARAGON_THEME_URLS ? JSON.parse(process.env.PARAGON_THEME_URLS) : {}
+  PARAGON_THEME_URLS: parseParagonThemeUrls(process.env.PARAGON_THEME_URLS)
 };
 
 /**

@@ -9,122 +9,48 @@ import { logError, logInfo } from '../../../logging';
 import { fallbackThemeUrl, removeExistingLinks } from './utils';
 
 /**
- * Adds/updates a `<link>` element in the HTML document to load the core application theme CSS.
+ * Custom React hook that manages the loading and updating of the core Paragon theme CSS and the brand override
+ * theme CSS. It ensures that the core theme CSS (both default and brand override) is added to the document
+ * `<head>` as `<link>` elements.
+ *
+ * The function logs and handles fallback logic in case the core theme fails to load.
  *
  * @memberof module:React
  *
- * @param {object} args
- * @param {object} args.themeCore Object representing the core Paragon theme CSS.
- * @param {string} args.onLoad A callback function called when the core theme CSS is loaded.
+ * @param {Object} args - The arguments object containing theme and callback information.
+ * @param {Object} args.themeCore - The core theme configuration.
+ * @param {string} args.themeCore.urls.default - The URL to the default core theme CSS.
+ * @param {string} [args.themeCore.urls.brandOverride] - The URL to the brand override theme CSS (optional).
+ * @param {Function} args.onComplete - A callback function that is called once both the core Paragon (default)
+ * theme and brand override theme (if provided) are complete.
  */
 var useParagonThemeCore = function useParagonThemeCore(_ref) {
   var themeCore = _ref.themeCore,
-    onLoad = _ref.onLoad;
+    onComplete = _ref.onComplete;
   var _useState = useState(false),
     _useState2 = _slicedToArray(_useState, 2),
-    isParagonThemeCoreLoaded = _useState2[0],
-    setIsParagonThemeCoreLoaded = _useState2[1];
+    isParagonThemeCoreComplete = _useState2[0],
+    setIsParagonThemeCoreComplete = _useState2[1];
   var _useState3 = useState(false),
     _useState4 = _slicedToArray(_useState3, 2),
-    isBrandThemeCoreLoaded = _useState4[0],
-    setIsBrandThemeCoreLoaded = _useState4[1];
+    isBrandThemeCoreComplete = _useState4[0],
+    setIsBrandThemeCoreComplete = _useState4[1];
   useEffect(function () {
-    // Call `onLoad` once both the paragon and brand theme core are loaded.
-    if (isParagonThemeCoreLoaded && isBrandThemeCoreLoaded) {
-      onLoad();
+    // Call `onComplete` once both the paragon and brand theme core are complete.
+    if (isParagonThemeCoreComplete && isBrandThemeCoreComplete) {
+      onComplete();
     }
-  }, [isParagonThemeCoreLoaded, isBrandThemeCoreLoaded, onLoad]);
+  }, [isParagonThemeCoreComplete, isBrandThemeCoreComplete, onComplete]);
   useEffect(function () {
     // If there is no config for the core theme url, do nothing.
     if (!(themeCore !== null && themeCore !== void 0 && themeCore.urls)) {
-      setIsParagonThemeCoreLoaded(true);
-      setIsBrandThemeCoreLoaded(true);
+      setIsParagonThemeCoreComplete(true);
+      setIsBrandThemeCoreComplete(true);
       return;
     }
-    var getParagonThemeCoreLink = function getParagonThemeCoreLink() {
-      return document.head.querySelector('link[data-paragon-theme-core="true"]');
-    };
     var existingCoreThemeLink = document.head.querySelector("link[href='".concat(themeCore.urls["default"], "']"));
     var brandCoreLink = document.head.querySelector("link[href='".concat(themeCore.urls.brandOverride, "']"));
-    if (!existingCoreThemeLink) {
-      var getExistingCoreThemeLinks = function getExistingCoreThemeLinks(isBrandOverride) {
-        var coreThemeLinkSelector = "link[data-".concat(isBrandOverride ? 'brand' : 'paragon', "-theme-core=\"true\"]");
-        return document.head.querySelectorAll(coreThemeLinkSelector);
-      };
-      var _createCoreThemeLink = function createCoreThemeLink(url) {
-        var _ref2 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},
-          _ref2$isFallbackTheme = _ref2.isFallbackThemeUrl,
-          isFallbackThemeUrl = _ref2$isFallbackTheme === void 0 ? false : _ref2$isFallbackTheme,
-          _ref2$isBrandOverride = _ref2.isBrandOverride,
-          isBrandOverride = _ref2$isBrandOverride === void 0 ? false : _ref2$isBrandOverride;
-        var coreThemeLink = document.createElement('link');
-        coreThemeLink.href = url;
-        coreThemeLink.rel = 'stylesheet';
-        if (isBrandOverride) {
-          coreThemeLink.dataset.brandThemeCore = true;
-        } else {
-          coreThemeLink.dataset.paragonThemeCore = true;
-        }
-        coreThemeLink.onload = function () {
-          if (isBrandOverride) {
-            setIsBrandThemeCoreLoaded(true);
-          } else {
-            setIsParagonThemeCoreLoaded(true);
-          }
-        };
-        coreThemeLink.onerror = function () {
-          var _PARAGON_THEME$parago, _PARAGON_THEME;
-          logError("Failed to load core theme CSS from ".concat(url));
-          if (isFallbackThemeUrl) {
-            logError("Could not load core theme CSS from ".concat(url, " or fallback URL. Aborting."));
-            if (isBrandOverride) {
-              setIsBrandThemeCoreLoaded(true);
-            } else {
-              setIsParagonThemeCoreLoaded(true);
-            }
-            var otherExistingLinks = getExistingCoreThemeLinks(isBrandOverride);
-            removeExistingLinks(otherExistingLinks);
-            return;
-          }
-          var paragonThemeAccessor = isBrandOverride ? 'brand' : 'paragon';
-          var themeUrls = (_PARAGON_THEME$parago = (_PARAGON_THEME = PARAGON_THEME) === null || _PARAGON_THEME === void 0 || (_PARAGON_THEME = _PARAGON_THEME[paragonThemeAccessor]) === null || _PARAGON_THEME === void 0 ? void 0 : _PARAGON_THEME.themeUrls) !== null && _PARAGON_THEME$parago !== void 0 ? _PARAGON_THEME$parago : {};
-          if (themeUrls.core) {
-            var coreThemeFallbackUrl = fallbackThemeUrl(themeUrls.core.fileName);
-            logInfo("Falling back to locally installed core theme CSS: ".concat(coreThemeFallbackUrl));
-            coreThemeLink = _createCoreThemeLink(coreThemeFallbackUrl, {
-              isFallbackThemeUrl: true,
-              isBrandOverride: isBrandOverride
-            });
-            var _otherExistingLinks = getExistingCoreThemeLinks(isBrandOverride);
-            removeExistingLinks(_otherExistingLinks);
-            var foundParagonThemeCoreLink = getParagonThemeCoreLink();
-            if (foundParagonThemeCoreLink) {
-              foundParagonThemeCoreLink.insertAdjacentElement('afterend', coreThemeLink);
-            } else {
-              document.head.insertAdjacentElement('afterbegin', coreThemeLink);
-            }
-          } else {
-            logError("Failed to load core theme CSS from ".concat(url, " or fallback URL. Aborting."));
-          }
-        };
-        return coreThemeLink;
-      };
-      var paragonCoreThemeLink = _createCoreThemeLink(themeCore.urls["default"]);
-      document.head.insertAdjacentElement('afterbegin', paragonCoreThemeLink);
-      if (themeCore.urls.brandOverride) {
-        var brandCoreThemeLink = _createCoreThemeLink(themeCore.urls.brandOverride, {
-          isBrandOverride: true
-        });
-        var foundParagonThemeCoreLink = getParagonThemeCoreLink();
-        if (foundParagonThemeCoreLink) {
-          foundParagonThemeCoreLink.insertAdjacentElement('afterend', brandCoreThemeLink);
-        } else {
-          document.head.insertAdjacentElement('afterbegin', brandCoreThemeLink);
-        }
-      } else {
-        setIsBrandThemeCoreLoaded(true);
-      }
-    } else {
+    if (existingCoreThemeLink) {
       existingCoreThemeLink.rel = 'stylesheet';
       existingCoreThemeLink.removeAttribute('as');
       existingCoreThemeLink.dataset.paragonThemeCore = true;
@@ -133,10 +59,90 @@ var useParagonThemeCore = function useParagonThemeCore(_ref) {
         brandCoreLink.removeAttribute('as');
         brandCoreLink.dataset.brandThemeCore = true;
       }
-      setIsParagonThemeCoreLoaded(true);
-      setIsBrandThemeCoreLoaded(true);
+      setIsParagonThemeCoreComplete(true);
+      setIsBrandThemeCoreComplete(true);
+      return;
     }
-  }, [themeCore === null || themeCore === void 0 ? void 0 : themeCore.urls, onLoad]);
+    var getParagonThemeCoreLink = function getParagonThemeCoreLink() {
+      return document.head.querySelector('link[data-paragon-theme-core="true"]');
+    };
+    var getExistingCoreThemeLinks = function getExistingCoreThemeLinks(isBrandOverride) {
+      var coreThemeLinkSelector = "link[data-".concat(isBrandOverride ? 'brand' : 'paragon', "-theme-core=\"true\"]");
+      return document.head.querySelectorAll(coreThemeLinkSelector);
+    };
+    var _createCoreThemeLink = function createCoreThemeLink(url) {
+      var _ref2 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},
+        _ref2$isFallbackTheme = _ref2.isFallbackThemeUrl,
+        isFallbackThemeUrl = _ref2$isFallbackTheme === void 0 ? false : _ref2$isFallbackTheme,
+        _ref2$isBrandOverride = _ref2.isBrandOverride,
+        isBrandOverride = _ref2$isBrandOverride === void 0 ? false : _ref2$isBrandOverride;
+      var coreThemeLink = document.createElement('link');
+      coreThemeLink.href = url;
+      coreThemeLink.rel = 'stylesheet';
+      if (isBrandOverride) {
+        coreThemeLink.dataset.brandThemeCore = true;
+      } else {
+        coreThemeLink.dataset.paragonThemeCore = true;
+      }
+      coreThemeLink.onload = function () {
+        if (isBrandOverride) {
+          setIsBrandThemeCoreComplete(true);
+        } else {
+          setIsParagonThemeCoreComplete(true);
+        }
+      };
+      coreThemeLink.onerror = function () {
+        var _PARAGON_THEME$parago, _PARAGON_THEME;
+        if (isFallbackThemeUrl) {
+          logError('Could not load core theme fallback URL. Aborting.');
+          if (isBrandOverride) {
+            setIsBrandThemeCoreComplete(true);
+          } else {
+            setIsParagonThemeCoreComplete(true);
+          }
+          var otherExistingLinks = getExistingCoreThemeLinks(isBrandOverride);
+          removeExistingLinks(otherExistingLinks);
+          return;
+        }
+        var paragonThemeAccessor = isBrandOverride ? 'brand' : 'paragon';
+        var core = (_PARAGON_THEME$parago = (_PARAGON_THEME = PARAGON_THEME) === null || _PARAGON_THEME === void 0 || (_PARAGON_THEME = _PARAGON_THEME[paragonThemeAccessor]) === null || _PARAGON_THEME === void 0 || (_PARAGON_THEME = _PARAGON_THEME.themeUrls) === null || _PARAGON_THEME === void 0 ? void 0 : _PARAGON_THEME.core) !== null && _PARAGON_THEME$parago !== void 0 ? _PARAGON_THEME$parago : null;
+        if (core) {
+          var coreThemeFallbackUrl = fallbackThemeUrl(core.fileName);
+          logInfo("Could not load core theme CSS from ".concat(url, ". Falling back to locally installed core theme CSS: ").concat(coreThemeFallbackUrl));
+          coreThemeLink = _createCoreThemeLink(coreThemeFallbackUrl, {
+            isFallbackThemeUrl: true,
+            isBrandOverride: isBrandOverride
+          });
+          var _otherExistingLinks = getExistingCoreThemeLinks(isBrandOverride);
+          removeExistingLinks(_otherExistingLinks);
+          var foundParagonThemeCoreLink = getParagonThemeCoreLink();
+          if (foundParagonThemeCoreLink) {
+            foundParagonThemeCoreLink.insertAdjacentElement('afterend', coreThemeLink);
+          } else {
+            document.head.insertAdjacentElement('afterbegin', coreThemeLink);
+          }
+        } else {
+          logError("Failed to load core theme CSS from ".concat(url, " or fallback URL. Aborting."));
+        }
+      };
+      return coreThemeLink;
+    };
+    var paragonCoreThemeLink = _createCoreThemeLink(themeCore.urls["default"]);
+    document.head.insertAdjacentElement('afterbegin', paragonCoreThemeLink);
+    if (themeCore.urls.brandOverride) {
+      var brandCoreThemeLink = _createCoreThemeLink(themeCore.urls.brandOverride, {
+        isBrandOverride: true
+      });
+      var foundParagonThemeCoreLink = getParagonThemeCoreLink();
+      if (foundParagonThemeCoreLink) {
+        foundParagonThemeCoreLink.insertAdjacentElement('afterend', brandCoreThemeLink);
+      } else {
+        document.head.insertAdjacentElement('afterbegin', brandCoreThemeLink);
+      }
+    } else {
+      setIsBrandThemeCoreComplete(true);
+    }
+  }, [themeCore === null || themeCore === void 0 ? void 0 : themeCore.urls, onComplete]);
 };
 export default useParagonThemeCore;
 //# sourceMappingURL=useParagonThemeCore.js.map

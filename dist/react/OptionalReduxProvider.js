@@ -7,7 +7,8 @@ import { Provider } from 'react-redux';
  * @param {Object} props
  */
 export default function OptionalReduxProvider(_ref) {
-  var store = _ref.store,
+  var _ref$store = _ref.store,
+    store = _ref$store === void 0 ? null : _ref$store,
     children = _ref.children;
   if (store === null) {
     return children;
@@ -19,11 +20,7 @@ export default function OptionalReduxProvider(_ref) {
   }, children));
 }
 OptionalReduxProvider.propTypes = {
-  store: PropTypes.object,
-  // eslint-disable-line
+  store: PropTypes.shape(),
   children: PropTypes.node.isRequired
-};
-OptionalReduxProvider.defaultProps = {
-  store: null
 };
 //# sourceMappingURL=OptionalReduxProvider.js.map

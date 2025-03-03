@@ -13,6 +13,5 @@ export { default as ErrorBoundary } from './ErrorBoundary';
 export { default as ErrorPage } from './ErrorPage';
 export { default as LoginRedirect } from './LoginRedirect';
 export { default as PageWrap } from './PageWrap';
-export { useAppEvent, useParagonTheme } from './hooks';
-export { paragonThemeActions } from './reducers';
+export { useAppEvent } from './hooks';
 //# sourceMappingURL=index.js.map

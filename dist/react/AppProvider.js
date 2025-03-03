@@ -47,9 +47,11 @@ import { SELECTED_THEME_VARIANT_KEY } from './constants';
  * @memberof module:React
  */
 export default function AppProvider(_ref) {
-  var store = _ref.store,
+  var _ref$store = _ref.store,
+    store = _ref$store === void 0 ? null : _ref$store,
     children = _ref.children,
-    wrapWithRouter = _ref.wrapWithRouter;
+    _ref$wrapWithRouter = _ref.wrapWithRouter,
+    wrapWithRouter = _ref$wrapWithRouter === void 0 ? true : _ref$wrapWithRouter;
   var _useState = useState(getConfig()),
     _useState2 = _slicedToArray(_useState, 2),
     config = _useState2[0],
@@ -72,7 +74,7 @@ export default function AppProvider(_ref) {
     setLocale(getLocale());
   });
   useTrackColorSchemeChoice();
-  var _useParagonTheme = useParagonTheme(config),
+  var _useParagonTheme = useParagonTheme(),
     _useParagonTheme2 = _slicedToArray(_useParagonTheme, 2),
     paragonThemeState = _useParagonTheme2[0],
     paragonThemeDispatch = _useParagonTheme2[1];
@@ -112,9 +114,5 @@ AppProvider.propTypes = {
   store: PropTypes.shape({}),
   children: PropTypes.node.isRequired,
   wrapWithRouter: PropTypes.bool
-};
-AppProvider.defaultProps = {
-  store: null,
-  wrapWithRouter: true
 };
 //# sourceMappingURL=AppProvider.js.map

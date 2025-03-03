@@ -8,32 +8,111 @@ import { useCallback, useEffect, useReducer, useState } from 'react';
 import { SELECTED_THEME_VARIANT_KEY } from '../../constants';
 import { logError } from '../../../logging';
 import { paragonThemeActions, paragonThemeReducer } from '../../reducers';
-import { getDefaultThemeVariant, isEmptyObject } from './utils';
+import { isEmptyObject } from './utils';
 import useParagonThemeCore from './useParagonThemeCore';
 import useParagonThemeUrls from './useParagonThemeUrls';
 import useParagonThemeVariants from './useParagonThemeVariants';
 
 /**
- * Given the inputs of URLs to the CSS for the core application theme and the theme variants (e.g., light), this hook
- * will inject the CSS as `<link>` elements into the HTML document, loading each theme variant's CSS with an appropriate
- * priority based on whether its the currently active theme variant. This is done using "alternate" stylesheets. That
- * is,the browser will still download the CSS for the non-current theme variants, but at a lower priority than the
- * current theme variant's CSS. This ensures that if the theme variant is changed at runtime, the CSS for the new theme
- * variant will already be loaded.
+* Finds the default theme variant from the given theme variants object. If no default theme exists, the light theme
+* variant is returned as a fallback.
+*
+* It prioritizes:
+*   1. A persisted theme variant from localStorage.
+*   2. A system preference (`prefers-color-scheme`).
+*   3. The configured default theme variant.
+*
+* @param {Object.<string, ParagonThemeVariant>|undefined} themeVariants - An object where the keys are theme variant
+* names (e.g., "light", "dark") and the values are objects containing URLs for theme CSS files.
+* @param {Object} [options.themeVariantDefaults={}] - An object containing default theme variant preferences.
+*
+* @returns {Object|undefined} The default theme variant, or `undefined` if no valid theme variant is found.
+*
+*/
+export var getDefaultThemeVariant = function getDefaultThemeVariant(_ref) {
+  var _window$matchMedia, _window;
+  var themeVariants = _ref.themeVariants,
+    _ref$themeVariantDefa = _ref.themeVariantDefaults,
+    themeVariantDefaults = _ref$themeVariantDefa === void 0 ? {} : _ref$themeVariantDefa;
+  if (!themeVariants) {
+    return undefined;
+  }
+  var themeVariantKeys = Object.keys(themeVariants);
+
+  // If there is only one theme variant, return it since it's the only one that may be used.
+  if (themeVariantKeys.length === 1) {
+    var themeVariantKey = themeVariantKeys[0];
+    return {
+      name: themeVariantKey,
+      metadata: themeVariants[themeVariantKey]
+    };
+  }
+
+  // Prioritize persisted localStorage theme variant preference.
+  var persistedSelectedParagonThemeVariant = localStorage.getItem(SELECTED_THEME_VARIANT_KEY);
+  if (persistedSelectedParagonThemeVariant && themeVariants[persistedSelectedParagonThemeVariant]) {
+    return {
+      name: persistedSelectedParagonThemeVariant,
+      metadata: themeVariants[persistedSelectedParagonThemeVariant]
+    };
+  }
+
+  // Then, detect system preference via `prefers-color-scheme` media query and use
+  // the default dark theme variant, if one exists.
+  var hasDarkSystemPreference = !!((_window$matchMedia = (_window = window).matchMedia) !== null && _window$matchMedia !== void 0 && (_window$matchMedia = _window$matchMedia.call(_window, '(prefers-color-scheme: dark)')) !== null && _window$matchMedia !== void 0 && _window$matchMedia.matches);
+  var defaultDarkThemeVariant = themeVariantDefaults.dark;
+  var darkThemeVariantMetadata = themeVariants[defaultDarkThemeVariant];
+  if (hasDarkSystemPreference && defaultDarkThemeVariant && darkThemeVariantMetadata) {
+    return {
+      name: defaultDarkThemeVariant,
+      metadata: darkThemeVariantMetadata
+    };
+  }
+  var defaultLightThemeVariant = themeVariantDefaults.light;
+  var lightThemeVariantMetadata = themeVariants[defaultLightThemeVariant];
+
+  // Handle edge case where the default light theme variant is not configured or provided.
+  if (!defaultLightThemeVariant || !lightThemeVariantMetadata) {
+    return undefined;
+  }
+
+  // Otherwise, fallback to using the default light theme variant as configured.
+  return {
+    name: defaultLightThemeVariant,
+    metadata: lightThemeVariantMetadata
+  };
+};
+
+/**
+ * A custom React hook that manages the application's theme state and injects the appropriate CSS for the theme core
+ * and theme variants (e.g., light and dark modes) into the HTML document. It handles dynamically loading the theme
+ * CSS based on the current theme variant, and ensures that the theme variant's CSS is preloaded for runtime theme
+ * switching.This is done using "alternate" stylesheets. That is, the browser will download the CSS for the
+ * non-current theme variants with a lower priority than the current one.
+ *
+ * The hook also responds to system theme preference changes (e.g., via the `prefers-color-scheme` media query),
+ * and can automatically switch the theme based on the system's dark mode or light mode preference.
  *
  * @memberof module:React
- * @param {object} config An object containing the URLs for the theme's core CSS and any theme (i.e., `getConfig()`)
  *
- * @returns An array containing 2 elements: 1) an object containing the app
- *  theme state, and 2) a dispatch function to mutate the app theme state.
+ * @returns {Array} - An array containing:
+ *  1. An object representing the current theme state.
+ *  2. A dispatch function to mutate the app theme state (e.g., change the theme variant).
+ *
+ * * @example
+ * const [themeState, dispatch] = useParagonTheme();
+ * console.log(themeState.isThemeLoaded); // true when the theme has been successfully loaded.
+ *
+ * // Dispatch an action to change the theme variant
+ * dispatch(paragonThemeActions.setParagonThemeVariant('dark'));
  */
-var useParagonTheme = function useParagonTheme(config) {
+var useParagonTheme = function useParagonTheme() {
   var _getDefaultThemeVaria;
-  var paragonThemeUrls = useParagonThemeUrls(config);
-  var _ref = paragonThemeUrls || {},
-    themeCore = _ref.core,
-    themeVariantDefaults = _ref.defaults,
-    themeVariants = _ref.variants;
+  var paragonThemeUrls = useParagonThemeUrls();
+  var _ref2 = paragonThemeUrls || {},
+    themeCore = _ref2.core,
+    themeVariantDefaults = _ref2.defaults,
+    themeVariants = _ref2.variants;
   var initialParagonThemeState = {
     isThemeLoaded: false,
     themeVariant: (_getDefaultThemeVaria = getDefaultThemeVariant({
@@ -63,7 +142,7 @@ var useParagonTheme = function useParagonTheme(config) {
   // load the core theme CSS
   useParagonThemeCore({
     themeCore: themeCore,
-    onLoad: onLoadThemeCore
+    onComplete: onLoadThemeCore
   });
 
   // respond to system preference changes with regard to `prefers-color-scheme: dark`.
@@ -84,7 +163,7 @@ var useParagonTheme = function useParagonTheme(config) {
   // load the theme variant(s) CSS
   useParagonThemeVariants({
     themeVariants: themeVariants,
-    onLoad: onLoadThemeVariants,
+    onComplete: onLoadThemeVariants,
     currentThemeVariant: themeState.themeVariant,
     onDarkModeSystemPreferenceChange: handleDarkModeSystemPreferenceChange
   });

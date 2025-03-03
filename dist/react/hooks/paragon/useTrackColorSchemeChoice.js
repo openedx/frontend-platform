@@ -2,8 +2,10 @@ import { useEffect } from 'react';
 import { sendTrackEvent } from '../../../analytics';
 
 /**
- * A React hook that tracks user's preferred color scheme (light or dark) and sends respective
- * event to the tracking service.
+ * A custom React hook that listens for changes in the system's color scheme preference (via `matchMedia`)
+ * and sends an event with the chosen color scheme (either `light` or `dark`) to the provided tracking service.
+ * It sends an event both when the hook is first initialized (to capture the user's initial preference)
+ * and when the system's color scheme preference changes.
  *
  * @memberof module:React
  */

@@ -18,11 +18,12 @@ import { getLoginRedirectUrl } from '../auth';
  * @see {@link module:frontend-platform/analytics~sendPageEvent}
  * @memberof module:React
  * @param {Object} props
- * @param {string} props.redirectUrl The URL anonymous users should be redirected to, rather than
+ * @param {string} [props.redirectUrl] The URL anonymous users should be redirected to, rather than
  * viewing the route's contents.
  */
 export default function AuthenticatedPageRoute(_ref) {
-  var redirectUrl = _ref.redirectUrl,
+  var _ref$redirectUrl = _ref.redirectUrl,
+    redirectUrl = _ref$redirectUrl === void 0 ? null : _ref$redirectUrl,
     children = _ref.children;
   var _useContext = useContext(AppContext),
     authenticatedUser = _useContext.authenticatedUser;
@@ -36,8 +37,5 @@ export default function AuthenticatedPageRoute(_ref) {
 AuthenticatedPageRoute.propTypes = {
   redirectUrl: PropTypes.string,
   children: PropTypes.node.isRequired
-};
-AuthenticatedPageRoute.defaultProps = {
-  redirectUrl: null
 };
 //# sourceMappingURL=AuthenticatedPageRoute.js.map
