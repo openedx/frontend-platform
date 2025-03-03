@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: logging/MockLoggingService.js</title>
+    <title>JSDoc: Source: react/hooks/paragon/useTrackColorSchemeChoice.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -18,7 +18,7 @@
 <body data-module="">
 
 <div id="main">
-    <h1 class="page-title">Source: logging/MockLoggingService.js</h1>
+    <h1 class="page-title">Source: react/hooks/paragon/useTrackColorSchemeChoice.js</h1>
 
     
 
@@ -27,37 +27,39 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/**
- * The MockLoggingService implements both logInfo and logError as jest mock functions via
- * jest.fn().  It has no other functionality.
+            <pre class="prettyprint source linenums"><code>import { useEffect } from 'react';
+
+import { sendTrackEvent } from '../../../analytics';
+
+/**
+ * A custom React hook that listens for changes in the system's color scheme preference (via `matchMedia`)
+ * and sends an event with the chosen color scheme (either `light` or `dark`) to the provided tracking service.
+ * It sends an event both when the hook is first initialized (to capture the user's initial preference)
+ * and when the system's color scheme preference changes.
  *
- * @implements {LoggingService}
- * @memberof module:Logging
+ * @memberof module:React
  */
-class MockLoggingService {
-  /**
-   * Implemented as a jest.fn()
-   *
-   * @memberof MockLoggingService
-   */
-  logInfo = jest.fn();
+const useTrackColorSchemeChoice = () => {
+  useEffect(() => {
+    const trackColorSchemeChoice = ({ matches }) => {
+      const preferredColorScheme = matches ? 'dark' : 'light';
+      sendTrackEvent('openedx.ui.frontend-platform.prefers-color-scheme.selected', { preferredColorScheme });
+    };
+    const colorSchemeQuery = window.matchMedia?.('(prefers-color-scheme: dark)');
+    if (colorSchemeQuery) {
+      // send user's initial choice
+      trackColorSchemeChoice(colorSchemeQuery);
+      colorSchemeQuery.addEventListener('change', trackColorSchemeChoice);
+    }
+    return () => {
+      if (colorSchemeQuery) {
+        colorSchemeQuery.removeEventListener('change', trackColorSchemeChoice);
+      }
+    };
+  }, []);
+};
 
-  /**
-   * Implemented as a jest.fn()
-   *
-   * @memberof MockLoggingService
-   */
-  logError = jest.fn();
-
-  /**
-   * Implemented as a jest.fn()
-   *
-   * @memberof MockLoggingService
-   */
-  setCustomAttribute = jest.fn();
-}
-
-export default MockLoggingService;
+export default useTrackColorSchemeChoice;
 </code></pre>
         </article>
     </section>

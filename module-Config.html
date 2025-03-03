@@ -995,6 +995,29 @@ time.</p>
         </tr>
 
     
+
+        <tr>
+            
+                <td class="name"><code>PARAGON_THEME_URLS</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
     </tbody>
 </table>
 
@@ -1030,7 +1053,7 @@ time.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="config.js.html">config.js</a>, <a href="config.js.html#line275">line 275</a>
+        <a href="config.js.html">config.js</a>, <a href="config.js.html#line310">line 310</a>
     </li></ul></dd>
     
 
@@ -1229,7 +1252,7 @@ sequence.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="config.js.html">config.js</a>, <a href="config.js.html#line264">line 264</a>
+        <a href="config.js.html">config.js</a>, <a href="config.js.html#line299">line 299</a>
     </li></ul></dd>
     
 
@@ -1325,7 +1348,7 @@ const {
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="config.js.html">config.js</a>, <a href="config.js.html#line192">line 192</a>
+        <a href="config.js.html">config.js</a>, <a href="config.js.html#line227">line 227</a>
     </li></ul></dd>
     
 
@@ -1487,7 +1510,7 @@ If any of the key values are `undefined`, an error will be logged to 'warn'.</co
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="config.js.html">config.js</a>, <a href="config.js.html#line234">line 234</a>
+        <a href="config.js.html">config.js</a>, <a href="config.js.html#line269">line 269</a>
     </li></ul></dd>
     
 
@@ -1514,6 +1537,183 @@ If any of the key values are `undefined`, an error will be logged to 'warn'.</co
 
 
 
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~parseParagonThemeUrls"><span class="type-signature">(inner) </span>parseParagonThemeUrls<span class="signature">(paragonUrlsJson)</span><span class="type-signature"> &rarr; {Object|undefined}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Safely parses a JSON string coming from the environment variables.
+If the JSON is invalid, the function returns an empty object and logs an error to the console.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>paragonUrlsJson</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The JSON string representing Paragon theme URLs.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="config.js.html">config.js</a>, <a href="config.js.html#line157">line 157</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <ul>
+<li>Returns a parsed object if the JSON is valid; otherwise, returns
+an empty object if invalid or undefined if no input is provided.</li>
+</ul>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+|
+
+<span class="param-type">undefined</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>const jsonString = '{
+   "core":{"urls":{"default":"core.min.css"}},
+   "defaults":{"light":"light"},
+   "variants":{"light":{"urls":{"default":"light.min.css"}}}
+}';
+const parsedUrls = parseParagonThemeUrls(jsonString);
+console.log(parsedUrls); // Outputs the parsed JSON object</code></pre>
 
 
 
@@ -1633,7 +1833,7 @@ setConfig({
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="config.js.html">config.js</a>, <a href="config.js.html#line214">line 214</a>
+        <a href="config.js.html">config.js</a>, <a href="config.js.html#line249">line 249</a>
     </li></ul></dd>
     
 
@@ -1697,7 +1897,7 @@ setConfig({
                     <a href="module-Config.html" class="nav-link font-weight-bold">Config</a>
                     
             <ul class="list-unstyled px-3 pb-4 bg-light">
-                <li><a href="module-Config.html#.ConfigDocument">ConfigDocument</a></li><li><a href="module-Config.html#~ensureConfig">ensureConfig</a></li><li><a href="module-Config.html#~getConfig">getConfig</a></li><li><a href="module-Config.html#~mergeConfig">mergeConfig</a></li><li><a href="module-Config.html#~setConfig">setConfig</a></li>
+                <li><a href="module-Config.html#.ConfigDocument">ConfigDocument</a></li><li><a href="module-Config.html#~ensureConfig">ensureConfig</a></li><li><a href="module-Config.html#~getConfig">getConfig</a></li><li><a href="module-Config.html#~mergeConfig">mergeConfig</a></li><li><a href="module-Config.html#~parseParagonThemeUrls">parseParagonThemeUrls</a></li><li><a href="module-Config.html#~setConfig">setConfig</a></li>
             </ul>
         
                 </li><li class="module-section nav-item Initialization">
@@ -1732,7 +1932,7 @@ setConfig({
                     <a href="module-React.html" class="nav-link font-weight-bold">React</a>
                     
             <ul class="list-unstyled px-3 pb-4 bg-light">
-                <li><a href="module-React.html#.AppContext">AppContext</a></li><li><a href="module-React.html#.AppProvider">AppProvider</a></li><li><a href="module-React.html#.AuthenticatedPageRoute">AuthenticatedPageRoute</a></li><li><a href="module-React.ErrorBoundary.html">ErrorBoundary</a></li><li><a href="module-React.html#.ErrorPage">ErrorPage</a></li><li><a href="module-React.html#.LoginRedirect">LoginRedirect</a></li><li><a href="module-React.html#.OptionalReduxProvider">OptionalReduxProvider</a></li><li><a href="module-React.html#.PageWrap">PageWrap</a></li><li><a href="module-React.html#.useAppEvent">useAppEvent</a></li><li><a href="module-React.html#.useTrackColorSchemeChoice">useTrackColorSchemeChoice</a></li>
+                <li><a href="module-React.html#.AppContext">AppContext</a></li><li><a href="module-React.html#.AppProvider">AppProvider</a></li><li><a href="module-React.html#.AuthenticatedPageRoute">AuthenticatedPageRoute</a></li><li><a href="module-React.ErrorBoundary.html">ErrorBoundary</a></li><li><a href="module-React.html#.ErrorPage">ErrorPage</a></li><li><a href="module-React.html#.LoginRedirect">LoginRedirect</a></li><li><a href="module-React.html#.OptionalReduxProvider">OptionalReduxProvider</a></li><li><a href="module-React.html#.PageWrap">PageWrap</a></li><li><a href="module-React.html#.useAppEvent">useAppEvent</a></li><li><a href="module-React.html#.useParagonTheme">useParagonTheme</a></li><li><a href="module-React.html#.useParagonThemeCore">useParagonThemeCore</a></li><li><a href="module-React.html#.useParagonThemeVariants">useParagonThemeVariants</a></li><li><a href="module-React.html#.useTrackColorSchemeChoice">useTrackColorSchemeChoice</a></li>
             </ul>
         
                 </li><li class="module-section nav-item Testing">
@@ -1755,7 +1955,7 @@ setConfig({
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Mon Mar 03 2025 07:31:15 GMT+0000 (Coordinated Universal Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Mon Mar 03 2025 23:23:53 GMT+0000 (Coordinated Universal Time)
 </footer>
 
 <script> prettyPrint(); </script>

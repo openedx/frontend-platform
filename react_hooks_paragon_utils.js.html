@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: logging/MockLoggingService.js</title>
+    <title>JSDoc: Source: react/hooks/paragon/utils.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -18,7 +18,7 @@
 <body data-module="">
 
 <div id="main">
-    <h1 class="page-title">Source: logging/MockLoggingService.js</h1>
+    <h1 class="page-title">Source: react/hooks/paragon/utils.js</h1>
 
     
 
@@ -27,37 +27,30 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/**
- * The MockLoggingService implements both logInfo and logError as jest mock functions via
- * jest.fn().  It has no other functionality.
- *
- * @implements {LoggingService}
- * @memberof module:Logging
+            <pre class="prettyprint source linenums"><code>import { getConfig } from '../../../config';
+import { basename } from '../../../initialize';
+
+/**
+ * Iterates through each given `&lt;link>` element and removes it from the DOM.
+ * @param {HTMLLinkElement[]} existingLinks
  */
-class MockLoggingService {
-  /**
-   * Implemented as a jest.fn()
-   *
-   * @memberof MockLoggingService
-   */
-  logInfo = jest.fn();
+export const removeExistingLinks = (existingLinks) => {
+  existingLinks.forEach((link) => {
+    link.remove();
+  });
+};
 
-  /**
-   * Implemented as a jest.fn()
-   *
-   * @memberof MockLoggingService
-   */
-  logError = jest.fn();
+/**
+* Creates the fallback URL for the given theme file.
+* @param {string} url The theme file path.
+* @returns {string} The default theme url.
+*/
+export const fallbackThemeUrl = (url) => {
+  const baseUrl = getConfig().BASE_URL || window.location?.origin;
+  return `${baseUrl}${basename}${url}`;
+};
 
-  /**
-   * Implemented as a jest.fn()
-   *
-   * @memberof MockLoggingService
-   */
-  setCustomAttribute = jest.fn();
-}
-
-export default MockLoggingService;
+export const isEmptyObject = (obj) => !obj || Object.keys(obj).length === 0;
 </code></pre>
         </article>
     </section>

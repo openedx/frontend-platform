@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: logging/MockLoggingService.js</title>
+    <title>JSDoc: Source: react/hooks/useAppEvent.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -18,7 +18,7 @@
 <body data-module="">
 
 <div id="main">
-    <h1 class="page-title">Source: logging/MockLoggingService.js</h1>
+    <h1 class="page-title">Source: react/hooks/useAppEvent.js</h1>
 
     
 
@@ -27,37 +27,30 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/**
- * The MockLoggingService implements both logInfo and logError as jest mock functions via
- * jest.fn().  It has no other functionality.
+            <pre class="prettyprint source linenums"><code>import { useEffect } from 'react';
+
+import { subscribe, unsubscribe } from '../../pubSub';
+
+/**
+ * A React hook that allows functional components to subscribe to application events.  This should
+ * be used sparingly - for the most part, Context should be used higher-up in the application to
+ * provide necessary data to a given component, rather than utilizing a non-React-like Pub/Sub
+ * mechanism.
  *
- * @implements {LoggingService}
- * @memberof module:Logging
+ * @memberof module:React
+ *
+ * @param {string} type
+ * @param {function} callback
  */
-class MockLoggingService {
-  /**
-   * Implemented as a jest.fn()
-   *
-   * @memberof MockLoggingService
-   */
-  logInfo = jest.fn();
+const useAppEvent = (type, callback) => {
+  useEffect(() => {
+    const subscriptionToken = subscribe(type, callback);
 
-  /**
-   * Implemented as a jest.fn()
-   *
-   * @memberof MockLoggingService
-   */
-  logError = jest.fn();
+    return () => unsubscribe(subscriptionToken);
+  }, [callback, type]);
+};
 
-  /**
-   * Implemented as a jest.fn()
-   *
-   * @memberof MockLoggingService
-   */
-  setCustomAttribute = jest.fn();
-}
-
-export default MockLoggingService;
+export default useAppEvent;
 </code></pre>
         </article>
     </section>

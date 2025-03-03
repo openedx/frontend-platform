@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: react/hooks.js</title>
+    <title>JSDoc: Source: react/hooks/paragon/useParagonThemeUrls.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -18,7 +18,7 @@
 <body data-module="">
 
 <div id="main">
-    <h1 class="page-title">Source: react/hooks.js</h1>
+    <h1 class="page-title">Source: react/hooks/paragon/useParagonThemeUrls.js</h1>
 
     
 
@@ -27,56 +27,143 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/* eslint-disable import/prefer-default-export */
-import { useEffect } from 'react';
-import { subscribe, unsubscribe } from '../pubSub';
-import { sendTrackEvent } from '../analytics';
+            <pre class="prettyprint source linenums"><code>import { useMemo } from 'react';
+
+import { fallbackThemeUrl, isEmptyObject } from './utils';
+import { getConfig } from '../../../config';
 
 /**
- * A React hook that allows functional components to subscribe to application events.  This should
- * be used sparingly - for the most part, Context should be used higher-up in the application to
- * provide necessary data to a given component, rather than utilizing a non-React-like Pub/Sub
- * mechanism.
+ * Replaces a wildcard in the URL string with a provided local version string.
+ * This is typically used to substitute a version placeholder (e.g., `$paragonVersion`)
+ * in URLs with actual version values.
  *
- * @memberof module:React
- * @param {string} type
- * @param {function} callback
+ * @param {Object} args - The arguments object for version substitution.
+ * @param {string} args.url - The URL string that may contain a wildcard keyword (e.g., `$paragonVersion`).
+ * @param {string} args.wildcardKeyword - The keyword (e.g., `$paragonVersion`) in the URL to be replaced
+ * with the local version.
+ * @param {string} args.localVersion - The local version string to replace the wildcard with.
+ *
+ * @returns {string} The URL with the wildcard keyword replaced by the provided version string.
+ * If the conditions are not met (e.g., missing URL or version), the original URL is returned.
+ *
+ * @example
+ * const url = 'https://cdn.example.com/$paragonVersion/theme.css';
+ * const version = '1.0.0';
+ * const updatedUrl = handleVersionSubstitution({ url, wildcardKeyword: '$paragonVersion', localVersion: version });
+ * console.log(updatedUrl); // Outputs: 'https://cdn.example.com/1.0.0/theme.css'
  */
-export const useAppEvent = (type, callback) => {
-  useEffect(() => {
-    const subscriptionToken = subscribe(type, callback);
-
-    return function cleanup() {
-      unsubscribe(subscriptionToken);
-    };
-  }, [callback, type]);
+export const handleVersionSubstitution = ({ url, wildcardKeyword, localVersion }) => {
+  if (!url || !url.includes(wildcardKeyword) || !localVersion) {
+    return url;
+  }
+  return url.replaceAll(wildcardKeyword, localVersion);
 };
 
 /**
- * A React hook that tracks user's preferred color scheme (light or dark) and sends respective
- * event to the tracking service.
+ * Custom React hook that retrieves the Paragon theme URLs, including the core theme CSS and any theme variants.
+ * It supports version substitution for the Paragon and brand versions and returns a structured object containing
+ * the URLs. The hook also handles fallback scenarios when the URLs are unavailable in the configuration or when
+ * version substitution is required.
  *
- * @memberof module:React
+ * @returns {Object|undefined} An object containing:
+ *   - `core`: The core theme URLs (including default and brand override).
+ *   - `defaults`: Any default theme variants.
+ *   - `variants`: The URLs for any additional theme variants (default and brand override).
+ *
+ *   If the required URLs are not available or cannot be determined, `undefined` is returned.
+ *
+ * @example
+ * const themeUrls = useParagonThemeUrls();
+ * if (themeUrls) {
+ *   console.log(themeUrls.core.urls.default); // Outputs the URL of the core theme CSS
+ *   console.log(themeUrls.variants['dark'].urls.default); // Outputs the URL of the dark theme variant CSS
+ * }
+ *
  */
-export const useTrackColorSchemeChoice = () => {
-  useEffect(() => {
-    const trackColorSchemeChoice = ({ matches }) => {
-      const preferredColorScheme = matches ? 'dark' : 'light';
-      sendTrackEvent('openedx.ui.frontend-platform.prefers-color-scheme.selected', { preferredColorScheme });
-    };
-    const colorSchemeQuery = window.matchMedia?.('(prefers-color-scheme: dark)');
-    if (colorSchemeQuery) {
-      // send user's initial choice
-      trackColorSchemeChoice(colorSchemeQuery);
-      colorSchemeQuery.addEventListener('change', trackColorSchemeChoice);
+const useParagonThemeUrls = () => useMemo(() => {
+  const { PARAGON_THEME_URLS: paragonThemeUrls } = getConfig();
+  if (!paragonThemeUrls) {
+    return undefined;
+  }
+
+  const paragonCoreCssUrl = typeof paragonThemeUrls?.core?.urls === 'object' ? paragonThemeUrls.core.urls.default : paragonThemeUrls?.core?.url;
+  const brandCoreCssUrl = typeof paragonThemeUrls?.core?.urls === 'object' ? paragonThemeUrls.core.urls.brandOverride : undefined;
+  const defaultThemeVariants = paragonThemeUrls.defaults;
+
+  // Local versions of @openedx/paragon and @edx/brand
+  // these are only used when passed into handleVersionSubstitution
+  // which does not attempt substitution using falsy value
+  const localParagonVersion = PARAGON_THEME?.paragon?.version;
+  const localBrandVersion = PARAGON_THEME?.brand?.version;
+
+  const coreCss = {
+    default: handleVersionSubstitution({ url: paragonCoreCssUrl, wildcardKeyword: '$paragonVersion', localVersion: localParagonVersion }),
+    brandOverride: handleVersionSubstitution({ url: brandCoreCssUrl, wildcardKeyword: '$brandVersion', localVersion: localBrandVersion }),
+  };
+  const themeVariantsCss = {};
+  const themeVariantsEntries = Object.entries(paragonThemeUrls.variants || {});
+  themeVariantsEntries.forEach(([themeVariant, { url, urls }]) => {
+    const themeVariantMetadata = { urls: null };
+    if (url) {
+      themeVariantMetadata.urls = {
+        default: handleVersionSubstitution({
+          url,
+          wildcardKeyword: '$paragonVersion',
+          localVersion: localParagonVersion,
+        }),
+      };
+    } else {
+      themeVariantMetadata.urls = {
+        default: handleVersionSubstitution({
+          url: urls.default,
+          wildcardKeyword: '$paragonVersion',
+          localVersion: localParagonVersion,
+        }),
+        brandOverride: handleVersionSubstitution({
+          url: urls.brandOverride,
+          wildcardKeyword: '$brandVersion',
+          localVersion: localBrandVersion,
+        }),
+      };
     }
-    return () => {
-      if (colorSchemeQuery) {
-        colorSchemeQuery.removeEventListener('change', trackColorSchemeChoice);
-      }
+    themeVariantsCss[themeVariant] = themeVariantMetadata;
+  });
+
+  // If we don't have  the core default or any theme variants, use the PARAGON_THEME
+  if (!coreCss.default || isEmptyObject(themeVariantsCss) || isEmptyObject(defaultThemeVariants)) {
+    const localCoreUrl = PARAGON_THEME.paragon?.themeUrls?.core;
+    const localThemeVariants = PARAGON_THEME.paragon?.themeUrls?.variants;
+    const localDefaultThemeVariants = PARAGON_THEME.paragon?.themeUrls?.defaults;
+
+    if (isEmptyObject(localCoreUrl) || isEmptyObject(localThemeVariants)) {
+      return undefined;
+    }
+    if (!coreCss.default) {
+      coreCss.default = fallbackThemeUrl(localCoreUrl?.fileName);
+    }
+
+    if (isEmptyObject(themeVariantsCss)) {
+      Object.entries(localThemeVariants).forEach(([themeVariant, { fileName, ...rest }]) => {
+        themeVariantsCss[themeVariant] = {
+          urls: { default: fallbackThemeUrl(fileName), ...rest.urls },
+        };
+      });
+    }
+    return {
+      core: { urls: coreCss },
+      defaults: defaultThemeVariants || localDefaultThemeVariants,
+      variants: themeVariantsCss,
     };
-  }, []);
-};
+  }
+
+  return {
+    core: { urls: coreCss },
+    defaults: defaultThemeVariants,
+    variants: themeVariantsCss,
+  };
+}, []);
+
+export default useParagonThemeUrls;
 </code></pre>
         </article>
     </section>
@@ -105,7 +192,7 @@ export const useTrackColorSchemeChoice = () => {
                     <a href="module-Config.html" class="nav-link font-weight-bold">Config</a>
                     
             <ul class="list-unstyled px-3 pb-4 bg-light">
-                <li><a href="module-Config.html#.ConfigDocument">ConfigDocument</a></li><li><a href="module-Config.html#~ensureConfig">ensureConfig</a></li><li><a href="module-Config.html#~getConfig">getConfig</a></li><li><a href="module-Config.html#~mergeConfig">mergeConfig</a></li><li><a href="module-Config.html#~setConfig">setConfig</a></li>
+                <li><a href="module-Config.html#.ConfigDocument">ConfigDocument</a></li><li><a href="module-Config.html#~ensureConfig">ensureConfig</a></li><li><a href="module-Config.html#~getConfig">getConfig</a></li><li><a href="module-Config.html#~mergeConfig">mergeConfig</a></li><li><a href="module-Config.html#~parseParagonThemeUrls">parseParagonThemeUrls</a></li><li><a href="module-Config.html#~setConfig">setConfig</a></li>
             </ul>
         
                 </li><li class="module-section nav-item Initialization">
@@ -140,7 +227,7 @@ export const useTrackColorSchemeChoice = () => {
                     <a href="module-React.html" class="nav-link font-weight-bold">React</a>
                     
             <ul class="list-unstyled px-3 pb-4 bg-light">
-                <li><a href="module-React.html#.AppContext">AppContext</a></li><li><a href="module-React.html#.AppProvider">AppProvider</a></li><li><a href="module-React.html#.AuthenticatedPageRoute">AuthenticatedPageRoute</a></li><li><a href="module-React.ErrorBoundary.html">ErrorBoundary</a></li><li><a href="module-React.html#.ErrorPage">ErrorPage</a></li><li><a href="module-React.html#.LoginRedirect">LoginRedirect</a></li><li><a href="module-React.html#.OptionalReduxProvider">OptionalReduxProvider</a></li><li><a href="module-React.html#.PageWrap">PageWrap</a></li><li><a href="module-React.html#.useAppEvent">useAppEvent</a></li><li><a href="module-React.html#.useTrackColorSchemeChoice">useTrackColorSchemeChoice</a></li>
+                <li><a href="module-React.html#.AppContext">AppContext</a></li><li><a href="module-React.html#.AppProvider">AppProvider</a></li><li><a href="module-React.html#.AuthenticatedPageRoute">AuthenticatedPageRoute</a></li><li><a href="module-React.ErrorBoundary.html">ErrorBoundary</a></li><li><a href="module-React.html#.ErrorPage">ErrorPage</a></li><li><a href="module-React.html#.LoginRedirect">LoginRedirect</a></li><li><a href="module-React.html#.OptionalReduxProvider">OptionalReduxProvider</a></li><li><a href="module-React.html#.PageWrap">PageWrap</a></li><li><a href="module-React.html#.useAppEvent">useAppEvent</a></li><li><a href="module-React.html#.useParagonTheme">useParagonTheme</a></li><li><a href="module-React.html#.useParagonThemeCore">useParagonThemeCore</a></li><li><a href="module-React.html#.useParagonThemeVariants">useParagonThemeVariants</a></li><li><a href="module-React.html#.useTrackColorSchemeChoice">useTrackColorSchemeChoice</a></li>
             </ul>
         
                 </li><li class="module-section nav-item Testing">
@@ -163,7 +250,7 @@ export const useTrackColorSchemeChoice = () => {
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Mon Mar 03 2025 07:31:15 GMT+0000 (Coordinated Universal Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Mon Mar 03 2025 23:23:53 GMT+0000 (Coordinated Universal Time)
 </footer>
 
 <script> prettyPrint(); </script>
