@@ -51,8 +51,8 @@ describe('useParagonThemeCore', () => {
 
     const createdLinkTag = document.head.querySelector('link[data-paragon-theme-core="true"]');
     const createdBrandLinkTag = document.head.querySelector('link[data-brand-theme-core="true"]');
-    const defaultFallbackUrl = `${getConfig().BASE_URL}/${PARAGON_THEME.paragon.themeUrls.core.fileName}`;
-    const brandFallbackUrl = `${getConfig().BASE_URL}/${PARAGON_THEME.brand.themeUrls.core.fileName}`;
+    const defaultFallbackUrl = `//${getConfig().BASE_URL}/${PARAGON_THEME.paragon.themeUrls.core.fileName}`;
+    const brandFallbackUrl = `//${getConfig().BASE_URL}/${PARAGON_THEME.brand.themeUrls.core.fileName}`;
 
     act(() => { createdLinkTag.onerror(); createdBrandLinkTag.onerror(); });
 
@@ -61,8 +61,8 @@ describe('useParagonThemeCore', () => {
     expect(logInfo).toHaveBeenCalledTimes(2);
     expect(logInfo).toHaveBeenCalledWith(`Could not load core theme CSS from ${coreConfig.themeCore.urls.default}. Falling back to locally installed core theme CSS: ${defaultFallbackUrl}`);
     expect(logInfo).toHaveBeenCalledWith(`Could not load core theme CSS from ${coreConfig.themeCore.urls.brandOverride}. Falling back to locally installed core theme CSS: ${brandFallbackUrl}`);
-    expect(fallbackLinks[0].href).toBe(defaultFallbackUrl);
-    expect(fallbackLinks[1].href).toBe(brandFallbackUrl);
+    expect(fallbackLinks[0].href).toBe(`http:${defaultFallbackUrl}`);
+    expect(fallbackLinks[1].href).toBe(`http:${brandFallbackUrl}`);
   });
   it('should dispatch a log error if the fallback url is not loaded (either default or brandOverride)', () => {
     coreConfig.themeCore.urls.brandOverride = 'https://cdn.jsdelivr.net/npm/@edx/brand@2.0.0/dist/core.min.css';
@@ -70,8 +70,8 @@ describe('useParagonThemeCore', () => {
     renderHook(() => useParagonThemeCore(coreConfig));
     const createdLinkTag = document.head.querySelector('link[data-paragon-theme-core="true"]');
     const createdBrandLinkTag = document.head.querySelector('link[data-brand-theme-core="true"]');
-    const defaultFallbackUrl = `${getConfig().BASE_URL}/${PARAGON_THEME.paragon.themeUrls.core.fileName}`;
-    const brandFallbackUrl = `${getConfig().BASE_URL}/${PARAGON_THEME.brand.themeUrls.core.fileName}`;
+    const defaultFallbackUrl = `http://${getConfig().BASE_URL}/${PARAGON_THEME.paragon.themeUrls.core.fileName}`;
+    const brandFallbackUrl = `http://${getConfig().BASE_URL}/${PARAGON_THEME.brand.themeUrls.core.fileName}`;
 
     act(() => { createdLinkTag.onerror(); createdBrandLinkTag.onerror(); });
     const fallbackLinks = document.querySelectorAll('link');

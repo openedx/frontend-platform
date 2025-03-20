@@ -7,7 +7,7 @@ describe('useParagonThemeUrls', () => {
   beforeEach(() => { jest.resetAllMocks(); });
   it.each([
     [undefined, undefined],
-    [{}, { core: { urls: { default: 'localhost:8080/core.min.css', brandOverride: undefined } }, defaults: { light: 'light' }, variants: { light: { urls: { default: 'localhost:8080/light.min.css' } } } }],
+    [{}, { core: { urls: { default: '//localhost:8080/core.min.css', brandOverride: undefined } }, defaults: { light: 'light' }, variants: { light: { urls: { default: '//localhost:8080/light.min.css' } } } }],
   ])('handles when `config.PARAGON_THEME_URLS` is not present (%s)', (paragonThemeUrls, expectedURLConfig) => {
     mergeConfig({ PARAGON_THEME_URLS: paragonThemeUrls });
     const { result } = renderHook(() => useParagonThemeUrls());
@@ -122,7 +122,7 @@ describe('useParagonThemeUrls', () => {
         expect.objectContaining({
           core: {
             urls: {
-              default: 'localhost:8080/core.min.css',
+              default: '//localhost:8080/core.min.css',
               brandOverride: 'brand-core.css',
             },
           },
@@ -132,7 +132,7 @@ describe('useParagonThemeUrls', () => {
           variants: {
             light: {
               urls: {
-                default: 'localhost:8080/light.min.css',
+                default: '//localhost:8080/light.min.css',
               },
             },
           },
