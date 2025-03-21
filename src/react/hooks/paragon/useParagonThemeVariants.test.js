@@ -51,10 +51,9 @@ describe('useParagonThemeVariants', () => {
     const currentThemeVariant = 'light';
 
     renderHook(() => useParagonThemeVariants({ themeVariants, currentThemeVariant, onComplete: themeOnComplete }));
-
     const themeLinks = document.head.querySelectorAll('link');
-    const paragonFallbackURL = `${getConfig().BASE_URL}/${PARAGON_THEME.paragon.themeUrls.variants.light.fileName}`;
-    const brandFallbackURL = `${getConfig().BASE_URL}/${PARAGON_THEME.brand.themeUrls.variants.light.fileName}`;
+    const paragonFallbackURL = `//${getConfig().BASE_URL}/${PARAGON_THEME.paragon.themeUrls.variants.light.fileName}`;
+    const brandFallbackURL = `//${getConfig().BASE_URL}/${PARAGON_THEME.brand.themeUrls.variants.light.fileName}`;
 
     act(() => { themeLinks.forEach((link) => link.onerror()); });
 
@@ -65,8 +64,8 @@ describe('useParagonThemeVariants', () => {
     const fallbackLinkTag = document.querySelectorAll('link');
 
     expect(fallbackLinkTag.length).toBe(2);
-    expect(fallbackLinkTag[0].href).toBe(paragonFallbackURL);
-    expect(fallbackLinkTag[1].href).toBe(brandFallbackURL);
+    expect(fallbackLinkTag[0].href).toBe(`http:${paragonFallbackURL}`);
+    expect(fallbackLinkTag[1].href).toBe(`http:${brandFallbackURL}`);
   });
 
   it('should dispatch a log error if the fallback url is not loaded (either default or brandOverride)', () => {
@@ -83,14 +82,14 @@ describe('useParagonThemeVariants', () => {
 
     renderHook(() => useParagonThemeVariants({ themeVariants, currentThemeVariant, onComplete: themeOnComplete }));
     const themeLinks = document.head.querySelectorAll('link');
-    const paragonFallbackURL = `${getConfig().BASE_URL}/${PARAGON_THEME.paragon.themeUrls.variants.light.fileName}`;
-    const brandFallbackURL = `${getConfig().BASE_URL}/${PARAGON_THEME.brand.themeUrls.variants.light.fileName}`;
+    const paragonFallbackURL = `//${getConfig().BASE_URL}/${PARAGON_THEME.paragon.themeUrls.variants.light.fileName}`;
+    const brandFallbackURL = `//${getConfig().BASE_URL}/${PARAGON_THEME.brand.themeUrls.variants.light.fileName}`;
 
     act(() => { themeLinks.forEach((link) => link.onerror()); });
 
     const fallbackLinks = document.querySelectorAll('link');
-    expect(fallbackLinks[0].href).toBe(paragonFallbackURL);
-    expect(fallbackLinks[1].href).toBe(brandFallbackURL);
+    expect(fallbackLinks[0].href).toBe(`http:${paragonFallbackURL}`);
+    expect(fallbackLinks[1].href).toBe(`http:${brandFallbackURL}`);
     act(() => { fallbackLinks.forEach((link) => link.onerror()); });
 
     expect(logInfo).toHaveBeenCalledTimes(2);
