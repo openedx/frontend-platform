@@ -21,7 +21,7 @@ export const fallbackThemeUrl = (url) => {
 
   // validates if the baseurl has the protocol to be interpreted correctly by the browser,
   // if is not present add '//' to use Protocol-relative URL
-  const protocol = /^https?:\/\//.test(baseUrl) ? '' : '//';
+  const protocol = /^(https?:)?\/\//.test(baseUrl) ? '' : '//';
 
   return `${protocol}${baseUrl}${basename}${url}`;
 };
