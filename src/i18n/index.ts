@@ -65,3 +65,7 @@ export {
   getLanguageList,
   getLanguageMessages,
 } from './languages';
+
+export {
+  changeUserSessionLanguage,
+} from './LanguageManager';
