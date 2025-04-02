@@ -102,27 +102,42 @@ const useParagonThemeUrls = () => useMemo(() => {
 
   // If we don't have  the core default or any theme variants, use the PARAGON_THEME
   if (!coreCss.default || isEmptyObject(themeVariantsCss) || isEmptyObject(defaultThemeVariants)) {
-    const localCoreUrl = PARAGON_THEME.paragon?.themeUrls?.core;
-    const localThemeVariants = PARAGON_THEME.paragon?.themeUrls?.variants;
-    const localDefaultThemeVariants = PARAGON_THEME.paragon?.themeUrls?.defaults;
+    const localParagonCoreUrl = PARAGON_THEME?.paragon?.themeUrls?.core;
+    const localParagonThemeVariants = PARAGON_THEME?.paragon?.themeUrls?.variants;
+    const localParagonDefaultThemeVariants = PARAGON_THEME?.paragon?.themeUrls?.defaults;
 
-    if (isEmptyObject(localCoreUrl) || isEmptyObject(localThemeVariants)) {
+    const localBrandCoreUrl = PARAGON_THEME?.brand?.themeUrls?.core;
+    const localBrandThemeVariants = PARAGON_THEME?.brand?.themeUrls?.variants;
+    const localBrandDefaultThemeVariants = PARAGON_THEME?.brand?.themeUrls?.defaults;
+
+    if (isEmptyObject(localParagonCoreUrl) || isEmptyObject(localParagonThemeVariants)) {
       return undefined;
     }
     if (!coreCss.default) {
-      coreCss.default = fallbackThemeUrl(localCoreUrl?.fileName);
+      coreCss.default = fallbackThemeUrl(localParagonCoreUrl?.fileName);
+    }
+
+    if (!coreCss.brandOverride && localBrandCoreUrl) {
+      coreCss.brandOverride = fallbackThemeUrl(localBrandCoreUrl?.fileName);
     }
 
     if (isEmptyObject(themeVariantsCss)) {
-      Object.entries(localThemeVariants).forEach(([themeVariant, { fileName, ...rest }]) => {
+      Object.entries(localParagonThemeVariants).forEach(([themeVariant, { fileName, ...rest }]) => {
         themeVariantsCss[themeVariant] = {
           urls: { default: fallbackThemeUrl(fileName), ...rest.urls },
         };
       });
+
+      Object.entries(localBrandThemeVariants).forEach(([themeVariant, { fileName, ...rest }]) => {
+        themeVariantsCss[themeVariant] = {
+          urls: { brandOverride: fallbackThemeUrl(fileName), ...rest.urls, ...themeVariantsCss[themeVariant]?.urls },
+        };
+      });
     }
+
     return {
       core: { urls: coreCss },
-      defaults: defaultThemeVariants || localDefaultThemeVariants,
+      defaults: defaultThemeVariants || { ...localParagonDefaultThemeVariants, ...localBrandDefaultThemeVariants },
       variants: themeVariantsCss,
     };
   }

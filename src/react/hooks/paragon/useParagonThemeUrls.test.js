@@ -3,11 +3,53 @@ import { renderHook } from '@testing-library/react';
 import useParagonThemeUrls from './useParagonThemeUrls';
 import { mergeConfig } from '../../../config';
 
+Object.defineProperty(global, 'PARAGON_THEME', {
+  value: {
+    paragon: {
+      version: '1.0.0',
+      themeUrls: {
+        core: {
+          fileName: 'local-core.min.css',
+        },
+        defaults: {
+          light: 'light',
+        },
+        variants: {
+          light: {
+            fileName: 'local-light.min.css',
+          },
+        },
+      },
+    },
+    brand: {
+      version: '1.0.0',
+      themeUrls: {
+        core: {
+          fileName: 'brand-local-core.min.css',
+        },
+        defaults: {
+          light: 'light',
+        },
+        variants: {
+          light: {
+            fileName: 'brand-local-light.min.css',
+          },
+        },
+      },
+    },
+  },
+  writable: true,
+});
+
 describe('useParagonThemeUrls', () => {
   beforeEach(() => { jest.resetAllMocks(); });
   it.each([
     [undefined, undefined],
-    [{}, { core: { urls: { default: '//localhost:8080/core.min.css', brandOverride: undefined } }, defaults: { light: 'light' }, variants: { light: { urls: { default: '//localhost:8080/light.min.css' } } } }],
+    [{}, {
+      core: { urls: { default: '//localhost:8080/local-core.min.css', brandOverride: '//localhost:8080/brand-local-core.min.css' } },
+      defaults: { light: 'light' },
+      variants: { light: { urls: { default: '//localhost:8080/local-light.min.css', brandOverride: '//localhost:8080/brand-local-light.min.css' } } },
+    }],
   ])('handles when `config.PARAGON_THEME_URLS` is not present (%s)', (paragonThemeUrls, expectedURLConfig) => {
     mergeConfig({ PARAGON_THEME_URLS: paragonThemeUrls });
     const { result } = renderHook(() => useParagonThemeUrls());
@@ -122,7 +164,7 @@ describe('useParagonThemeUrls', () => {
         expect.objectContaining({
           core: {
             urls: {
-              default: '//localhost:8080/core.min.css',
+              default: '//localhost:8080/local-core.min.css',
               brandOverride: 'brand-core.css',
             },
           },
@@ -132,7 +174,8 @@ describe('useParagonThemeUrls', () => {
           variants: {
             light: {
               urls: {
-                default: '//localhost:8080/light.min.css',
+                default: '//localhost:8080/local-light.min.css',
+                brandOverride: '//localhost:8080/brand-local-light.min.css',
               },
             },
           },
@@ -155,7 +198,7 @@ describe('useParagonThemeUrls', () => {
       };
       const originalParagonTheme = global.PARAGON_THEME;
       Object.defineProperty(global, 'PARAGON_THEME', {
-        value: 'mocked-theme',
+        value: undefined,
         writable: true,
       });
       mergeConfig(config);
