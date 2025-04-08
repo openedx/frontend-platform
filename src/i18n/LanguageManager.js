@@ -90,4 +90,10 @@ export async function changeUserSessionLanguage(languageCode) {
   } catch (error) {
     logError(error);
   }
+
+  // Force page reload to ensure complete translation application.
+  // While some translations update via the publish event, many sections
+  // of the platform are not configured to receive these events or
+  // handle translations dynamically, requiring a full reload for consistency.
+  window.location.reload();
 }
