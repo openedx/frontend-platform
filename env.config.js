@@ -3,6 +3,9 @@
 // Also note that in an actual application this file would be added to .gitignore.
 const config = {
   JS_FILE_VAR: 'JS_FILE_VAR_VALUE_FOR_EXAMPLE_APP',
+  styleOverrides: {
+    alertButtonVariant: 'brand',
+  },
 };
 
 export default config;
