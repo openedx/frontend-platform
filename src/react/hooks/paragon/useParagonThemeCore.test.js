@@ -10,6 +10,8 @@ jest.mock('../../../logging');
 describe('useParagonThemeCore', () => {
   const themeOnComplete = jest.fn();
   let coreConfig;
+  const originalWindowLocation = window.location;
+  const mockWindowLocationOrigin = jest.fn();
 
   beforeEach(() => {
     document.head.innerHTML = '';
@@ -21,7 +23,23 @@ describe('useParagonThemeCore', () => {
       },
       onComplete: themeOnComplete,
     };
+
+    Object.defineProperty(window, 'location', {
+      value: {
+        get origin() {
+          return mockWindowLocationOrigin();
+        },
+      },
+    });
+    mockWindowLocationOrigin.mockReturnValue(getConfig().BASE_URL);
+  });
+
+  afterEach(() => {
     jest.clearAllMocks();
+  });
+
+  afterAll(() => {
+    Object.defineProperty(window, 'location', originalWindowLocation);
   });
 
   it('should load the core url and change the loading state to true', () => {

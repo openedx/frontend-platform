@@ -9,10 +9,27 @@ jest.mock('../../../logging');
 
 describe('useParagonThemeVariants', () => {
   const themeOnComplete = jest.fn();
+  const originalWindowLocation = window.location;
+  const mockWindowLocationOrigin = jest.fn();
+
+  beforeEach(() => {
+    Object.defineProperty(window, 'location', {
+      value: {
+        get origin() {
+          return mockWindowLocationOrigin();
+        },
+      },
+    });
+    mockWindowLocationOrigin.mockReturnValue(getConfig().BASE_URL);
+  });
 
   afterEach(() => {
     document.head.innerHTML = '';
     jest.clearAllMocks();
+  });
+
+  afterAll(() => {
+    Object.defineProperty(window, 'location', originalWindowLocation);
   });
 
   it('should create the links tags for each theme variant and change the state to true when all variants are loaded', () => {

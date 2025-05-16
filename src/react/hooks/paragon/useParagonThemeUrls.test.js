@@ -1,7 +1,7 @@
 import { renderHook } from '@testing-library/react';
 
 import useParagonThemeUrls from './useParagonThemeUrls';
-import { mergeConfig } from '../../../config';
+import { mergeConfig, getConfig } from '../../../config';
 
 Object.defineProperty(global, 'PARAGON_THEME', {
   value: {
@@ -41,8 +41,26 @@ Object.defineProperty(global, 'PARAGON_THEME', {
   writable: true,
 });
 
+const originalWindowLocation = window.location;
+const mockWindowLocationOrigin = jest.fn();
+Object.defineProperty(window, 'location', {
+  value: {
+    get origin() {
+      return mockWindowLocationOrigin();
+    },
+  },
+});
+
 describe('useParagonThemeUrls', () => {
-  beforeEach(() => { jest.resetAllMocks(); });
+  beforeEach(() => {
+    mockWindowLocationOrigin.mockReturnValue(getConfig().BASE_URL);
+  });
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
+  afterAll(() => {
+    Object.defineProperty(window, 'location', originalWindowLocation);
+  });
   it.each([
     [undefined, undefined],
     [{}, {
