@@ -1,4 +1,3 @@
-import { getConfig } from '../../../config';
 import { basename } from '../../../initialize';
 
 /**
@@ -17,7 +16,7 @@ export const removeExistingLinks = (existingLinks) => {
 * @returns {string} The default theme url.
 */
 export const fallbackThemeUrl = (url) => {
-  const baseUrl = getConfig().BASE_URL || window.location?.origin;
+  const baseUrl = window.location?.origin;
 
   // validates if the baseurl has the protocol to be interpreted correctly by the browser,
   // if is not present add '//' to use Protocol-relative URL
