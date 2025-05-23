@@ -308,6 +308,33 @@ export function ensureConfig(keys, requester = 'unspecified application code') {
 }
 
 /**
+ * Get a custom link for an external URL, if it exists. If it does not exist, the original URL
+ * is returned. Will look for a custom URL mapping in the `customExternalUrls` object in the config.
+ *
+ *
+ * @param {string} url - The default URL.
+ * @returns {string} - The external link URL. Defaults to the input URL if not found in the
+ * custom external URLs. If the input URL is invalid, a warning is logged and '#' is returned.
+ *
+ * @example
+ * import { getExternalLinkUrl } from '@edx/frontend-platform';
+ *
+ * <Hyperlink
+ *   destination={getExternalLinkUrl(data.helpLink)}
+ *   target="_blank"
+ * >
+ */
+export function getExternalLinkUrl(url) {
+  // Guard against non-strings or whitespace-only strings
+  if (typeof url !== 'string' || !url.trim()) {
+    return '#';
+  }
+
+  const customUrls = getConfig().customExternalUrls || {};
+  return customUrls[url] || url;
+}
+
+/**
  * An object describing the current application configuration.
  *
  * In its most basic form, the initialization process loads this document via `process.env`

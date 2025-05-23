@@ -5,7 +5,9 @@ import { Link } from 'react-router-dom';
 import { injectIntl, useIntl } from '@edx/frontend-platform/i18n';
 import { logInfo } from '@edx/frontend-platform/logging';
 import { AppContext } from '@edx/frontend-platform/react';
-import { ensureConfig, mergeConfig, getConfig } from '@edx/frontend-platform';
+import {
+  ensureConfig, mergeConfig, getConfig, getExternalLinkUrl,
+} from '@edx/frontend-platform';
 /* eslint-enable import/no-extraneous-dependencies */
 import messages from './messages';
 
@@ -49,6 +51,8 @@ function ExamplePage() {
       <AuthenticatedUser />
       <p>EXAMPLE_VAR env var came through: <strong>{getConfig().EXAMPLE_VAR}</strong></p>
       <p>JS_FILE_VAR var came through: <strong>{getConfig().JS_FILE_VAR}</strong></p>
+      <p>External link to <a href={getExternalLinkUrl('https://github.com/openedx/docs.openedx.org/')}>Open edX docs</a> (customized link).</p>
+      <p>External link to <a href={getExternalLinkUrl('https://open-edx-proposals.readthedocs.io/en/latest/')}>Open edX OEPs</a> (non-customized link).</p>
       <p>Visit <Link to="/authenticated">authenticated page</Link>.</p>
       <p>Visit <Link to="/error_example">error page</Link>.</p>
     </div>
