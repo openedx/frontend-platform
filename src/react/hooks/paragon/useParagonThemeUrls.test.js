@@ -276,3 +276,48 @@ describe('useParagonThemeUrls', () => {
     });
   });
 });
+
+it('returns expected object when only brand override URLs are present, fallback to PARAGON_THEME', () => {
+  const config = {
+    PARAGON_THEME_URLS: {
+      core: {
+        urls: {
+          brandOverride: 'https://www.example.com/example-brand-core.css',
+        },
+      },
+      defaults: {
+        light: 'light',
+      },
+      variants: {
+        light: {
+          urls: {
+            brandOverride: 'https://www.example.com/example-brand-light.css',
+          },
+        },
+      },
+    },
+  };
+  mergeConfig(config);
+  const { result } = renderHook(() => useParagonThemeUrls());
+  expect(result.current).toEqual(
+    expect.objectContaining({
+      core: {
+        urls: {
+          default: '//localhost:8080/local-core.min.css',
+          brandOverride: 'https://www.example.com/example-brand-core.css',
+        },
+      },
+      defaults: {
+        light: 'light',
+      },
+      variants: {
+        light: {
+          urls: {
+            default: '//localhost:8080/local-light.min.css',
+            brandOverride: 'https://www.example.com/example-brand-light.css',
+          },
+        },
+      },
+    }),
+  );
+});
