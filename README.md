@@ -26,23 +26,16 @@ In addition, frontend-platform provides an extensible application initialization
 ## Getting started
 
 ### One-time setup if you have not upgraded node/npm
-IMPORTANT: There is now a new node/npm version being used by frontend-platform as of
-https://github.com/openedx/frontend-platform/pull/259
 
 #### Install nvm
-This is highly recommended to be able to leverage different node/npm versions.
-For a some time, different repositories may be using different versions of node/npm.
-
-Alternatively, please install node16 and npm8 for use with this repository.
+This is highly recommended to be able to leverage different node/npm versions. For some time, different repositories may be using different versions of node/npm.
 
 #### Switch to node/npm version for this repo
-```nvm use```
-if you don't have the right node/npm versions, nvm will instruct you to install those
+In the project’s root directory, run `nvm use` to set your environment to the correct node version. If the required node or npm versions are not installed, nvm will prompt you to install them.
 
 #### Clean out old node modules and reinstall
 This step is needed because node now uses a different package lock format, and it's important to reinstall
-dependencies based on this new package file. Delete node_modules, and issue an `npm ci`
-
+dependencies based on this new package file. Delete `node_modules`, and run `npm ci`.
 
 ### Standard getting started steps
 
@@ -98,7 +91,7 @@ initialize({
 });
 ```
 
-When using runtime configuration via `mergeConfig` noted above, `getConfig` must be called within a component's render lifecycle for the added keys and values to be returned in the configuration object. If `getConfig` is called outside of a component's render lifecycle, the custom configuration key/value pairs will not initially be part of the object returned by `getConfig`. For example:
+When using runtime configuration via `mergeConfig` as noted above, `getConfig` must be called within a component's render lifecycle for the added keys and values to be returned in the configuration object. If `getConfig` is called outside of a component's render lifecycle, the custom configuration key/value pairs will not initially be part of the object returned by `getConfig`. For example:
 
 ```jsx
 import { getConfig } from '@edx/frontend-platform/config';
@@ -111,6 +104,24 @@ const ExampleComponent = () => {
   // This returns the value as expected since it is called after `mergeConfig` has already been executed.
   console.log(getConfig().CUSTOM_VARIABLE)
 };
+```
+
+#### Configuring custom external links
+
+A `getExternalLinkUrl` is provided in `config.js` which can be used to configure custom external links. To make use of this function, provide an object that maps default links to custom links. This object should be added to the `config` object defined in the `env.config.[js,jsx,ts,tsx]`, and must be named `customExternalUrls`. Here is an example:
+
+```js
+// env.config.js
+
+const config = {
+  // other custom configuration here
+  customExternalUrls: {
+    "https://docs.openedx.org/en/latest/educators/index.html": "https://custom.example.com/educators/index.html",
+    "https://creativecommons.org/licenses": "https://www.tldrlegal.com/license/creative-commons-attribution-cc",
+  },
+};
+
+export default config;
 ```
 
 ### Service interfaces
