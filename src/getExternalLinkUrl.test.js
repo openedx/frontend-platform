@@ -35,7 +35,7 @@ describe('getExternalLinkUrl', () => {
     expect(getExternalLinkUrl(url)).toBe(url);
   });
 
-  it('should gaurd against empty string argument', () => {
+  it('should guard against empty string argument', () => {
     const fallbackResult = '#';
     setConfig({ customExternalUrls: { foo: 'bar' } });
     expect(getExternalLinkUrl(undefined)).toBe(fallbackResult);
