@@ -56,7 +56,6 @@ const useParagonThemeUrls = () => useMemo(() => {
   if (!paragonThemeUrls) {
     return undefined;
   }
-
   const paragonCoreCssUrl = typeof paragonThemeUrls?.core?.urls === 'object' ? paragonThemeUrls.core.urls.default : paragonThemeUrls?.core?.url;
   const brandCoreCssUrl = typeof paragonThemeUrls?.core?.urls === 'object' ? paragonThemeUrls.core.urls.brandOverride : undefined;
   const defaultThemeVariants = paragonThemeUrls.defaults;
@@ -117,23 +116,24 @@ const useParagonThemeUrls = () => useMemo(() => {
       coreCss.default = fallbackThemeUrl(localParagonCoreUrl?.fileName);
     }
 
-    if (!coreCss.brandOverride && localBrandCoreUrl) {
+    if (!coreCss.brandOverride && !isEmptyObject(localBrandCoreUrl)) {
       coreCss.brandOverride = fallbackThemeUrl(localBrandCoreUrl?.fileName);
     }
 
-    if (isEmptyObject(themeVariantsCss)) {
-      Object.entries(localParagonThemeVariants).forEach(([themeVariant, { fileName, ...rest }]) => {
+    Object.entries(localParagonThemeVariants).forEach(([themeVariant, { fileName, ...rest }]) => {
+      if (!themeVariantsCss[themeVariant]?.urls?.default) {
         themeVariantsCss[themeVariant] = {
-          urls: { default: fallbackThemeUrl(fileName), ...rest.urls },
+          urls: { ...themeVariantsCss[themeVariant]?.urls, default: fallbackThemeUrl(fileName), ...rest.urls },
         };
-      });
-
-      Object.entries(localBrandThemeVariants).forEach(([themeVariant, { fileName, ...rest }]) => {
+      }
+    });
+    Object.entries(localBrandThemeVariants).forEach(([themeVariant, { fileName, ...rest }]) => {
+      if (!themeVariantsCss[themeVariant]?.urls?.brandOverride) {
         themeVariantsCss[themeVariant] = {
-          urls: { brandOverride: fallbackThemeUrl(fileName), ...rest.urls, ...themeVariantsCss[themeVariant]?.urls },
+          urls: { ...themeVariantsCss[themeVariant]?.urls, brandOverride: fallbackThemeUrl(fileName), ...rest.urls },
         };
-      });
-    }
+      }
+    });
 
     return {
       core: { urls: coreCss },
