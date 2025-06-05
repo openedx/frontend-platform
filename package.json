@@ -1,6 +1,6 @@
 {
-  "name": "@adamstankiewicz/openedx-frontend-platform",
-  "version": "8.3.6",
+  "name": "@edx/frontend-platform",
+  "version": "1.0.0-semantically-released",
   "description": "Foundational application framework for Open edX micro-frontend applications.",
   "main": "index.js",
   "publishConfig": {
@@ -88,7 +88,7 @@
   "peerDependenciesMeta": {
     "@openedx/frontend-build": {
       "optional": true,
-      "reason": "This package is only a peer dependency to ensure using a compatible version that provides env.config and PARAGON_THEME support. It is not needed at runtime, and may be omitted with `--omit=optional`."
+      "reason": "This package is only a peer dependency to ensure using a minimum compatible version that provides env.config and PARAGON_THEME support. It is not needed at runtime, and may be omitted with `--omit=optional`."
     }
   }
 }
