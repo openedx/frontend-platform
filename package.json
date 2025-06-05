@@ -88,7 +88,7 @@
   "peerDependenciesMeta": {
     "@openedx/frontend-build": {
       "optional": true,
-      "reason": "This package is only a peer dependency to ensure using a compatible version that provides env.config and PARAGON_THEME support. It is not needed at runtime, and may be omitted with `--omit=optional`."
+      "reason": "This package is only a peer dependency to ensure using a minimum compatible version that provides env.config and PARAGON_THEME support. It is not needed at runtime, and may be omitted with `--omit=optional`."
     }
   }
 }
