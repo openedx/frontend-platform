@@ -308,6 +308,34 @@ export function ensureConfig(keys, requester = 'unspecified application code') {
 }
 
 /**
+ * Get an external link URL based on the URL provided. If the passed in URL is overridden in the
+ * `externalLinkUrlOverrides` object, it will return the overridden URL. Otherwise, it will return
+ * the provided URL.
+ *
+ *
+ * @param {string} url - The default URL.
+ * @returns {string} - The external link URL. Defaults to the input URL if not found in the
+ * `externalLinkUrlOverrides` object. If the input URL is invalid, '#' is returned.
+ *
+ * @example
+ * import { getExternalLinkUrl } from '@edx/frontend-platform';
+ *
+ * <Hyperlink
+ *   destination={getExternalLinkUrl(data.helpLink)}
+ *   target="_blank"
+ * >
+ */
+export function getExternalLinkUrl(url) {
+  // Guard against non-strings or whitespace-only strings
+  if (typeof url !== 'string' || !url.trim()) {
+    return '#';
+  }
+
+  const overriddenLinkUrls = getConfig().externalLinkUrlOverrides || {};
+  return overriddenLinkUrls[url] || url;
+}
+
+/**
  * An object describing the current application configuration.
  *
  * In its most basic form, the initialization process loads this document via `process.env`

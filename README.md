@@ -113,6 +113,24 @@ const ExampleComponent = () => {
 };
 ```
 
+#### Overriding default external links
+
+A `getExternalLinkUrl` function is provided in `config.js` which can be used to override default external links. To make use of this function, provide an object that maps default links to custom links. This object should be added to the `config` object defined in the `env.config.[js,jsx,ts,tsx]`, and must be named `externalLinkUrlOverrides`. Here is an example:
+
+```js
+// env.config.js
+
+const config = {
+  // other custom configuration here
+  externalLinkUrlOverrides: {
+    "https://docs.openedx.org/en/latest/educators/index.html": "https://custom.example.com/educators/index.html",
+    "https://creativecommons.org/licenses": "https://www.tldrlegal.com/license/creative-commons-attribution-cc",
+  },
+};
+
+export default config;
+```
+
 ### Service interfaces
 
 Each service (analytics, auth, i18n, logging) provided by frontend-platform has an API contract which all implementations of that service are guaranteed to fulfill.  Applications that use frontend-platform can use its configured services via a convenient set of exported functions.  An application that wants to use the service interfaces need only initialize them via the initialize() function, optionally providing custom service interfaces as desired (you probably won't need to).
