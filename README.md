@@ -26,23 +26,16 @@ In addition, frontend-platform provides an extensible application initialization
 ## Getting started
 
 ### One-time setup if you have not upgraded node/npm
-IMPORTANT: There is now a new node/npm version being used by frontend-platform as of
-https://github.com/openedx/frontend-platform/pull/259
 
 #### Install nvm
-This is highly recommended to be able to leverage different node/npm versions.
-For a some time, different repositories may be using different versions of node/npm.
-
-Alternatively, please install node16 and npm8 for use with this repository.
+This is highly recommended to be able to leverage different node/npm versions. For some time, different repositories may be using different versions of node/npm.
 
 #### Switch to node/npm version for this repo
-```nvm use```
-if you don't have the right node/npm versions, nvm will instruct you to install those
+In the project’s root directory, run `nvm use` to set your environment to the correct node version. If the required node or npm versions are not installed, nvm will prompt you to install them.
 
 #### Clean out old node modules and reinstall
 This step is needed because node now uses a different package lock format, and it's important to reinstall
-dependencies based on this new package file. Delete node_modules, and issue an `npm ci`
-
+dependencies based on this new package file. Delete `node_modules`, and run `npm ci`.
 
 ### Standard getting started steps
 
@@ -98,7 +91,7 @@ initialize({
 });
 ```
 
-When using runtime configuration via `mergeConfig` noted above, `getConfig` must be called within a component's render lifecycle for the added keys and values to be returned in the configuration object. If `getConfig` is called outside of a component's render lifecycle, the custom configuration key/value pairs will not initially be part of the object returned by `getConfig`. For example:
+When using runtime configuration via `mergeConfig` as noted above, `getConfig` must be called within a component's render lifecycle for the added keys and values to be returned in the configuration object. If `getConfig` is called outside of a component's render lifecycle, the custom configuration key/value pairs will not initially be part of the object returned by `getConfig`. For example:
 
 ```jsx
 import { getConfig } from '@edx/frontend-platform/config';
@@ -130,7 +123,7 @@ The included service implementations are:
 - Axios/JWT (auth)
 - React Intl (i18n)
 
-NOTE: As of this writing, i18n is _not_ configurable.  The `initialize()` function does not allow applications to supply an alternate i18n implementation; this is because the interface and implementation for i18n has not yet been separated and modularized.
+NOTE: As of this writing, i18n is _not_ configurable.  The `initialize()` function does not allow applications to supply an alternative i18n implementation; this is because the interface and implementation for i18n has not yet been separated and modularized.
 
 # Local Development & Testing Locally
 

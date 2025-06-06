@@ -84,7 +84,7 @@ export const getDefaultThemeVariant = ({ themeVariants, themeVariantDefaults = {
  * A custom React hook that manages the application's theme state and injects the appropriate CSS for the theme core
  * and theme variants (e.g., light and dark modes) into the HTML document. It handles dynamically loading the theme
  * CSS based on the current theme variant, and ensures that the theme variant's CSS is preloaded for runtime theme
- * switching.This is done using "alternate" stylesheets. That is, the browser will download the CSS for the
+ * switching. This is done using "alternate" stylesheets. That is, the browser will download the CSS for the
  * non-current theme variants with a lower priority than the current one.
  *
  * The hook also responds to system theme preference changes (e.g., via the `prefers-color-scheme` media query),

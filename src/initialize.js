@@ -314,7 +314,7 @@ export async function initialize({
 
     // This allows us to replace the implementations of the logging, analytics, and auth services
     // based on keys in the ConfigDocument.  The JavaScript File Configuration method is the only
-    // one capable of supplying an alternate implementation since it can import other modules.
+    // one capable of supplying an alternative implementation since it can import other modules.
     // If a service wasn't supplied we fall back to the default parameters on the initialize
     // function signature.
     const loggingServiceImpl = getConfig().loggingService || loggingService;

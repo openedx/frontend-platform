@@ -40,10 +40,10 @@
  *
  * ###### JavaScript File Configuration
  *
- * Configuration variables can be supplied in an optional file named env.config.js.  This file must
- * export either an Object containing configuration variables or a function.  The function must
- * return an Object containing configuration variables or, alternately, a promise which resolves to
- * an Object.
+ * Configuration variables can be supplied in an optional file named env.config.js (it can also be
+ * a `.jsx`, `.ts`, or `.tsx` file).  This file must export either an Object containing configuration
+ * variables or a function.  The function must return an Object containing configuration variables or,
+ * alternatively, a promise which resolves to an Object.
  *
  * Using a function or async function allows the configuration to be resolved at runtime (because
  * the function will be executed at runtime).  This is not common, and the capability is included
@@ -89,11 +89,9 @@
  *
  * Configuration variables can also be supplied using the "runtime configuration" method, taking
  * advantage of the Micro-frontend Config API in edx-platform. More information on this API can be
- * found in the ADR which introduced it:
+ * found in [the ADR which introduced it][1].
  *
- * https://github.com/openedx/edx-platform/blob/master/lms/djangoapps/mfe_config_api/docs/decisions/0001-mfe-config-api.rst
- *
- * The runtime configuration method can be enabled by supplying a MFE_CONFIG_API_URL via one of the other
+ * The runtime configuration method can be enabled by supplying a `MFE_CONFIG_API_URL` via one of the other
  * two configuration methods above.
  *
  * Runtime configuration is particularly useful if you need to supply different configurations to
@@ -103,9 +101,9 @@
  *
  * ##### Initialization Config Handler
  *
- * The configuration document can be extended by
- * applications at run-time using a `config` initialization handler.  Please see the Initialization
- * documentation for more information on handlers and initialization phases.
+ * The configuration document can be extended by applications at run-time using a `config`
+ * initialization handler.  Please see the Initialization documentation for more information on
+ * handlers and initialization phases.
  *
  * ```
  * initialize({
@@ -114,13 +112,15 @@
  *       mergeConfig({
  *         CUSTOM_VARIABLE: 'custom value',
  *         LMS_BASE_URL: 'http://localhost:18001' // You can override variables, but this is uncommon.
-  *       }, 'App config override handler');
+ *       }, 'App config override handler');
  *     },
  *   },
  * });
  * ```
  *
  * @module Config
+ *
+ * [1]: https://github.com/openedx/edx-platform/blob/master/lms/djangoapps/mfe_config_api/docs/decisions/0001-mfe-config-api.rst
  */
 
 import { APP_CONFIG_INITIALIZED, CONFIG_CHANGED } from './constants';
@@ -223,7 +223,7 @@ let config = {
  * ```
  *
  * @returns {ConfigDocument}
-  */
+ */
 export function getConfig() {
   return config;
 }
@@ -313,7 +313,7 @@ export function ensureConfig(keys, requester = 'unspecified application code') {
  * In its most basic form, the initialization process loads this document via `process.env`
  * variables.  There are other ways to add configuration variables to the ConfigDocument as
  * documented above (JavaScript File Configuration, Runtime Configuration, and the Initialization
- * Config Handler)
+ * Config Handler).
  *
  * ```
  * {
