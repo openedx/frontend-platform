@@ -118,10 +118,10 @@
  * });
  * ```
  *
- * @module Config
- *
  * [1]: https://github.com/openedx/edx-platform/blob/master/lms/djangoapps/mfe_config_api/docs/decisions/0001-mfe-config-api.rst
- */
+ *
+ * @module Config
+ * */
 
 import { APP_CONFIG_INITIALIZED, CONFIG_CHANGED } from './constants';
 
