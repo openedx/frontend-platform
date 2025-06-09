@@ -81,18 +81,13 @@
 <p>In addition, frontend-platform provides an extensible application initialization lifecycle to help manage the configuration of the above services, freeing application developers to focus on feature development.</p>
 <h2>Getting started</h2>
 <h3>One-time setup if you have not upgraded node/npm</h3>
-<p>IMPORTANT: There is now a new node/npm version being used by frontend-platform as of
-https://github.com/openedx/frontend-platform/pull/259</p>
 <h4>Install nvm</h4>
-<p>This is highly recommended to be able to leverage different node/npm versions.
-For a some time, different repositories may be using different versions of node/npm.</p>
-<p>Alternatively, please install node16 and npm8 for use with this repository.</p>
+<p>This is highly recommended to be able to leverage different node/npm versions. For some time, different repositories may be using different versions of node/npm.</p>
 <h4>Switch to node/npm version for this repo</h4>
-<p><code>nvm use</code>
-if you don't have the right node/npm versions, nvm will instruct you to install those</p>
+<p>In the project’s root directory, run <code>nvm use</code> to set your environment to the correct node version. If the required node or npm versions are not installed, nvm will prompt you to install them.</p>
 <h4>Clean out old node modules and reinstall</h4>
 <p>This step is needed because node now uses a different package lock format, and it's important to reinstall
-dependencies based on this new package file. Delete node_modules, and issue an <code>npm ci</code></p>
+dependencies based on this new package file. Delete <code>node_modules</code>, and run <code>npm ci</code>.</p>
 <h3>Standard getting started steps</h3>
 <ol>
 <li><code>npm install</code></li>
@@ -133,7 +128,7 @@ dependencies based on this new package file. Delete node_modules, and issue an <
   },
 });
 </code></pre>
-<p>When using runtime configuration via <code>mergeConfig</code> noted above, <code>getConfig</code> must be called within a component's render lifecycle for the added keys and values to be returned in the configuration object. If <code>getConfig</code> is called outside of a component's render lifecycle, the custom configuration key/value pairs will not initially be part of the object returned by <code>getConfig</code>. For example:</p>
+<p>When using runtime configuration via <code>mergeConfig</code> as noted above, <code>getConfig</code> must be called within a component's render lifecycle for the added keys and values to be returned in the configuration object. If <code>getConfig</code> is called outside of a component's render lifecycle, the custom configuration key/value pairs will not initially be part of the object returned by <code>getConfig</code>. For example:</p>
 <pre class="prettyprint source lang-jsx"><code>import { getConfig } from '@edx/frontend-platform/config';
 
 // The runtime configuration `CUSTOM_VARIABLE` added in the above code snippet will not appear here. This is
@@ -157,7 +152,7 @@ const ExampleComponent = () => {
 <li>Axios/JWT (auth)</li>
 <li>React Intl (i18n)</li>
 </ul>
-<p>NOTE: As of this writing, i18n is <em>not</em> configurable.  The <code>initialize()</code> function does not allow applications to supply an alternate i18n implementation; this is because the interface and implementation for i18n has not yet been separated and modularized.</p>
+<p>NOTE: As of this writing, i18n is <em>not</em> configurable.  The <code>initialize()</code> function does not allow applications to supply an alternative i18n implementation; this is because the interface and implementation for i18n has not yet been separated and modularized.</p>
 <h1>Local Development &amp; Testing Locally</h1>
 <p>When making changes to frontend-platform, be sure to manually run the included example app located in <code>./example</code>. The example app includes 2 routes to test for both unauthenticated and authenticated users. To start the example app, run <code>npm start</code> from the root directory.</p>
 <p>If you want to test changes to frontend-platform against a micro-frontend locally, follow the directions here: https://github.com/openedx/frontend-build#local-module-configuration-for-webpack</p>
@@ -187,7 +182,14 @@ const ExampleComponent = () => {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><ul class="list-unstyled nav flex-column"><li class="module-section nav-item Analytics">
+    <h2><a href="index.html">Home</a></h2><ul class="list-unstyled nav flex-column"><li class="module-section nav-item Config
+
+[1]: https://github.com/openedx/edx-platform/blob/master/lms/djangoapps/mfe_config_api/docs/decisions/0001-mfe-config-api.rst">
+                    <a href="Config%250A%250A%255B1%255D_%2520https___github.com_openedx_edx-platform_blob_master_lms_djangoapps_mfe_config_api_docs_decisions_0001-mfe-config-api.rstmodule_.html" class="nav-link font-weight-bold">Config
+
+[1]: https://github.com/openedx/edx-platform/blob/master/lms/djangoapps/mfe_config_api/docs/decisions/0001-mfe-config-api.rst</a>
+                    
+                </li><li class="module-section nav-item Analytics">
                     <a href="module-Analytics.html" class="nav-link font-weight-bold">Analytics</a>
                     
             <ul class="list-unstyled px-3 pb-4 bg-light">
@@ -199,13 +201,6 @@ const ExampleComponent = () => {
                     
             <ul class="list-unstyled px-3 pb-4 bg-light">
                 <li><a href="module-Auth.AuthService.html">AuthService</a></li><li><a href="module-Auth.AxiosJwtAuthService.html">AxiosJwtAuthService</a></li><li><a href="module-Auth.HttpClient.html">HttpClient</a></li><li><a href="module-Auth.MockAuthService.html">MockAuthService</a></li><li><a href="module-Auth.UserData.html">UserData</a></li><li><a href="module-Auth.html#~AUTHENTICATED_USER_TOPIC">AUTHENTICATED_USER_TOPIC</a></li><li><a href="module-Auth.html#~configure">configure</a></li><li><a href="module-Auth.html#~ensureAuthenticatedUser">ensureAuthenticatedUser</a></li><li><a href="module-Auth.html#~event:AUTHENTICATED_USER_CHANGED">AUTHENTICATED_USER_CHANGED</a></li><li><a href="module-Auth.html#~fetchAuthenticatedUser">fetchAuthenticatedUser</a></li><li><a href="module-Auth.html#~getAuthService">getAuthService</a></li><li><a href="module-Auth.html#~getAuthenticatedHttpClient">getAuthenticatedHttpClient</a></li><li><a href="module-Auth.html#~getAuthenticatedUser">getAuthenticatedUser</a></li><li><a href="module-Auth.html#~getHttpClient">getHttpClient</a></li><li><a href="module-Auth.html#~getLoginRedirectUrl">getLoginRedirectUrl</a></li><li><a href="module-Auth.html#~getLogoutRedirectUrl">getLogoutRedirectUrl</a></li><li><a href="module-Auth.html#~hydrateAuthenticatedUser">hydrateAuthenticatedUser</a></li><li><a href="module-Auth.html#~redirectToLogin">redirectToLogin</a></li><li><a href="module-Auth.html#~redirectToLogout">redirectToLogout</a></li><li><a href="module-Auth.html#~resetAuthService">resetAuthService</a></li><li><a href="module-Auth.html#~setAuthenticatedUser">setAuthenticatedUser</a></li>
-            </ul>
-        
-                </li><li class="module-section nav-item Config">
-                    <a href="module-Config.html" class="nav-link font-weight-bold">Config</a>
-                    
-            <ul class="list-unstyled px-3 pb-4 bg-light">
-                <li><a href="module-Config.html#.ConfigDocument">ConfigDocument</a></li><li><a href="module-Config.html#~ensureConfig">ensureConfig</a></li><li><a href="module-Config.html#~getConfig">getConfig</a></li><li><a href="module-Config.html#~mergeConfig">mergeConfig</a></li><li><a href="module-Config.html#~parseParagonThemeUrls">parseParagonThemeUrls</a></li><li><a href="module-Config.html#~setConfig">setConfig</a></li>
             </ul>
         
                 </li><li class="module-section nav-item Initialization">
@@ -263,7 +258,7 @@ const ExampleComponent = () => {
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Fri Jun 06 2025 15:53:12 GMT+0000 (Coordinated Universal Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Mon Jun 09 2025 14:25:25 GMT+0000 (Coordinated Universal Time)
 </footer>
 
 <script> prettyPrint(); </script>

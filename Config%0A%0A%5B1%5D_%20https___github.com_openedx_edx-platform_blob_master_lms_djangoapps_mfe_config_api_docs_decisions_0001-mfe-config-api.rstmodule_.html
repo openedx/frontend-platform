@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Config</title>
+    <title>JSDoc: Config
+
+[1]: https://github.com/openedx/edx-platform/blob/master/lms/djangoapps/mfe_config_api/docs/decisions/0001-mfe-config-api.rst</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -15,10 +17,14 @@
     <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
 </head>
 
-<body data-module="Config">
+<body data-module="Config
+
+[1]: https://github.com/openedx/edx-platform/blob/master/lms/djangoapps/mfe_config_api/docs/decisions/0001-mfe-config-api.rst">
 
 <div id="main">
-    <h1 class="page-title">Config</h1>
+    <h1 class="page-title">Config
+
+[1]: https://github.com/openedx/edx-platform/blob/master/lms/djangoapps/mfe_config_api/docs/decisions/0001-mfe-config-api.rst</h1>
 
     
 
@@ -28,10 +34,6 @@
 <section>
 
 <header>
-    
-        
-            
-        
     
 </header>
 
@@ -71,10 +73,10 @@ command-line environment variables during the build process.</p>
 initialization handler.  The app won't pick them up and they'll appear <code>undefined</code>.</p>
 <p>This configuration method is being deprecated in favor of JavaScript File Configuration.</p>
 <h6>JavaScript File Configuration</h6>
-<p>Configuration variables can be supplied in an optional file named env.config.js.  This file must
-export either an Object containing configuration variables or a function.  The function must
-return an Object containing configuration variables or, alternately, a promise which resolves to
-an Object.</p>
+<p>Configuration variables can be supplied in an optional file named env.config.js (it can also be
+a <code>.jsx</code>, <code>.ts</code>, or <code>.tsx</code> file).  This file must export either an Object containing configuration
+variables or a function.  The function must return an Object containing configuration variables or,
+alternatively, a promise which resolves to an Object.</p>
 <p>Using a function or async function allows the configuration to be resolved at runtime (because
 the function will be executed at runtime).  This is not common, and the capability is included
 for the sake of flexibility.</p>
@@ -110,18 +112,17 @@ export default getAsyncConfig;
 <h5>Runtime Configuration</h5>
 <p>Configuration variables can also be supplied using the &quot;runtime configuration&quot; method, taking
 advantage of the Micro-frontend Config API in edx-platform. More information on this API can be
-found in the ADR which introduced it:</p>
-<p>https://github.com/openedx/edx-platform/blob/master/lms/djangoapps/mfe_config_api/docs/decisions/0001-mfe-config-api.rst</p>
-<p>The runtime configuration method can be enabled by supplying a MFE_CONFIG_API_URL via one of the other
+found in [the ADR which introduced it][1].</p>
+<p>The runtime configuration method can be enabled by supplying a <code>MFE_CONFIG_API_URL</code> via one of the other
 two configuration methods above.</p>
 <p>Runtime configuration is particularly useful if you need to supply different configurations to
 a single deployment of a micro-frontend, for instance.  It is also a perfectly valid alternative
 to build-time configuration, though it introduces an additional API call to edx-platform on MFE
 initialization.</p>
 <h5>Initialization Config Handler</h5>
-<p>The configuration document can be extended by
-applications at run-time using a <code>config</code> initialization handler.  Please see the Initialization
-documentation for more information on handlers and initialization phases.</p>
+<p>The configuration document can be extended by applications at run-time using a <code>config</code>
+initialization handler.  Please see the Initialization documentation for more information on
+handlers and initialization phases.</p>
 <pre class="prettyprint source"><code>initialize({
   handlers: {
     config: () => {
@@ -136,20 +137,6 @@ documentation for more information on handlers and initialization phases.</p>
         
 
         
-            
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 <dl class="details">
@@ -193,24 +180,6 @@ documentation for more information on handlers and initialization phases.</p>
 </dl>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         
     
     </div>
@@ -227,849 +196,6 @@ documentation for more information on handlers and initialization phases.</p>
 
     
 
-    
-        <h3 class="subsection-title">Members</h3>
-
-        
-            
-<h4 class="name" id=".ConfigDocument"><span class="type-signature">(static) </span>ConfigDocument<span class="type-signature"></span></h4>
-
-
-
-
-<div class="description">
-    <p>An object describing the current application configuration.</p>
-<p>In its most basic form, the initialization process loads this document via <code>process.env</code>
-variables.  There are other ways to add configuration variables to the ConfigDocument as
-documented above (JavaScript File Configuration, Runtime Configuration, and the Initialization
-Config Handler)</p>
-<pre class="prettyprint source"><code>{
-  BASE_URL: process.env.BASE_URL,
-  // ... other vars
-}
-</code></pre>
-<p>When using Webpack (i.e., normal usage), the build process is responsible for supplying these
-variables via command-line environment variables.  That means they must be supplied at build
-time.</p>
-</div>
-
-
-
-
-
-
-
-    <h5 class="subsection-title">Properties:</h5>
-
-    
-
-<table class="props">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>ACCESS_TOKEN_COOKIE_NAME</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>ACCOUNT_PROFILE_URL</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>ACCOUNT_SETTINGS_URL</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>BASE_URL</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>The URL of the current application.</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>CREDENTIALS_BASE_URL</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>CSRF_TOKEN_API_PATH</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>DISCOVERY_API_BASE_URL</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>PUBLISHER_BASE_URL</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>ECOMMERCE_BASE_URL</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>ENVIRONMENT</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>This is one of: development, production, or test.</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>IGNORED_ERROR_REGEX</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>LANGUAGE_PREFERENCE_COOKIE_NAME</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>LEARNING_BASE_URL</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>LMS_BASE_URL</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>LOGIN_URL</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>LOGOUT_URL</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>STUDIO_BASE_URL</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>MARKETING_SITE_BASE_URL</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>ORDER_HISTORY_URL</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>REFRESH_ACCESS_TOKEN_ENDPOINT</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>SECURE_COOKIES</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>SEGMENT_KEY</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>SITE_NAME</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>USER_INFO_COOKIE_NAME</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>LOGO_URL</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>LOGO_TRADEMARK_URL</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>LOGO_WHITE_URL</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>FAVICON_URL</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>MFE_CONFIG_API_URL</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>APP_ID</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>SUPPORT_URL</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>PARAGON_THEME_URLS</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="config.js.html">config.js</a>, <a href="config.js.html#line310">line 310</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
     
 
     
@@ -1879,7 +1005,14 @@ setConfig({
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><ul class="list-unstyled nav flex-column"><li class="module-section nav-item Analytics">
+    <h2><a href="index.html">Home</a></h2><ul class="list-unstyled nav flex-column"><li class="module-section nav-item Config
+
+[1]: https://github.com/openedx/edx-platform/blob/master/lms/djangoapps/mfe_config_api/docs/decisions/0001-mfe-config-api.rst">
+                    <a href="Config%250A%250A%255B1%255D_%2520https___github.com_openedx_edx-platform_blob_master_lms_djangoapps_mfe_config_api_docs_decisions_0001-mfe-config-api.rstmodule_.html" class="nav-link font-weight-bold">Config
+
+[1]: https://github.com/openedx/edx-platform/blob/master/lms/djangoapps/mfe_config_api/docs/decisions/0001-mfe-config-api.rst</a>
+                    
+                </li><li class="module-section nav-item Analytics">
                     <a href="module-Analytics.html" class="nav-link font-weight-bold">Analytics</a>
                     
             <ul class="list-unstyled px-3 pb-4 bg-light">
@@ -1891,13 +1024,6 @@ setConfig({
                     
             <ul class="list-unstyled px-3 pb-4 bg-light">
                 <li><a href="module-Auth.AuthService.html">AuthService</a></li><li><a href="module-Auth.AxiosJwtAuthService.html">AxiosJwtAuthService</a></li><li><a href="module-Auth.HttpClient.html">HttpClient</a></li><li><a href="module-Auth.MockAuthService.html">MockAuthService</a></li><li><a href="module-Auth.UserData.html">UserData</a></li><li><a href="module-Auth.html#~AUTHENTICATED_USER_TOPIC">AUTHENTICATED_USER_TOPIC</a></li><li><a href="module-Auth.html#~configure">configure</a></li><li><a href="module-Auth.html#~ensureAuthenticatedUser">ensureAuthenticatedUser</a></li><li><a href="module-Auth.html#~event:AUTHENTICATED_USER_CHANGED">AUTHENTICATED_USER_CHANGED</a></li><li><a href="module-Auth.html#~fetchAuthenticatedUser">fetchAuthenticatedUser</a></li><li><a href="module-Auth.html#~getAuthService">getAuthService</a></li><li><a href="module-Auth.html#~getAuthenticatedHttpClient">getAuthenticatedHttpClient</a></li><li><a href="module-Auth.html#~getAuthenticatedUser">getAuthenticatedUser</a></li><li><a href="module-Auth.html#~getHttpClient">getHttpClient</a></li><li><a href="module-Auth.html#~getLoginRedirectUrl">getLoginRedirectUrl</a></li><li><a href="module-Auth.html#~getLogoutRedirectUrl">getLogoutRedirectUrl</a></li><li><a href="module-Auth.html#~hydrateAuthenticatedUser">hydrateAuthenticatedUser</a></li><li><a href="module-Auth.html#~redirectToLogin">redirectToLogin</a></li><li><a href="module-Auth.html#~redirectToLogout">redirectToLogout</a></li><li><a href="module-Auth.html#~resetAuthService">resetAuthService</a></li><li><a href="module-Auth.html#~setAuthenticatedUser">setAuthenticatedUser</a></li>
-            </ul>
-        
-                </li><li class="module-section nav-item Config">
-                    <a href="module-Config.html" class="nav-link font-weight-bold">Config</a>
-                    
-            <ul class="list-unstyled px-3 pb-4 bg-light">
-                <li><a href="module-Config.html#.ConfigDocument">ConfigDocument</a></li><li><a href="module-Config.html#~ensureConfig">ensureConfig</a></li><li><a href="module-Config.html#~getConfig">getConfig</a></li><li><a href="module-Config.html#~mergeConfig">mergeConfig</a></li><li><a href="module-Config.html#~parseParagonThemeUrls">parseParagonThemeUrls</a></li><li><a href="module-Config.html#~setConfig">setConfig</a></li>
             </ul>
         
                 </li><li class="module-section nav-item Initialization">
@@ -1955,7 +1081,7 @@ setConfig({
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Fri Jun 06 2025 15:53:13 GMT+0000 (Coordinated Universal Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Mon Jun 09 2025 14:25:25 GMT+0000 (Coordinated Universal Time)
 </footer>
 
 <script> prettyPrint(); </script>
