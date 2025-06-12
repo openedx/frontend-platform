@@ -149,6 +149,33 @@ When making changes to frontend-platform, be sure to manually run the included e
 
 If you want to test changes to frontend-platform against a micro-frontend locally, follow the directions here: https://github.com/openedx/frontend-build#local-module-configuration-for-webpack
 
+## Getting the example app to work with a tutor dev environment
+
+Part of the example app functionality includes an API request to get the logged in user's profile information. This request will fail by default due to CORS restrictions. One way to overcome this is to create a tutor plugin that patches the settings needed for the request to be allowed.
+
+1. Create an `example.py` file with the following contents:
+
+```python
+from tutor import hooks
+
+hooks.Filters.ENV_PATCHES.add_items([
+    (
+        "openedx-lms-development-settings",
+        """
+# Used for the example app in the frontend-plugin library
+CORS_ORIGIN_WHITELIST.append("http://local.openedx.io:8080")
+LOGIN_REDIRECT_WHITELIST.append("local.openedx.io:8080")
+CSRF_TRUSTED_ORIGINS.append("http://local.openedx.io:8080")
+        """
+    ),
+])
+```
+
+2. Install the plugin: `tutor plugins install example.py`
+3. Enable the plugin: `tutor plugins enable example`
+4. Restart the lms service: `tutor dev restart lms`
+5. http://local.openedx.io:8080/ should now successfully fetch the logged in user's name (if available)
+
 # Production Deployment Strategy
 
 For any MFE built on top of the frontend-platform, the deployment strategy will be something like the following:
