@@ -41,7 +41,7 @@ dependencies based on this new package file. Delete `node_modules`, and run `npm
 
 1. `npm install`
 2. `npm start`
-3. Open http://localhost:8080 to view the example app.
+3. Open http://local.openedx.io:8080 to view the example app.
 
 ## Architecture
 
