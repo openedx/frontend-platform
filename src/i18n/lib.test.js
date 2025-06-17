@@ -94,6 +94,7 @@ describe('lib', () => {
       expect(console.warn).toHaveBeenCalledWith('Missing locale: ru');
       expect(console.warn).toHaveBeenCalledWith('Missing locale: th');
       expect(console.warn).toHaveBeenCalledWith('Missing locale: uk');
+      expect(console.warn).toHaveBeenCalledWith('Missing locale: vi');
     });
   });
 
