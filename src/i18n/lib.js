@@ -223,6 +223,7 @@ const messagesShape = {
   ru: PropTypes.objectOf(PropTypes.string), // Russian
   th: PropTypes.objectOf(PropTypes.string), // Thai
   uk: PropTypes.objectOf(PropTypes.string), // Ukrainian
+  vi: PropTypes.objectOf(PropTypes.string), // Vietnamese
 };
 
 const optionsShape = {
