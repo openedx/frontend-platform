@@ -70,10 +70,14 @@ export async function setSessionLanguage(languageCode) {
  *
  * @param {string} languageCode - The selected language locale code (e.g., 'en', 'es', 'ar').
  *                               Should be a valid ISO language code supported by the platform.
+ * @param {boolean} [forceReload=false] - Whether to force a page reload after changing the language.
  * @returns {Promise} - A promise that resolves when all operations complete.
  *
  */
-export async function changeUserSessionLanguage(languageCode) {
+export async function changeUserSessionLanguage(
+  languageCode,
+  forceReload = false,
+) {
   const cookies = getCookies();
   const cookieName = getConfig().LANGUAGE_PREFERENCE_COOKIE_NAME;
   cookies.set(cookieName, languageCode);
@@ -91,9 +95,7 @@ export async function changeUserSessionLanguage(languageCode) {
     logError(error);
   }
 
-  // Force page reload to ensure complete translation application.
-  // While some translations update via the publish event, many sections
-  // of the platform are not configured to receive these events or
-  // handle translations dynamically, requiring a full reload for consistency.
-  window.location.reload();
+  if (forceReload) {
+    window.location.reload();
+  }
 }
