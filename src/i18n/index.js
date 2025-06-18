@@ -125,4 +125,4 @@ export {
 
 export {
   changeUserSessionLanguage,
-} from './LanguageManager';
+} from './languageManager';
