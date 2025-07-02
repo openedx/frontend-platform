@@ -14,6 +14,7 @@ import plLocale from 'i18n-iso-countries/langs/pl.json';
 import ptLocale from 'i18n-iso-countries/langs/pt.json';
 import ruLocale from 'i18n-iso-countries/langs/ru.json';
 import ukLocale from 'i18n-iso-countries/langs/uk.json';
+import viLocale from 'i18n-iso-countries/langs/vi.json';
 
 import { getPrimaryLanguageSubtag } from './lib';
 
@@ -39,6 +40,7 @@ COUNTRIES.registerLocale(ptLocale);
 COUNTRIES.registerLocale(ruLocale);
 // COUNTRIES.registerLocale(thLocale); // Doesn't exist in lib.
 COUNTRIES.registerLocale(ukLocale);
+COUNTRIES.registerLocale(viLocale);
 
 /**
  * Provides a lookup table of country IDs to country names for the current locale.
