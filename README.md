@@ -41,7 +41,7 @@ dependencies based on this new package file. Delete `node_modules`, and run `npm
 
 1. `npm install`
 2. `npm start`
-3. Open http://localhost:8080 to view the example app.
+3. Open http://local.openedx.io:8080 to view the example app.
 
 ## Architecture
 
@@ -148,6 +148,19 @@ NOTE: As of this writing, i18n is _not_ configurable.  The `initialize()` functi
 When making changes to frontend-platform, be sure to manually run the included example app located in `./example`. The example app includes 2 routes to test for both unauthenticated and authenticated users. To start the example app, run `npm start` from the root directory.
 
 If you want to test changes to frontend-platform against a micro-frontend locally, follow the directions here: https://github.com/openedx/frontend-build#local-module-configuration-for-webpack
+
+## Getting the example app to work with a tutor dev environment
+
+Part of the example app functionality includes an API request to get the logged in user's profile information. This request will fail by default due to CORS restrictions. To overcome this, patch `openedx-lms-development-settings` with the following settings (via a tutor plugin):
+
+```python
+# Used for the example app in the frontend-plugin library
+CORS_ORIGIN_WHITELIST.append("http://local.openedx.io:8080")
+LOGIN_REDIRECT_WHITELIST.append("local.openedx.io:8080")
+CSRF_TRUSTED_ORIGINS.append("http://local.openedx.io:8080")
+```
+
+Make sure the plugin is installed, enabled, and then run `tutor dev restart lms` to make sure the new configuration is picked up.
 
 # Production Deployment Strategy
 
