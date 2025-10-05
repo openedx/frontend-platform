@@ -1,26 +1,31 @@
 import { getConfig } from '../config';
-import { getAuthenticatedHttpClient } from '../auth';
+import { getAuthenticatedHttpClient, getAuthenticatedUser } from '../auth';
 import { convertKeyNames, snakeCaseObject } from '../utils';
 
 /**
  * Updates user language preferences via the preferences API.
  *
- * This function converts preference data to snake_case and formats specific keys
- * according to backend requirements before sending the PATCH request.
+ * This function gets the authenticated user, converts preference data to snake_case 
+ * and formats specific keys according to backend requirements before sending the PATCH request.
+ * If no user is authenticated, the function returns early without making the API call.
  *
- * @param {string} username - The username of the user whose preferences to update.
  * @param {Object} preferenceData - The preference parameters to update (e.g., { prefLang: 'en' }).
  * @returns {Promise} - A promise that resolves when the API call completes successfully,
- *                      or rejects if there's an error with the request.
+ *                      or rejects if there's an error with the request. Returns early if no user is authenticated.
  */
-export async function updateUserPreferences(username, preferenceData) {
+export async function updateAuthenticatedUserPreferences(preferenceData) {
+  const user = getAuthenticatedUser();
+  if (!user) {
+    return Promise.resolve();
+  }
+
   const snakeCaseData = snakeCaseObject(preferenceData);
   const formattedData = convertKeyNames(snakeCaseData, {
     pref_lang: 'pref-lang',
   });
 
   return getAuthenticatedHttpClient().patch(
-    `${getConfig().LMS_BASE_URL}/api/user/v1/preferences/${username}`,
+    `${getConfig().LMS_BASE_URL}/api/user/v1/preferences/${user.username}`,
     formattedData,
     { headers: { 'Content-Type': 'application/merge-patch+json' } },
   );

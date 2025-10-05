@@ -1,9 +1,8 @@
 import { getConfig } from '../config';
-import { getAuthenticatedUser } from '../auth';
 import { getCookies, handleRtl, LOCALE_CHANGED } from './lib';
 import { publish } from '../pubSub';
 import { logError } from '../logging';
-import { updateUserPreferences, setSessionLanguage } from './languageApi';
+import { updateAuthenticatedUserPreferences, setSessionLanguage } from './languageApi';
 
 /**
  * Changes the user's language preference and applies it to the current session.
@@ -29,11 +28,7 @@ export async function changeUserSessionLanguage(
   cookies.set(cookieName, languageCode);
 
   try {
-    const user = getAuthenticatedUser();
-    if (user) {
-      await updateUserPreferences(user.username, { prefLang: languageCode });
-    }
-
+    await updateAuthenticatedUserPreferences({ prefLang: languageCode });
     await setSessionLanguage(languageCode);
     handleRtl(languageCode);
     publish(LOCALE_CHANGED, languageCode);
