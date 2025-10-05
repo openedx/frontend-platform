@@ -1,13 +1,11 @@
 import { changeUserSessionLanguage } from './languageManager';
 import { getConfig } from '../config';
-import { getAuthenticatedUser } from '../auth';
 import { getCookies, handleRtl, LOCALE_CHANGED } from './lib';
 import { logError } from '../logging';
 import { publish } from '../pubSub';
-import { updateUserPreferences, setSessionLanguage } from './languageApi';
+import { updateAuthenticatedUserPreferences, setSessionLanguage } from './languageApi';
 
 jest.mock('../config');
-jest.mock('../auth');
 jest.mock('./lib');
 jest.mock('../logging');
 jest.mock('../pubSub');
@@ -18,7 +16,6 @@ const LANGUAGE_PREFERENCE_COOKIE_NAME = 'lang';
 
 describe('languageManager', () => {
   let mockCookies;
-  let mockUser;
   let mockReload;
 
   beforeEach(() => {
@@ -31,9 +28,6 @@ describe('languageManager', () => {
     mockCookies = { set: jest.fn() };
     getCookies.mockReturnValue(mockCookies);
 
-    mockUser = { username: 'testuser', userId: '123' };
-    getAuthenticatedUser.mockReturnValue(mockUser);
-
     mockReload = jest.fn();
     Object.defineProperty(window, 'location', {
       configurable: true,
@@ -41,7 +35,7 @@ describe('languageManager', () => {
       value: { reload: mockReload },
     });
 
-    updateUserPreferences.mockResolvedValue({});
+    updateAuthenticatedUserPreferences.mockResolvedValue({});
     setSessionLanguage.mockResolvedValue({});
   });
 
@@ -53,7 +47,7 @@ describe('languageManager', () => {
         LANGUAGE_PREFERENCE_COOKIE_NAME,
         'fr',
       );
-      expect(updateUserPreferences).toHaveBeenCalledWith('testuser', {
+      expect(updateAuthenticatedUserPreferences).toHaveBeenCalledWith({
         prefLang: 'fr',
       });
       expect(setSessionLanguage).toHaveBeenCalledWith('fr');
@@ -63,15 +57,16 @@ describe('languageManager', () => {
     });
 
     it('should handle errors gracefully', async () => {
-      updateUserPreferences.mockRejectedValue(new Error('fail'));
+      updateAuthenticatedUserPreferences.mockRejectedValue(new Error('fail'));
       await changeUserSessionLanguage('es', true);
       expect(logError).toHaveBeenCalled();
     });
 
-    it('should skip updateUserPreferences if user is not authenticated', async () => {
-      getAuthenticatedUser.mockReturnValue(null);
+    it('should call updateAuthenticatedUserPreferences even when user is not authenticated', async () => {
       await changeUserSessionLanguage('en', true);
-      expect(updateUserPreferences).not.toHaveBeenCalled();
+      expect(updateAuthenticatedUserPreferences).toHaveBeenCalledWith({
+        prefLang: 'en',
+      });
     });
 
     it('should reload if forceReload is true', async () => {
