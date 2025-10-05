@@ -1,6 +1,6 @@
-import { updateUserPreferences, setSessionLanguage } from './languageApi';
+import { updateAuthenticatedUserPreferences, setSessionLanguage } from './languageApi';
 import { getConfig } from '../config';
-import { getAuthenticatedHttpClient } from '../auth';
+import { getAuthenticatedHttpClient, getAuthenticatedUser } from '../auth';
 
 jest.mock('../config');
 jest.mock('../auth');
@@ -11,20 +11,31 @@ describe('languageApi', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     getConfig.mockReturnValue({ LMS_BASE_URL });
+    getAuthenticatedUser.mockReturnValue({ username: 'testuser', userId: '123' });
   });
 
-  describe('updateUserPreferences', () => {
+  describe('updateAuthenticatedUserPreferences', () => {
     it('should send a PATCH request with correct data', async () => {
       const patchMock = jest.fn().mockResolvedValue({});
       getAuthenticatedHttpClient.mockReturnValue({ patch: patchMock });
 
-      await updateUserPreferences('user1', { prefLang: 'es' });
+      await updateAuthenticatedUserPreferences({ prefLang: 'es' });
 
       expect(patchMock).toHaveBeenCalledWith(
-        `${LMS_BASE_URL}/api/user/v1/preferences/user1`,
+        `${LMS_BASE_URL}/api/user/v1/preferences/testuser`,
         expect.any(Object),
         expect.objectContaining({ headers: expect.any(Object) }),
       );
+    });
+
+    it('should return early if no authenticated user', async () => {
+      const patchMock = jest.fn().mockResolvedValue({});
+      getAuthenticatedHttpClient.mockReturnValue({ patch: patchMock });
+      getAuthenticatedUser.mockReturnValue(null);
+
+      await updateAuthenticatedUserPreferences({ prefLang: 'es' });
+
+      expect(patchMock).not.toHaveBeenCalled();
     });
   });
 
