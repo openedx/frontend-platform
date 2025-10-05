@@ -185,6 +185,22 @@ export function getMessages(locale = getLocale()) {
 }
 
 /**
+ * Returns the list of supported locales based on the configured messages.
+ * This list is dynamically generated from the translation messages that were
+ * provided during i18n configuration.
+ *
+ * @throws An error if i18n has not yet been configured.
+ * @returns {string[]} Array of supported locale codes
+ * @memberof module:Internationalization
+ */
+export function getSupportedLocales() {
+  if (messages === null) {
+    throw new Error('getSupportedLocales called before configuring i18n. Call configure with messages first.');
+  }
+  return Object.keys(messages);
+}
+
+/**
  * Determines if the provided locale is a right-to-left language.
  *
  * @param {string} locale

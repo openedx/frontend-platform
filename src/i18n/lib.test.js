@@ -4,6 +4,7 @@ import {
   getPrimaryLanguageSubtag,
   getLocale,
   getMessages,
+  getSupportedLocales,
   isRtl,
   handleRtl,
   getCookies,
@@ -181,6 +182,40 @@ describe('lib', () => {
 
     it('should return the messages for the preferred locale if no argument is passed', () => {
       expect(getMessages().message).toEqual('es-hah');
+    });
+  });
+
+  describe('getSupportedLocales', () => {
+    beforeEach(() => {
+      configure({
+        loggingService: { logError: jest.fn() },
+        config: {
+          ENVIRONMENT: 'production',
+          LANGUAGE_PREFERENCE_COOKIE_NAME: 'yum',
+        },
+        messages: {
+          'es-419': { message: 'es-hah' },
+          de: { message: 'de-hah' },
+          'en-us': { message: 'en-us-hah' },
+          fr: { message: 'fr-hah' },
+        },
+      });
+    });
+
+    it('should return an array of supported locale codes', () => {
+      const supportedLocales = getSupportedLocales();
+      expect(Array.isArray(supportedLocales)).toBe(true);
+      expect(supportedLocales).toEqual(['es-419', 'de', 'en-us', 'fr']);
+    });
+
+    it('should throw an error if i18n is not configured', () => {
+      // Reset the configuration to null
+      jest.resetModules();
+      const { getSupportedLocales: freshGetSupportedLocales } = require('./lib');
+      
+      expect(() => freshGetSupportedLocales()).toThrow(
+        'getSupportedLocales called before configuring i18n. Call configure with messages first.'
+      );
     });
   });
 
