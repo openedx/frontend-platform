@@ -5,7 +5,7 @@ import { convertKeyNames, snakeCaseObject } from '../utils';
 /**
  * Updates user language preferences via the preferences API.
  *
- * This function gets the authenticated user, converts preference data to snake_case 
+ * This function gets the authenticated user, converts preference data to snake_case
  * and formats specific keys according to backend requirements before sending the PATCH request.
  * If no user is authenticated, the function returns early without making the API call.
  *
