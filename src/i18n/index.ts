@@ -45,7 +45,7 @@ export {
   getPrimaryLanguageSubtag,
   getLocale,
   getMessages,
-  getSupportedLocales,
+  getSupportedLocaleList,
   isRtl,
   handleRtl,
   mergeMessages,
