@@ -18,6 +18,7 @@ const messages = {
   ru: {},
   th: {},
   uk: {},
+  vi: {},
 };
 
 export default messages;
