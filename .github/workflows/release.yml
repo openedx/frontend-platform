@@ -5,6 +5,10 @@ on:
       - master
       - alpha
 
+permissions:
+  id-token: write  # Required for OIDC
+  contents: write  # For Semantic Release tagging
+
 jobs:
   release:
     name: Release
@@ -15,13 +19,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Nodejs Env
-        run: echo "NODE_VER=`cat .nvmrc`" >> $GITHUB_ENV
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_VER }}
+          node-version-file: '.nvmrc'
 
       - name: Install dependencies
         run: npm ci
@@ -30,10 +31,9 @@ jobs:
         run: npm run build
 
       - name: Release to npm/Github
-        run: npx semantic-release@22
+        run: npx semantic-release@25
         env:
-          GITHUB_TOKEN: ${{ secrets.SEMANTIC_RELEASE_GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.SEMANTIC_RELEASE_NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.OPENEDX_SEMANTIC_RELEASE_GITHUB_TOKEN }}
 
       - name: Docs
         run: npm run docs
