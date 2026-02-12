@@ -4,6 +4,7 @@ import {
   getPrimaryLanguageSubtag,
   getLocale,
   getMessages,
+  getSupportedLocaleList,
   isRtl,
   handleRtl,
   getCookies,
@@ -181,6 +182,32 @@ describe('lib', () => {
 
     it('should return the messages for the preferred locale if no argument is passed', () => {
       expect(getMessages().message).toEqual('es-hah');
+    });
+  });
+
+  describe('getSupportedLocales', () => {
+    describe('when configured', () => {
+      beforeEach(() => {
+        configure({
+          loggingService: { logError: jest.fn() },
+          config: {
+            ENVIRONMENT: 'production',
+            LANGUAGE_PREFERENCE_COOKIE_NAME: 'yum',
+          },
+          messages: {
+            'es-419': { message: 'es-hah' },
+            de: { message: 'de-hah' },
+            'en-us': { message: 'en-us-hah' },
+            fr: { message: 'fr-hah' },
+          },
+        });
+      });
+
+      it('should return an array of supported locale codes', () => {
+        const supportedLocales = getSupportedLocaleList();
+        expect(Array.isArray(supportedLocales)).toBe(true);
+        expect(supportedLocales).toEqual(['es-419', 'de', 'en-us', 'fr', 'en']);
+      });
     });
   });
 

@@ -1,0 +1,59 @@
+import { changeUserSessionLanguage } from './languageManager';
+import { handleRtl, LOCALE_CHANGED } from './lib';
+import { logError } from '../logging';
+import { publish } from '../pubSub';
+import { updateAuthenticatedUserPreferences, setSessionLanguage } from './languageApi';
+
+jest.mock('./lib');
+jest.mock('../logging');
+jest.mock('../pubSub');
+jest.mock('./languageApi');
+
+describe('languageManager', () => {
+  let mockReload;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+
+    mockReload = jest.fn();
+    Object.defineProperty(window, 'location', {
+      configurable: true,
+      writable: true,
+      value: { reload: mockReload },
+    });
+
+    updateAuthenticatedUserPreferences.mockResolvedValue({});
+    setSessionLanguage.mockResolvedValue({});
+  });
+
+  describe('changeUserSessionLanguage', () => {
+    it('should perform complete language change process', async () => {
+      await changeUserSessionLanguage('fr');
+      expect(updateAuthenticatedUserPreferences).toHaveBeenCalledWith({
+        prefLang: 'fr',
+      });
+      expect(setSessionLanguage).toHaveBeenCalledWith('fr');
+      expect(handleRtl).toHaveBeenCalledWith('fr');
+      expect(publish).toHaveBeenCalledWith(LOCALE_CHANGED, 'fr');
+      expect(mockReload).not.toHaveBeenCalled();
+    });
+
+    it('should handle errors gracefully', async () => {
+      updateAuthenticatedUserPreferences.mockRejectedValue(new Error('fail'));
+      await changeUserSessionLanguage('es', true);
+      expect(logError).toHaveBeenCalled();
+    });
+
+    it('should call updateAuthenticatedUserPreferences even when user is not authenticated', async () => {
+      await changeUserSessionLanguage('en', true);
+      expect(updateAuthenticatedUserPreferences).toHaveBeenCalledWith({
+        prefLang: 'en',
+      });
+    });
+
+    it('should reload if forceReload is true', async () => {
+      await changeUserSessionLanguage('de', true);
+      expect(mockReload).toHaveBeenCalled();
+    });
+  });
+});
