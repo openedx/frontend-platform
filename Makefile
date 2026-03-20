@@ -16,6 +16,7 @@ build:
 	@# --copy-files will bring in everything else that wasn't processed by babel. Remove what we don't want.
 	@find dist -name '*.test.js*' -delete
 	@find dist -name '*.test.ts*' -delete
+	@find dist -name '*.d.ts' -delete
 	rm ./dist/setupTest.js
 	@# Generate .d.ts type declaration files from TypeScript sources
 	./node_modules/.bin/tsc --project tsconfig.build.json
