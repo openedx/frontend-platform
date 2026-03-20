@@ -12,11 +12,13 @@ cat_docs_command = cat ./docs/_API-header.md ./docs/_API-body.md > ./docs/API.md
 
 build:
 	rm -rf ./dist
-	./node_modules/.bin/fedx-scripts babel src --out-dir dist --source-maps --extensions '.js,.jsx,.ts,.tsx' --ignore **/*.test.jsx,**/*.test.js,**/*.test.tsx,**/*.test.ts,**/setupTest.js --copy-files
+	./node_modules/.bin/fedx-scripts babel src --out-dir dist --source-maps --extensions '.js,.jsx,.ts,.tsx' --ignore **/*.test.jsx,**/*.test.js,**/*.test.tsx,**/*.test.ts,**/setupTest.js,**/*.d.ts --copy-files
 	@# --copy-files will bring in everything else that wasn't processed by babel. Remove what we don't want.
 	@find dist -name '*.test.js*' -delete
 	@find dist -name '*.test.ts*' -delete
 	rm ./dist/setupTest.js
+	@# Generate .d.ts type declaration files from TypeScript sources
+	./node_modules/.bin/tsc --project tsconfig.build.json
 	cp ./package.json ./dist/package.json
 	cp ./LICENSE ./dist/LICENSE
 	cp ./README.md ./dist/README.md
