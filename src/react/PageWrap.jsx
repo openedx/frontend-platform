@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-// eslint-disable-next-line no-unused-vars
+// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
