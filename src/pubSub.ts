@@ -20,28 +20,32 @@
 import PubSub from 'pubsub-js';
 
 /**
+ * Subscribes to a PubSub event.
  *
- * @param {string} type
- * @param {function} callback
- * @returns {string} A subscription token that can be passed to `unsubscribe`
+ * @param type - The event type to subscribe to
+ * @param callback - The callback function invoked when the event is published
+ * @returns A subscription token that can be passed to {@link unsubscribe}
  */
-export function subscribe(type, callback) {
+export function subscribe(type: string, callback: (message: string, data: unknown) => void): string {
   return PubSub.subscribe(type, callback);
 }
 
 /**
+ * Unsubscribes from a PubSub event.
  *
- * @param {string} token A subscription token provided by `subscribe`
+ * @param token - A subscription token provided by {@link subscribe}
  */
-export function unsubscribe(token) {
-  return PubSub.unsubscribe(token);
+export function unsubscribe(token: string): void {
+  PubSub.unsubscribe(token);
 }
 
 /**
+ * Publishes a PubSub event.
  *
- * @param {string} type
- * @param {Object} data
+ * @param type - The event type to publish
+ * @param data - The data to pass to subscribers
+ * @returns Whether the event was published successfully
  */
-export function publish(type, data) {
+export function publish(type: string, data?: unknown): boolean {
   return PubSub.publish(type, data);
 }
