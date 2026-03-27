@@ -68,7 +68,7 @@ import {
 import {
   configure as configureAnalytics, SegmentAnalyticsService, identifyAnonymousUser, identifyAuthenticatedUser,
 } from './analytics';
-import { GoogleAnalyticsLoader } from './scripts';
+import { GoogleAnalyticsLoader, GoogleTagManagerLoader } from './scripts';
 import {
   getAuthenticatedHttpClient,
   configure as configureAuth,
@@ -269,8 +269,8 @@ function applyOverrideHandlers(overrides) {
  * @param {*} [options.analyticsService=SegmentAnalyticsService] The `AnalyticsService`
  * implementation to use.
  * @param {*} [options.authMiddleware=[]] An array of middleware to apply to http clients in the auth service.
- * @param {*} [options.externalScripts=[GoogleAnalyticsLoader]] An array of externalScripts.
- * By default added GoogleAnalyticsLoader.
+ * @param {*} [options.externalScripts=[GoogleAnalyticsLoader, GoogleTagManagerLoader]] An array of externalScripts.
+ * By default adds GoogleAnalyticsLoader and GoogleTagManagerLoader.
  * @param {*} [options.requireAuthenticatedUser=false] If true, turns on automatic login
  * redirection for unauthenticated users.  Defaults to false, meaning that by default the
  * application will allow anonymous/unauthenticated sessions.
@@ -290,7 +290,7 @@ export async function initialize({
   analyticsService = SegmentAnalyticsService,
   authService = AxiosJwtAuthService,
   authMiddleware = [],
-  externalScripts = [GoogleAnalyticsLoader],
+  externalScripts = [GoogleAnalyticsLoader, GoogleTagManagerLoader],
   requireAuthenticatedUser: requireUser = false,
   hydrateAuthenticatedUser: hydrateUser = false,
   messages,
