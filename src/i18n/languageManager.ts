@@ -12,22 +12,23 @@ import { updateAuthenticatedUserPreferences, setSessionLanguage } from './langua
  * 3. Updates the session language through the setlang endpoint
  * 4. Publishes a locale change event to notify other parts of the application
  *
- * @param {string} languageCode - The selected language locale code (e.g., 'en', 'es', 'ar').
- *                               Should be a valid ISO language code supported by the platform.
+ * @param {string} languageCode - The selected language locale code (e.g., 'en', 'es-419', 'ar', 'de-de').
+ *                                Should be a valid ISO language code supported by the platform. For reference:
+ *                                https://github.com/openedx/openedx-platform/blob/master/openedx/envs/common.py#L231
  * @param {boolean} [forceReload=false] - Whether to force a page reload after changing the language.
  * @returns {Promise} - A promise that resolves when all operations complete.
  *
  */
 export async function changeUserSessionLanguage(
-  languageCode,
-  forceReload = false,
-) {
+  languageCode: string,
+  forceReload: boolean = false,
+): Promise<void> {
   try {
     await updateAuthenticatedUserPreferences({ prefLang: languageCode });
     await setSessionLanguage(languageCode);
-    handleRtl(languageCode);
+    handleRtl();
     publish(LOCALE_CHANGED, languageCode);
-  } catch (error) {
+  } catch (error: any) {
     logError(error);
   }
 

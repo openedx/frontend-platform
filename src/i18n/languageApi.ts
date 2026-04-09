@@ -2,6 +2,11 @@ import { getConfig } from '../config';
 import { getAuthenticatedHttpClient, getAuthenticatedUser } from '../auth';
 import { convertKeyNames, snakeCaseObject } from '../utils';
 
+interface PreferenceData {
+  prefLang: string;
+  [key: string]: string;
+}
+
 /**
  * Updates user language preferences via the preferences API.
  *
@@ -9,11 +14,11 @@ import { convertKeyNames, snakeCaseObject } from '../utils';
  * and formats specific keys according to backend requirements before sending the PATCH request.
  * If no user is authenticated, the function returns early without making the API call.
  *
- * @param {Object} preferenceData - The preference parameters to update (e.g., { prefLang: 'en' }).
+ * @param {PreferenceData} preferenceData - The preference parameters to update (e.g., { prefLang: 'en' }).
  * @returns {Promise} - A promise that resolves when the API call completes successfully,
  *                      or rejects if there's an error with the request. Returns early if no user is authenticated.
  */
-export async function updateAuthenticatedUserPreferences(preferenceData) {
+export async function updateAuthenticatedUserPreferences(preferenceData: PreferenceData): Promise<void> {
   const user = getAuthenticatedUser();
   if (!user) {
     return Promise.resolve();
@@ -37,12 +42,13 @@ export async function updateAuthenticatedUserPreferences(preferenceData) {
  * This function sends a POST request to the LMS setlang endpoint to change
  * the language for the current user session.
  *
- * @param {string} languageCode - The language code to set (e.g., 'en', 'es', 'ar').
- *                               Should be a valid ISO language code supported by the platform.
+ * @param {string} languageCode - The selected language locale code (e.g., 'en', 'es-419', 'ar', 'de-de').
+ *                                Should be a valid ISO language code supported by the platform. For reference:
+ *                                https://github.com/openedx/openedx-platform/blob/master/openedx/envs/common.py#L231
  * @returns {Promise} - A promise that resolves when the API call completes successfully,
  *                      or rejects if there's an error with the request.
  */
-export async function setSessionLanguage(languageCode) {
+export async function setSessionLanguage(languageCode: string): Promise<void> {
   const formData = new FormData();
   formData.append('language', languageCode);
 

@@ -10,14 +10,14 @@ const LMS_BASE_URL = 'http://test.lms';
 describe('languageApi', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    getConfig.mockReturnValue({ LMS_BASE_URL });
-    getAuthenticatedUser.mockReturnValue({ username: 'testuser', userId: '123' });
+    (getConfig as jest.Mock).mockReturnValue({ LMS_BASE_URL });
+    (getAuthenticatedUser as jest.Mock).mockReturnValue({ username: 'testuser', userId: '123' });
   });
 
   describe('updateAuthenticatedUserPreferences', () => {
     it('should send a PATCH request with correct data', async () => {
       const patchMock = jest.fn().mockResolvedValue({});
-      getAuthenticatedHttpClient.mockReturnValue({ patch: patchMock });
+      (getAuthenticatedHttpClient as jest.Mock).mockReturnValue({ patch: patchMock });
 
       await updateAuthenticatedUserPreferences({ prefLang: 'es' });
 
@@ -30,8 +30,8 @@ describe('languageApi', () => {
 
     it('should return early if no authenticated user', async () => {
       const patchMock = jest.fn().mockResolvedValue({});
-      getAuthenticatedHttpClient.mockReturnValue({ patch: patchMock });
-      getAuthenticatedUser.mockReturnValue(null);
+      (getAuthenticatedHttpClient as jest.Mock).mockReturnValue({ patch: patchMock });
+      (getAuthenticatedUser as jest.Mock).mockReturnValue(null);
 
       await updateAuthenticatedUserPreferences({ prefLang: 'es' });
 
@@ -42,7 +42,7 @@ describe('languageApi', () => {
   describe('setSessionLanguage', () => {
     it('should send a POST request to setlang endpoint', async () => {
       const postMock = jest.fn().mockResolvedValue({});
-      getAuthenticatedHttpClient.mockReturnValue({ post: postMock });
+      (getAuthenticatedHttpClient as jest.Mock).mockReturnValue({ post: postMock });
 
       await setSessionLanguage('ar');
 
