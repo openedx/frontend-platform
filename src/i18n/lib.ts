@@ -36,8 +36,29 @@ import '@formatjs/intl-relativetimeformat/locale-data/th';
 import '@formatjs/intl-relativetimeformat/locale-data/uk';
 import '@formatjs/intl-relativetimeformat/locale-data/vi';
 
+export interface LoggingService {
+  logError: (...args: any[]) => void;
+}
+
+export interface I18nConfig {
+  ENVIRONMENT?: string;
+  LANGUAGE_PREFERENCE_COOKIE_NAME: string;
+  LMS_BASE_URL?: string;
+  [key: string]: any;
+}
+
+export interface I18nMessages {
+  [locale: string]: Record<string, string>;
+}
+
+export interface ConfigureOptions {
+  config: I18nConfig;
+  loggingService: LoggingService;
+  messages: I18nMessages | I18nMessages[];
+}
+
 const cookies = new Cookies();
-const supportedLocales = [
+const supportedLocales: string[] = [
   'ar', // Arabic
   // NOTE: 'en' is not included in this list intentionally, since it's the fallback.
   'es-419', // Spanish, Latin American
@@ -56,7 +77,7 @@ const supportedLocales = [
   'uk', // Ukrainian
   'vi', // Vietnamese
 ];
-const rtlLocales = [
+const rtlLocales: string[] = [
   'ar', // Arabic
   'he', // Hebrew
   'fa', // Farsi (not currently supported)
@@ -64,9 +85,9 @@ const rtlLocales = [
   'ur', // Urdu (not currently supported)
 ];
 
-let config = null;
-let loggingService = null;
-let messages = null;
+let config: I18nConfig | null = null;
+let loggingService: LoggingService | null = null;
+let messages: I18nMessages | null = null;
 
 /**
  * @memberof module:Internationalization
@@ -85,7 +106,7 @@ export const intlShape = PropTypes.object;
  * @ignore
  * @returns {LoggingService}
  */
-export const getLoggingService = () => loggingService;
+export const getLoggingService = (): LoggingService | null => loggingService;
 
 /**
  * @memberof module:Internationalization
@@ -102,7 +123,7 @@ export const LOCALE_CHANGED = `${LOCALE_TOPIC}.CHANGED`;
  * @memberof module:Internationalization
  * @returns {Cookies}
  */
-export function getCookies() {
+export function getCookies(): Cookies {
   return cookies;
 }
 
@@ -114,7 +135,7 @@ export function getCookies() {
  * @param {string} code
  * @memberof module:Internationalization
  */
-export function getPrimaryLanguageSubtag(code) {
+export function getPrimaryLanguageSubtag(code: string): string {
   return code.split('-')[0];
 }
 
@@ -130,12 +151,12 @@ export function getPrimaryLanguageSubtag(code) {
  * @returns {string}
  * @memberof module:Internationalization
  */
-export function findSupportedLocale(locale) {
-  if (messages[locale] !== undefined) {
+export function findSupportedLocale(locale: string): string {
+  if (messages![locale] !== undefined) {
     return locale;
   }
 
-  if (messages[getPrimaryLanguageSubtag(locale)] !== undefined) {
+  if (messages![getPrimaryLanguageSubtag(locale)] !== undefined) {
     return getPrimaryLanguageSubtag(locale);
   }
 
@@ -152,7 +173,7 @@ export function findSupportedLocale(locale) {
  * @returns {string}
  * @memberof module:Internationalization
  */
-export function getLocale(locale) {
+export function getLocale(locale?: string): string {
   if (messages === null) {
     throw new Error('getLocale called before configuring i18n. Call configure with messages first.');
   }
@@ -162,7 +183,7 @@ export function getLocale(locale) {
   }
   // 2. User setting in cookie
   const cookieLangPref = cookies
-    .get(config.LANGUAGE_PREFERENCE_COOKIE_NAME);
+    .get(config!.LANGUAGE_PREFERENCE_COOKIE_NAME);
   if (cookieLangPref) {
     return findSupportedLocale(cookieLangPref.toLowerCase());
   }
@@ -180,8 +201,8 @@ export function getLocale(locale) {
  * @param {string} [locale=getLocale()]
  * @memberof module:Internationalization
  */
-export function getMessages(locale = getLocale()) {
-  return messages[locale];
+export function getMessages(locale: string = getLocale()): Record<string, string> | undefined {
+  return messages![locale];
 }
 
 /**
@@ -193,7 +214,7 @@ export function getMessages(locale = getLocale()) {
  * @returns {string[]} Array of supported locale codes
  * @memberof module:Internationalization
  */
-export function getSupportedLocaleList() {
+export function getSupportedLocaleList(): string[] {
   if (messages === null) {
     throw new Error('getSupportedLocaleList called before configuring i18n. Call configure with messages first.');
   }
@@ -212,7 +233,7 @@ export function getSupportedLocaleList() {
  * @param {string} locale
  * @memberof module:Internationalization
  */
-export function isRtl(locale) {
+export function isRtl(locale: string): boolean {
   return rtlLocales.includes(locale);
 }
 
@@ -222,7 +243,7 @@ export function isRtl(locale) {
  *
  * @memberof module:Internationalization
  */
-export function handleRtl() {
+export function handleRtl(): void {
   if (isRtl(getLocale())) {
     globalThis.document.getElementsByTagName('html')[0].setAttribute('dir', 'rtl');
   } else {
@@ -266,11 +287,11 @@ const optionsShape = {
  * @returns {Object}
  * @memberof module:Internationalization
  */
-export function mergeMessages(newMessages) {
+export function mergeMessages(newMessages: I18nMessages | I18nMessages[] | null | undefined): I18nMessages {
   const msgs = Array.isArray(newMessages) ? merge({}, ...newMessages) : newMessages;
   messages = merge(messages, msgs);
 
-  return messages;
+  return messages as I18nMessages;
 }
 
 /**
@@ -279,13 +300,10 @@ export function mergeMessages(newMessages) {
  * Logs a warning if it detects a locale it doesn't expect (as defined by the supportedLocales list
  * above), or if an expected locale is not provided.
  *
- * @param {Object} options
- * @param {LoggingService} options.loggingService
- * @param {Object} options.config
- * @param {Object} options.messages
+ * @param {ConfigureOptions} options
  * @memberof module:Internationalization
  */
-export function configure(options) {
+export function configure(options: ConfigureOptions): void {
   PropTypes.checkPropTypes(optionsShape, options, 'property', 'i18n');
   // eslint-disable-next-line prefer-destructuring
   loggingService = options.loggingService;
@@ -294,14 +312,14 @@ export function configure(options) {
   messages = Array.isArray(options.messages) ? merge({}, ...options.messages) : options.messages;
 
   if (config.ENVIRONMENT !== 'production') {
-    Object.keys(messages).forEach((key) => {
+    Object.keys(messages!).forEach((key) => {
       if (supportedLocales.indexOf(key) < 0) {
         console.warn(`Unexpected locale: ${key}`); // eslint-disable-line no-console
       }
     });
 
     supportedLocales.forEach((key) => {
-      if (messages[key] === undefined) {
+      if (messages![key] === undefined) {
         console.warn(`Missing locale: ${key}`); // eslint-disable-line no-console
       }
     });

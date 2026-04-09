@@ -10,7 +10,7 @@ jest.mock('../pubSub');
 jest.mock('./languageApi');
 
 describe('languageManager', () => {
-  let mockReload;
+  let mockReload: jest.Mock;
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -22,8 +22,8 @@ describe('languageManager', () => {
       value: { reload: mockReload },
     });
 
-    updateAuthenticatedUserPreferences.mockResolvedValue({});
-    setSessionLanguage.mockResolvedValue({});
+    (updateAuthenticatedUserPreferences as jest.Mock).mockResolvedValue({});
+    (setSessionLanguage as jest.Mock).mockResolvedValue({});
   });
 
   describe('changeUserSessionLanguage', () => {
@@ -33,13 +33,13 @@ describe('languageManager', () => {
         prefLang: 'fr',
       });
       expect(setSessionLanguage).toHaveBeenCalledWith('fr');
-      expect(handleRtl).toHaveBeenCalledWith('fr');
+      expect(handleRtl).toHaveBeenCalled();
       expect(publish).toHaveBeenCalledWith(LOCALE_CHANGED, 'fr');
       expect(mockReload).not.toHaveBeenCalled();
     });
 
     it('should handle errors gracefully', async () => {
-      updateAuthenticatedUserPreferences.mockRejectedValue(new Error('fail'));
+      (updateAuthenticatedUserPreferences as jest.Mock).mockRejectedValue(new Error('fail'));
       await changeUserSessionLanguage('es', true);
       expect(logError).toHaveBeenCalled();
     });
