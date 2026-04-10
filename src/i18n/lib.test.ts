@@ -4,6 +4,7 @@ import {
   getPrimaryLanguageSubtag,
   getLocale,
   getMessages,
+  getSupportedLocaleList,
   isRtl,
   handleRtl,
   getCookies,
@@ -14,7 +15,7 @@ jest.mock('universal-cookie');
 
 describe('lib', () => {
   describe('configure', () => {
-    let originalWarn = null;
+    let originalWarn: typeof console.warn | null = null;
 
     beforeEach(() => {
       originalWarn = console.warn;
@@ -22,7 +23,7 @@ describe('lib', () => {
     });
 
     afterEach(() => {
-      console.warn = originalWarn;
+      console.warn = originalWarn!;
     });
 
     it('should not call console.warn in production', () => {
@@ -176,11 +177,37 @@ describe('lib', () => {
     });
 
     it('should return the messages for the provided locale', () => {
-      expect(getMessages('en-us').message).toEqual('en-us-hah');
+      expect(getMessages('en-us')!.message).toEqual('en-us-hah');
     });
 
     it('should return the messages for the preferred locale if no argument is passed', () => {
-      expect(getMessages().message).toEqual('es-hah');
+      expect(getMessages()!.message).toEqual('es-hah');
+    });
+  });
+
+  describe('getSupportedLocales', () => {
+    describe('when configured', () => {
+      beforeEach(() => {
+        configure({
+          loggingService: { logError: jest.fn() },
+          config: {
+            ENVIRONMENT: 'production',
+            LANGUAGE_PREFERENCE_COOKIE_NAME: 'yum',
+          },
+          messages: {
+            'es-419': { message: 'es-hah' },
+            de: { message: 'de-hah' },
+            'en-us': { message: 'en-us-hah' },
+            fr: { message: 'fr-hah' },
+          },
+        });
+      });
+
+      it('should return an array of supported locale codes', () => {
+        const supportedLocales = getSupportedLocaleList();
+        expect(Array.isArray(supportedLocales)).toBe(true);
+        expect(supportedLocales).toEqual(['es-419', 'de', 'en-us', 'fr', 'en']);
+      });
     });
   });
 
@@ -204,7 +231,7 @@ describe('lib', () => {
   });
 
   describe('handleRtl', () => {
-    let setAttribute;
+    let setAttribute: jest.Mock;
     beforeEach(() => {
       setAttribute = jest.fn();
 
@@ -212,7 +239,7 @@ describe('lib', () => {
         {
           setAttribute,
         },
-      ]);
+      ]) as any;
     });
 
     it('should do the right thing for non-RTL languages', () => {
@@ -283,7 +310,7 @@ describe('mergeMessages', () => {
         ar: { message: 'ar-hah' },
       },
     });
-    const result = mergeMessages([{ foo: 'bar' }, { buh: 'baz' }, { gah: 'wut' }]);
+    const result = mergeMessages([{ foo: 'bar' }, { buh: 'baz' }, { gah: 'wut' }] as any);
     expect(result).toEqual({
       ar: { message: 'ar-hah' },
       foo: 'bar',
@@ -304,7 +331,7 @@ describe('mergeMessages', () => {
         es: { init: 'inicial' },
       },
     });
-    const messages = [
+    const msgs: import('./lib').I18nMessages[] = [
       {
         en: { hello: 'hello' },
         es: { hello: 'hola' },
@@ -315,7 +342,7 @@ describe('mergeMessages', () => {
       },
     ];
 
-    const result = mergeMessages(messages);
+    const result = mergeMessages(msgs);
     expect(result).toEqual({
       en: {
         init: 'initial',
