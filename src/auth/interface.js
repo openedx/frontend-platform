@@ -302,7 +302,7 @@ export async function hydrateAuthenticatedUser() {
  * @name UserData
  * @interface
  * @memberof module:Auth
- * @property {string} userId
+ * @property {number} userId
  * @property {string} username
  * @property {Array} roles
  * @property {boolean} administrator

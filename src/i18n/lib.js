@@ -147,7 +147,7 @@ export function findSupportedLocale(locale) {
  * Gracefully fall back to a more general primary language subtag or to English (en)
  * if we don't support that language.
  *
- * @param {string} locale If a locale is provided, returns the closest supported locale. Optional.
+ * @param {string} [locale] If a locale is provided, returns the closest supported locale. Optional.
  * @throws An error if i18n has not yet been configured.
  * @returns {string}
  * @memberof module:Internationalization
