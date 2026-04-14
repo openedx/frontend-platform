@@ -38,6 +38,7 @@ export {
   mergeConfig,
   ensureConfig,
   getExternalLinkUrl,
+  type ConfigDocument,
 } from './config';
 export {
   initializeMockApp,

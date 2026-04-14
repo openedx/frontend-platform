@@ -23,66 +23,6 @@
  *
  */
 
-/**
- * @name createIntl
- * @kind function
- * @see {@link https://formatjs.io/docs/react-intl/api#createIntl Intl}
- */
-
-/**
- * @name FormattedDate
- * @kind class
- * @see {@link https://formatjs.io/docs/react-intl/components/#formatteddate Intl}
- */
-
-/**
- * @name FormattedTime
- * @kind class
- * @see {@link https://formatjs.io/docs/react-intl/components/#formattedtime Intl}
- */
-
-/**
- * @name FormattedRelativeTime
- * @kind class
- * @see {@link https://formatjs.io/docs/react-intl/components/#formattedrelativetime Intl}
- */
-
-/**
- * @name FormattedNumber
- * @kind class
- * @see {@link https://formatjs.io/docs/react-intl/components/#formattednumber Intl}
- */
-
-/**
- * @name FormattedPlural
- * @kind class
- * @see {@link https://formatjs.io/docs/react-intl/components/#formattedplural Intl}
- */
-
-/**
- * @name FormattedMessage
- * @kind class
- * @see {@link https://formatjs.io/docs/react-intl/components/#formattedmessage Intl}
- */
-
-/**
- * @name IntlProvider
- * @kind class
- * @see {@link https://formatjs.io/docs/react-intl/components/#intlprovider Intl}
- */
-
-/**
- * @name defineMessages
- * @kind function
- * @see {@link https://formatjs.io/docs/react-intl/api#definemessagesdefinemessage Intl}
- */
-
-/**
- * @name useIntl
- * @kind function
- * @see {@link https://formatjs.io/docs/react-intl/api#useIntl Intl}
- */
-
 export {
   createIntl,
   FormattedDate,
@@ -94,6 +34,9 @@ export {
   defineMessages,
   IntlProvider,
   useIntl,
+  type IntlConfig,
+  type ResolvedIntlConfig,
+  type IntlShape,
 } from 'react-intl';
 
 export {
