@@ -270,7 +270,7 @@ function applyOverrideHandlers(overrides) {
  * implementation to use.
  * @param {*} [options.authMiddleware=[]] An array of middleware to apply to http clients in the auth service.
  * @param {*} [options.externalScripts=[GoogleAnalyticsLoader]] An array of externalScripts.
- * By default added GoogleAnalyticsLoader.
+ * Can also be configured via `externalScripts` in env.config.js.
  * @param {*} [options.requireAuthenticatedUser=false] If true, turns on automatic login
  * redirection for unauthenticated users.  Defaults to false, meaning that by default the
  * application will allow anonymous/unauthenticated sessions.
@@ -308,10 +308,6 @@ export async function initialize({
     await runtimeConfig();
     publish(APP_CONFIG_INITIALIZED);
 
-    loadExternalScripts(externalScripts, {
-      config: getConfig(),
-    });
-
     // This allows us to replace the implementations of the logging, analytics, and auth services
     // based on keys in the ConfigDocument.  The JavaScript File Configuration method is the only
     // one capable of supplying an alternative implementation since it can import other modules.
@@ -320,6 +316,11 @@ export async function initialize({
     const loggingServiceImpl = getConfig().loggingService || loggingService;
     const analyticsServiceImpl = getConfig().analyticsService || analyticsService;
     const authServiceImpl = getConfig().authService || authService;
+    const externalScriptsImpl = getConfig().externalScripts || externalScripts;
+
+    loadExternalScripts(externalScriptsImpl, {
+      config: getConfig(),
+    });
 
     // Logging
     configureLogging(loggingServiceImpl, {
