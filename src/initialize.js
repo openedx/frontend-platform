@@ -308,7 +308,10 @@ export async function initialize({
     await runtimeConfig();
     publish(APP_CONFIG_INITIALIZED);
 
-    loadExternalScripts(externalScripts, {
+    // Merge default scripts with any additional injected ones passed via env.config
+    const injectedScripts = getConfig().injectedScripts || [];
+    const externalScriptsImpl = [...injectedScripts, ...externalScripts];
+    loadExternalScripts(externalScriptsImpl, {
       config: getConfig(),
     });
 
