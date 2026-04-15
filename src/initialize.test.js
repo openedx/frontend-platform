@@ -10,7 +10,7 @@ import {
   APP_READY,
   APP_INIT_ERROR,
 } from './constants';
-import { initialize } from './initialize';
+import { initialize, loadExternalScripts } from './initialize';
 import { subscribe } from './pubSub';
 
 import {
@@ -351,6 +351,63 @@ describe('initialize', () => {
     expect(ensureAuthenticatedUser).not.toHaveBeenCalled();
     expect(hydrateAuthenticatedUser).not.toHaveBeenCalled();
     expect(logError).not.toHaveBeenCalled();
+  });
+
+  it('should load externalScripts from config when provided', async () => {
+    const mockScript = jest.fn().mockImplementation(() => ({ loadScript: jest.fn() }));
+    config.externalScripts = [mockScript];
+
+    await initialize({ messages: null });
+
+    expect(mockScript).toHaveBeenCalledWith({ config });
+    delete config.externalScripts;
+  });
+
+  it('should fall back to externalScripts parameter when config has none', async () => {
+    const mockScript = jest.fn().mockImplementation(() => ({ loadScript: jest.fn() }));
+
+    await initialize({ messages: null, externalScripts: [mockScript] });
+
+    expect(mockScript).toHaveBeenCalledWith({ config });
+  });
+
+  it('should load GoogleAnalyticsLoader by default', async () => {
+    const { GoogleAnalyticsLoader: GALoader } = jest.requireActual('./scripts');
+    const loadScriptSpy = jest.spyOn(GALoader.prototype, 'loadScript').mockImplementation(() => {});
+
+    await initialize({ messages: null });
+
+    expect(loadScriptSpy).toHaveBeenCalled();
+    loadScriptSpy.mockRestore();
+  });
+
+  it('should prefer config externalScripts over the parameter', async () => {
+    const configScript = jest.fn().mockImplementation(() => ({ loadScript: jest.fn() }));
+    const paramScript = jest.fn().mockImplementation(() => ({ loadScript: jest.fn() }));
+    config.externalScripts = [configScript];
+
+    await initialize({ messages: null, externalScripts: [paramScript] });
+
+    expect(configScript).toHaveBeenCalled();
+    expect(paramScript).not.toHaveBeenCalled();
+    delete config.externalScripts;
+  });
+});
+
+describe('loadExternalScripts', () => {
+  it('should instantiate each script with data and call loadScript', () => {
+    const loadScript = jest.fn();
+    const MockScript = jest.fn().mockImplementation(() => ({ loadScript }));
+    const data = { config: { some: 'value' } };
+
+    loadExternalScripts([MockScript], data);
+
+    expect(MockScript).toHaveBeenCalledWith(data);
+    expect(loadScript).toHaveBeenCalled();
+  });
+
+  it('should handle an empty array', () => {
+    expect(() => loadExternalScripts([], {})).not.toThrow();
   });
 });
 
