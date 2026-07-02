@@ -52,14 +52,9 @@ export async function setSessionLanguage(languageCode: string): Promise<void> {
   const formData = new FormData();
   formData.append('language', languageCode);
 
-  return getAuthenticatedHttpClient().post(
-    `${getConfig().LMS_BASE_URL}/i18n/setlang/`,
-    formData,
-    {
-      headers: {
-        Accept: 'application/json',
-        'X-Requested-With': 'XMLHttpRequest',
-      },
-    },
+  return getAuthenticatedHttpClient().patch(
+    `${getConfig().LMS_BASE_URL}/lang_pref/update_language`,
+    { 'pref-lang': languageCode },
+    { isPublic: true },
   );
 }

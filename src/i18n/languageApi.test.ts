@@ -40,16 +40,16 @@ describe('languageApi', () => {
   });
 
   describe('setSessionLanguage', () => {
-    it('should send a POST request to setlang endpoint', async () => {
-      const postMock = jest.fn().mockResolvedValue({});
-      (getAuthenticatedHttpClient as jest.Mock).mockReturnValue({ post: postMock });
+    it('should send a PATCH request to update_language endpoint', async () => {
+      const patchMock = jest.fn().mockResolvedValue({});
+      (getAuthenticatedHttpClient as jest.Mock).mockReturnValue({ patch: patchMock });
 
       await setSessionLanguage('ar');
 
-      expect(postMock).toHaveBeenCalledWith(
-        `${LMS_BASE_URL}/i18n/setlang/`,
-        expect.any(FormData),
-        expect.objectContaining({ headers: expect.any(Object) }),
+      expect(patchMock).toHaveBeenCalledWith(
+        `${LMS_BASE_URL}/lang_pref/update_language`,
+        { 'pref-lang': 'ar' },
+        expect.objectContaining({ isPublic: true }),
       );
     });
   });
