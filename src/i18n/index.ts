@@ -45,6 +45,7 @@ export {
   getPrimaryLanguageSubtag,
   getLocale,
   getMessages,
+  getSupportedLocaleList,
   isRtl,
   handleRtl,
   mergeMessages,
@@ -65,3 +66,7 @@ export {
   getLanguageList,
   getLanguageMessages,
 } from './languages';
+
+export {
+  changeUserSessionLanguage,
+} from './languageManager';
