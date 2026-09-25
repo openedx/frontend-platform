@@ -17,6 +17,7 @@ import '@formatjs/intl-pluralrules/locale-data/pt';
 import '@formatjs/intl-pluralrules/locale-data/ru';
 import '@formatjs/intl-pluralrules/locale-data/th';
 import '@formatjs/intl-pluralrules/locale-data/uk';
+import '@formatjs/intl-pluralrules/locale-data/vi';
 
 import '@formatjs/intl-relativetimeformat/polyfill';
 import '@formatjs/intl-relativetimeformat/locale-data/ar';
@@ -33,6 +34,7 @@ import '@formatjs/intl-relativetimeformat/locale-data/pt';
 import '@formatjs/intl-relativetimeformat/locale-data/ru';
 import '@formatjs/intl-relativetimeformat/locale-data/th';
 import '@formatjs/intl-relativetimeformat/locale-data/uk';
+import '@formatjs/intl-relativetimeformat/locale-data/vi';
 
 const cookies = new Cookies();
 const supportedLocales = [
@@ -52,6 +54,7 @@ const supportedLocales = [
   'ru', // Russian
   'th', // Thai
   'uk', // Ukrainian
+  'vi', // Vietnamese
 ];
 const rtlLocales = [
   'ar', // Arabic
@@ -144,7 +147,7 @@ export function findSupportedLocale(locale) {
  * Gracefully fall back to a more general primary language subtag or to English (en)
  * if we don't support that language.
  *
- * @param {string} locale If a locale is provided, returns the closest supported locale. Optional.
+ * @param {string} [locale] If a locale is provided, returns the closest supported locale. Optional.
  * @throws An error if i18n has not yet been configured.
  * @returns {string}
  * @memberof module:Internationalization
@@ -220,6 +223,7 @@ const messagesShape = {
   ru: PropTypes.objectOf(PropTypes.string), // Russian
   th: PropTypes.objectOf(PropTypes.string), // Thai
   uk: PropTypes.objectOf(PropTypes.string), // Ukrainian
+  vi: PropTypes.objectOf(PropTypes.string), // Vietnamese
 };
 
 const optionsShape = {

@@ -1,7 +1,9 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 
+/* eslint-disable import/no-extraneous-dependencies */
 import { AppContext } from '@edx/frontend-platform/react';
+/* eslint-enable import/no-extraneous-dependencies */
 
 export default function AuthenticatedPage() {
   const { authenticatedUser, config } = useContext(AppContext);

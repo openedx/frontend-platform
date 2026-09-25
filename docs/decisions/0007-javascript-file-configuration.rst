@@ -135,7 +135,7 @@ Anecdotally, in the past frontend-build used JSON versions of many of
 its configuration files (Babel, eslint, jest) but over time they were all
 converted to JavaScript files so we could express more complicated
 configuration needs.  Since one of the primary use cases and reasons we need a
-new configuration method is to allow developers to supply alternate
+new configuration method is to allow developers to supply alternative
 implementations of frontend-platform's core services (analytics, logging), JSON
 was effectively a non-starter.
 

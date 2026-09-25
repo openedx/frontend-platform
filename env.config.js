@@ -3,6 +3,9 @@
 // Also note that in an actual application this file would be added to .gitignore.
 const config = {
   JS_FILE_VAR: 'JS_FILE_VAR_VALUE_FOR_EXAMPLE_APP',
+  externalLinkUrlOverrides: {
+    "https://github.com/openedx/docs.openedx.org/": "https://docs.openedx.org/",
+  }
 };
 
 export default config;

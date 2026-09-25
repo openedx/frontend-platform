@@ -5,23 +5,24 @@ on:
       - master
       - alpha
 
+permissions:
+  id-token: write  # Required for OIDC
+  contents: write  # For Semantic Release tagging
+
 jobs:
   release:
     name: Release
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
         with:
           fetch-depth: 0
 
-      - name: Setup Nodejs Env
-        run: echo "NODE_VER=`cat .nvmrc`" >> $GITHUB_ENV
-
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
-          node-version: ${{ env.NODE_VER }}
+          node-version-file: '.nvmrc'
 
       - name: Install dependencies
         run: npm ci
@@ -30,16 +31,15 @@ jobs:
         run: npm run build
 
       - name: Release to npm/Github
-        run: npx semantic-release@22
+        run: npx semantic-release@25
         env:
-          GITHUB_TOKEN: ${{ secrets.SEMANTIC_RELEASE_GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.SEMANTIC_RELEASE_NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.OPENEDX_SEMANTIC_RELEASE_GITHUB_TOKEN }}
 
       - name: Docs
         run: npm run docs
 
       - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4.6.3
+        uses: JamesIves/github-pages-deploy-action@d92aa235d04922e8f08b40ce78cc5442fcfbfa2f # v4.8.0
         with:
           branch: gh-pages # The branch the action should deploy to.
           folder: docs/api/@edx/frontend-platform/1.0.0-semantically-released # The folder the action should deploy.

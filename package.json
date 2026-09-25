@@ -3,6 +3,7 @@
   "version": "1.0.0-semantically-released",
   "description": "Foundational application framework for Open edX micro-frontend applications.",
   "main": "index.js",
+  "types": "index.d.ts",
   "publishConfig": {
     "access": "public"
   },
@@ -11,7 +12,7 @@
     "build": "make build",
     "docs": "jsdoc -c jsdoc.json",
     "docs-watch": "nodemon -w src -w docs/template -w README.md -e js,jsx --exec npm run docs",
-    "lint": "fedx-scripts eslint --ext .js --ext .jsx .",
+    "lint": "fedx-scripts eslint --ext .js --ext .jsx --ext .ts --ext .tsx .",
     "i18n_extract": "fedx-scripts formatjs extract",
     "snapshot": "fedx-scripts jest --updateSnapshot",
     "start": "fedx-scripts webpack-dev-server --progress",
@@ -34,20 +35,22 @@
   "homepage": "https://github.com/openedx/frontend-platform#readme",
   "devDependencies": {
     "@edx/brand": "npm:@openedx/brand-openedx@^1.2.2",
-    "@edx/browserslist-config": "1.2.0",
-    "@openedx/frontend-build": "14.1.1",
-    "@openedx/paragon": "22.6.1",
-    "@testing-library/jest-dom": "6.4.6",
-    "@testing-library/react": "12.1.5",
-    "@testing-library/react-hooks": "^8.0.1",
+    "@edx/browserslist-config": "1.5.0",
+    "@openedx/frontend-build": "^14.3.0",
+    "@openedx/paragon": "^23.3.0",
+    "@testing-library/dom": "10.4.2",
+    "@testing-library/jest-dom": "6.9.1",
+    "@testing-library/react": "16.3.3",
+    "@testing-library/user-event": "14.6.7",
+    "@types/node": "^25.6.0",
     "axios-mock-adapter": "^1.22.0",
-    "husky": "8.0.3",
     "jest-environment-jsdom": "29.7.0",
+    "jest-localstorage-mock": "^2.4.26",
     "jsdoc": "^4.0.0",
-    "nodemon": "3.1.4",
+    "nodemon": "3.1.11",
     "prop-types": "15.8.1",
-    "react": "17.0.2",
-    "react-dom": "17.0.2",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
     "react-redux": "^8.1.1",
     "react-router-dom": "^6.6.1",
     "redux": "4.2.1"
@@ -56,8 +59,8 @@
     "@cospired/i18n-iso-languages": "4.2.0",
     "@formatjs/intl-pluralrules": "4.3.3",
     "@formatjs/intl-relativetimeformat": "10.0.1",
-    "axios": "1.7.7",
-    "axios-cache-interceptor": "1.3.2",
+    "axios": "1.16.0",
+    "axios-cache-interceptor": "1.11.4",
     "form-urlencoded": "4.1.4",
     "glob": "7.2.3",
     "history": "4.10.1",
@@ -69,18 +72,24 @@
     "lodash.memoize": "4.1.2",
     "lodash.merge": "4.6.2",
     "lodash.snakecase": "4.1.1",
-    "pubsub-js": "1.9.4",
-    "react-intl": "6.6.8",
+    "pubsub-js": "1.9.5",
+    "react-intl": "6.8.9",
     "universal-cookie": "4.0.4"
   },
   "peerDependencies": {
     "@openedx/frontend-build": ">= 14.0.0",
-    "@openedx/paragon": ">= 21.5.7 < 23.0.0",
+    "@openedx/paragon": ">= 21.5.7 < 24.0.0",
     "prop-types": ">=15.7.2 <16.0.0",
-    "react": "^16.9.0 || ^17.0.0",
-    "react-dom": "^16.9.0 || ^17.0.0",
+    "react": "^16.9.0 || ^17.0.0 || ^18.0.0",
+    "react-dom": "^16.9.0 || ^17.0.0 || ^18.0.0",
     "react-redux": "^7.1.1 || ^8.1.1",
     "react-router-dom": "^6.0.0",
     "redux": "^4.0.4"
+  },
+  "peerDependenciesMeta": {
+    "@openedx/frontend-build": {
+      "optional": true,
+      "reason": "This package is only a peer dependency to ensure using a minimum compatible version that provides env.config and PARAGON_THEME support. It is not needed at runtime, and may be omitted with `--omit=optional`."
+    }
   }
 }

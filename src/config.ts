@@ -40,10 +40,10 @@
  *
  * ###### JavaScript File Configuration
  *
- * Configuration variables can be supplied in an optional file named env.config.js.  This file must
- * export either an Object containing configuration variables or a function.  The function must
- * return an Object containing configuration variables or, alternately, a promise which resolves to
- * an Object.
+ * Configuration variables can be supplied in an optional file named env.config.js (it can also be
+ * a `.jsx`, `.ts`, or `.tsx` file).  This file must export either an Object containing configuration
+ * variables or a function.  The function must return an Object containing configuration variables or,
+ * alternatively, a promise which resolves to an Object.
  *
  * Using a function or async function allows the configuration to be resolved at runtime (because
  * the function will be executed at runtime).  This is not common, and the capability is included
@@ -89,11 +89,9 @@
  *
  * Configuration variables can also be supplied using the "runtime configuration" method, taking
  * advantage of the Micro-frontend Config API in edx-platform. More information on this API can be
- * found in the ADR which introduced it:
+ * found in [the ADR which introduced it][1].
  *
- * https://github.com/openedx/edx-platform/blob/master/lms/djangoapps/mfe_config_api/docs/decisions/0001-mfe-config-api.rst
- *
- * The runtime configuration method can be enabled by supplying a MFE_CONFIG_API_URL via one of the other
+ * The runtime configuration method can be enabled by supplying a `MFE_CONFIG_API_URL` via one of the other
  * two configuration methods above.
  *
  * Runtime configuration is particularly useful if you need to supply different configurations to
@@ -103,9 +101,9 @@
  *
  * ##### Initialization Config Handler
  *
- * The configuration document can be extended by
- * applications at run-time using a `config` initialization handler.  Please see the Initialization
- * documentation for more information on handlers and initialization phases.
+ * The configuration document can be extended by applications at run-time using a `config`
+ * initialization handler.  Please see the Initialization documentation for more information on
+ * handlers and initialization phases.
  *
  * ```
  * initialize({
@@ -114,21 +112,23 @@
  *       mergeConfig({
  *         CUSTOM_VARIABLE: 'custom value',
  *         LMS_BASE_URL: 'http://localhost:18001' // You can override variables, but this is uncommon.
-  *       }, 'App config override handler');
+ *       }, 'App config override handler');
  *     },
  *   },
  * });
  * ```
  *
+ * [1]: https://github.com/openedx/edx-platform/blob/master/lms/djangoapps/mfe_config_api/docs/decisions/0001-mfe-config-api.rst
+ *
  * @module Config
- */
+ * */
 
 import { APP_CONFIG_INITIALIZED, CONFIG_CHANGED } from './constants';
 
 import { publish, subscribe } from './pubSub';
 import { ensureDefinedConfig } from './utils';
 
-function extractRegex(envVar) {
+function extractRegex(envVar: unknown) {
   // Convert the environment variable string to a regex, while guarding
   // against a non-string and an empty/whitespace-only string.
   if (typeof envVar === 'string' && envVar.trim() !== '') {
@@ -137,40 +137,136 @@ function extractRegex(envVar) {
   return undefined;
 }
 
-const ENVIRONMENT = process.env.NODE_ENV;
-let config = {
-  ACCESS_TOKEN_COOKIE_NAME: process.env.ACCESS_TOKEN_COOKIE_NAME,
-  ACCOUNT_PROFILE_URL: process.env.ACCOUNT_PROFILE_URL,
-  ACCOUNT_SETTINGS_URL: process.env.ACCOUNT_SETTINGS_URL,
-  BASE_URL: process.env.BASE_URL,
+/**
+ * Safely parses a JSON string coming from the environment variables.
+ * If the JSON is invalid, the function returns an empty object and logs an error to the console.
+ *
+ * @param paragonUrlsJson - The JSON string representing Paragon theme URLs.
+ * @returns Returns a parsed object if the JSON is valid; otherwise, returns
+ * an empty object if invalid or undefined if no input is provided. In case of a
+ * different type of error, return the error object itself.
+ *
+ * @example
+ * const jsonString = '{
+ *    "core":{"urls":{"default":"core.min.css"}},
+ *    "defaults":{"light":"light"},
+ *    "variants":{"light":{"urls":{"default":"light.min.css"}}}
+ * }';
+ * const parsedUrls = parseParagonThemeUrls(jsonString);
+ * console.log(parsedUrls); // Outputs the parsed JSON object
+ */
+function parseParagonThemeUrls(paragonUrlsJson: string): Record<string, any> | undefined | Error {
+  if (!paragonUrlsJson) {
+    return undefined;
+  }
+  try {
+    return JSON.parse(paragonUrlsJson);
+  } catch (err) {
+    if (err instanceof SyntaxError) {
+      // eslint-disable-next-line no-console
+      console.error('Unable to parse PARAGON_THEME_URLS JSON.\nPlease check https://github.com/openedx/frontend-platform/tree/master/docs/how_tos/theming.md for the expected formatting.\nAn empty object ({}) will be returned, which will cause the theming configuration to fall back to the installed packages.');
+      return {};
+    }
+    // In case of a different type of error, return the error object itself
+    return err as Error;
+  }
+}
+
+/**
+ * An object describing the current application configuration.
+ *
+ * In its most basic form, the initialization process loads this document via `process.env`
+ * variables.  There are other ways to add configuration variables to the ConfigDocument as
+ * documented above (JavaScript File Configuration, Runtime Configuration, and the Initialization
+ * Config Handler).
+ *
+ * ```
+ * {
+ *   BASE_URL: process.env.BASE_URL,
+ *   // ... other vars
+ * }
+ * ```
+ *
+ * When using Webpack (i.e., normal usage), the build process is responsible for supplying these
+ * variables via command-line environment variables.  That means they must be supplied at build
+ * time.
+ *
+ * @memberof module:Config
+ */
+export interface ConfigDocument {
+  ACCESS_TOKEN_COOKIE_NAME: string;
+  ACCOUNT_PROFILE_URL: string;
+  ACCOUNT_SETTINGS_URL: string;
+  /** The URL of the current application. */
+  BASE_URL: string;
+  PUBLIC_PATH: string;
+  CREDENTIALS_BASE_URL?: string;
+  CSRF_TOKEN_API_PATH: string;
+  DISCOVERY_API_BASE_URL?: string;
+  PUBLISHER_BASE_URL?: string;
+  ECOMMERCE_BASE_URL?: string;
+  ENVIRONMENT: 'development' | 'production' | 'test';
+  IGNORED_ERROR_REGEX?: RegExp;
+  LANGUAGE_PREFERENCE_COOKIE_NAME: string;
+  LEARNING_BASE_URL: string;
+  LMS_BASE_URL: string;
+  LOGIN_URL: string;
+  LOGOUT_URL: string;
+  STUDIO_BASE_URL: string;
+  MARKETING_SITE_BASE_URL: string;
+  ORDER_HISTORY_URL?: string;
+  REFRESH_ACCESS_TOKEN_ENDPOINT: string;
+  SECURE_COOKIES: boolean; // <-- the only non-string value
+  SEGMENT_KEY?: string;
+  SITE_NAME: string;
+  USER_INFO_COOKIE_NAME: string;
+  LOGO_URL: string;
+  LOGO_TRADEMARK_URL: string;
+  LOGO_WHITE_URL: string;
+  FAVICON_URL: string;
+  MFE_CONFIG_API_URL: string;
+  APP_ID: string;
+  SUPPORT_URL: string;
+  PARAGON_THEME_URLS: Record<string, any> | Error | undefined;
+  externalLinkUrlOverrides?: null | Record<string, string>;
+  [otherKey: string]: any;
+}
+
+const ENVIRONMENT = process.env.NODE_ENV as 'development' | 'production' | 'test';
+let config: ConfigDocument = {
+  ACCESS_TOKEN_COOKIE_NAME: process.env.ACCESS_TOKEN_COOKIE_NAME!,
+  ACCOUNT_PROFILE_URL: process.env.ACCOUNT_PROFILE_URL!,
+  ACCOUNT_SETTINGS_URL: process.env.ACCOUNT_SETTINGS_URL!,
+  BASE_URL: process.env.BASE_URL!,
   PUBLIC_PATH: process.env.PUBLIC_PATH || '/',
   CREDENTIALS_BASE_URL: process.env.CREDENTIALS_BASE_URL,
-  CSRF_TOKEN_API_PATH: process.env.CSRF_TOKEN_API_PATH,
+  CSRF_TOKEN_API_PATH: process.env.CSRF_TOKEN_API_PATH!,
   DISCOVERY_API_BASE_URL: process.env.DISCOVERY_API_BASE_URL,
   PUBLISHER_BASE_URL: process.env.PUBLISHER_BASE_URL,
   ECOMMERCE_BASE_URL: process.env.ECOMMERCE_BASE_URL,
   ENVIRONMENT,
   IGNORED_ERROR_REGEX: extractRegex(process.env.IGNORED_ERROR_REGEX),
-  LANGUAGE_PREFERENCE_COOKIE_NAME: process.env.LANGUAGE_PREFERENCE_COOKIE_NAME,
-  LEARNING_BASE_URL: process.env.LEARNING_BASE_URL,
-  LMS_BASE_URL: process.env.LMS_BASE_URL,
-  LOGIN_URL: process.env.LOGIN_URL,
-  LOGOUT_URL: process.env.LOGOUT_URL,
-  STUDIO_BASE_URL: process.env.STUDIO_BASE_URL,
-  MARKETING_SITE_BASE_URL: process.env.MARKETING_SITE_BASE_URL,
+  LANGUAGE_PREFERENCE_COOKIE_NAME: process.env.LANGUAGE_PREFERENCE_COOKIE_NAME!,
+  LEARNING_BASE_URL: process.env.LEARNING_BASE_URL!,
+  LMS_BASE_URL: process.env.LMS_BASE_URL!,
+  LOGIN_URL: process.env.LOGIN_URL!,
+  LOGOUT_URL: process.env.LOGOUT_URL!,
+  STUDIO_BASE_URL: process.env.STUDIO_BASE_URL!,
+  MARKETING_SITE_BASE_URL: process.env.MARKETING_SITE_BASE_URL!,
   ORDER_HISTORY_URL: process.env.ORDER_HISTORY_URL,
-  REFRESH_ACCESS_TOKEN_ENDPOINT: process.env.REFRESH_ACCESS_TOKEN_ENDPOINT,
+  REFRESH_ACCESS_TOKEN_ENDPOINT: process.env.REFRESH_ACCESS_TOKEN_ENDPOINT!,
   SECURE_COOKIES: ENVIRONMENT !== 'development',
   SEGMENT_KEY: process.env.SEGMENT_KEY,
-  SITE_NAME: process.env.SITE_NAME,
-  USER_INFO_COOKIE_NAME: process.env.USER_INFO_COOKIE_NAME,
-  LOGO_URL: process.env.LOGO_URL,
-  LOGO_TRADEMARK_URL: process.env.LOGO_TRADEMARK_URL,
-  LOGO_WHITE_URL: process.env.LOGO_WHITE_URL,
-  FAVICON_URL: process.env.FAVICON_URL,
-  MFE_CONFIG_API_URL: process.env.MFE_CONFIG_API_URL,
-  APP_ID: process.env.APP_ID,
-  SUPPORT_URL: process.env.SUPPORT_URL,
+  SITE_NAME: process.env.SITE_NAME!,
+  USER_INFO_COOKIE_NAME: process.env.USER_INFO_COOKIE_NAME!,
+  LOGO_URL: process.env.LOGO_URL!,
+  LOGO_TRADEMARK_URL: process.env.LOGO_TRADEMARK_URL!,
+  LOGO_WHITE_URL: process.env.LOGO_WHITE_URL!,
+  FAVICON_URL: process.env.FAVICON_URL!,
+  MFE_CONFIG_API_URL: process.env.MFE_CONFIG_API_URL!,
+  APP_ID: process.env.APP_ID!,
+  SUPPORT_URL: process.env.SUPPORT_URL!,
+  PARAGON_THEME_URLS: parseParagonThemeUrls(process.env.PARAGON_THEME_URLS!),
 };
 
 /**
@@ -186,10 +282,8 @@ let config = {
  *   LMS_BASE_URL,
  * } = getConfig();
  * ```
- *
- * @returns {ConfigDocument}
-  */
-export function getConfig() {
+ */
+export function getConfig(): ConfigDocument {
   return config;
 }
 
@@ -208,10 +302,8 @@ export function getConfig() {
  *   LMS_BASE_URL, // This is overriding the ENTIRE document - this is not merged in!
  * });
  * ```
- *
- * @param {ConfigDocument} newConfig
  */
-export function setConfig(newConfig) {
+export function setConfig(newConfig: ConfigDocument) {
   ensureDefinedConfig(config, 'config');
   config = newConfig;
   publish(CONFIG_CHANGED);
@@ -229,9 +321,8 @@ export function setConfig(newConfig) {
  *
  * If any of the key values are `undefined`, an error will be logged to 'warn'.
  *
- * @param {Object} newConfig
  */
-export function mergeConfig(newConfig) {
+export function mergeConfig(newConfig: Partial<ConfigDocument>) {
   ensureDefinedConfig(newConfig, 'ProcessEnvConfigService');
   config = Object.assign(config, newConfig);
   publish(CONFIG_CHANGED);
@@ -257,11 +348,8 @@ export function mergeConfig(newConfig) {
  * of the specified properties.  This means that this function is compatible with custom `config`
  * phase handlers responsible for loading additional configuration data in the initialization
  * sequence.
- *
- * @param {Array} keys
- * @param {string} [requester='unspecified application code']
  */
-export function ensureConfig(keys, requester = 'unspecified application code') {
+export function ensureConfig(keys: string[], requester = 'unspecified application code') {
   subscribe(APP_CONFIG_INITIALIZED, () => {
     keys.forEach((key) => {
       if (config[key] === undefined) {
@@ -273,55 +361,29 @@ export function ensureConfig(keys, requester = 'unspecified application code') {
 }
 
 /**
- * An object describing the current application configuration.
+ * Get an external link URL based on the URL provided. If the passed in URL is overridden in the
+ * `externalLinkUrlOverrides` object, it will return the overridden URL. Otherwise, it will return
+ * the provided URL.
  *
- * In its most basic form, the initialization process loads this document via `process.env`
- * variables.  There are other ways to add configuration variables to the ConfigDocument as
- * documented above (JavaScript File Configuration, Runtime Configuration, and the Initialization
- * Config Handler)
  *
- * ```
- * {
- *   BASE_URL: process.env.BASE_URL,
- *   // ... other vars
- * }
- * ```
+ * @param url - The default URL.
+ * @returns - The external link URL. Defaults to the input URL if not found in the
+ * `externalLinkUrlOverrides` object. If the input URL is invalid, '#' is returned.
  *
- * When using Webpack (i.e., normal usage), the build process is responsible for supplying these
- * variables via command-line environment variables.  That means they must be supplied at build
- * time.
+ * @example
+ * import { getExternalLinkUrl } from '@edx/frontend-platform';
  *
- * @name ConfigDocument
- * @memberof module:Config
- * @property {string} ACCESS_TOKEN_COOKIE_NAME
- * @property {string} ACCOUNT_PROFILE_URL
- * @property {string} ACCOUNT_SETTINGS_URL
- * @property {string} BASE_URL The URL of the current application.
- * @property {string} CREDENTIALS_BASE_URL
- * @property {string} CSRF_TOKEN_API_PATH
- * @property {string} DISCOVERY_API_BASE_URL
- * @property {string} PUBLISHER_BASE_URL
- * @property {string} ECOMMERCE_BASE_URL
- * @property {string} ENVIRONMENT This is one of: development, production, or test.
- * @property {string} IGNORED_ERROR_REGEX
- * @property {string} LANGUAGE_PREFERENCE_COOKIE_NAME
- * @property {string} LEARNING_BASE_URL
- * @property {string} LMS_BASE_URL
- * @property {string} LOGIN_URL
- * @property {string} LOGOUT_URL
- * @property {string} STUDIO_BASE_URL
- * @property {string} MARKETING_SITE_BASE_URL
- * @property {string} ORDER_HISTORY_URL
- * @property {string} REFRESH_ACCESS_TOKEN_ENDPOINT
- * @property {boolean} SECURE_COOKIES
- * @property {string} SEGMENT_KEY
- * @property {string} SITE_NAME
- * @property {string} USER_INFO_COOKIE_NAME
- * @property {string} LOGO_URL
- * @property {string} LOGO_TRADEMARK_URL
- * @property {string} LOGO_WHITE_URL
- * @property {string} FAVICON_URL
- * @property {string} MFE_CONFIG_API_URL
- * @property {string} APP_ID
- * @property {string} SUPPORT_URL
+ * <Hyperlink
+ *   destination={getExternalLinkUrl(data.helpLink)}
+ *   target="_blank"
+ * >
  */
+export function getExternalLinkUrl(url: string): string {
+  // Guard against non-strings or whitespace-only strings
+  if (typeof url !== 'string' || !url.trim()) {
+    return '#';
+  }
+
+  const overriddenLinkUrls = getConfig().externalLinkUrlOverrides || {};
+  return overriddenLinkUrls[url] || url;
+}
