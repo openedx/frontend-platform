@@ -296,7 +296,12 @@ class AxiosJwtAuthService {
     if (user !== null) {
       const response = await this.authenticatedHttpClient
         .get(`${this.config.LMS_BASE_URL}/api/user/v1/accounts/${user.username}`);
-      this.setAuthenticatedUser({ ...user, ...camelCaseObject(response.data) });
+      const userData = camelCaseObject(response.data);
+      this.setAuthenticatedUser({
+        ...user,
+        ...userData,
+        avatar: userData.profileImage?.imageUrlFull || null,
+      });
     }
   }
 
